@@ -1,0 +1,50 @@
+.screensaver {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	padding: 0 6vw;
+	background: rgba(0, 0, 0, 0.55);
+	color: #fff;
+	pointer-events: none;
+}
+.screensaver__now {
+	max-width: 50vw;
+	text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+.screensaver__artist {
+	font-size: 1.6rem;
+	opacity: 0.8;
+}
+.screensaver__title {
+	font-size: 3.2rem;
+	font-weight: 700;
+	line-height: 1.1;
+}
+.screensaver__version {
+	font-size: 1.4rem;
+	color: var(--osu-pink-light);
+}
+.screensaver__play {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 1.2rem;
+	font-size: 2rem;
+	font-weight: 700;
+}
+.screensaver__grade {
+	height: 64px;
+	width: auto;
+}
+.screensaver__progress {
+	margin-top: 1rem;
+	height: 4px;
+	background: rgba(255, 255, 255, 0.15);
+}
+.screensaver__progress b {
+	display: block;
+	height: 4px;
+	background: var(--osu-pink-light);
+	transition: width 1s linear;
+}

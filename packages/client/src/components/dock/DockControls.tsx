@@ -8,6 +8,11 @@ import PlayQueue from '../../gameplay/playQueue';
 import { openPage } from '../../globals';
 import DockWatchButton from './DockWatchButton';
 import DockRunButton from './DockRunButton';
+import SceneManager, { SCENE } from '../../scenes/SceneManager';
+import {
+	enterScreensaver,
+	leaveScreensaver,
+} from '../../scenes/screensaver';
 
 type Props = {
 	/** the dock is filling the left column with the queue carousel open */
@@ -26,6 +31,8 @@ type Props = {
 export default function DockControls({ left, onCollapse }: Props) {
 	const { t } = useLingui();
 	const [queue] = useSynced(PlayQueue.state);
+	const [scene] = useSynced(SceneManager.current);
+	const saver = scene === SCENE.SAVER;
 	const next = queue ? PlayQueue.next() : undefined;
 	const queued = queue?.entries.length ?? 0;
 
@@ -53,6 +60,20 @@ export default function DockControls({ left, onCollapse }: Props) {
 			)}
 
 			<DockRunButton />
+
+			{(saver || scene === SCENE.GAME) && (
+				<button
+					type="button"
+					className={`dock__btn ${saver ? 'is-on' : ''}`}
+					aria-pressed={saver}
+					title={saver
+						? t`Back to gameplay`
+						: t`Hide the playfield and keep playing in the background`}
+					onClick={saver ? leaveScreensaver : enterScreensaver}
+				>
+					<Trans>screensaver</Trans>
+				</button>
+			)}
 
 			{queued > 0 && (
 				<button

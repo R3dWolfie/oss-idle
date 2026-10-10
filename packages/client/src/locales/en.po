@@ -280,6 +280,10 @@ msgstr "Back"
 msgid "BACK"
 msgstr "BACK"
 
+#: src/components/dock/DockControls.tsx
+msgid "Back to gameplay"
+msgstr "Back to gameplay"
+
 #: src/scenes/Lobby.tsx
 msgid "Back to Menu"
 msgstr "Back to Menu"
@@ -792,6 +796,10 @@ msgstr "hide"
 #: src/components/community/CommunityControls.tsx
 msgid "Hide chat"
 msgstr "Hide chat"
+
+#: src/components/dock/DockControls.tsx
+msgid "Hide the playfield and keep playing in the background"
+msgstr "Hide the playfield and keep playing in the background"
 
 #: src/scenes/Result.tsx
 msgid "Hit deviance · {ur} UR"
@@ -1501,6 +1509,10 @@ msgstr "Saving…"
 msgid "Score"
 msgstr "Score"
 
+#: src/components/dock/DockControls.tsx
+msgid "screensaver"
+msgstr "screensaver"
+
 #: src/components/community/CommunityHeader.tsx
 msgid "Search"
 msgstr "Search"
@@ -1868,6 +1880,10 @@ msgstr "volume"
 #: src/scenes/Options.tsx
 msgid "Volume"
 msgstr "Volume"
+
+#: src/scenes/Screensaver.tsx
+msgid "Waiting for the next map"
+msgstr "Waiting for the next map"
 
 #: src/components/dock/DockWatchButton.tsx
 msgid "watch"

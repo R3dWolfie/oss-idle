@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-10 14:03\n"
+"PO-Revision-Date: 2026-10-10 17:15\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -284,6 +284,10 @@ msgstr "Retour"
 #: src/scenes/SongSelect.tsx
 msgid "BACK"
 msgstr "RETOUR"
+
+#: src/components/dock/DockControls.tsx
+msgid "Back to gameplay"
+msgstr ""
 
 #: src/scenes/Lobby.tsx
 msgid "Back to Menu"
@@ -797,6 +801,10 @@ msgstr "cacher"
 #: src/components/community/CommunityControls.tsx
 msgid "Hide chat"
 msgstr "Cacher le chat"
+
+#: src/components/dock/DockControls.tsx
+msgid "Hide the playfield and keep playing in the background"
+msgstr ""
 
 #: src/scenes/Result.tsx
 msgid "Hit deviance · {ur} UR"
@@ -1506,6 +1514,10 @@ msgstr "Sauvegarde…"
 msgid "Score"
 msgstr "Score"
 
+#: src/components/dock/DockControls.tsx
+msgid "screensaver"
+msgstr ""
+
 #: src/components/community/CommunityHeader.tsx
 msgid "Search"
 msgstr "Rechercher"
@@ -1873,6 +1885,10 @@ msgstr "volume|son"
 #: src/scenes/Options.tsx
 msgid "Volume"
 msgstr "Volume"
+
+#: src/scenes/Screensaver.tsx
+msgid "Waiting for the next map"
+msgstr ""
 
 #: src/components/dock/DockWatchButton.tsx
 msgid "watch"

@@ -5,7 +5,7 @@
  * context. Keep the two in step.
  */
 
-export type Scene = 'INTRO' | 'MENU' | 'SELECT' | 'GAME' | 'RESULT';
+export type Scene = 'INTRO' | 'MENU' | 'SELECT' | 'GAME' | 'RESULT' | 'SAVER';
 
 export type SkillView = {
 	name: string;

@@ -173,6 +173,10 @@
 .dock__btn:hover:not(:disabled) {
 	background: rgba(255, 255, 255, 0.2);
 }
+.dock__btn.is-on {
+	border-color: var(--osu-pink-light);
+	background: rgba(255, 102, 171, 0.3);
+}
 .dock__btn:disabled {
 	opacity: 0.3;
 	cursor: default;

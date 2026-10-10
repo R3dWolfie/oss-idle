@@ -9,6 +9,7 @@ import { Score } from '../db/schema/score';
 import Result from './Result';
 import Lobby from './Lobby';
 import MatchSetup from './MatchSetup';
+import Screensaver from './Screensaver';
 import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
 import type { Transition } from './Transition';
 import {
@@ -26,6 +27,7 @@ export const SCENE = mapped([
 	'RESULT',
 	'LOBBY',
 	'MATCH',
+	'SAVER',
 ]);
 export type Scene = ValueIn<typeof SCENE>;
 
@@ -74,6 +76,7 @@ export default class SceneManager {
 
 		[SCENE.LOBBY]: () => <Lobby />,
 		[SCENE.MATCH]: () => <MatchSetup />,
+		[SCENE.SAVER]: () => <Screensaver />,
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} as const satisfies Record<Scene, (...args: any[]) => JSX.Element>;

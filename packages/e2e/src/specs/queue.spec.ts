@@ -101,4 +101,47 @@ test.describe('play queue', () => {
 		).toBe(other!.id);
 	});
 
+	test('the screensaver drops the playfield and the queue keeps going', async ({ game, page }) => {
+		await game.start();
+		await page.evaluate(() => window.__idle!.setSetting('autopilotDelay', 1));
+
+		const { set, version } = await game.installEasiest();
+		const other = set.versions.find(v => v.id !== version.id);
+		test.skip(!other, 'the easiest set has a single difficulty');
+
+		await game.search(set.title);
+		await game.playCard(version.id);
+		const first = await game.waitForPlay();
+		await game.expectScene('GAME');
+
+		await page.locator('.dock--pill .dock__btn', { hasText: 'queue' }).click();
+		await game.queueCard(other!.id);
+		await page.keyboard.press('Escape');
+
+		await page.locator('.dock--pill .dock__body').click();
+		await page.locator('.dock__btn', { hasText: 'screensaver' }).click();
+		await game.expectScene('SAVER');
+		await expect(page.locator('.screensaver')).toBeVisible();
+		await expect(page.locator('.play__quit')).toBeHidden();
+
+		await page.keyboard.press('F9');
+		await expect(page.locator('.community-chat-container.is-enabled')).toBeVisible();
+
+		await game.finishPlay();
+		await expect.poll(
+			async () => {
+				const live = await game.play();
+				return live && live.token !== first.token ? live.beatmapId : undefined;
+			},
+			{
+				timeout: 90_000, message: 'waiting for the queue to chain',
+			},
+		).toBe(other!.id);
+		expect(await game.scene()).toBe('SAVER');
+
+		await page.keyboard.press('Escape');
+		await page.locator('.dock__btn.is-on', { hasText: 'screensaver' }).click();
+		await game.expectScene('GAME');
+	});
+
 });
