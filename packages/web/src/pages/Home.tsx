@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './Home.css';
 
 import type { listNews } from '../api/news';
@@ -56,7 +57,9 @@ export default function Home({ articles, stats, recent, recentMaps }: {
 								<div className='dashboard__ranked_list_map-md-title'>{map.title}</div>
 								<div className='dashboard__ranked_list_map-md-artist'>{map.artist}</div>
 								<div className='dashboard__ranked_list_map-md-info'>
-									<div className='dashboard__ranked_list_map-md-info-c'><Trans>by {map.creator}</Trans></div>
+									<div className='dashboard__ranked_list_map-md-info-c'>
+										<Trans>by {ph({ creator: map.creator })}</Trans>
+									</div>
 									<div className='dashboard__ranked_list_map-md-info-d'>{dateAgo(map.rankedAt)}</div>
 								</div>
 							</div>

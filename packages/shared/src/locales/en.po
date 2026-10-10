@@ -53,6 +53,22 @@ msgstr "{s} seconds ago"
 msgid "{s}s"
 msgstr "{s}s"
 
+#: src/display/medals.ts
+msgid "{skill} Adept"
+msgstr "{skill} Adept"
+
+#: src/display/medals.ts
+msgid "{skill} Grandmaster"
+msgstr "{skill} Grandmaster"
+
+#: src/display/medals.ts
+msgid "{skill} Legend"
+msgstr "{skill} Legend"
+
+#: src/display/medals.ts
+msgid "{skill} Master"
+msgstr "{skill} Master"
+
 #: src/display/skills.ts
 msgid "{value} Scroll Speed"
 msgstr "{value} Scroll Speed"
@@ -85,13 +101,26 @@ msgstr "30 minutes muscle strength warmup"
 msgid "60hz GMMK firmware"
 msgstr "60hz GMMK firmware"
 
+#: src/display/medals.ts
+msgid "Absolute"
+msgstr "Absolute"
+
 #: src/display/skills.ts
+msgid "Accuracy"
+msgstr "Accuracy"
+
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
 msgid "Accuracy"
 msgstr "Accuracy"
 
 #: src/display/community.ts
 msgid "AFK"
 msgstr "AFK"
+
+#: src/display/medals.ts
+msgid "Again and Again"
+msgstr "Again and Again"
 
 #: src/skills.ts
 msgid "AirPods"
@@ -104,6 +133,10 @@ msgstr "Amazon basics Puresoft office chair"
 #: src/skills.ts
 msgid "AndaSeat Kaiser 3"
 msgstr "AndaSeat Kaiser 3"
+
+#: src/display/medals.ts
+msgid "Archivist"
+msgstr "Archivist"
 
 #: src/skills.ts
 msgid "Arrow skin LNs"
@@ -124,6 +157,10 @@ msgstr "AS45"
 #: src/skills.ts
 msgid "AS56"
 msgstr "AS56"
+
+#: src/display/medals.ts
+msgid "Ascendant"
+msgstr "Ascendant"
 
 #: src/skills.ts
 msgid "ASL:"
@@ -149,9 +186,33 @@ msgstr "Basic plastic chair"
 msgid "Better audio and less noise to stay locked in"
 msgstr "Better audio and less noise to stay locked in"
 
+#: src/display/medals.ts
+msgid "Beyond Perfect"
+msgstr "Beyond Perfect"
+
+#: src/display/medals.ts
+msgid "Beyond Reason"
+msgstr "Beyond Reason"
+
+#: src/display/medals.ts
+msgid "Beyond the Stars"
+msgstr "Beyond the Stars"
+
+#: src/display/medals.ts
+msgid "Big Spender"
+msgstr "Big Spender"
+
+#: src/display/medals.ts
+msgid "Billion Club"
+msgstr "Billion Club"
+
 #: src/skills.ts
 msgid "Blank LN body with bar LN tail"
 msgstr "Blank LN body with bar LN tail"
+
+#: src/display/medals.ts
+msgid "Born Again"
+msgstr "Born Again"
 
 #: src/skills.ts
 msgid "Bose QuietComfort Ultra"
@@ -161,6 +222,14 @@ msgstr "Bose QuietComfort Ultra"
 msgid "BottomCentered Anchored LN tails"
 msgstr "BottomCentered Anchored LN tails"
 
+#: src/display/medals.ts
+msgid "Broken Record"
+msgstr "Broken Record"
+
+#: src/display/medals.ts
+msgid "Bronze medal"
+msgstr "Bronze medal"
+
 #: src/skills.ts
 msgid "Bruteforce learning"
 msgstr "Bruteforce learning"
@@ -169,6 +238,18 @@ msgstr "Bruteforce learning"
 msgid "Build a better warmup routine to endure long maps"
 msgstr "Build a better warmup routine to endure long maps"
 
+#: src/display/medals.ts
+msgid "Buy {count} upgrades"
+msgstr "Buy {count} upgrades"
+
+#: src/display/medals.ts
+msgid "Buy every upgrade of a skill"
+msgstr "Buy every upgrade of a skill"
+
+#: src/display/medals.ts
+msgid "Buy your first upgrade"
+msgstr "Buy your first upgrade"
+
 #: src/skills.ts
 msgid "Cap"
 msgstr "Cap"
@@ -176,6 +257,10 @@ msgstr "Cap"
 #: src/skills.ts
 msgid "CENTERHALV Ikea mesh office chair"
 msgstr "CENTERHALV Ikea mesh office chair"
+
+#: src/display/medals.ts
+msgid "Centurion"
+msgstr "Centurion"
 
 #: src/display/skills.ts
 msgid "Change your way of learning SV maps"
@@ -189,11 +274,33 @@ msgstr "Circle skin LNs"
 msgid "Circle skin notes"
 msgstr "Circle skin notes"
 
+#: src/display/medals.ts
+msgid "Clean Start"
+msgstr "Clean Start"
+
+#: src/display/medals.ts
+msgid "Collector"
+msgstr "Collector"
+
+#: src/display/medals.ts
+msgid "Completionist"
+msgstr "Completionist"
+
 #: src/display/skills.ts
 msgid "Concentration"
 msgstr "Concentration"
 
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
+msgid "Concentration"
+msgstr "Concentration"
+
 #: src/display/skills.ts
+msgid "Consistency"
+msgstr "Consistency"
+
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
 msgid "Consistency"
 msgstr "Consistency"
 
@@ -209,9 +316,22 @@ msgstr "Cooler Master MS110"
 msgid "Coordination"
 msgstr "Coordination"
 
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
+msgid "Coordination"
+msgstr "Coordination"
+
 #: src/skills.ts
 msgid "Corsair K60"
 msgstr "Corsair K60"
+
+#: src/display/medals.ts
+msgid "Crystal Clear"
+msgstr "Crystal Clear"
+
+#: src/display/medals.ts
+msgid "Curator"
+msgstr "Curator"
 
 #: src/skills.ts
 msgid "Cut percy LNs"
@@ -220,6 +340,10 @@ msgstr "Cut percy LNs"
 #: src/skills.ts
 msgid "Cut percy with LN end indicator"
 msgstr "Cut percy with LN end indicator"
+
+#: src/display/medals.ts
+msgid "Dedication"
+msgstr "Dedication"
 
 #: src/skills.ts
 msgid "Default skin LNs"
@@ -237,6 +361,10 @@ msgstr "Dell XPS chiclet keyboard"
 msgid "Denied"
 msgstr "Denied"
 
+#: src/display/medals.ts
+msgid "Devoted"
+msgstr "Devoted"
+
 #: src/skills.ts
 msgid "DFJK"
 msgstr "DFJK"
@@ -244,6 +372,14 @@ msgstr "DFJK"
 #: src/skills.ts
 msgid "Diamond skin notes"
 msgstr "Diamond skin notes"
+
+#: src/display/medals.ts
+msgid "Divine medal"
+msgstr "Divine medal"
+
+#: src/display/medals.ts
+msgid "Divine Touch"
+msgstr "Divine Touch"
 
 #: src/skills.ts
 msgid "DOF Reality H6R"
@@ -265,37 +401,153 @@ msgstr "DXRacer Drifting"
 msgid "Dynamic sight focus"
 msgstr "Dynamic sight focus"
 
+#: src/display/medals.ts
+msgid "Eight Stars Up"
+msgstr "Eight Stars Up"
+
 #: src/skills.ts
 msgid "Embedded keyboard firmware"
 msgstr "Embedded keyboard firmware"
+
+#: src/display/medals.ts
+msgid "Escape Velocity"
+msgstr "Escape Velocity"
+
+#: src/display/medals.ts
+msgid "Eternal"
+msgstr "Eternal"
+
+#: src/display/medals.ts
+msgid "Eternal Return"
+msgstr "Eternal Return"
 
 #: src/skills.ts
 msgid "Fade-out tail LNs"
 msgstr "Fade-out tail LNs"
 
+#: src/display/medals.ts
+msgid "Fail a map with 1% of it left"
+msgstr "Fail a map with 1% of it left"
+
 #: src/display/skills.ts
 msgid "Find the perfect LN skin"
 msgstr "Find the perfect LN skin"
+
+#: src/display/medals.ts
+msgid "Finding the Beat"
+msgstr "Finding the Beat"
+
+#: src/display/medals.ts
+msgid "Finish a play at exactly 727 combo"
+msgstr "Finish a play at exactly 727 combo"
+
+#: src/display/medals.ts
+msgid "First Steps"
+msgstr "First Steps"
+
+#: src/display/medals.ts
+msgid "Flawless Flow"
+msgstr "Flawless Flow"
+
+#: src/display/medals.ts
+msgid "Fresh Start"
+msgstr "Fresh Start"
+
+#: src/display/medals.ts
+msgid "Full combo a ranked map of {stars}★ or more"
+msgstr "Full combo a ranked map of {stars}★ or more"
+
+#: src/display/medals.ts
+msgid "Fully Loaded"
+msgstr "Fully Loaded"
+
+#: src/display/medals.ts
+msgid "Gearing Up"
+msgstr "Gearing Up"
+
+#: src/display/medals.ts
+msgid "Get a 1,000,000 score on TAG underground - POSSESSION"
+msgstr "Get a 1,000,000 score on TAG underground - POSSESSION"
 
 #: src/display/skills.ts
 msgid "Get accustomed to higher scroll speeds to perform better"
 msgstr "Get accustomed to higher scroll speeds to perform better"
 
+#: src/display/medals.ts
+msgid "Get an SS on a ranked map"
+msgstr "Get an SS on a ranked map"
+
+#: src/display/medals.ts
+msgid "Get an X on a ranked map"
+msgstr "Get an X on a ranked map"
+
+#: src/display/medals.ts
+msgid "Get an XX on a ranked map"
+msgstr "Get an XX on a ranked map"
+
+#: src/display/medals.ts
+msgid "Glass Cannon"
+msgstr "Glass Cannon"
+
 #: src/skills.ts
 msgid "Glorious GMMK Pro"
 msgstr "Glorious GMMK Pro"
+
+#: src/display/medals.ts
+msgid "Gold medal"
+msgstr "Gold medal"
 
 #: src/skills.ts
 msgid "Gym, stretch session + meditation"
 msgstr "Gym, stretch session + meditation"
 
+#: src/display/medals.ts
+msgid "Halfway There"
+msgstr "Halfway There"
+
+#: src/display/medals.ts
+msgid "Hands Awake"
+msgstr "Hands Awake"
+
+#: src/display/medals.ts
+msgid "Have {count} of your proposed maps ranked"
+msgstr "Have {count} of your proposed maps ranked"
+
 #: src/skills.ts
 msgid "Hbada E3 Pro"
 msgstr "Hbada E3 Pro"
 
+#: src/display/medals.ts
+msgid "Hello World"
+msgstr "Hello World"
+
+#: src/display/medals.ts
+msgid "High Orbit"
+msgstr "High Orbit"
+
+#: src/display/medals.ts
+msgid "Hit {count} notes"
+msgstr "Hit {count} notes"
+
+#: src/display/medals.ts
+msgid "Hold #1 on {count} ranked maps"
+msgstr "Hold #1 on {count} ranked maps"
+
+#: src/display/medals.ts
+msgid "Hold the Line"
+msgstr "Hold the Line"
+
+#: src/display/medals.ts
+msgid "Hush-Hush"
+msgstr "Hush-Hush"
+
 #: src/display/community.ts
 msgid "Idle"
 msgstr "Idle"
+
+#: src/display/medals.ts
+msgid "Into the Storm"
+msgstr "Into the Storm"
 
 #: src/types/color.ts
 msgid "Invalid #hex color"
@@ -309,6 +561,10 @@ msgstr "Invalid color: use a #hex (e.g. #63b3ff) or rgb()/rgba() value"
 msgid "Invalid rgb()/rgba() color"
 msgstr "Invalid rgb()/rgba() color"
 
+#: src/display/medals.ts
+msgid "Iron Combo"
+msgstr "Iron Combo"
+
 #: src/skills.ts
 msgid "IRON165"
 msgstr "IRON165"
@@ -317,6 +573,23 @@ msgstr "IRON165"
 msgid "Jack Speed"
 msgstr "Jack Speed"
 
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
+msgid "Jack Speed"
+msgstr "Jack Speed"
+
+#: src/display/medals.ts
+msgid "Keeping Up"
+msgstr "Keeping Up"
+
+#: src/display/medals.ts
+msgid "Keyboard Breaker"
+msgstr "Keyboard Breaker"
+
+#: src/display/medals.ts
+msgid "Kitted Out"
+msgstr "Kitted Out"
+
 #: src/skills.ts
 msgid "Latest stock Windows drivers"
 msgstr "Latest stock Windows drivers"
@@ -324,6 +597,14 @@ msgstr "Latest stock Windows drivers"
 #: src/skills.ts
 msgid "Lenovo IdeaPad ultrabook chiclet keyboard"
 msgstr "Lenovo IdeaPad ultrabook chiclet keyboard"
+
+#: src/display/medals.ts
+msgid "Lifer"
+msgstr "Lifer"
+
+#: src/display/medals.ts
+msgid "Liftoff"
+msgstr "Liftoff"
 
 #: src/skills.ts
 msgid "Light percy LNs"
@@ -345,11 +626,28 @@ msgstr "Low latency Corsair iCUE"
 msgid "Map editor studying"
 msgstr "Map editor studying"
 
+#: src/display/medals.ts
+msgid "Mastery"
+msgstr "Mastery"
+
+#: src/display/medals.ts
+msgid "Max out the upgrades of a skill {count} times"
+msgstr "Max out the upgrades of a skill {count} times"
+
+#: src/display/medals.ts
+msgid "Meltdown"
+msgstr "Meltdown"
+
 #: src/skills.ts
 msgid "Memorizing the whole map"
 msgstr "Memorizing the whole map"
 
 #: src/display/skills.ts
+msgid "Memory"
+msgstr "Memory"
+
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
 msgid "Memory"
 msgstr "Memory"
 
@@ -365,6 +663,10 @@ msgstr "Metal folding chair"
 msgid "Mid-play stretching + meditation"
 msgstr "Mid-play stretching + meditation"
 
+#: src/display/medals.ts
+msgid "Million Taps"
+msgstr "Million Taps"
+
 #: src/skills.ts
 msgid "Modded actuation prediction firmware"
 msgstr "Modded actuation prediction firmware"
@@ -376,6 +678,18 @@ msgstr "Modded rapid trigger firmware"
 #: src/skills.ts
 msgid "Music anticipation"
 msgstr "Music anticipation"
+
+#: src/display/medals.ts
+msgid "Night Owl"
+msgstr "Night Owl"
+
+#: src/display/medals.ts
+msgid "Nine Lives"
+msgstr "Nine Lives"
+
+#: src/display/medals.ts
+msgid "No Life"
+msgstr "No Life"
 
 #: src/skills.ts
 msgid "No tail LNs"
@@ -393,6 +707,10 @@ msgstr "Norbaforce Mark IV"
 msgid "Note snap coloring"
 msgstr "Note snap coloring"
 
+#: src/display/medals.ts
+msgid "Number One"
+msgstr "Number One"
+
 #: src/display/addon.ts
 msgid "On Hold"
 msgstr "On Hold"
@@ -405,9 +723,29 @@ msgstr "Optimized MasterPlus+"
 msgid "Outdated stock Windows drivers"
 msgstr "Outdated stock Windows drivers"
 
+#: src/display/medals.ts
+msgid "Overachiever"
+msgstr "Overachiever"
+
 #: src/display/skills.ts
 msgid "Overall"
 msgstr "Overall"
+
+#: src/display/medals.ts
+msgid "Overclocked"
+msgstr "Overclocked"
+
+#: src/display/medals.ts
+msgid "Pass a 4★ or harder map made of over 50% long notes"
+msgstr "Pass a 4★ or harder map made of over 50% long notes"
+
+#: src/display/medals.ts
+msgid "Pass a 4★ or harder map made of over 90% single notes"
+msgstr "Pass a 4★ or harder map made of over 90% single notes"
+
+#: src/display/medals.ts
+msgid "Pass a ranked map of {stars}★ or more"
+msgstr "Pass a ranked map of {stars}★ or more"
 
 #: src/skills.ts
 msgid "Passive learning"
@@ -421,9 +759,41 @@ msgstr "Pending"
 msgid "Per-map scroll speed setting"
 msgstr "Per-map scroll speed setting"
 
+#: src/display/medals.ts
+msgid "Perfect Storm"
+msgstr "Perfect Storm"
+
+#: src/display/medals.ts
+msgid "Perfectionist"
+msgstr "Perfectionist"
+
+#: src/display/medals.ts
+msgid "Platinum medal"
+msgstr "Platinum medal"
+
+#: src/display/medals.ts
+msgid "Play {count} ranked maps"
+msgstr "Play {count} ranked maps"
+
+#: src/display/medals.ts
+msgid "Play between 3 and 5 am"
+msgstr "Play between 3 and 5 am"
+
+#: src/display/medals.ts
+msgid "Play for {hours} hours"
+msgstr "Play for {hours} hours"
+
+#: src/display/medals.ts
+msgid "Play the same map 100 times"
+msgstr "Play the same map 100 times"
+
 #: src/display/community.ts
 msgid "Playing"
 msgstr "Playing"
+
+#: src/display/medals.ts
+msgid "Possessed"
+msgstr "Possessed"
 
 #: src/skills.ts
 msgid "Post-it notes"
@@ -432,6 +802,22 @@ msgstr "Post-it notes"
 #: src/skills.ts
 msgid "Post-it pattern drawings"
 msgstr "Post-it pattern drawings"
+
+#: src/display/medals.ts
+msgid "Prestige {count} times in total"
+msgstr "Prestige {count} times in total"
+
+#: src/display/medals.ts
+msgid "Prestige a skill"
+msgstr "Prestige a skill"
+
+#: src/display/medals.ts
+msgid "Prestigious"
+msgstr "Prestigious"
+
+#: src/display/medals.ts
+msgid "Propose a map that gets ranked"
+msgstr "Propose a map that gets ranked"
 
 #: src/display/addon.ts
 #: src/display/skin.ts
@@ -450,6 +836,10 @@ msgstr "QWOP"
 msgid "QWP{"
 msgstr "QWP{"
 
+#: src/display/medals.ts
+msgid "Ranked"
+msgstr "Ranked"
+
 #: src/skills.ts
 msgid "Razer BlackShark V3"
 msgstr "Razer BlackShark V3"
@@ -458,17 +848,71 @@ msgstr "Razer BlackShark V3"
 msgid "Re-mapping to get mapper's advantage"
 msgstr "Re-mapping to get mapper's advantage"
 
+#: src/display/medals.ts
+msgid "Reach {omega}ω overdrive on a skill"
+msgstr "Reach {omega}ω overdrive on a skill"
+
+#: src/display/medals.ts
+msgid "Reach {pp} pp"
+msgstr "Reach {pp} pp"
+
+#: src/display/medals.ts
+msgid "Reach level {level} in {skill}"
+msgstr "Reach level {level} in {skill}"
+
+#: src/display/medals.ts
+msgid "Reach overall level {level}"
+msgstr "Reach overall level {level}"
+
 #: src/display/skills.ts
 msgid "Reading"
 msgstr "Reading"
+
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
+msgid "Reading"
+msgstr "Reading"
+
+#: src/display/medals.ts
+msgid "Rebirth your character"
+msgstr "Rebirth your character"
+
+#: src/display/medals.ts
+msgid "Redline"
+msgstr "Redline"
+
+#: src/display/medals.ts
+msgid "Regular"
+msgstr "Regular"
 
 #: src/display/skills.ts
 msgid "Release"
 msgstr "Release"
 
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
+msgid "Release"
+msgstr "Release"
+
+#: src/display/medals.ts
+msgid "Rice Cooker"
+msgstr "Rice Cooker"
+
+#: src/display/medals.ts
+msgid "Royalty"
+msgstr "Royalty"
+
+#: src/display/medals.ts
+msgid "Say something in #osu!idle"
+msgstr "Say something in #osu!idle"
+
 #: src/skills.ts
 msgid "SDKL"
 msgstr "SDKL"
+
+#: src/display/medals.ts
+msgid "Seasoned"
+msgstr "Seasoned"
 
 #: src/skills.ts
 msgid "Secretlab TITAN Evo"
@@ -482,9 +926,29 @@ msgstr "Sennheiser Momentum 4"
 msgid "Sharpen your note visuals to survive dense jams"
 msgstr "Sharpen your note visuals to survive dense jams"
 
+#: src/display/medals.ts
+msgid "Shopping Spree"
+msgstr "Shopping Spree"
+
+#: src/display/medals.ts
+msgid "Silver medal"
+msgstr "Silver medal"
+
+#: src/display/medals.ts
+msgid "Singularity"
+msgstr "Singularity"
+
 #: src/skills.ts
 msgid "Sizzling speakers"
 msgstr "Sizzling speakers"
+
+#: src/display/medals.ts
+msgid "Skill"
+msgstr "Skill"
+
+#: src/display/medals.ts
+msgid "So Close"
+msgstr "So Close"
 
 #: src/skills.ts
 msgid "Sony WH-1000XM4"
@@ -494,7 +958,17 @@ msgstr "Sony WH-1000XM4"
 msgid "Speed"
 msgstr "Speed"
 
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
+msgid "Speed"
+msgstr "Speed"
+
 #: src/display/skills.ts
+msgid "Speed Jam"
+msgstr "Speed Jam"
+
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
 msgid "Speed Jam"
 msgstr "Speed Jam"
 
@@ -502,9 +976,22 @@ msgstr "Speed Jam"
 msgid "Split map sections training"
 msgstr "Split map sections training"
 
+#: src/display/medals.ts
+msgid "Spotless"
+msgstr "Spotless"
+
 #: src/display/skills.ts
 msgid "Stamina"
 msgstr "Stamina"
+
+#: src/display/medals.ts
+msgctxt "skill in a medal name"
+msgid "Stamina"
+msgstr "Stamina"
+
+#: src/display/medals.ts
+msgid "Steady Hands"
+msgstr "Steady Hands"
 
 #: src/skills.ts
 msgid "Steelseries Apex Pro"
@@ -530,9 +1017,41 @@ msgstr "Stool"
 msgid "Synaptics drivers"
 msgstr "Synaptics drivers"
 
+#: src/display/medals.ts
+msgid "Take #1 on a ranked map"
+msgstr "Take #1 on a ranked map"
+
+#: src/display/medals.ts
+msgid "Talent Scout"
+msgstr "Talent Scout"
+
+#: src/display/medals.ts
+msgid "Tapping Away"
+msgstr "Tapping Away"
+
+#: src/display/medals.ts
+msgid "Tastemaker"
+msgstr "Tastemaker"
+
+#: src/display/medals.ts
+msgid "Ten Thousand Hours"
+msgstr "Ten Thousand Hours"
+
+#: src/display/medals.ts
+msgid "Ten-Star Legend"
+msgstr "Ten-Star Legend"
+
 #: src/skills.ts
 msgid "Thinks about warmup"
 msgstr "Thinks about warmup"
+
+#: src/display/medals.ts
+msgid "Time Flies"
+msgstr "Time Flies"
+
+#: src/display/medals.ts
+msgid "Top of the Line"
+msgstr "Top of the Line"
 
 #: src/display/skills.ts
 msgid "Try different layouts to increase finger independance"
@@ -546,10 +1065,22 @@ msgstr "Tune drivers and firmware for faster repeated inputs"
 msgid "Unbranded membrane keyboard"
 msgstr "Unbranded membrane keyboard"
 
+#: src/display/medals.ts
+msgid "Unbroken"
+msgstr "Unbroken"
+
+#: src/display/medals.ts
+msgid "Undisputed"
+msgstr "Undisputed"
+
 #: src/display/addon.ts
 #: src/display/skin.ts
 msgid "Unpublished"
 msgstr "Unpublished"
+
+#: src/display/medals.ts
+msgid "Untouchable"
+msgstr "Untouchable"
 
 #: src/display/skills.ts
 msgid "Upgrade your chair to play more comfortably"
@@ -575,6 +1106,14 @@ msgstr "Vibe playing"
 msgid "Voyager Focus 2"
 msgstr "Voyager Focus 2"
 
+#: src/display/medals.ts
+msgid "Wall of Notes"
+msgstr "Wall of Notes"
+
+#: src/display/medals.ts
+msgid "Warming Up"
+msgstr "Warming Up"
+
 #: src/skills.ts
 msgid "Warmup on easy maps"
 msgstr "Warmup on easy maps"
@@ -591,9 +1130,25 @@ msgstr "Warmup on normal maps"
 msgid "Warmup on stamina packs"
 msgstr "Warmup on stamina packs"
 
+#: src/display/medals.ts
+msgid "Well Rounded"
+msgstr "Well Rounded"
+
+#: src/display/medals.ts
+msgid "When You See It"
+msgstr "When You See It"
+
+#: src/display/medals.ts
+msgid "Where Did The Day Go"
+msgstr "Where Did The Day Go"
+
 #: src/skills.ts
 msgid "Wooden chair"
 msgstr "Wooden chair"
+
+#: src/display/medals.ts
+msgid "Worn Switches"
+msgstr "Worn Switches"
 
 #: src/skills.ts
 msgid "Yealink Phone Headset"

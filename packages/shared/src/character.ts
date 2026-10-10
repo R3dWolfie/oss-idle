@@ -37,6 +37,8 @@ export const characterDTO = z.object({
 	// The character's profile picture, always a usable absolute URL: its custom
 	// upload, else the account's osu! avatar, else the guest default.
 	avatarUrl: z.string(),
+	// The profile banner's absolute URL. Absent without an upload.
+	bannerUrl: z.string().optional(),
 	// The account's osu! country code. Absent for the local Guest.
 	country: z.string().optional(),
 	// Rebirth number, 1 for a first character: its unlock set is the first

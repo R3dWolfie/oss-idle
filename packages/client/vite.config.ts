@@ -77,15 +77,25 @@ export default defineConfig({
 	},
 	server: {
 		host: true,
+		// the LAN staging is reached by name (a hosts entry for e.g. osu.idle.lan)
+		allowedHosts: ['.lan'],
 		// Serve the osu! web platform at /web on the game's own origin so the
 		// in-game browser iframe is same-origin. The web app runs its own dev
 		// server (packages/web, :5174) with base '/web/'; we proxy to it.
+		// The API is proxied too, for a dev setup that leaves VITE_API_URL empty
+		// and talks to it on the game's origin (no CORS, one cookie host).
 		proxy: {
 			'/web': {
 				target: 'http://localhost:5174',
 				changeOrigin: false,
 				ws: true,
 			},
+			'/v1': {
+				target: 'http://localhost:3873',
+				changeOrigin: false,
+				ws: true,
+			},
+			'/uploads': 'http://localhost:3873',
 		},
 	},
 	build: { target: 'esnext' },

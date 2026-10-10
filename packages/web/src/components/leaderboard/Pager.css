@@ -1,0 +1,23 @@
+.pager {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	margin-top: 20px;
+	font-size: 12px;
+}
+
+.pager span {
+	color: hsl(var(--hsl-f1));
+}
+
+.pager a {
+	background-color: hsl(var(--hsl-b4));
+	border-radius: 4px;
+	padding: 6px 14px;
+}
+
+.pager a:hover {
+	background-color: hsl(var(--hsl-b3));
+	text-decoration: none;
+}

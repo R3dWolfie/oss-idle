@@ -13,47 +13,123 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#. placeholder {0}: ranks.length - 1 - hover
+#: src/pages/matches/MatchGame.tsx
+msgid "(match in progress)"
+msgstr "(match in progress)"
+
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "{count} selected"
+msgstr "{count} selected"
+
 #: src/components/character/RankGraph.tsx
-msgid "{0, plural, =0 {today} one {# day ago} other {# days ago}}"
-msgstr "{0, plural, =0 {today} one {# day ago} other {# days ago}}"
+msgid "{days, plural, =0 {today} one {# day ago} other {# days ago}}"
+msgstr "{days, plural, =0 {today} one {# day ago} other {# days ago}}"
 
-#. placeholder {0}: mp.beatmap.title
-#. placeholder {1}: mp.beatmap.version
-#. placeholder {2}: mp.beatmap.artist
-#: src/pages/characters/CharacterPage.tsx
-msgid "{0} [{1}] by {2}"
-msgstr "{0} [{1}] by {2}"
-
-#. placeholder {0}: hit.diffs
 #: src/pages/beatmaps/RequestSearchHit.tsx
-msgid "{0} × 4K"
-msgstr "{0} × 4K"
+msgid "{diffs} × 4K"
+msgstr "{diffs} × 4K"
 
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
 msgstr "{skill} Ranking"
 
-#: src/pages/beatmaps/RequestRow.tsx
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "{step}/{total} · {current} · {spent} elapsed · ~{left} left"
+msgstr "{step}/{total} · {current} · {spent} elapsed · ~{left} left"
+
+#: src/pages/characters/CharacterPage.tsx
+msgid "{title} [{version}] by {artist}"
+msgstr "{title} [{version}] by {artist}"
+
+#: src/components/character/CharacterMedals.tsx
+msgid "{unlocked} / {total} unlocked"
+msgstr "{unlocked} / {total} unlocked"
+
+#: src/pages/matches/MatchEventLine.tsx
+msgid "{who} became the host"
+msgstr "{who} became the host"
+
+#: src/pages/matches/MatchEventLine.tsx
+msgid "{who} created the match"
+msgstr "{who} created the match"
+
+#: src/pages/matches/MatchEventLine.tsx
+msgid "{who} has been kicked from the match"
+msgstr "{who} has been kicked from the match"
+
+#: src/pages/matches/MatchEventLine.tsx
+msgid "{who} joined the match"
+msgstr "{who} joined the match"
+
+#: src/pages/matches/MatchEventLine.tsx
+msgid "{who} left the match"
+msgstr "{who} left the match"
+
+#: src/pages/help/FAQ.tsx
+msgid "<0>Guest:</0> signed out. Saved in your browser only, with local experience."
+msgstr "<0>Guest:</0> signed out. Saved in your browser only, with local experience."
+
+#: src/pages/help/FAQ.tsx
+msgid "<0>Ranked:</0> signed in, on a ranked difficulty. The server decides the score, which counts for pp, rankings, medals and experience."
+msgstr "<0>Ranked:</0> signed in, on a ranked difficulty. The server decides the score, which counts for pp, rankings, medals and experience."
+
+#: src/pages/beatmaps/MapRequests.tsx
+msgid "<0>Sign in</0> to propose a map or support someone else's."
+msgstr "<0>Sign in</0> to propose a map or support someone else's."
+
+#: src/pages/help/FAQ.tsx
+msgid "<0>Unranked:</0> signed in, on a map or difficulty that isn't ranked. Saved in your browser only, with no experience."
+msgstr "<0>Unranked:</0> signed in, on a map or difficulty that isn't ranked. Saved in your browser only, with no experience."
+
+#: src/components/character/ProfileMedal.tsx
+msgid "A hidden medal"
+msgstr "A hidden medal"
+
+#: src/pages/matches/MatchEventLine.tsx
+msgid "a player"
+msgstr "a player"
+
+#: src/pages/beatmaps/RequestActions.tsx
 msgid "Accept"
 msgstr "Accept"
+
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "Accept selected"
+msgstr "Accept selected"
 
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/requestPhase.ts
 msgid "accepted"
 msgstr "accepted"
 
+#: src/pages/matches/MatchGameScore.tsx
+msgid "accuracy"
+msgstr "accuracy"
+
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
+#: src/pages/rankings/Country.tsx
 msgid "Accuracy"
 msgstr "Accuracy"
 
-#: src/Header.tsx
+#: src/pages/help/FAQ.tsx
+msgid "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
+msgstr "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
+
+#: src/pages/rankings/Country.tsx
+msgid "Active Players"
+msgstr "Active Players"
+
+#: src/components/character/FriendButton.tsx
+msgid "add friend"
+msgstr "add friend"
+
+#: src/HeaderLinks.tsx
 #: src/routes/admin/addons.tsx
 msgid "add-ons"
 msgstr "add-ons"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 msgid "admin"
 msgstr "admin"
 
@@ -66,6 +142,8 @@ msgid "all"
 msgstr "all"
 
 #: src/components/leaderboard/CountryFilter.tsx
+#: src/components/leaderboard/useFriendsFilter.ts
+#: src/pages/friends/Friends.tsx
 msgid "All"
 msgstr "All"
 
@@ -73,20 +151,32 @@ msgstr "All"
 msgid "An error occurred when communicating with osu! ... if your osu! account is valid, please try again"
 msgstr "An error occurred when communicating with osu! ... if your osu! account is valid, please try again"
 
+#: src/pages/help/FAQ.tsx
+msgid "An idle game built on osu!mania 4K. You don't press the keys: your character plays the maps for you. Every play earns experience in its skills, better skills mean better plays, and better plays climb the rankings."
+msgstr "An idle game built on osu!mania 4K. You don't press the keys: your character plays the maps for you. Every play earns experience in its skills, better skills mean better plays, and better plays climb the rankings."
+
 #: src/pages/beatmaps/MapRequests.tsx
 msgid "Anyone can propose a map for ranking in osu!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
 msgstr "Anyone can propose a map for ranking in osu!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
+
+#: src/pages/help/FAQ.tsx
+msgid "At overall level {REBIRTH_MIN_OVERALL_LEVEL}, you can start a brand new character one generation up. Each generation unlocks something new; the first is the Divine judgement. Your old character is not deleted: it stays playable, ranked and keeps all its progress. If the new one takes its name, the old one is renamed with _old, like on osu!."
+msgstr "At overall level {REBIRTH_MIN_OVERALL_LEVEL}, you can start a brand new character one generation up. Each generation unlocks something new; the first is the Divine judgement. Your old character is not deleted: it stays playable, ranked and keeps all its progress. If the new one takes its name, the old one is renamed with _old, like on osu!."
+
+#: src/pages/rankings/Country.tsx
+msgid "Avg. Performance"
+msgstr "Avg. Performance"
 
 #: src/pages/DesktopDone.tsx
 msgid "Back in osu!idle already? You can close this tab."
 msgstr "Back in osu!idle already? You can close this tab."
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/routes/admin/balancing.tsx
 msgid "balancing"
 msgstr "balancing"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/pages/beatmaps/MapsNav.tsx
 #: src/routes/maps/index.tsx
 msgid "beatmap listing"
@@ -96,7 +186,7 @@ msgstr "beatmap listing"
 msgid "beatmap nomination"
 msgstr "beatmap nomination"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 msgid "beatmaps"
 msgstr "beatmaps"
 
@@ -108,16 +198,46 @@ msgstr "Best for performance and idling."
 msgid "Best Performance"
 msgstr "Best Performance"
 
-#. placeholder {0}: map.creator
-#. placeholder {0}: mapset.artist
-#: src/pages/beatmaps/RankedMaps.tsx
-#: src/pages/Home.tsx
-msgid "by {0}"
-msgstr "by {0}"
+#: src/components/character/ProfileMenu.tsx
+msgid "Block"
+msgstr "Block"
 
+#: src/pages/help/FAQ.tsx
+msgid "Browsers slow down tabs you aren't looking at, which can stall autopilot. The <0>desktop app</0> doesn't have this problem: it keeps playing while minimised and updates itself."
+msgstr "Browsers slow down tabs you aren't looking at, which can stall autopilot. The <0>desktop app</0> doesn't have this problem: it keeps playing while minimised and updates itself."
+
+#: src/pages/beatmaps/RankedMaps.tsx
+msgid "by {artist}"
+msgstr "by {artist}"
+
+#: src/pages/Home.tsx
+msgid "by {creator}"
+msgstr "by {creator}"
+
+#: src/pages/help/FAQ.tsx
+msgid "By playing. Ranked and guest plays give experience; unranked plays don't. Pick maps that push the skills you want to train: the song select shows what each map gave you last time."
+msgstr "By playing. Ranked and guest plays give experience; unranked plays don't. Pick maps that push the skills you want to train: the song select shows what each map gave you last time."
+
+#: src/pages/help/FAQ.tsx
+msgid "Can I buy upgrades during a play?"
+msgstr "Can I buy upgrades during a play?"
+
+#: src/pages/help/FAQ.tsx
+msgid "Can I change how the game looks?"
+msgstr "Can I change how the game looks?"
+
+#: src/pages/help/FAQ.tsx
+msgid "Can I talk to other players?"
+msgstr "Can I talk to other players?"
+
+#: src/components/character/ReportDialog.tsx
 #: src/components/EditableCharacterName.tsx
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/components/character/ProfileBanner.tsx
+msgid "Change banner"
+msgstr "Change banner"
 
 #: src/components/EditableCharacterName.tsx
 msgid "Change username"
@@ -132,10 +252,22 @@ msgstr "character info"
 msgid "characters"
 msgstr "characters"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/routes/admin/chat.tsx
 msgid "chat console"
 msgstr "chat console"
+
+#: src/components/character/ReportDialog.tsx
+msgid "Cheating"
+msgstr "Cheating"
+
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "Clear"
+msgstr "Clear"
+
+#: src/pages/matches/MatchGameScore.tsx
+msgid "combo"
+msgstr "combo"
 
 #: src/pages/Login.tsx
 msgid "Connect your osu! account to appear in the leaderboards."
@@ -146,7 +278,7 @@ msgid "Contact"
 msgstr "Contact"
 
 #: src/components/leaderboard/CountryFilter.tsx
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "country"
 msgstr "country"
@@ -159,20 +291,35 @@ msgstr "Country Ranking"
 msgid "Create your own osu! character and watch it grow to become a<0/><1>legendary mania player</1>."
 msgstr "Create your own osu! character and watch it grow to become a<0/><1>legendary mania player</1>."
 
+#: src/pages/help/FAQ.tsx
+msgid "Customisation"
+msgstr "Customisation"
+
 #: src/hooks/useRouteTitle.ts
 msgid "dashboard"
 msgstr "dashboard"
 
-#: src/pages/beatmaps/RequestRow.tsx
+#: src/pages/beatmaps/RequestActions.tsx
 msgid "Delete"
 msgstr "Delete"
 
-#. placeholder {0}: primary.label
-#: src/pages/PlayOsuIdle.tsx
-msgid "Download for {0} (v{version})"
-msgstr "Download for {0} (v{version})"
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "Delete selected"
+msgstr "Delete selected"
 
-#: src/pages/beatmaps/RequestRow.tsx
+#: src/pages/help/FAQ.tsx
+msgid "Do I have to watch my plays?"
+msgstr "Do I have to watch my plays?"
+
+#: src/pages/help/FAQ.tsx
+msgid "Do I need an osu! account?"
+msgstr "Do I need an osu! account?"
+
+#: src/pages/PlayOsuIdle.tsx
+msgid "Download for {platform} (v{version})"
+msgstr "Download for {platform} (v{version})"
+
+#: src/pages/beatmaps/RequestActions.tsx
 msgid "Download the .osz and push it into the nomination queue"
 msgstr "Download the .osz and push it into the nomination queue"
 
@@ -181,14 +328,26 @@ msgid "Download the desktop app"
 msgstr "Download the desktop app"
 
 #: src/pages/beatmaps/MapRequests.tsx
+msgid "Drop {count} requests?"
+msgstr "Drop {count} requests?"
+
+#: src/pages/beatmaps/MapRequests.tsx
 msgid "Drop this request?"
 msgstr "Drop this request?"
+
+#: src/pages/help/FAQ.tsx
+msgid "Each ranked score is worth some pp. Your total adds up your best score on every map, sorted from best to worst, each one counting 5% less than the one before it, like on osu!."
+msgstr "Each ranked score is worth some pp. Your total adds up your best score on every map, sorted from best to worst, each one counting 5% less than the one before it, like on osu!."
+
+#: src/pages/help/FAQ.tsx
+msgid "Each skill has a gear ladder of {BASE_MAX_UPGRADES} upgrades. Each one costs {UPGRADE_LEVELS} levels of that skill and permanently adds {upgradeBonus}% experience gain to it. The more levels you have above the price, the more overdrive the purchase builds, which multiplies that bonus."
+msgstr "Each skill has a gear ladder of {BASE_MAX_UPGRADES} upgrades. Each one costs {UPGRADE_LEVELS} levels of that skill and permanently adds {upgradeBonus}% experience gain to it. The more levels you have above the price, the more overdrive the purchase builds, which multiplies that bonus."
 
 #: src/pages/AuthError.tsx
 msgid "Error"
 msgstr "Error"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 msgid "faq"
 msgstr "faq"
 
@@ -200,12 +359,20 @@ msgstr "FAQ"
 msgid "First Place Ranks"
 msgstr "First Place Ranks"
 
-#. placeholder {0}: names.join(', ')
 #: src/components/FormerNames.tsx
-msgid "formerly known as {0}"
-msgstr "formerly known as {0}"
+msgid "formerly known as {names}"
+msgstr "formerly known as {names}"
 
+#: src/routes/friends.tsx
+msgid "friends"
+msgstr "friends"
+
+#: src/components/leaderboard/useFriendsFilter.ts
 #: src/Header.tsx
+msgid "Friends"
+msgstr "Friends"
+
+#: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "global"
 msgstr "global"
@@ -215,23 +382,26 @@ msgstr "global"
 msgid "Global Ranking"
 msgstr "Global Ranking"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "grades"
 msgstr "grades"
 
-#. placeholder {0}: user.username
 #: src/pages/AuthCallback.tsx
-msgid "Hello {0}!"
-msgstr "Hello {0}!"
+msgid "Hello {username}!"
+msgstr "Hello {username}!"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 msgid "help"
 msgstr "help"
 
 #: src/routes/auth/callback.tsx
 msgid "hi !"
 msgstr "hi !"
+
+#: src/pages/matches/MatchGame.tsx
+msgid "Highest Score"
+msgstr "Highest Score"
 
 #: src/pages/characters/CharacterPage.tsx
 msgid "Historical"
@@ -242,21 +412,49 @@ msgstr "Historical"
 msgid "Hit Accuracy"
 msgstr "Hit Accuracy"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 msgid "home"
 msgstr "home"
+
+#: src/pages/help/FAQ.tsx
+msgid "How do I earn experience?"
+msgstr "How do I earn experience?"
+
+#: src/pages/help/FAQ.tsx
+msgid "How do I get a map ranked?"
+msgstr "How do I get a map ranked?"
 
 #: src/pages/PlayOsuIdle.tsx
 msgid "How do you want to play?"
 msgstr "How do you want to play?"
 
+#: src/pages/help/FAQ.tsx
+msgid "How is pp calculated?"
+msgstr "How is pp calculated?"
+
 #: src/pages/beatmaps/requestPhase.ts
 msgid "in nomination"
 msgstr "in nomination"
 
-#: src/pages/beatmaps/RequestRow.tsx
+#: src/components/character/ReportDialog.tsx
+msgid "Inappropriate chat behaviour"
+msgstr "Inappropriate chat behaviour"
+
+#: src/components/character/ReportDialog.tsx
+msgid "Inappropriate content"
+msgstr "Inappropriate content"
+
+#: src/pages/beatmaps/RequestActions.tsx
 msgid "Ingest"
 msgstr "Ingest"
+
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "Ingest selected"
+msgstr "Ingest selected"
+
+#: src/pages/help/FAQ.tsx
+msgid "Its scores, pp and ranking progress are removed. The experience your skills earned on it stays."
+msgstr "Its scores, pp and ranking progress are removed. The experience your skills earned on it stays."
 
 #: src/pages/PublicLanding.tsx
 msgid "Join the community"
@@ -272,6 +470,7 @@ msgstr "lifetime"
 
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/characters/CharacterPage.tsx
+#: src/pages/friends/Friends.tsx
 msgid "Loading…"
 msgstr "Loading…"
 
@@ -287,29 +486,54 @@ msgstr "login"
 msgid "manage news"
 msgstr "manage news"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 msgid "map nomination"
 msgstr "map nomination"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/pages/beatmaps/MapsNav.tsx
 #: src/routes/maps/requests.tsx
 msgid "map requests"
 msgstr "map requests"
 
-#. placeholder {0}: hit.creator
-#. placeholder {0}: mapset.creator
-#. placeholder {0}: row.creator
 #: src/pages/beatmaps/RankedMaps.tsx
 #: src/pages/beatmaps/RequestRow.tsx
 #: src/pages/beatmaps/RequestSearchHit.tsx
-msgid "mapped by {0}"
-msgstr "mapped by {0}"
+msgid "mapped by {creator}"
+msgstr "mapped by {creator}"
 
-#. placeholder {0}: mp.beatmapset.creator
 #: src/pages/characters/CharacterPage.tsx
-msgid "mapped by <0>{0}</0>"
-msgstr "mapped by <0>{0}</0>"
+msgid "mapped by <0>{creator}</0>"
+msgstr "mapped by <0>{creator}</0>"
+
+#: src/pages/help/FAQ.tsx
+msgid "Maps and rankings"
+msgstr "Maps and rankings"
+
+#: src/routes/matches/$id.tsx
+msgid "match history"
+msgstr "match history"
+
+#: src/pages/matches/MatchHistory.tsx
+msgid "match in progress"
+msgstr "match in progress"
+
+#: src/HeaderLinks.tsx
+#: src/routes/admin/medals.tsx
+msgid "medals"
+msgstr "medals"
+
+#: src/components/character/CharacterMedals.tsx
+msgid "Medals"
+msgstr "Medals"
+
+#: src/Header.tsx
+msgid "menu"
+msgstr "menu"
+
+#: src/components/character/ProfileMenu.tsx
+msgid "more"
+msgstr "more"
 
 #: src/pages/characters/CharacterPage.tsx
 msgid "Most Played Beatmaps"
@@ -331,7 +555,7 @@ msgstr "New Ranked Beatmaps"
 msgid "newest"
 msgstr "newest"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/routes/news/$slug.tsx
 #: src/routes/news/index.tsx
 msgid "news"
@@ -341,15 +565,26 @@ msgstr "news"
 msgid "News"
 msgstr "News"
 
+#: src/components/leaderboard/Pager.tsx
+msgid "next"
+msgstr "next"
+
 #: src/pages/news/News.tsx
 #: src/pages/PublicLanding.tsx
 msgid "No news yet. Check back soon!"
 msgstr "No news yet. Check back soon!"
 
-#. placeholder {0}: PLATFORM_LABEL[platform]
+#: src/pages/help/FAQ.tsx
+msgid "No. A play keeps running when you leave the gameplay screen, and a ranked one even when you close the game. You can come back to it from any device and watch the rest."
+msgstr "No. A play keeps running when you leave the gameplay screen, and a ranked one even when you close the game. You can come back to it from any device and watch the rest."
+
+#: src/pages/help/FAQ.tsx
+msgid "No. Without signing in you play as a guest: everything is saved in your browser only and nothing is ranked. Sign in with osu! to get a character on the server, ranked scores, pp and a public profile."
+msgstr "No. Without signing in you play as a guest: everything is saved in your browser only and nothing is ranked. Sign in with osu! to get a character on the server, ranked scores, pp and a public profile."
+
 #: src/pages/PlayOsuIdle.tsx
-msgid "Not yet available for {0}"
-msgstr "Not yet available for {0}"
+msgid "Not yet available for {platform}"
+msgstr "Not yet available for {platform}"
 
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "Nothing found. If the map isn't listed, paste its beatmapset link instead."
@@ -359,9 +594,21 @@ msgstr "Nothing found. If the map isn't listed, paste its beatmapset link instea
 msgid "Nothing here yet."
 msgstr "Nothing here yet."
 
+#: src/pages/friends/Friends.tsx
+msgid "Offline"
+msgstr "Offline"
+
 #: src/routes/auth/error.tsx
 msgid "oh no!"
 msgstr "oh no!"
+
+#: src/pages/help/FAQ.tsx
+msgid "Once a skill reaches level {PRESTIGE_MIN_LEVEL}, you can prestige it. Its level, experience, upgrades and overdrive reset to zero. In exchange it keeps a bonus level, one more upgrade slot and a permanent {prestigeBonus}% experience multiplier that stacks with each prestige. Each prestige needs one more level than the last."
+msgstr "Once a skill reaches level {PRESTIGE_MIN_LEVEL}, you can prestige it. Its level, experience, upgrades and overdrive reset to zero. In exchange it keeps a bonus level, one more upgrade slot and a permanent {prestigeBonus}% experience multiplier that stacks with each prestige. Each prestige needs one more level than the last."
+
+#: src/pages/friends/Friends.tsx
+msgid "Online"
+msgstr "Online"
 
 #: src/pages/PublicLanding.tsx
 msgid "online now"
@@ -376,13 +623,26 @@ msgstr "Online Users"
 msgid "open"
 msgstr "open"
 
+#: src/pages/help/FAQ.tsx
+msgid "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
+msgstr "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
+
+#: src/components/character/ReportDialog.tsx
+msgid "Other (type below)"
+msgstr "Other (type below)"
+
 #: src/pages/PlayOsuIdle.tsx
 msgid "Other platforms:"
 msgstr "Other platforms:"
 
+#: src/components/leaderboard/Pager.tsx
+msgid "page {page}"
+msgstr "page {page}"
+
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
+#: src/pages/rankings/Country.tsx
 msgid "Performance"
 msgstr "Performance"
 
@@ -390,6 +650,7 @@ msgstr "Performance"
 #: src/components/leaderboard/PlayerLeaderboard.tsx
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/characters/CharacterPreview.tsx
+#: src/pages/rankings/Country.tsx
 msgid "Play Count"
 msgstr "Play Count"
 
@@ -401,15 +662,16 @@ msgstr "Play in the browser"
 msgid "Play now"
 msgstr "Play now"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 msgid "play osu!"
 msgstr "play osu!"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/routes/download.tsx
 msgid "play osu!idle"
 msgstr "play osu!idle"
 
+#: src/pages/help/FAQ.tsx
 #: src/pages/Home.tsx
 msgid "Playing"
 msgstr "Playing"
@@ -422,13 +684,33 @@ msgstr "playing now"
 msgid "Plays"
 msgstr "Plays"
 
+#: src/pages/help/FAQ.tsx
+msgid "Press F9 in the game to open the community overlay: who is online, where they are on the world map, and a chat everyone shares."
+msgstr "Press F9 in the game to open the community overlay: who is online, where they are on the world map, and a chat everyone shares."
+
 #: src/pages/rankings/RankingsNav.tsx
 msgid "prestige"
 msgstr "prestige"
 
+#: src/components/leaderboard/Pager.tsx
+msgid "previous"
+msgstr "previous"
+
 #: src/Footer.tsx
 msgid "Privacy"
 msgstr "Privacy"
+
+#: src/pages/help/FAQ.tsx
+msgid "Progression"
+msgstr "Progression"
+
+#: src/pages/help/FAQ.tsx
+msgid "Propose it on the <0>map requests</0> page. Any 4K map from osu! can be proposed, even a graveyarded one. Other players can back your request, and the team reviews the queue: an accepted map goes through nomination before it is ranked."
+msgstr "Propose it on the <0>map requests</0> page. Any 4K map from osu! can be proposed, even a graveyarded one. Other players can back your request, and the team reviews the queue: an accepted map goes through nomination before it is ranked."
+
+#: src/pages/friends/Friends.tsx
+msgid "Rank"
+msgstr "Rank"
 
 #: src/pages/beatmaps/requestPhase.ts
 msgid "ranked"
@@ -444,10 +726,11 @@ msgstr "Ranked"
 #: src/components/leaderboard/PlayerLeaderboard.tsx
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/characters/CharacterPreview.tsx
+#: src/pages/rankings/Country.tsx
 msgid "Ranked Score"
 msgstr "Ranked Score"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/routes/rankings/country.tsx
 #: src/routes/rankings/global.tsx
 #: src/routes/rankings/grades/$grade.tsx
@@ -463,7 +746,11 @@ msgstr "rankings"
 msgid "Ranks"
 msgstr "Ranks"
 
-#: src/pages/beatmaps/RequestRow.tsx
+#: src/components/character/ReportDialog.tsx
+msgid "Reason"
+msgstr "Reason"
+
+#: src/pages/beatmaps/RequestActions.tsx
 msgid "reason (optional)"
 msgstr "reason (optional)"
 
@@ -471,18 +758,42 @@ msgstr "reason (optional)"
 msgid "Recent scores"
 msgstr "Recent scores"
 
-#: src/pages/beatmaps/RequestRow.tsx
+#: src/pages/friends/Friends.tsx
+msgid "Recently active"
+msgstr "Recently active"
+
+#: src/pages/beatmaps/RequestActions.tsx
 msgid "Reject"
 msgstr "Reject"
+
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "Reject selected"
+msgstr "Reject selected"
 
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/requestPhase.ts
 msgid "rejected"
 msgstr "rejected"
 
+#: src/components/character/ProfileBanner.tsx
+msgid "Remove"
+msgstr "Remove"
+
+#: src/components/character/FriendButton.tsx
+msgid "remove friend"
+msgstr "remove friend"
+
 #: src/pages/beatmaps/RequestRow.tsx
 msgid "Remove your support"
 msgstr "Remove your support"
+
+#: src/components/character/ProfileMenu.tsx
+msgid "Report"
+msgstr "Report"
+
+#: src/components/character/ReportDialog.tsx
+msgid "Report {name}?"
+msgstr "Report {name}?"
 
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "Request"
@@ -508,6 +819,10 @@ msgstr "Save"
 msgid "scheduled"
 msgstr "scheduled"
 
+#: src/pages/matches/MatchGameScore.tsx
+msgid "score"
+msgstr "score"
+
 #: src/components/character/CharacterRanks.tsx
 msgid "Score Ranking"
 msgstr "Score Ranking"
@@ -524,16 +839,31 @@ msgstr "Search a 4K map, or paste its beatmapset link"
 msgid "See you later!"
 msgstr "See you later!"
 
+#: src/pages/beatmaps/RequestBulkBar.tsx
+msgid "Select page"
+msgstr "Select page"
+
+#: src/components/character/ReportDialog.tsx
+msgid "Send Report"
+msgstr "Send Report"
+
 #: src/Footer.tsx
 msgid "Server Status"
 msgstr "Server Status"
 
+#: src/components/leaderboard/useFriendsFilter.ts
+msgid "show"
+msgstr "show"
+
 #: src/Header.tsx
-#: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/Login.tsx
 #: src/pages/PublicLanding.tsx
 msgid "Sign in"
 msgstr "Sign in"
+
+#: src/pages/friends/Friends.tsx
+msgid "Sign in to see your friends."
+msgstr "Sign in to see your friends."
 
 #: src/pages/Login.tsx
 #: src/pages/PublicLanding.tsx
@@ -556,7 +886,7 @@ msgstr "Simplest, nothing to install."
 msgid "Skill Ranking"
 msgstr "Skill Ranking"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "skills"
 msgstr "skills"
@@ -566,22 +896,31 @@ msgstr "skills"
 msgid "Skills"
 msgstr "Skills"
 
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/routes/admin/skins.tsx
 msgid "skins"
 msgstr "skins"
+
+#: src/pages/help/FAQ.tsx
+msgid "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
+msgstr "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
 
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
 #: src/components/leaderboard/PlayerSkillLeaderboard.tsx
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/RankedMaps.tsx
+#: src/pages/friends/Friends.tsx
 msgid "Sort by"
 msgstr "Sort by"
 
 #: src/Footer.tsx
 msgid "Source code"
 msgstr "Source code"
+
+#: src/pages/help/FAQ.tsx
+msgid "Spending levels lowers your skill and overall levels, so it can drop you in the rankings. That is the trade: a lower level now for faster progress later."
+msgstr "Spending levels lowers your skill and overall levels, so it can drop you in the rankings. That is the trade: a lower level now for faster progress later."
 
 #: src/pages/beatmaps/RequestRow.tsx
 msgid "Support this request"
@@ -591,6 +930,18 @@ msgstr "Support this request"
 msgid "Terms"
 msgstr "Terms"
 
+#: src/pages/help/FAQ.tsx
+msgid "The game"
+msgstr "The game"
+
+#: src/pages/matches/MatchEventLine.tsx
+msgid "the match was disbanded"
+msgstr "the match was disbanded"
+
+#: src/pages/help/FAQ.tsx
+msgid "The queue is the list of maps your character plays one after the other. Autopilot fills it from the song select: a playlist, the next songs, shuffle, or the same map on loop. You can reorder it, skip ahead or stop after the current map. The queue is not saved when you close the game; save it as a playlist to keep it."
+msgstr "The queue is the list of maps your character plays one after the other. Autopilot fills it from the song select: a playlist, the next songs, shuffle, or the same map on loop. You can reorder it, skip ahead or stop after the current map. The queue is not saved when you close the game; save it as a playlist to keep it."
+
 #: src/pages/PublicLanding.tsx
 msgid "The ultimate<0/>osu!mania idle game"
 msgstr "The ultimate<0/>osu!mania idle game"
@@ -599,11 +950,7 @@ msgstr "The ultimate<0/>osu!mania idle game"
 msgid "This request has been answered"
 msgstr "This request has been answered"
 
-#: src/pages/beatmaps/MapRequests.tsx
-msgid "to propose a map or support someone else's."
-msgstr "to propose a map or support someone else's."
-
-#: src/Header.tsx
+#: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "top plays"
 msgstr "top plays"
@@ -622,17 +969,93 @@ msgstr "Total Hits"
 msgid "Total Score"
 msgstr "Total Score"
 
+#: src/components/character/ProfileMenu.tsx
+msgid "Unblock"
+msgstr "Unblock"
+
+#: src/components/character/ProfileMedal.tsx
+msgid "Unlocked {ago}"
+msgstr "Unlocked {ago}"
+
 #: src/components/EditableProfilePicture.tsx
 msgid "Upload a profile picture"
 msgstr "Upload a profile picture"
+
+#: src/components/character/ProfileBanner.tsx
+msgid "Upload banner"
+msgstr "Upload banner"
+
+#: src/pages/friends/Friends.tsx
+msgid "Username"
+msgstr "Username"
+
+#: src/components/character/ReportDialog.tsx
+msgid "Using multiple accounts"
+msgstr "Using multiple accounts"
 
 #: src/pages/PublicLanding.tsx
 msgid "View all"
 msgstr "View all"
 
-#: src/pages/beatmaps/RequestRow.tsx
+#: src/pages/help/FAQ.tsx
+msgid "What are add-ons?"
+msgstr "What are add-ons?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What are medals?"
+msgstr "What are medals?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What are skills?"
+msgstr "What are skills?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What are the queue and autopilot?"
+msgstr "What are the queue and autopilot?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What are upgrades?"
+msgstr "What are upgrades?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What happens to my scores if a map is unranked?"
+msgstr "What happens to my scores if a map is unranked?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What is osu!idle?"
+msgstr "What is osu!idle?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What is prestige?"
+msgstr "What is prestige?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What is rebirth?"
+msgstr "What is rebirth?"
+
+#: src/pages/help/FAQ.tsx
+msgid "What is the difference between ranked, unranked and guest plays?"
+msgstr "What is the difference between ranked, unranked and guest plays?"
+
+#: src/pages/help/FAQ.tsx
+msgid "Which maps can be ranked?"
+msgstr "Which maps can be ranked?"
+
+#: src/pages/help/FAQ.tsx
+msgid "Why does my game stop in the background?"
+msgstr "Why does my game stop in the background?"
+
+#: src/pages/beatmaps/RequestActions.tsx
 msgid "Withdraw"
 msgstr "Withdraw"
+
+#: src/pages/help/FAQ.tsx
+msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
+msgstr "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
+
+#: src/pages/help/FAQ.tsx
+msgid "Yes. Skins change the playfield, notes and gameplay interface, and you can make your own in the skin editor with a live preview. Players can share their skins with everyone."
+msgstr "Yes. Skins change the playfield, notes and gameplay interface, and you can make your own in the skin editor with a live preview. Players can share their skins with everyone."
 
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "You already have {MAX_PENDING_REQUESTS} requests waiting. Wait for one to be answered before proposing another."
@@ -641,3 +1064,7 @@ msgstr "You already have {MAX_PENDING_REQUESTS} requests waiting. Wait for one t
 #: src/pages/DesktopDone.tsx
 msgid "You're signed in!"
 msgstr "You're signed in!"
+
+#: src/pages/help/FAQ.tsx
+msgid "Your character has eleven skills: accuracy, speed, stamina, jack speed, coordination, release, reading, consistency, concentration, speed jam and memory. Each one levels up on its own, from the parts of a map that test it. A jack-heavy map trains jack speed, a long map trains stamina, and so on. Your overall level grows with all of them."
+msgstr "Your character has eleven skills: accuracy, speed, stamina, jack speed, coordination, release, reading, consistency, concentration, speed jam and memory. Each one levels up on its own, from the parts of a map that test it. A jack-heavy map trains jack speed, a long map trains stamina, and so on. Your overall level grows with all of them."

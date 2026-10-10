@@ -28,7 +28,8 @@
 	background: linear-gradient(
 		to right,
 		var(--osu-pink-dark) var(--fill, 0%),
-		color-mix(in srgb, var(--osu-pink-dark) 25%, transparent) var(--fill, 0%)
+		color-mix(in srgb, var(--osu-pink-dark) 25%, transparent)
+			var(--fill, 0%)
 	);
 	cursor: pointer;
 	outline: none;

@@ -1,5 +1,6 @@
 import './PlayerLeaderboard.css';
 import Link from '../Link';
+import Pager from './Pager';
 import type { getSkillRanking } from '../../api/rankings';
 import Flag from '../Flag';
 import rank from '@osu-idle/shared/display/rank';
@@ -70,9 +71,9 @@ export default function PlayerSkillLeaderboard({
 				key={type}
 				to={BOARDS[board]}
 				params={{ skill: type }}
-				search={{
-					page: 1, country, 
-				}}
+				search={prev => ({
+					...prev, page: 1, country,
+				})}
 				className={`${sort === type ? 'current' : ''}`}>
 				{skillName(type)}
 			</Link>)}
@@ -103,5 +104,6 @@ export default function PlayerSkillLeaderboard({
 				</tbody>
 			</table>
 		</div>
+		<Pager page={page} hasNext={players.length === 50} />
 	</div>);
 }

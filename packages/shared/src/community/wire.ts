@@ -12,6 +12,10 @@ import {
 	playServerMessages,
 } from '../play.js';
 import { characterDTO } from '../character.js';
+import {
+	multiplayerClientMessages,
+	multiplayerServerMessages,
+} from '../multiplayer.js';
 
 /** The default channel every signed-in player joins. */
 export const DEFAULT_CHANNEL = '#osu!idle';
@@ -36,6 +40,7 @@ export const chatLineDTO = z.discriminatedUnion('kind', [
 		...chatLineBase,
 		from: z.object({
 			characterId: z.number().int().positive(),
+			userId: z.number().int().positive(),
 			name: z.string(),
 			color: z.string(),
 		}),
@@ -44,9 +49,32 @@ export const chatLineDTO = z.discriminatedUnion('kind', [
 		kind: z.literal('system'),
 		...chatLineBase,
 		color: z.string(),
+		/** a bot speaking (BanchoBot), coloured like a player's name */
+		name: z.string().optional(),
+		/** the part of `text` that opens a web platform page */
+		link: z.object({
+			label: z.string(),
+			path: z.string(),
+		}).optional(),
 	}),
 ]);
 export type ChatLine = z.infer<typeof chatLineDTO>;
+
+/** A private message, as it reaches both ends. Never stored by the server:
+ *  delivered while the recipient is online, kept locally by each client. */
+export const privateMessageDTO = z.object({
+	id: z.string(),
+	from: z.object({
+		userId: z.number().int().positive(),
+		characterId: z.number().int().positive(),
+		name: z.string(),
+		color: z.string(),
+	}),
+	to: z.number().int().positive(), // user id
+	text: z.string(),
+	at: z.number().int(), // epoch ms
+});
+export type PrivateMessage = z.infer<typeof privateMessageDTO>;
 
 /**
  * Client -> server. A topic-tagged envelope so new features add a variant rather
@@ -61,6 +89,11 @@ export const clientMessage = z.discriminatedUnion('type', [
 	z.object({
 		type: z.literal('status'),
 		status: z.enum(values(CLIENT_STATUS)),
+	}),
+	z.object({
+		type: z.literal('pm'),
+		to: z.number().int().positive(), // user id
+		text: z.string().min(1).max(MAX_CHAT_LENGTH),
 	}),
 	// The client's own build and platform, reported on connect so the server can
 	// tally live version adoption (and web vs desktop split) across clients.
@@ -78,6 +111,7 @@ export const clientMessage = z.discriminatedUnion('type', [
 		channel: z.string(),
 	}),
 	...playClientMessages,
+	...multiplayerClientMessages,
 ]);
 export type ClientMessage = z.infer<typeof clientMessage>;
 export type ClientMessageType = ValueIn<{ [M in ClientMessage as M['type']]: M['type'] }>;
@@ -118,6 +152,12 @@ export const serverMessage = z.discriminatedUnion('type', [
 		type: z.literal('online'),
 		count: z.number().int().min(0),
 	}),
+	// Sent to the recipient (when it may be delivered) and always echoed back to
+	// the sender, so a refused message looks exactly like a delivered one.
+	z.object({
+		type: z.literal('pm'),
+		message: privateMessageDTO,
+	}),
 	// The live beatmap catalog changed (a map went live, a diff was (un)ranked,
 	// a set was removed): drop any cached manifest and refetch on next use.
 	z.object({ type: z.literal('catalog:invalidate') }),
@@ -140,5 +180,6 @@ export const serverMessage = z.discriminatedUnion('type', [
 		message: z.string(),
 	}),
 	...playServerMessages,
+	...multiplayerServerMessages,
 ]);
 export type ServerMessage = z.infer<typeof serverMessage>;

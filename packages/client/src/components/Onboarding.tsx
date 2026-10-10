@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './Onboarding.css';
 import {
 	useEffect,
@@ -61,7 +62,7 @@ export default function Onboarding() {
 	return (
 		<div className="onboard">
 			<div className="onboard__card">
-				<h1 className="onboard__title"><Trans>Welcome, {user.username}!</Trans></h1>
+				<h1 className="onboard__title"><Trans>Welcome, {ph({ username: user.username })}!</Trans></h1>
 				<p className="onboard__sub">
 					<Trans>Create your character to finish setting up your account.</Trans>
 				</p>

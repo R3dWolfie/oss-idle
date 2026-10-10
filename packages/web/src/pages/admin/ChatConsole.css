@@ -20,6 +20,18 @@
 	align-items: center;
 	gap: 1rem;
 }
+.chat-console__reports {
+	background-color: hsl(var(--hsl-b4));
+	color: inherit;
+	border: none;
+	border-radius: 6px;
+	padding: 0.4rem 0.8rem;
+	font: inherit;
+	cursor: pointer;
+}
+.chat-console__reports[data-active="true"] {
+	background-color: hsl(var(--hsl-b2));
+}
 .chat-console__bar select {
 	background-color: hsl(var(--hsl-b4));
 	color: inherit;

@@ -224,7 +224,6 @@
 	pointer-events: none;
 }
 
-
 .game__botbar {
 	position: relative;
 	width: 100%;
@@ -652,7 +651,6 @@
 	.game__exit {
 		padding: 1rem 0.5rem;
 	}
-
 }
 
 @media (max-width: 490px) {

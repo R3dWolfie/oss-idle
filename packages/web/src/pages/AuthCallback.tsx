@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './AuthCallback.css';
 
 import { useEffect } from 'react';
@@ -36,7 +37,7 @@ export default function AuthCallback() {
 		<main className="page-contents">
 			<div className="page-text">
 				{user && (<>
-					<h1 className='center'><Trans>Hello {user.username}!</Trans></h1>
+					<h1 className='center'><Trans>Hello {ph({ username: user.username })}!</Trans></h1>
                     
 					<PlayOsuIdle />
 				</>)}

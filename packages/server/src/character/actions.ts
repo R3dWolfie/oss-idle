@@ -20,6 +20,7 @@ import {
 	canPrestige,
 	canRebirth,
 	canUpgrade,
+	maxUpgrades,
 	type UpgradeState,
 } from '@osu-idle/shared/upgrades';
 import { xpGivesLevel } from '@osu-idle/shared/sim/skills/xp';
@@ -186,8 +187,12 @@ export const performUpgrade = async (
 			[`${skill}Upgrades`]: next.upgrades,
 			[`${skill}Overdrive`]: next.overdrive,
 			...spendTotals(current, skill, spent),
+			// lifetime counts for the medals; prestige resets the upgrades themselves
+			upgradesBought: current.upgradesBought + 1,
+			laddersCompleted: current.laddersCompleted
+				+ (next.upgrades >= maxUpgrades(state.prestige) ? 1 : 0),
 		} as Record<`${SkillName}${'Level' | 'Xp' | 'TotalXp' | 'Upgrades' | 'Overdrive'}`
-		| `overall${'Level' | 'Xp' | 'TotalXp'}`, number>;
+		| `overall${'Level' | 'Xp' | 'TotalXp'}` | 'upgradesBought' | 'laddersCompleted', number>;
 
 		await tx.update(characters).set(updates).where(eq(characters.id, row.id));
 		return {

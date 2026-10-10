@@ -1,6 +1,7 @@
 .list__beatmap-container {
 	display: flex;
 	flex-wrap: wrap;
+	margin: 0 -5px;
 }
 
 .list__beatmap {
@@ -71,13 +72,17 @@
 	align-items: flex-start;
 }
 
+.list__beatmap_title,
+.list__beatmap_artist,
+.list__beatmap_creator {
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .list__beatmap_title {
 	font-size: 18px;
-	overflow: hidden;
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 1;
-	line-clamp: 1;
 }
 
 .list__beatmap_artist {
@@ -117,8 +122,18 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	padding: 10px 20px;
+	padding: 10px 45px;
 	background-color: hsl(var(--hsl-b4));
+}
+
+@media (max-width: 760px) {
+	.list__beatmap {
+		width: calc(100% - 10px);
+	}
+
+	.list__beatmap_sort {
+		padding: 10px;
+	}
 }
 
 .list__beatmap_sort > * {

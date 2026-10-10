@@ -7,6 +7,10 @@ import {
 export const getCharacter = (id: number | string) =>
 	unwrap(rpc.v1.characters[':id'].$get({ param: { id: String(id) } }));
 
+/** Public: the medals a character holds, newest first. */
+export const getCharacterMedals = (id: number | string) =>
+	unwrap(rpc.v1.characters[':id'].medals.$get({ param: { id: String(id) } }));
+
 /** Public: a character's derived profile statistics. */
 export const getCharacterStats = (id: number | string) =>
 	unwrap(rpc.v1.characters[':id'].stats.$get({ param: { id: String(id) } }));

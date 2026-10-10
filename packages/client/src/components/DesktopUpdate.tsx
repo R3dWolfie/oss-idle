@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './DesktopUpdate.css';
 import {
 	useEffect,
@@ -42,12 +43,12 @@ export default function DesktopUpdate() {
 		case 'downloading':
 			body = <>
 				<div className="dupdate__bar-fill" style={{ width: `${status.percent}%` }} />
-				<span><Trans>Downloading update… {status.percent}%</Trans></span>
+				<span><Trans>Downloading update… {ph({ percent: status.percent })}%</Trans></span>
 			</>;
 			break;
 		case 'error':
 			body = <span className="dupdate__error">
-				<Trans>Update failed ({status.message}). Please restart the game.</Trans>
+				<Trans>Update failed ({ph({ error: status.message })}). Please restart the game.</Trans>
 			</span>;
 			onClick = checkForDesktopUpdate;
 			break;

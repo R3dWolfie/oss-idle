@@ -17,46 +17,25 @@ msgstr ""
 msgid " · Overdrive {odText}"
 msgstr " · Overdrive {odText}"
 
-#. placeholder {0}: overdriveText(preview.overdrive)
 #: src/components/upgrades/UpgradeRow.tsx
-msgid " · Overdrive {odText} → {0}"
-msgstr " · Overdrive {odText} → {0}"
+msgid " · Overdrive {odText} → {nextOd}"
+msgstr " · Overdrive {odText} → {nextOd}"
+
+#: src/components/multiplayer/MatchRow.tsx
+msgid "(In Progress)"
+msgstr "(In Progress)"
 
 #: src/components/options/RightClickHold.tsx
 msgid "(mobile) Tap duration to right click"
 msgstr "(mobile) Tap duration to right click"
 
-#. placeholder {0}: a.downloads
-#: src/components/addons/BrowseAddonsView.tsx
-#: src/components/skins/BrowseSkinsView.tsx
-msgid "{0, plural, one {# download} other {# downloads}}"
-msgstr "{0, plural, one {# download} other {# downloads}}"
+#: src/components/multiplayer/SlotLabel.tsx
+msgid "[no map]"
+msgstr "[no map]"
 
-#. placeholder {0}: items.length
-#: src/scenes/SongSelect.tsx
-msgid "{0, plural, one {# result} other {# results}}"
-msgstr "{0, plural, one {# result} other {# results}}"
-
-#. placeholder {0}: character.name
-#. placeholder {1}: character.name
-#: src/components/character/RebirthView.tsx
-msgid "{0} becomes {1}_old"
-msgstr "{0} becomes {1}_old"
-
-#. placeholder {0}: character.name
-#: src/components/character/RebirthView.tsx
-msgid "{0} keeps its name"
-msgstr "{0} keeps its name"
-
-#. placeholder {0}: filteredItems.length
-#: src/scenes/SongSelect.tsx
-msgid "{0} of {total} results"
-msgstr "{0} of {total} results"
-
-#. placeholder {0}: skillName(g.skill)
-#: src/logs.ts
-msgid "{0} reached level {level}!"
-msgstr "{0} reached level {level}!"
+#: src/components/multiplayer/SlotLabel.tsx
+msgid "[playing]"
+msgstr "[playing]"
 
 #: src/components/BeatmapCarousel.tsx
 msgid "{count, plural, one {# map} other {# maps}}"
@@ -66,28 +45,51 @@ msgstr "{count, plural, one {# map} other {# maps}}"
 msgid "{count} here"
 msgstr "{count} here"
 
-#. placeholder {0}: next ?? 'nothing new'
-#: src/components/character/RebirthView.tsx
-msgid "{handover}, stays playable and ranked · The new character starts from zero and unlocks: {0}"
-msgstr "{handover}, stays playable and ranked · The new character starts from zero and unlocks: {0}"
+#: src/components/addons/BrowseAddonsView.tsx
+#: src/components/skins/BrowseSkinsView.tsx
+msgid "{downloads, plural, one {# download} other {# downloads}}"
+msgstr "{downloads, plural, one {# download} other {# downloads}}"
 
-#. placeholder {0}: min + 1
 #: src/osu/beatmap/grouping.ts
-msgid "{min}-{0} min"
-msgstr "{min}-{0} min"
+#: src/osu/beatmap/grouping.ts
+msgid "{from}-{to} min"
+msgstr "{from}-{to} min"
+
+#: src/osu/beatmap/grouping.ts
+msgid "{from}+ min"
+msgstr "{from}+ min"
+
+#: src/components/character/RebirthView.tsx
+msgid "{handover}, stays playable and ranked · The new character starts from zero and unlocks: {unlocks}"
+msgstr "{handover}, stays playable and ranked · The new character starts from zero and unlocks: {unlocks}"
 
 #: src/osu/beatmap/grouping.ts
 msgid "{months, plural, one {# month ago} other {# months ago}}"
 msgstr "{months, plural, one {# month ago} other {# months ago}}"
 
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "{n} players"
+msgstr "{n} players"
+
+#: src/components/character/RebirthView.tsx
+msgid "{name} becomes {name}_old"
+msgstr "{name} becomes {name}_old"
+
+#: src/components/character/RebirthView.tsx
+msgid "{name} keeps its name"
+msgstr "{name} keeps its name"
+
 #: src/logs.ts
 msgid "{name} played {map} and got a {accuracy} {grade}. {gains}"
 msgstr "{name} played {map} and got a {accuracy} {grade}. {gains}"
 
-#. placeholder {0}: preview.level
 #: src/components/upgrades/UpgradeRow.tsx
-msgid "{name} XP Lv{level} → XP Lv{0} · Costs {spent}xp{odSegment} · XP boost x{boost}"
-msgstr "{name} XP Lv{level} → XP Lv{0} · Costs {spent}xp{odSegment} · XP boost x{boost}"
+msgid "{name} XP Lv{level} → XP Lv{nextLevel} · Costs {spent}xp{odSegment} · XP boost x{boost}"
+msgstr "{name} XP Lv{level} → XP Lv{nextLevel} · Costs {spent}xp{odSegment} · XP boost x{boost}"
+
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "{name}'s game"
+msgstr "{name}'s game"
 
 #: src/components/PlaylistOverlay.tsx
 msgid "{nbMaps} maps"
@@ -105,34 +107,27 @@ msgstr "{prestige} prestiges · +{prestige} bonus levels"
 msgid "{result} on {map}"
 msgstr "{result} on {map}"
 
+#: src/scenes/SongSelect.tsx
+msgid "{results, plural, one {# result} other {# results}}"
+msgstr "{results, plural, one {# result} other {# results}}"
+
+#: src/scenes/SongSelect.tsx
+msgid "{shown} of {total} results"
+msgstr "{shown} of {total} results"
+
+#: src/logs.ts
+msgid "{skill} reached level {level}!"
+msgstr "{skill} reached level {level}!"
+
 #: src/components/BeatmapCarousel.tsx
 msgid "{totalCount, plural, one {that's all # difficulty} other {that's all # difficulties}}"
 msgstr "{totalCount, plural, one {that's all # difficulty} other {that's all # difficulties}}"
 
-#: src/scenes/Gameplay.tsx
-#: src/scenes/Gameplay.tsx
-msgid "1. Abort"
-msgstr "1. Abort"
-
-#: src/osu/beatmap/grouping.ts
-msgid "10+ min"
-msgstr "10+ min"
-
-#: src/scenes/Gameplay.tsx
-msgid "2. Cancel"
-msgstr "2. Cancel"
-
-#: src/scenes/Gameplay.tsx
-msgid "2. Quit, keep playing"
-msgstr "2. Quit, keep playing"
-
-#: src/scenes/Gameplay.tsx
-msgid "3. Cancel"
-msgstr "3. Cancel"
-
-#: src/osu/beatmap/grouping.ts
-msgid "5-10 min"
-msgstr "5-10 min"
+#: src/components/medals/MedalFocus.tsx
+#: src/components/medals/MedalShowcase.tsx
+#: src/components/medals/MedalTile.tsx
+msgid "+{percent}% XP"
+msgstr "+{percent}% XP"
 
 #: src/scenes/Gameplay.tsx
 msgid "A game is already in progress. Play locally instead? It won't be submitted."
@@ -147,6 +142,11 @@ msgid "abort"
 msgstr "abort"
 
 #: src/scenes/Gameplay.tsx
+#: src/scenes/Gameplay.tsx
+msgid "Abort"
+msgstr "Abort"
+
+#: src/scenes/Gameplay.tsx
 msgid "Abort it"
 msgstr "Abort it"
 
@@ -158,22 +158,19 @@ msgstr "Abort the play?"
 msgid "Accuracy"
 msgstr "Accuracy"
 
-#: src/components/leaderboard/ScoreTooltip.tsx
-msgid "Accuracy: {acc}"
-msgstr "Accuracy: {acc}"
-
-#: src/components/songselect/UserCard.tsx
-msgid "Accuracy: {accText}"
-msgstr "Accuracy: {accText}"
-
 #: src/components/community/PlayerCard.tsx
+#: src/components/leaderboard/ScoreTooltip.tsx
+#: src/components/songselect/UserCard.tsx
 msgid "Accuracy: {accuracy}"
 msgstr "Accuracy: {accuracy}"
 
-#. placeholder {0}: dateAgo(score.playedAt)
 #: src/components/leaderboard/ScoreTooltip.tsx
-msgid "Achieved on {date} ({0})"
-msgstr "Achieved on {date} ({0})"
+msgid "Achieved on {date} ({ago})"
+msgstr "Achieved on {date} ({ago})"
+
+#: src/components/community/PlayerMenu.tsx
+msgid "Add as Friend"
+msgstr "Add as Friend"
 
 #: src/components/PlaylistOverlay.tsx
 msgid "Add this difficulty"
@@ -192,10 +189,9 @@ msgstr "Add-ons"
 msgid "ADD-ONS"
 msgstr "ADD-ONS"
 
-#. placeholder {0}: dto.name
 #: src/components/addons/BrowseAddonsView.tsx
-msgid "Add-ons run with full access to the game. Only install add-ons you trust. Install \"{0}\"?"
-msgstr "Add-ons run with full access to the game. Only install add-ons you trust. Install \"{0}\"?"
+msgid "Add-ons run with full access to the game. Only install add-ons you trust. Install \"{addon}\"?"
+msgstr "Add-ons run with full access to the game. Only install add-ons you trust. Install \"{addon}\"?"
 
 #: src/scenes/Options.tsx
 msgid "addon|addons|add-on|mod|mods|browse|catalog|install"
@@ -270,6 +266,10 @@ msgstr "Back"
 msgid "BACK"
 msgstr "BACK"
 
+#: src/scenes/Lobby.tsx
+msgid "Back to Menu"
+msgstr "Back to Menu"
+
 #: src/components/options/BackgroundDim.tsx
 msgid "Background dim"
 msgstr "Background dim"
@@ -278,10 +278,13 @@ msgstr "Background dim"
 msgid "background|dim|opacity"
 msgstr "background|dim|opacity"
 
-#. placeholder {0}: track.creator
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Beatmap"
+msgstr "Beatmap"
+
 #: src/components/result/ResultMeta.tsx
-msgid "Beatmap by {0}"
-msgstr "Beatmap by {0}"
+msgid "Beatmap by {creator}"
+msgstr "Beatmap by {creator}"
 
 #: src/scenes/SongSelect.tsx
 msgid "Beatmap deleted"
@@ -326,23 +329,20 @@ msgstr "Buy {nextGear}?"
 msgid "Buy for {cost, plural, one {# level} other {# levels}}"
 msgstr "Buy for {cost, plural, one {# level} other {# levels}}"
 
-#: src/components/addons/BrowseAddonsView.tsx
 #: src/components/addons/InstalledAddonRow.tsx
 #: src/components/skins/BrowseSkinsView.tsx
 #: src/components/skins/SkinDAORow.tsx
 msgid "by"
 msgstr "by"
 
-#. placeholder {0}: skin.authorName
+#: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/SkinReadMeta.tsx
-msgid "by {0}"
-msgstr "by {0}"
+msgid "by {author}"
+msgstr "by {author}"
 
-#. placeholder {0}: detail.authorName
-#. placeholder {1}: detail.gameVersion
 #: src/components/addons/AddonReadMeta.tsx
-msgid "by {0} for game version {1}"
-msgstr "by {0} for game version {1}"
+msgid "by {author} for game version {version}"
+msgstr "by {author} for game version {version}"
 
 #: src/components/songselect/TopBar.tsx
 msgid "By Artist"
@@ -382,8 +382,12 @@ msgstr "By Title"
 
 #: src/components/addons/AddonView.tsx
 #: src/components/ConfirmMenu.tsx
+#: src/components/multiplayer/CreateMatch.tsx
+#: src/components/multiplayer/PasswordPrompt.tsx
 #: src/components/skins/SkinView.tsx
 #: src/components/songselect/CardContextMenu.tsx
+#: src/scenes/Gameplay.tsx
+#: src/scenes/Gameplay.tsx
 #: src/scenes/Gameplay.tsx
 #: src/scenes/Gameplay.tsx
 #: src/scenes/MainMenu.tsx
@@ -394,13 +398,30 @@ msgstr "Cancel"
 msgid "Change"
 msgstr "Change"
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Change Password"
+msgstr "Change Password"
+
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Change Password..."
+msgstr "Change Password..."
+
 #: src/scenes/Options.tsx
 msgid "Change the way osu!idle behaves"
 msgstr "Change the way osu!idle behaves"
 
+#: src/components/multiplayer/MatchSettings.tsx
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Change..."
+msgstr "Change..."
+
 #: src/components/addons/AddonCodePane.tsx
 msgid "Changes"
 msgstr "Changes"
+
+#: src/components/multiplayer/MatchRow.tsx
+msgid "Changing beatmap..."
+msgstr "Changing beatmap..."
 
 #: src/scenes/Character.tsx
 msgid "Character"
@@ -409,6 +430,14 @@ msgstr "Character"
 #: src/components/Onboarding.tsx
 msgid "Character name"
 msgstr "Character name"
+
+#: src/scenes/Options.tsx
+msgid "Chat"
+msgstr "Chat"
+
+#: src/scenes/Options.tsx
+msgid "chat|message|private|pm|friends"
+msgstr "chat|message|private|pm|friends"
 
 #: src/components/dock/DockControls.tsx
 msgid "clear"
@@ -422,6 +451,14 @@ msgstr "Clear local scores"
 msgid "Clearing local scores is not available yet"
 msgstr "Clearing local scores is not available yet"
 
+#: src/scenes/Lobby.tsx
+msgid "Click 'New Game' to start a new game!"
+msgstr "Click 'New Game' to start a new game!"
+
+#: src/components/medals/MedalUnlockOverlay.tsx
+msgid "Click a medal to look at it · click elsewhere to continue"
+msgstr "Click a medal to look at it · click elsewhere to continue"
+
 #: src/components/options/DeleteAllBeatmaps.tsx
 msgid "Click again to confirm"
 msgstr "Click again to confirm"
@@ -434,14 +471,23 @@ msgstr "Click again to delete"
 msgid "Click here to login!"
 msgstr "Click here to login!"
 
+#: src/components/medals/MedalUnlockOverlay.tsx
+msgid "Click to go back"
+msgstr "Click to go back"
+
 #: src/scenes/IntroScreen.tsx
 msgid "click to play..."
 msgstr "click to play..."
+
+#: src/components/medals/MedalUnlockOverlay.tsx
+msgid "Click to skip"
+msgstr "Click to skip"
 
 #: src/components/dock/DockControls.tsx
 msgid "close"
 msgstr "close"
 
+#: src/components/community/PlayerMenu.tsx
 #: src/components/PlaylistOverlay.tsx
 msgid "Close"
 msgstr "Close"
@@ -473,6 +519,14 @@ msgstr "comma, separated, tags"
 msgid "CONTROLS"
 msgstr "CONTROLS"
 
+#: src/components/WebBrowser.tsx
+msgid "Copy"
+msgstr "Copy"
+
+#: src/components/WebBrowser.tsx
+msgid "Copy link"
+msgstr "Copy link"
+
 #: src/online/playManager.ts
 msgid "Could not start the next map - the queue is paused"
 msgstr "Could not start the next map - the queue is paused"
@@ -498,6 +552,10 @@ msgstr "Create character"
 msgid "Create new add-on"
 msgstr "Create new add-on"
 
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "Create New Game..."
+msgstr "Create New Game..."
+
 #: src/components/skins/ManageSkinsView.tsx
 msgid "Create new skin"
 msgstr "Create new skin"
@@ -505,6 +563,10 @@ msgstr "Create new skin"
 #: src/components/Onboarding.tsx
 msgid "Create your character to finish setting up your account."
 msgstr "Create your character to finish setting up your account."
+
+#: src/scenes/MatchSetup.tsx
+msgid "Current Players ({players}/{size})"
+msgstr "Current Players ({players}/{size})"
 
 #: src/components/addons/ManageAddonsView.tsx
 #: src/components/addons/MyAddonRow.tsx
@@ -560,10 +622,9 @@ msgstr "Download the beatmap first"
 msgid "Downloaded"
 msgstr "Downloaded"
 
-#. placeholder {0}: status.percent
 #: src/components/DesktopUpdate.tsx
-msgid "Downloading update… {0}%"
-msgstr "Downloading update… {0}%"
+msgid "Downloading update… {percent}%"
+msgstr "Downloading update… {percent}%"
 
 #: src/components/dock/DockControls.tsx
 msgid "Drop this play and start the next map"
@@ -591,6 +652,10 @@ msgstr "Empty the queue - this play still finishes"
 msgid "Enabled"
 msgstr "Enabled"
 
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "Enter a password before attempting to start the game..."
+msgstr "Enter a password before attempting to start the game..."
+
 #: src/scenes/MainMenu.tsx
 #: src/scenes/MainMenu.tsx
 msgid "Exit"
@@ -600,10 +665,9 @@ msgstr "Exit"
 msgid "Exit osu!idle"
 msgstr "Exit osu!idle"
 
-#. placeholder {0}: '{ 0: ..., 1: ..., 2: ..., 3: ... }'
 #: src/osu/skin/Skin.tsx
-msgid "Expected a column record like {0}"
-msgstr "Expected a column record like {0}"
+msgid "Expected a column record like {example}"
+msgstr "Expected a column record like {example}"
 
 #: src/scenes/Result.tsx
 msgid "FAILED"
@@ -625,13 +689,13 @@ msgstr "Forward"
 msgid "fps|frame|rate|refresh|hz"
 msgstr "fps|frame|rate|refresh|hz"
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Free Mods"
+msgstr "Free Mods"
+
 #: src/components/community/CommunityHeader.tsx
 msgid "Friends"
 msgstr "Friends"
-
-#: src/components/community/CommunityBody.tsx
-msgid "Friends are coming soon"
-msgstr "Friends are coming soon"
 
 #: src/scenes/Options.tsx
 msgid "fullscreen"
@@ -641,6 +705,14 @@ msgstr "fullscreen"
 msgid "Fullscreen mode"
 msgstr "Fullscreen mode"
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Game Name"
+msgstr "Game Name"
+
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "Game Name:"
+msgstr "Game Name:"
+
 #: src/components/addons/AddonView.tsx
 msgid "Game version"
 msgstr "Game version"
@@ -649,10 +721,13 @@ msgstr "Game version"
 msgid "GAMEPLAY"
 msgstr "GAMEPLAY"
 
-#. placeholder {0}: character.generation
+#: src/scenes/Lobby.tsx
+msgid "Games with Friends"
+msgstr "Games with Friends"
+
 #: src/components/character/LineageList.tsx
-msgid "Gen {0}"
-msgstr "Gen {0}"
+msgid "Gen {generation}"
+msgstr "Gen {generation}"
 
 #: src/scenes/Options.tsx
 #: src/scenes/Options.tsx
@@ -667,6 +742,10 @@ msgstr "GENERAL"
 #: src/components/character/RebirthView.tsx
 msgid "Generation {generation}"
 msgstr "Generation {generation}"
+
+#: src/components/community/PlayerMenu.tsx
+msgid "Give Host"
+msgstr "Give Host"
 
 #: src/components/Tutorial.tsx
 msgid "Got it!"
@@ -688,6 +767,10 @@ msgstr "Guest"
 msgid "Hall of fame"
 msgstr "Hall of fame"
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Head-to-head"
+msgstr "Head-to-head"
+
 #: src/components/dock/DockControls.tsx
 msgid "hide"
 msgstr "hide"
@@ -699,6 +782,10 @@ msgstr "Hide chat"
 #: src/scenes/Result.tsx
 msgid "Hit deviance · {ur} UR"
 msgstr "Hit deviance · {ur} UR"
+
+#: src/components/multiplayer/MatchBeatmap.tsx
+msgid "Host is changing map..."
+msgstr "Host is changing map..."
 
 #: src/components/addons/AddonIconField.tsx
 #: src/components/skins/SkinIconField.tsx
@@ -712,6 +799,10 @@ msgstr "In Beta"
 #: src/online/presence.ts
 msgid "In the menus"
 msgstr "In the menus"
+
+#: src/scenes/Lobby.tsx
+msgid "Incorrect password."
+msgstr "Incorrect password."
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/addons/BrowseAddonsView.tsx
@@ -735,6 +826,18 @@ msgstr "Install add-on"
 #: src/components/skins/ManageSkinsView.tsx
 msgid "Installed"
 msgstr "Installed"
+
+#: src/scenes/Lobby.tsx
+msgid "Join Game"
+msgstr "Join Game"
+
+#: src/scenes/Lobby.tsx
+msgid "Joining this game requires a password..."
+msgstr "Joining this game requires a password..."
+
+#: src/components/community/PlayerMenu.tsx
+msgid "Kick"
+msgstr "Kick"
 
 #: src/scenes/Options.tsx
 msgid "Language"
@@ -760,10 +863,17 @@ msgstr "Layout"
 msgid "Leave - your character keeps playing"
 msgstr "Leave - your character keeps playing"
 
-#. placeholder {0}: version.metadata.objects
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Leave empty to remove the password."
+msgstr "Leave empty to remove the password."
+
+#: src/scenes/MatchSetup.tsx
+msgid "Leave Match"
+msgstr "Leave Match"
+
 #: src/components/songselect/BeatmapInfo.tsx
-msgid "Length: {totalLength} BPM: {bpmText} Objects: {0}"
-msgstr "Length: {totalLength} BPM: {bpmText} Objects: {0}"
+msgid "Length: {totalLength} BPM: {bpmText} Objects: {objects}"
+msgstr "Length: {totalLength} BPM: {bpmText} Objects: {objects}"
 
 #: src/components/dock/DockRunButton.tsx
 msgid "Let this play finish, then wait"
@@ -787,6 +897,10 @@ msgstr "Loading…"
 msgid "Location"
 msgstr "Location"
 
+#: src/components/multiplayer/SlotLabel.tsx
+msgid "Locked"
+msgstr "Locked"
+
 #: src/gameplay/playQueue.ts
 msgid "Loop"
 msgstr "Loop"
@@ -807,6 +921,10 @@ msgstr "Main menu"
 #: src/scenes/Options.tsx
 msgid "MAINTENANCE"
 msgstr "MAINTENANCE"
+
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "Make match history publicly viewable"
+msgstr "Make match history publicly viewable"
 
 #: src/scenes/Addons.tsx
 #: src/scenes/Skins.tsx
@@ -833,26 +951,45 @@ msgstr "Manage your installed and created add-ons"
 msgid "Manage your installed and created skins"
 msgstr "Manage your installed and created skins"
 
-#. placeholder {0}: version.set.metadata.creator
-#: src/components/songselect/BeatmapInfo.tsx
-msgid "Mapped by {0}"
-msgstr "Mapped by {0}"
-
 #: src/components/BeatmapCard.tsx
 msgid "mapped by {creator}"
 msgstr "mapped by {creator}"
+
+#: src/components/songselect/BeatmapInfo.tsx
+msgid "Mapped by {creator}"
+msgstr "Mapped by {creator}"
 
 #: src/components/options/MasterVolume.tsx
 msgid "Master"
 msgstr "Master"
 
+#: src/scenes/MatchSetup.tsx
+msgid "Match Setup"
+msgstr "Match Setup"
+
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "Max Players:"
+msgstr "Max Players:"
+
 #: src/components/upgrades/UpgradeBuyButton.tsx
 msgid "Maxed"
 msgstr "Maxed"
 
+#: src/components/medals/MedalShowcase.tsx
+msgid "Medal unlocked"
+msgstr "Medal unlocked"
+
+#: src/components/medals/MedalShowcase.tsx
+msgid "Medals unlocked"
+msgstr "Medals unlocked"
+
 #: src/components/addons/AddonView.tsx
 msgid "Moderator feedback"
 msgstr "Moderator feedback"
+
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Mods"
+msgstr "Mods"
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
@@ -870,6 +1007,10 @@ msgstr "Move it up - the top of the queue plays next"
 #: src/scenes/MainMenu.tsx
 msgid "Multi"
 msgstr "Multi"
+
+#: src/scenes/Lobby.tsx
+msgid "Multiplayer Lobby"
+msgstr "Multiplayer Lobby"
 
 #: src/components/options/MusicVolume.tsx
 msgid "Music"
@@ -893,6 +1034,10 @@ msgstr "Never"
 #: src/components/character/RebirthView.tsx
 msgid "New character name"
 msgstr "New character name"
+
+#: src/scenes/Lobby.tsx
+msgid "New Game"
+msgstr "New Game"
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
@@ -1001,6 +1146,18 @@ msgstr "No unlocks yet"
 msgid "No XP gained."
 msgstr "No XP gained."
 
+#: src/components/multiplayer/ReadyButton.tsx
+msgid "Not everyone is ready. Start anyway?"
+msgstr "Not everyone is ready. Start anyway?"
+
+#: src/components/multiplayer/ReadyButton.tsx
+msgid "Not Ready"
+msgstr "Not Ready"
+
+#: src/components/character/RebirthView.tsx
+msgid "nothing new"
+msgstr "nothing new"
+
 #: src/components/dock/DockQueue.tsx
 msgid "Nothing queued. Click a map to add it."
 msgstr "Nothing queued. Click a map to add it."
@@ -1012,6 +1169,10 @@ msgstr "Now playing"
 #: src/components/community/CommunityControls.tsx
 msgid "Online users"
 msgstr "Online users"
+
+#: src/components/multiplayer/SlotLabel.tsx
+msgid "Open"
+msgstr "Open"
 
 #: src/components/songselect/UserCard.tsx
 msgid "Open osu! web"
@@ -1034,6 +1195,10 @@ msgstr "osu!idle features <0>online leaderboards</0>, just like osu!. Sign in wi
 msgid "osu!idle is in <0>beta</0> and under active development - if you hit a bug, report it on <1>discord</1>. Have fun!"
 msgstr "osu!idle is in <0>beta</0> and under active development - if you hit a bug, report it on <1>discord</1>. Have fun!"
 
+#: src/components/multiplayer/MatchRow.tsx
+msgid "osu!mania (head-to-head)"
+msgstr "osu!mania (head-to-head)"
+
 #: src/scenes/Options.tsx
 msgid "osu|music|theme"
 msgstr "osu|music|theme"
@@ -1042,19 +1207,25 @@ msgstr "osu|music|theme"
 msgid "Over 5 months ago"
 msgstr "Over 5 months ago"
 
-#. placeholder {0}: character.overallLevel
 #: src/components/character/LineageList.tsx
-msgid "Overall Lv{0}"
-msgstr "Overall Lv{0}"
+msgid "Overall Lv{level}"
+msgstr "Overall Lv{level}"
 
-#. placeholder {0}: character.overallLevel
 #: src/components/character/RebirthView.tsx
-msgid "Overall Lv{0} / {REBIRTH_MIN_OVERALL_LEVEL}"
-msgstr "Overall Lv{0} / {REBIRTH_MIN_OVERALL_LEVEL}"
+msgid "Overall Lv{level} / {required}"
+msgstr "Overall Lv{level} / {required}"
 
 #: src/components/upgrades/UpgradeRow.tsx
 msgid "Overdrive +{ratioText}"
 msgstr "Overdrive +{ratioText}"
+
+#: src/scenes/Lobby.tsx
+msgid "Owned Beatmaps"
+msgstr "Owned Beatmaps"
+
+#: src/components/WebBrowser.tsx
+msgid "Page link"
+msgstr "Page link"
 
 #: src/scenes/Options.tsx
 msgid "parallax"
@@ -1063,6 +1234,11 @@ msgstr "parallax"
 #: src/components/options/ParallaxMode.tsx
 msgid "Parallax"
 msgstr "Parallax"
+
+#: src/components/multiplayer/CreateMatch.tsx
+#: src/components/multiplayer/PasswordPrompt.tsx
+msgid "Password:"
+msgstr "Password:"
 
 #: src/components/dock/DockRunButton.tsx
 msgid "pause"
@@ -1085,10 +1261,9 @@ msgstr "Performance"
 msgid "Performance: {pp}pp"
 msgstr "Performance: {pp}pp"
 
-#. placeholder {0}: a.name
 #: src/components/addons/ManageAddonsView.tsx
-msgid "Permanently delete \"{0}\"? This cannot be undone."
-msgstr "Permanently delete \"{0}\"? This cannot be undone."
+msgid "Permanently delete \"{addon}\"? This cannot be undone."
+msgstr "Permanently delete \"{addon}\"? This cannot be undone."
 
 #: src/components/leaderboard/PersonalBest.tsx
 msgid "Personal best"
@@ -1182,13 +1357,25 @@ msgstr "Published add-on code must be licensed under the AGPLv3 (or a compatible
 msgid "queue"
 msgstr "queue"
 
+#: src/scenes/Lobby.tsx
+msgid "Quick Join"
+msgstr "Quick Join"
+
 #: src/scenes/Gameplay.tsx
 msgid "quit"
 msgstr "quit"
 
+#: src/scenes/Gameplay.tsx
+msgid "Quit, keep playing"
+msgstr "Quit, keep playing"
+
 #: src/components/community/CommunityBody.tsx
 msgid "Rank"
 msgstr "Rank"
+
+#: src/components/multiplayer/MatchRow.tsx
+msgid "rank: {best} - {worst}"
+msgstr "rank: {best} - {worst}"
 
 #: src/components/character/PrestigeView.tsx
 msgid "Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You lose its upgrades and Overdrive, and gain a permanent bonus level, an extra gear slot and a multiplicative XP bonus. Each prestige asks for one more level than the last."
@@ -1198,10 +1385,13 @@ msgstr "Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You los
 msgid "Read the full article"
 msgstr "Read the full article"
 
-#. placeholder {0}: selected?.name
+#: src/components/multiplayer/ReadyButton.tsx
+msgid "Ready!"
+msgstr "Ready!"
+
 #: src/components/PlaylistOverlay.tsx
-msgid "Really delete \"{0}\"?"
-msgstr "Really delete \"{0}\"?"
+msgid "Really delete \"{playlist}\"?"
+msgstr "Really delete \"{playlist}\"?"
 
 #: src/components/character/RebirthView.tsx
 #: src/components/character/RebirthView.tsx
@@ -1212,6 +1402,10 @@ msgstr "Rebirth"
 #: src/components/character/RebirthView.tsx
 msgid "Rebirth as {wanted}?"
 msgstr "Rebirth as {wanted}?"
+
+#: src/components/options/PmFromAnyone.tsx
+msgid "Receive messages from anyone"
+msgstr "Receive messages from anyone"
 
 #: src/components/songselect/TopBar.tsx
 msgid "Recently Played"
@@ -1225,10 +1419,9 @@ msgstr "Reload"
 msgid "remove"
 msgstr "remove"
 
-#. placeholder {0}: a.name
 #: src/components/addons/ManageAddonsView.tsx
-msgid "Remove \"{0}\" ?"
-msgstr "Remove \"{0}\" ?"
+msgid "Remove \"{addon}\" ?"
+msgstr "Remove \"{addon}\" ?"
 
 #: src/components/PlaylistOverlay.tsx
 msgid "Remove this difficulty"
@@ -1243,15 +1436,16 @@ msgstr "Rename"
 msgid "Renderer"
 msgstr "Renderer"
 
+#: src/components/multiplayer/CreateMatch.tsx
+msgid "Require password to join"
+msgstr "Require password to join"
+
 #: src/components/character/RebirthView.tsx
 msgid "Requires overall Lv{REBIRTH_MIN_OVERALL_LEVEL}"
 msgstr "Requires overall Lv{REBIRTH_MIN_OVERALL_LEVEL}"
 
-#: src/components/upgrades/UpgradeBuyButton.tsx
-msgid "Requires XP Lv{minLevel}"
-msgstr "Requires XP Lv{minLevel}"
-
 #: src/components/character/PrestigeRow.tsx
+#: src/components/upgrades/UpgradeBuyButton.tsx
 msgid "Requires XP Lv{required}"
 msgstr "Requires XP Lv{required}"
 
@@ -1267,11 +1461,13 @@ msgstr "Result"
 msgid "resume"
 msgstr "resume"
 
-#. placeholder {0}: version.metadata.rice
-#. placeholder {1}: version.metadata.ln
+#: src/components/community/PlayerMenu.tsx
+msgid "Revoke Friendship"
+msgstr "Revoke Friendship"
+
 #: src/components/songselect/BeatmapInfo.tsx
-msgid "Rice: {0} LN: {1}"
-msgstr "Rice: {0} LN: {1}"
+msgid "Rice: {rice} LN: {ln}"
+msgstr "Rice: {rice} LN: {ln}"
 
 #: src/scenes/Options.tsx
 msgid "right|click|hold|time"
@@ -1287,12 +1483,17 @@ msgstr "Save"
 msgid "Saving…"
 msgstr "Saving…"
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Score"
+msgstr "Score"
+
 #: src/components/community/CommunityHeader.tsx
 msgid "Search"
 msgstr "Search"
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
+#: src/scenes/Lobby.tsx
 #: src/scenes/SongSelect.tsx
 msgid "Search:"
 msgstr "Search:"
@@ -1319,6 +1520,10 @@ msgstr "Select language"
 msgid "Selecting a song"
 msgstr "Selecting a song"
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Set Password"
+msgstr "Set Password"
+
 #: src/components/community/CommunityControls.tsx
 msgid "Show chat"
 msgstr "Show chat"
@@ -1326,6 +1531,18 @@ msgstr "Show chat"
 #: src/components/options/ShowFPS.tsx
 msgid "Show FPS counter"
 msgstr "Show FPS counter"
+
+#: src/scenes/Lobby.tsx
+msgid "Show Full"
+msgstr "Show Full"
+
+#: src/scenes/Lobby.tsx
+msgid "Show In-Progress"
+msgstr "Show In-Progress"
+
+#: src/scenes/Lobby.tsx
+msgid "Show Locked"
+msgstr "Show Locked"
 
 #: src/components/songselect/BeatmapInfo.tsx
 msgid "Show scores"
@@ -1338,6 +1555,10 @@ msgstr "Show thumbnails"
 #: src/components/community/CommunityControls.tsx
 msgid "Show ticker"
 msgstr "Show ticker"
+
+#: src/scenes/Lobby.tsx
+msgid "Showing {shown} of {total} matches"
+msgstr "Showing {shown} of {total} matches"
 
 #: src/gameplay/playQueue.ts
 msgid "Shuffle"
@@ -1365,10 +1586,9 @@ msgstr "Sign out"
 msgid "sign|in|login|connect|connexion"
 msgstr "sign|in|login|connect|connexion"
 
-#. placeholder {0}: user.username
 #: src/components/options/SignIn.tsx
-msgid "Signed in as {0}"
-msgstr "Signed in as {0}"
+msgid "Signed in as {username}"
+msgstr "Signed in as {username}"
 
 #: src/scenes/Options.tsx
 msgid "Skin"
@@ -1410,14 +1630,27 @@ msgstr "Song select"
 msgid "Sort"
 msgstr "Sort"
 
-#. placeholder {0}: version.metadata.difficulty
 #: src/components/songselect/BeatmapInfo.tsx
-msgid "Star Rating: {0}★"
-msgstr "Star Rating: {0}★"
+msgid "Star Rating: {stars}★"
+msgstr "Star Rating: {stars}★"
 
 #: src/components/dock/DockRunButton.tsx
 msgid "start"
 msgstr "start"
+
+#: src/components/community/PlayerMenu.tsx
+msgid "Start Chat"
+msgstr "Start Chat"
+
+#: src/components/multiplayer/CreateMatch.tsx
+#: src/components/multiplayer/ReadyButton.tsx
+msgid "Start Game"
+msgstr "Start Game"
+
+#: src/components/multiplayer/ReadyButton.tsx
+#: src/components/multiplayer/ReadyButton.tsx
+msgid "Start Game!"
+msgstr "Start Game!"
 
 #: src/scenes/Character.tsx
 msgid "Start over with a new character that unlocks new features"
@@ -1470,6 +1703,14 @@ msgstr "Take it out of the queue"
 msgid "tap to play..."
 msgstr "tap to play..."
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Team Mode:"
+msgstr "Team Mode:"
+
+#: src/scenes/Lobby.tsx
+msgid "There are no matches available."
+msgstr "There are no matches available."
+
 #: src/scenes/Gameplay.tsx
 msgid "This difficulty failed to load."
 msgstr "This difficulty failed to load."
@@ -1502,10 +1743,9 @@ msgstr "Time Zone"
 msgid "Today"
 msgstr "Today"
 
-#. placeholder {0}: bignum(insight.total)
 #: src/components/BeatmapCardXP.tsx
-msgid "Total {0}xp"
-msgstr "Total {0}xp"
+msgid "Total {xp}xp"
+msgstr "Total {xp}xp"
 
 #: src/scenes/Character.tsx
 msgid "Trade skill levels for permanent XP boosts"
@@ -1516,10 +1756,9 @@ msgstr "Trade skill levels for permanent XP boosts"
 msgid "Type to search!"
 msgstr "Type to search!"
 
-#. placeholder {0}: this.name
 #: src/db/schema/skin.ts
-msgid "Unable to load \"{0}\": Malformed definition"
-msgstr "Unable to load \"{0}\": Malformed definition"
+msgid "Unable to load \"{skin}\": Malformed definition"
+msgstr "Unable to load \"{skin}\": Malformed definition"
 
 #: src/components/addons/InstalledAddonRow.tsx
 #: src/components/addons/ManageAddonsView.tsx
@@ -1531,10 +1770,9 @@ msgstr "Uninstall"
 msgid "Uninstall add-on"
 msgstr "Uninstall add-on"
 
-#. placeholder {0}: owned.join(', ')
 #: src/components/character/RebirthView.tsx
-msgid "Unlocked: {0}"
-msgstr "Unlocked: {0}"
+msgid "Unlocked: {unlocks}"
+msgstr "Unlocked: {unlocks}"
 
 #: src/osu/beatmap/grouping.ts
 msgid "Unplayed"
@@ -1550,10 +1788,9 @@ msgstr "Up next"
 msgid "Update"
 msgstr "Update"
 
-#. placeholder {0}: status.message
 #: src/components/DesktopUpdate.tsx
-msgid "Update failed ({0}). Please restart the game."
-msgstr "Update failed ({0}). Please restart the game."
+msgid "Update failed ({error}). Please restart the game."
+msgstr "Update failed ({error}). Please restart the game."
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
@@ -1599,6 +1836,10 @@ msgstr "Version {version} is available ! Refresh the page to update."
 msgid "Version {version} is available ! Update in the main menu."
 msgstr "Version {version} is available ! Update in the main menu."
 
+#: src/components/community/PlayerMenu.tsx
+msgid "View Profile"
+msgstr "View Profile"
+
 #: src/online/presence.ts
 #: src/online/presence.ts
 msgid "Viewing results"
@@ -1630,42 +1871,54 @@ msgstr "Website"
 msgid "Welcome to osu!idle"
 msgstr "Welcome to osu!idle"
 
-#. placeholder {0}: user.username
 #: src/components/Onboarding.tsx
-msgid "Welcome, {0}!"
-msgstr "Welcome, {0}!"
+msgid "Welcome, {username}!"
+msgstr "Welcome, {username}!"
 
 #: src/components/songselect/CardContextMenu.tsx
 msgid "What do you want to do with this beatmap?"
 msgstr "What do you want to do with this beatmap?"
 
+#: src/components/multiplayer/MatchSettings.tsx
+msgid "Win Condition:"
+msgstr "Win Condition:"
+
+#: src/components/multiplayer/MatchRanking.tsx
+msgid "WINNER"
+msgstr "WINNER"
+
 #: src/components/community/CommunityBody.tsx
 msgid "World Map"
 msgstr "World Map"
 
-#. placeholder {0}: multiplier.toFixed(2)
 #: src/components/character/PrestigeRow.tsx
-msgid "x{0} XP"
-msgstr "x{0} XP"
-
 #: src/components/upgrades/UpgradeRow.tsx
-msgid "x{multiplierText} XP"
-msgstr "x{multiplierText} XP"
+msgid "x{factor} XP"
+msgstr "x{factor} XP"
 
 #: src/components/BeatmapXPBreakdown.tsx
 msgid "XP gained last play"
 msgstr "XP gained last play"
 
-#. placeholder {0}: prestige + 1
-#. placeholder {1}: maxUpgrades(prestige + 1)
-#. placeholder {2}: next.toFixed(2)
 #: src/components/character/PrestigeRow.tsx
-msgid "XP Lv{level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +{0} bonus levels, {1} gear slots and x{2} XP"
-msgstr "XP Lv{level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +{0} bonus levels, {1} gear slots and x{2} XP"
+msgid "XP Lv{level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +{bonus} bonus levels, {slots} gear slots and x{multiplier} XP"
+msgstr "XP Lv{level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +{bonus} bonus levels, {slots} gear slots and x{multiplier} XP"
 
 #: src/osu/beatmap/grouping.ts
 msgid "Yesterday"
 msgstr "Yesterday"
+
+#: src/scenes/MatchSetup.tsx
+msgid "You are a player."
+msgstr "You are a player."
+
+#: src/scenes/MatchSetup.tsx
+msgid "You are the host!"
+msgstr "You are the host!"
+
+#: src/online/multiplayer.ts
+msgid "You have become the host for this room!"
+msgstr "You have become the host for this room!"
 
 #: src/components/addons/ManageAddonsView.tsx
 msgid "You haven't created any add-ons yet."
@@ -1691,10 +1944,9 @@ msgstr "Your character can play <0>on-repeat</0>, automatically, on playlists yo
 msgid "Your character is still playing another map. Abort that play to start this one?"
 msgstr "Your character is still playing another map. Abort that play to start this one?"
 
-#. placeholder {0}: a.name
 #: src/components/addons/ManageAddonsView.tsx
-msgid "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{0}\" for review?"
-msgstr "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{0}\" for review?"
+msgid "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{addon}\" for review?"
+msgstr "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{addon}\" for review?"
 
 #: src/components/skins/ManageSkinsView.tsx
 msgid "Your skins"

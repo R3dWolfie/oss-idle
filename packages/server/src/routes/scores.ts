@@ -3,6 +3,7 @@ import { HTTPException } from 'hono/http-exception';
 import {
 	eq,
 	and,
+	desc,
 	inArray,
 } from 'drizzle-orm';
 import { z } from 'zod';
@@ -73,6 +74,20 @@ export const scoresRoutes = new Hono()
 		if (!row) throw new HTTPException(404, { message: 'Score not found' });
 
 		return c.json(row);
+	})
+	// a match player's latest score on the round's map, for the multiplayer ranking
+	.get('/character/:character/beatmap/:beatmap/latest', async c => {
+		const [row] = await db
+			.select()
+			.from(scores)
+			.where(and(
+				eq(scores.characterId, idParam.parse(c.req.param('character'))),
+				eq(scores.beatmapId, idParam.parse(c.req.param('beatmap'))),
+			))
+			.orderBy(desc(scores.playedAt))
+			.limit(1);
+		if (!row) throw new HTTPException(404, { message: 'Score not found' });
+		return c.json(toScoreDTO(row));
 	})
 	.get('/beatmap/:beatmap', async c => c.json((
 		await beatmapLeaderboard(

@@ -111,13 +111,17 @@
 		var(--colour-red-hue), var(--c-saturation-4), var(--c-lightness-4);
 	--colour-darkorange-hue: 20;
 	--hsl-darkorange-1:
-		var(--colour-darkorange-hue), var(--c-saturation-1), var(--c-lightness-1);
+		var(--colour-darkorange-hue), var(--c-saturation-1),
+		var(--c-lightness-1);
 	--hsl-darkorange-2:
-		var(--colour-darkorange-hue), var(--c-saturation-2), var(--c-lightness-2);
+		var(--colour-darkorange-hue), var(--c-saturation-2),
+		var(--c-lightness-2);
 	--hsl-darkorange-3:
-		var(--colour-darkorange-hue), var(--c-saturation-3), var(--c-lightness-3);
+		var(--colour-darkorange-hue), var(--c-saturation-3),
+		var(--c-lightness-3);
 	--hsl-darkorange-4:
-		var(--colour-darkorange-hue), var(--c-saturation-4), var(--c-lightness-4);
+		var(--colour-darkorange-hue), var(--c-saturation-4),
+		var(--c-lightness-4);
 
 	--header-pinned-animation-duration: 0ms;
 	--beatmapset-status-colour-default: var(--hsl-b3);
@@ -240,6 +244,8 @@ h1.page-title {
 @media (max-width: 760px) {
 	.page {
 		width: calc(100% - 20px);
+		margin-top: 70px;
+		min-height: calc(100% - 70px);
 	}
 
 	.page-contents {

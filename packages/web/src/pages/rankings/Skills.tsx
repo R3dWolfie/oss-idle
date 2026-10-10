@@ -24,9 +24,9 @@ export default function SkillsRankings({ skill, page, country, players, board = 
 		<main>
 			<RankingsNav current={board} />
 			<CountryFilter selected={country} onSelect={value => navigate({
-				to: BOARDS[board], params: { skill }, search: {
-					country: value || undefined, page: 1, 
-				}, 
+				to: BOARDS[board], params: { skill }, search: prev => ({
+					...prev, country: value || undefined, page: 1,
+				}),
 			})} />
 
 			<div className='page-contents'>

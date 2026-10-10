@@ -7,7 +7,10 @@ import {
 	text,
 } from 'drizzle-orm/mysql-core';
 import { db } from '../client';
-import { eq } from 'drizzle-orm';
+import {
+	eq,
+	getTableColumns,
+} from 'drizzle-orm';
 
 export const beatmaps = mysqlTable('beatmap', {
 	id: int().primaryKey(),
@@ -39,6 +42,11 @@ export const beatmaps = mysqlTable('beatmap', {
 	// ranked. Toggled from the nomination page, before or after the set is live.
 	ranked: boolean().notNull().default(true),
 });
+
+/** Every column but `chart`, for lists that only show map info. */
+export const beatmapListColumns = Object.fromEntries(
+	Object.entries(getTableColumns(beatmaps)).filter(([key]) => key !== 'chart'),
+) as Omit<ReturnType<typeof getTableColumns<typeof beatmaps>>, 'chart'>;
 
 export type BeatmapRow = typeof beatmaps.$inferSelect;
 export type NewBeatmapRow = typeof beatmaps.$inferInsert;

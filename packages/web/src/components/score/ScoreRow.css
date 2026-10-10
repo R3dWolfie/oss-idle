@@ -114,20 +114,67 @@
 }
 
 .score__pp {
-	align-items: center;
-	background: hsl(var(--hsl-b3));
-	border-radius: 0 10px 10px 0;
-	bottom: auto;
 	display: inline-flex;
-	flex: none;
-	justify-content: center;
-	min-width: 110px;
-	padding: 5px 20px 5px 30px;
-	position: relative;
-	right: auto;
+	align-items: center;
 }
 
 .score__pp_unit {
 	color: hsl(var(--hsl-l3));
 	font-size: 12px;
+}
+
+.score__player {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	font-weight: 600;
+}
+
+.score__player a {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@media (max-width: 760px) {
+	/* the player gets its own line, the date no room */
+	.score__mb:has(.score__player) {
+		flex-wrap: wrap;
+		row-gap: 2px;
+	}
+
+	.score__player {
+		flex-basis: 100%;
+	}
+
+	.score__player ~ span {
+		display: none;
+	}
+
+	.score__top {
+		padding-left: 10px;
+	}
+
+	.score__md {
+		font-size: 13px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.score__mb {
+		gap: 8px;
+	}
+
+	.score__acc {
+		margin-left: 6px;
+		min-width: 0;
+		font-size: 12px;
+	}
+
+	.score__pp-container {
+		min-width: 64px;
+		padding: 5px 10px 5px 18px;
+		font-size: 14px;
+	}
 }

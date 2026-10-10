@@ -12,7 +12,10 @@ import Skin, {
 	currentSkinDAO,
 } from '../../osu/skin/Skin';
 import Log from '@osu-idle/shared/helpers/log';
-import { t } from '@lingui/core/macro';
+import {
+	ph,
+	t,
+} from '@lingui/core/macro';
 import {
 	Skin as SkinDTO,
 	SkinDetail,
@@ -73,7 +76,7 @@ export class SkinDAO extends DAO(skin) {
 			}
 			await this.update({ enabled });
 		} catch {
-			Log.errorPopup(t`Unable to load "${this.name}": Malformed definition`);
+			Log.errorPopup(t`Unable to load "${ph({ skin: this.name })}": Malformed definition`);
 		}
 	}
 

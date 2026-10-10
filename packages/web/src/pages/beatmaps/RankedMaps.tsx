@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './RankedMaps.css';
 import {
 	Trans,
@@ -62,8 +63,10 @@ export default function RankedMaps({ sort, dir, mapsets }: {
 							<div className='list__beatmap_foreground' style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${mapset.id}/covers/list.jpg')` }}>
 								<div className='list__beatmap_contents'>
 									<span className='list__beatmap_title'>{mapset.title}</span>
-									<span className='list__beatmap_artist'><Trans>by {mapset.artist}</Trans></span>
-									<span className='list__beatmap_creator'><Trans>mapped by {mapset.creator}</Trans></span>
+									<span className='list__beatmap_artist'><Trans>by {ph({ artist: mapset.artist })}</Trans></span>
+									<span className='list__beatmap_creator'>
+										<Trans>mapped by {ph({ creator: mapset.creator })}</Trans>
+									</span>
 									<span className='list__beatmap_plays'>
 										<FontAwesomeIcon icon={faPlayCircle}/> {bignum(mapset.plays)}
 									</span>

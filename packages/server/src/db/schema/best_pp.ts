@@ -1,4 +1,7 @@
-import { mysqlTable } from 'drizzle-orm/mysql-core';
+import {
+	index,
+	mysqlTable,
+} from 'drizzle-orm/mysql-core';
 import {
 	bestConstraints,
 	bestTableDefinition,
@@ -10,10 +13,17 @@ import {
 	and,
 	desc,
 } from 'drizzle-orm';
-import { beatmaps } from './beatmap';
+import {
+	beatmapListColumns,
+	beatmaps,
+} from './beatmap';
 import { beatmapset } from './beatmapset';
 
-export const bestPP = mysqlTable('best_pp', bestTableDefinition, bestConstraints);
+export const bestPP = mysqlTable('best_pp', bestTableDefinition, table => [
+	...bestConstraints(table),
+	// top plays across everyone
+	index('pp_idx').on(table.pp, table.id),
+]);
 
 export type BestPPScoreRow = typeof bestPP.$inferSelect;
 export type NewBestPPScoreRow = typeof bestPP.$inferInsert;
@@ -39,7 +49,9 @@ export const setNewBestPPPlay = async (score: ScoreRow) => db
 
 export const getBestPP = async (characterId: number, page: number = 1) => {
 	return db
-		.select()
+		.select({
+			best_pp: bestPP, beatmap: beatmapListColumns, beatmapset,
+		})
 		.from(bestPP)
 		.innerJoin(beatmaps, eq(beatmaps.id, bestPP.beatmapId))
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))

@@ -27,9 +27,11 @@
 
 .news-card__cover {
 	position: relative;
-	height: 130px;
+	/* wide cards grow so the default tag art (logo + caption) stays in frame */
+	aspect-ratio: 3;
+	min-height: 130px;
 	background-size: cover;
-	background-position: center;
+	background-position: center 40%;
 }
 
 .news-card__tag {
@@ -76,7 +78,13 @@
 	overflow: hidden;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
+	.news-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 600px) {
 	.news-grid {
 		grid-template-columns: 1fr;
 	}

@@ -69,7 +69,12 @@ export default function FancyGraph({
 	if (!path || !last) return null;
 
 	return (
-		<svg className={`fancy-graph${className ? ` ${className}` : ''}`} width={width} height={height}>
+		<svg
+			className={`fancy-graph${className ? ` ${className}` : ''}`}
+			width={width}
+			height={height}
+			viewBox={`0 0 ${width} ${height}`}
+		>
 			<g>
 				<path className="fancy-graph__line" d={path} />
 				<circle className="fancy-graph__circle" r={3} cx={last.x} cy={last.y} />

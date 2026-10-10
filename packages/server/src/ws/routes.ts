@@ -48,6 +48,13 @@ import {
 	handlePlay,
 	PlayFeed,
 } from './play';
+import { touchActive } from '../social';
+import { handlePm } from './pm';
+import {
+	handleMultiplayer,
+	MatchFeed,
+	ownMatch,
+} from './multiplayer';
 
 /** How often a live connection refreshes its presence last-seen (well under the
  *  sweep TTL) so a clean session is never pruned. */
@@ -109,6 +116,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 		const geo = await geoLookup(clientIp(c), user.country);
 		let beat: ReturnType<typeof setInterval> | undefined;
 		let feed: PlayFeed | undefined;
+		let scores: MatchFeed | undefined;
 
 		// The account's character can change under a live socket - a rebirth parked
 		// during a play applies when it ends - and the hub is what knows where the
@@ -125,6 +133,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 			onOpen: async (_e, ws) => {
 				hub.add(character.id, ws);
 				feed = new PlayFeed(() => bound(ws), ws);
+				scores = new MatchFeed(() => bound(ws), ws);
 				// join() broadcasts our entry; the snapshot below already includes it.
 				await join({
 					character, user, geo,
@@ -150,7 +159,17 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 				hub.sendLocal(ws, {
 					type: 'play:state', state: await playState(character.id),
 				});
-				beat = setInterval(() => void touch(bound(ws)), TOUCH_MS);
+				const match = await ownMatch(character.id);
+				if (match) {
+					hub.sendLocal(ws, {
+						type: 'mp:joined', match,
+					});
+				}
+				void touchActive(userId);
+				beat = setInterval(() => {
+					void touch(bound(ws));
+					void touchActive(userId);
+				}, TOUCH_MS);
 			},
 			onMessage: async (evt, ws) => {
 				if (typeof evt.data !== 'string') return;
@@ -178,6 +197,13 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 					return;
 				}
 
+				try {
+					if (await handleMultiplayer(msg, bound(ws), ws, scores)) return;
+				} catch (e) {
+					console.error('[mp]', msg.type, 'failed for', character.id, e);
+					return;
+				}
+
 				if (msg.type === 'chat') {
 					const now = await currentRow();
 					await handleChat({
@@ -185,6 +211,14 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 						name: now.name,
 						color: nameColor(user.id),
 					}, user.id, msg.channel, msg.text);
+				} else if (msg.type === 'pm') {
+					const now = await currentRow();
+					await handlePm({
+						userId: user.id,
+						characterId: now.id,
+						name: now.name,
+						color: nameColor(user.id),
+					}, msg.to, msg.text);
 				} else if (msg.type === 'status') {
 					// The client reports idle/afk from input activity; ignore it while
 					// a play is live so it can't clobber the server-set `playing`.
@@ -197,6 +231,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 			onClose: (_e, ws) => {
 				if (beat) clearInterval(beat);
 				feed?.stop();
+				scores?.stop();
 				// read before the remove, which is what forgets where it belonged
 				const id = bound(ws);
 				hub.remove(ws);

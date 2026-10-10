@@ -159,12 +159,24 @@ export const meRoutes = new Hono()
 	.post('/avatar', requireAuth, async c => {
 		const body = await c.req.parseBody();
 		const url = await saveUploadedImage(body['file']);
-		return c.json(await setCurrentCharacterAvatar(c.get('userId'), url));
+		return c.json(await setCurrentCharacterImages(c.get('userId'), { avatarUrl: url }));
 	})
 
 	// Remove the custom profile picture, reverting to the osu! avatar.
 	.delete('/avatar', requireAuth, async c => {
-		return c.json(await setCurrentCharacterAvatar(c.get('userId'), null));
+		return c.json(await setCurrentCharacterImages(c.get('userId'), { avatarUrl: null }));
+	})
+
+	// Upload a profile banner for the account's current character.
+	.post('/banner', requireAuth, async c => {
+		const body = await c.req.parseBody();
+		const url = await saveUploadedImage(body['file']);
+		return c.json(await setCurrentCharacterImages(c.get('userId'), { bannerUrl: url }));
+	})
+
+	// Remove the profile banner.
+	.delete('/banner', requireAuth, async c => {
+		return c.json(await setCurrentCharacterImages(c.get('userId'), { bannerUrl: null }));
 	})
 
 	// Buy the current character's next upgrade for a skill: spends levels
@@ -354,12 +366,15 @@ const assertNotPlaying = async (characterId: number) => {
 	}
 };
 
-/** Set the account's current character avatar and return the resolved character DTO. */
-async function setCurrentCharacterAvatar(userId: number, url: string | null) {
+/** Set the account's current character avatar or banner and return the resolved character DTO. */
+const setCurrentCharacterImages = async (
+	userId: number,
+	images: Partial<Pick<CharacterRow, 'avatarUrl' | 'bannerUrl'>>,
+) => {
 	const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 	if (!user?.currentCharacter) throw new HTTPException(409, { message: 'No character' });
 
-	await db.update(characters).set({ avatarUrl: url }).where(eq(characters.id, user.currentCharacter));
+	await db.update(characters).set(images).where(eq(characters.id, user.currentCharacter));
 	const [row] = await db
 		.select()
 		.from(characters)
@@ -368,4 +383,4 @@ async function setCurrentCharacterAvatar(userId: number, url: string | null) {
 	const dto = characterToDTO(row!, user.avatarUrl, user.country);
 	announceCharacter(dto);
 	return dto;
-}
+};

@@ -74,6 +74,9 @@ import {
 } from '../osu/beatmap/storyboard';
 import BeatmapStore from '../osu/beatmap/beatmap_store';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
+import Multiplayer from '../online/multiplayer';
+import MatchScoreboard from '../components/multiplayer/MatchScoreboard';
+import { scoreboardEdge } from '../components/multiplayer/scoreboardEdge';
 import SceneManager, { SCENE } from './SceneManager';
 import {
 	Transition,
@@ -293,7 +296,7 @@ function GameplayInner({
 
 	const onExit = () => {
 		releaseAudio();
-		SceneManager.set(SCENE.SELECT);
+		SceneManager.set(Multiplayer.afterPlay());
 	};
 
 	// --- play lifecycle -----------------------------------------------------
@@ -306,6 +309,8 @@ function GameplayInner({
 	const localScoreRef = useRef<Score | undefined>(undefined);
 	/** the authoritative result, once the server has one */
 	const serverScoreRef = useRef<{ score: Score, gains?: SkillProgress[] } | undefined>(undefined);
+	/** medals the server awarded with this play's result, for the result screen */
+	const medalsRef = useRef<string[]>([]);
 	/** the play's token, which only a ranked play has */
 	const rankedToken = play.mode === 'ranked' ? play.token : undefined;
 
@@ -405,29 +410,9 @@ function GameplayInner({
 			await fetchLocalResult();
 			return;
 		}
+		let result: Awaited<ReturnType<typeof fetchPlayResult>>;
 		try {
-			const result = await fetchPlayResult(rankedToken, true);
-			console.log('[play] server result', JSON.stringify(result).slice(0, 160));
-			if (result.failed || !('score' in result) || !result.score) {
-				dispatch({
-					type: 'owner-result', hasScore: false,
-				});
-				return;
-			}
-			// mirror the server's score locally so it shows in history/leaderboards
-			const score = Score.fromDTO(result.score);
-			logPlayFinished(score, beatmapInfo, result.gains);
-			const saved = await score.add().catch((e) => {
-				console.warn('[score] local mirror failed', e);
-				return score;
-			});
-			void ScoreXP.record(saved, result.gains);
-			serverScoreRef.current = {
-				score: saved, gains: result.gains,
-			};
-			dispatch({
-				type: 'owner-result', hasScore: true,
-			});
+			result = await fetchPlayResult(rankedToken, true, true);
 		} catch (e) {
 			// `unknown` means the result is gone for good (finalised then expired, or
 			// a long AFK); anything else is worth asking again while it is stored
@@ -438,14 +423,45 @@ function GameplayInner({
 			dispatch({
 				type: 'owner-error', retryable,
 			});
+			return;
 		}
+		// From here the result is ours: a slip while mirroring it must not ask the
+		// server again - it already handed this result (and its medals) over once.
+		console.log('[play] server result', JSON.stringify(result).slice(0, 160));
+		medalsRef.current = result.medals ?? [];
+		if (result.failed || !('score' in result) || !result.score) {
+			dispatch({
+				type: 'owner-result', hasScore: false,
+			});
+			return;
+		}
+		// mirror the server's score locally so it shows in history/leaderboards
+		const score = Score.fromDTO(result.score);
+		try {
+			logPlayFinished(score, beatmapInfo, result.gains);
+		} catch (e) {
+			console.warn('[play] play log failed', e);
+		}
+		const saved = await score.add().catch((e) => {
+			console.warn('[score] local mirror failed', e);
+			return score;
+		});
+		void ScoreXP.record(saved, result.gains);
+		serverScoreRef.current = {
+			score: saved, gains: result.gains,
+		};
+		dispatch({
+			type: 'owner-result', hasScore: true,
+		});
 	};
 
 	const showResult = (source: 'owner' | 'local', failed: boolean) => {
 		const game = gameRef.current;
 		const server = serverScoreRef.current;
 		if (source === 'owner' && server) {
-			SceneManager.set(SCENE.RESULT, server.score, game ?? undefined, server.gains, false, beatmapInfo);
+			SceneManager.set(
+				SCENE.RESULT, server.score, game ?? undefined, server.gains, false, beatmapInfo, medalsRef.current,
+			);
 			return;
 		}
 		const local = localScoreRef.current;
@@ -456,7 +472,9 @@ function GameplayInner({
 		}
 		// no progression to show: the owner computes it, and this is the path where
 		// it could not be read
-		SceneManager.set(SCENE.RESULT, local, game ?? undefined, undefined, failed, beatmapInfo);
+		SceneManager.set(
+			SCENE.RESULT, local, game ?? undefined, undefined, failed, beatmapInfo, medalsRef.current,
+		);
 	};
 
 	/** The play ends here: judge whatever is left, and pull the local session's
@@ -906,7 +924,9 @@ function GameplayInner({
 		const strain = (): StrainHud | undefined =>
 			strainBotRef.current
 				? {
-					bot: strainBotRef.current, labels: skillLabels, 
+					bot: strainBotRef.current,
+					labels: skillLabels,
+					left: scoreboardEdge.get() ? scoreboardEdge.get() + 16 : undefined,
 				}
 				: undefined;
 
@@ -1056,30 +1076,32 @@ function GameplayInner({
 			)}
 
 			<SkipToEndButton shown={debug && !done} onSkip={skipToEnd} />
+			<MatchScoreboard beatmapId={beatmapInfo.metadata.id} />
 
 			{confirmAbort && (
 				<ContextMenu
 					title={t`Abort the play?`}
 					sub={`${beatmap.metadata.artist} - ${beatmap.metadata.title}`}
 					onClose={() => setConfirmAbort(false)}
+					numbered
 					options={owned
 						? [
 							{
-								label: t`1. Abort`, color: '#e93100', onClick: abortPlay,
+								label: t`Abort`, color: '#e93100', onClick: abortPlay,
 							},
 							{
-								label: t`2. Quit, keep playing`, color: '#85b81e', onClick: onQuit,
+								label: t`Quit, keep playing`, color: '#85b81e', onClick: onQuit,
 							},
 							{
-								label: t`3. Cancel`, color: '#6b6b6b', onClick: () => setConfirmAbort(false),
+								label: t`Cancel`, color: '#6b6b6b', onClick: () => setConfirmAbort(false),
 							},
 						]
 						: [
 							{
-								label: t`1. Abort`, color: '#e93100', onClick: abortPlay,
+								label: t`Abort`, color: '#e93100', onClick: abortPlay,
 							},
 							{
-								label: t`2. Cancel`, color: '#6b6b6b', onClick: () => setConfirmAbort(false),
+								label: t`Cancel`, color: '#6b6b6b', onClick: () => setConfirmAbort(false),
 							},
 						]}
 				/>
@@ -1167,7 +1189,7 @@ export default function Gameplay({
 							label: t`Back`, onClick: () => resolve(),
 						}]} />
 				));
-				SceneManager.set(SCENE.SELECT);
+				SceneManager.set(Multiplayer.afterPlay());
 				await transition.reveal();
 			})();
 		}, BOOT_TIMEOUT_MS);
@@ -1187,7 +1209,7 @@ export default function Gameplay({
 
 		// swap back to song select behind the cover, then fade it out to reveal it
 		const backToSelect = async () => {
-			SceneManager.set(SCENE.SELECT);
+			SceneManager.set(Multiplayer.afterPlay());
 			await transition.reveal();
 		};
 

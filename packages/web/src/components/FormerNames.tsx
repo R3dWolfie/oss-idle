@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './FormerNames.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +12,7 @@ export default function FormerNames({ names }: { names: string[] }) {
 	return (
 		<span
 			className="former-names"
-			title={t`formerly known as ${names.join(', ')}`}
+			title={t`formerly known as ${ph({ names: names.join(', ') })}`}
 		>
 			<FontAwesomeIcon icon={faClockRotateLeft} />
 		</span>

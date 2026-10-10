@@ -20,6 +20,7 @@ describe('community wire contract', () => {
 	it('round-trips a presence entry', () => {
 		const entry = {
 			characterId: 7,
+			userId: 70,
 			name: 'tester',
 			avatarUrl: 'https://example.com/a.png',
 			country: 'FR',
@@ -41,6 +42,7 @@ describe('community wire contract', () => {
 	it('accepts a minimal presence entry (optionals omitted)', () => {
 		const entry = {
 			characterId: 1,
+			userId: 10,
 			name: 'guestless',
 			avatarUrl: 'x',
 			country: 'JP',
@@ -55,7 +57,7 @@ describe('community wire contract', () => {
 
 	it('rejects an unknown status', () => {
 		expect(presenceEntryDTO.safeParse({
-			characterId: 1, name: 'x', avatarUrl: 'x', country: 'x',
+			characterId: 1, userId: 1, name: 'x', avatarUrl: 'x', country: 'x',
 			pp: 0, accuracy: 0, playCount: 0, level: 0, status: 'sleeping',
 		}).success).toBe(false);
 	});
@@ -77,6 +79,31 @@ describe('community wire contract', () => {
 		}).success).toBe(false);
 	});
 
+	it('round-trips a private message both ways', () => {
+		const message = {
+			id: 'p1',
+			from: {
+				userId: 30, characterId: 3, name: 'someone', color: '#fff09a',
+			},
+			to: 40,
+			text: 'gz on the #1',
+			at: 1_700_000_000_000,
+		};
+		expect(serverMessage.parse({
+			type: 'pm', message,
+		})).toEqual({
+			type: 'pm', message,
+		});
+		expect(clientMessage.parse({
+			type: 'pm', to: 40, text: 'hi',
+		})).toEqual({
+			type: 'pm', to: 40, text: 'hi',
+		});
+		expect(clientMessage.safeParse({
+			type: 'pm', to: 40, text: '',
+		}).success).toBe(false);
+	});
+
 	it('round-trips a player chat message', () => {
 		const msg = {
 			type: 'chat' as const,
@@ -85,7 +112,7 @@ describe('community wire contract', () => {
 				kind: 'player' as const,
 				channel: '#osu!idle',
 				from: {
-					characterId: 3, name: 'someone', color: '#fa81c6',
+					characterId: 3, userId: 30, name: 'someone', color: '#fa81c6',
 				},
 				text: 'hello',
 				at: 1_700_000_000_000,

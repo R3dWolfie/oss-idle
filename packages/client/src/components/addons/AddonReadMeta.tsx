@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import AddonIcon from './AddonIcon';
 import type { AddonDetail } from './AddonView';
@@ -13,7 +14,7 @@ export default function AddonReadMeta({ detail }: { detail: AddonDetail }) {
 						{detail.name}<span className='addon__ver'>v{detail.version}</span>
 					</div>
 					<div className='addon__by'>
-						<Trans>by {detail.authorName} for game version {detail.gameVersion}</Trans>
+						<Trans>by {ph({ author: detail.authorName })} for game version {ph({ version: detail.gameVersion })}</Trans>
 					</div>
 				</div>
 			</div>

@@ -8,6 +8,7 @@ import { isCommunityOpen } from '../../globals';
 import SceneManager, { SCENE } from '../../scenes/SceneManager';
 import CommunityHeader from './CommunityHeader';
 import CommunityBody from './CommunityBody';
+import PlayerMenu from './PlayerMenu';
 import Chat from './chat/Chat';
 import CommunityControls from './CommunityControls';
 import Ticker from './Ticker';
@@ -68,6 +69,7 @@ export default function CommunityOverlay() {
 				<div className={`community-chat-container ${open && chat ? 'is-enabled' : ''}`}>
 					<Chat />
 				</div>
+				<PlayerMenu />
 			</div>
 
 			{!open && ticker && <Ticker />}

@@ -1,0 +1,174 @@
+/* osu!'s match history page: boxes of events between game cards */
+.match {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+}
+.match__name {
+	margin: 0 0 20px;
+	font-weight: 400;
+}
+
+.match__events {
+	width: min(540px, 100%);
+	margin: 0 auto 18px;
+	padding: 18px 40px;
+	background: hsl(var(--hsl-b4));
+	font-size: 12px;
+}
+.match__event {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	line-height: 1.4;
+}
+.match__time {
+	width: 52px;
+	text-align: right;
+	font-size: 10px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+.match__icon {
+	width: 24px;
+	text-align: center;
+	font-weight: 700;
+}
+.match__icon.is-good {
+	color: hsl(var(--hsl-lime-1));
+}
+.match__icon.is-bad {
+	color: hsl(var(--hsl-orange-1));
+}
+.match__player {
+	color: var(--pink);
+	font-weight: 600;
+}
+
+.match__game {
+	margin-bottom: 18px;
+	border-radius: 4px;
+	overflow: hidden;
+	background: hsl(var(--hsl-b4));
+}
+.match__game-header {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 126px;
+	padding: 8px;
+	background-size: cover;
+	background-position: center;
+	color: #fff;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+}
+.match__game-header::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));
+}
+.match__game-header > * {
+	position: relative;
+}
+.match__game-info {
+	display: flex;
+	gap: 18px;
+	font-size: 13px;
+	font-weight: 600;
+}
+.match__game-title {
+	font-size: 17px;
+	font-weight: 600;
+}
+.match__game-artist {
+	font-size: 12px;
+}
+
+.match__scores {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	padding: 8px;
+}
+.match__score {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	min-height: 52px;
+	padding: 6px 16px;
+	border-radius: 4px;
+	background: hsl(var(--hsl-b3));
+}
+.match__score-player {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+	min-width: 0;
+	font-size: 16px;
+}
+.match__score-stats {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+.match__score-main,
+.match__score-judges {
+	display: flex;
+	align-items: baseline;
+	gap: 14px;
+}
+.match__stat {
+	font-size: 9px;
+	font-weight: 600;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+.match__stat b {
+	font-size: 11px;
+}
+.match__score-main .match__stat b {
+	font-size: 13px;
+}
+.match__stat b.is-best {
+	color: hsl(var(--hsl-lime-1));
+}
+.match__stat b.match__score-value {
+	color: var(--pink);
+	font-size: 22px;
+	font-weight: 600;
+}
+.match__score-grade {
+	width: 44px;
+}
+
+.match__live {
+	padding: 12px;
+	text-align: center;
+	font-size: 13px;
+}
+
+@media (max-width: 700px) {
+	.match__events {
+		padding: 12px;
+	}
+	.match__score {
+		flex-wrap: wrap;
+		gap: 6px 12px;
+	}
+	.match__score-player {
+		flex-basis: 100%;
+	}
+	.match__score-stats {
+		flex: 1;
+		align-items: flex-start;
+	}
+	.match__score-main,
+	.match__score-judges {
+		flex-wrap: wrap;
+		gap: 4px 10px;
+	}
+}

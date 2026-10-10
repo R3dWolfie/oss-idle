@@ -16,9 +16,9 @@ export default function GlobalRankings({ page, country, players }: {
 		<main>
 			<RankingsNav current={'global'} />
 			<CountryFilter selected={country} onSelect={value => navigate({
-				to: '/rankings/global', search: {
-					country: value || undefined, page: 1, 
-				}, 
+				to: '/rankings/global', search: prev => ({
+					...prev, country: value || undefined, page: 1,
+				}),
 			})} />
 
 			<div className='page-contents'>

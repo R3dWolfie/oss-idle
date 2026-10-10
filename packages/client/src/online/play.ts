@@ -143,10 +143,12 @@ export class PlayResultError extends Error {
 export async function fetchPlayResult(
 	token: string,
 	forceSee: boolean = false,
+	/** the result screen will show it: the server awards its medals */
+	medals: boolean = false,
 ) {
 	const res = await Socket.request(
 		{
-			type: 'play:result', token, forceSee,
+			type: 'play:result', token, forceSee, medals,
 		},
 		'play:result',
 		RESULT_TIMEOUT_MS,

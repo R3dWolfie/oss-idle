@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import Account from '../../online/account';
 import Socket from '../../online/socket';
+import { friends } from '../../online/friends';
 import {
 	TAB,
 	type Tab,
@@ -25,11 +26,12 @@ export default function CommunityBody() {
 	const [filter = 'all'] = useSynced(activeFilter);
 	const [search = ''] = useSynced(searchQuery);
 	const [account] = useSynced(Account.character);
+	const [friendIds = new Set<number>()] = useSynced(friends);
 
 	const query = search.trim().toLowerCase();
 	const filtered = characters.filter(c => {
 		if (filter === 'country' && account?.country && c.country !== account.country) return false;
-		if (filter === 'friends') return false;
+		if (filter === 'friends' && !friendIds.has(c.userId)) return false;
 		return !query || c.name.toLowerCase().includes(query);
 	});
 
@@ -66,9 +68,7 @@ export default function CommunityBody() {
 		<div className="community-body">
 			<Tabs tabs={tabs} active={activeTab} />
 
-			{filter === 'friends'
-				? <div className="community-empty">{t`Friends are coming soon`}</div>
-				: tabs.find(tb => tb.id === tab)?.render()}
+			{tabs.find(tb => tb.id === tab)?.render()}
 		</div>
 	);
 }

@@ -1,0 +1,50 @@
+.faq {
+	max-width: 800px;
+}
+
+.faq h2 {
+	font-size: 16px;
+	font-weight: 600;
+	color: hsl(var(--hsl-h1));
+	margin: 30px 0 10px;
+}
+
+.faq h2:first-child {
+	margin-top: 0;
+}
+
+.faq details {
+	background-color: hsl(var(--hsl-b4));
+	border-radius: 4px;
+	margin-bottom: 4px;
+}
+
+.faq summary {
+	cursor: pointer;
+	padding: 10px 15px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.faq summary:hover,
+.faq details[open] summary {
+	background-color: hsl(var(--hsl-b3));
+	border-radius: 4px;
+}
+
+.faq details p,
+.faq details ul {
+	color: hsl(var(--hsl-c2));
+	font-size: 13px;
+	line-height: 1.6;
+	margin: 0;
+	padding: 10px 15px;
+}
+
+.faq details p + p {
+	padding-top: 0;
+}
+
+.faq details ul {
+	padding-left: 35px;
+}

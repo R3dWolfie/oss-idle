@@ -22,14 +22,17 @@ import {
 	and,
 	desc,
 } from 'drizzle-orm';
-import { beatmaps } from './beatmap';
+import {
+	beatmapListColumns,
+	beatmaps,
+} from './beatmap';
 import { beatmapset } from './beatmapset';
 
 const judgeColumn = () => int().notNull().default(0);
 
 type JudgeColumns = { [K in Judgement]: ReturnType<typeof judgeColumn> };
 
-const judgeColumns = Object.fromEntries(
+export const judgeColumns = Object.fromEntries(
 	Judgements.map(judge => [judge, judgeColumn()]),
 ) as JudgeColumns;
 
@@ -134,7 +137,9 @@ export const getAllCharacterScores = (characterId: number) => db
 	
 export const getRecentCharacterScores = async (characterId: number, page: number = 1) => {
 	return db
-		.select()
+		.select({
+			score: scores, beatmap: beatmapListColumns, beatmapset,
+		})
 		.from(scores)
 		.innerJoin(beatmaps, eq(beatmaps.id, scores.beatmapId))
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))

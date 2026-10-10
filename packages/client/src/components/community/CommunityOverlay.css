@@ -21,14 +21,18 @@
 	   back on (the shared .dropdown does), and this sits above the page overlay,
 	   so a closed panel would eat clicks meant for the scene under it */
 	visibility: hidden;
-	transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+	transition:
+		opacity 0.5s ease,
+		visibility 0s linear 0.5s;
 	background: rgba(0, 0, 0, 0.9);
 	pointer-events: none;
 }
 .community-panel.is-enabled {
 	opacity: 1;
 	visibility: visible;
-	transition: opacity 0.5s ease, visibility 0s linear 0s;
+	transition:
+		opacity 0.5s ease,
+		visibility 0s linear 0s;
 	pointer-events: all;
 }
 
@@ -39,12 +43,16 @@
 	background: rgba(0, 0, 0, 0.9);
 	opacity: 0;
 	visibility: hidden;
-	transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+	transition:
+		opacity 0.5s ease,
+		visibility 0s linear 0.5s;
 	pointer-events: none;
 }
 .community-chat-container.is-enabled {
 	opacity: 1;
 	visibility: visible;
-	transition: opacity 0.5s ease, visibility 0s linear 0s;
+	transition:
+		opacity 0.5s ease,
+		visibility 0s linear 0s;
 	pointer-events: all;
 }

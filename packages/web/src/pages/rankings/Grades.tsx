@@ -18,9 +18,9 @@ export default function GradesRankings({ grade, page, country, players }: {
 		<main>
 			<RankingsNav current={'grades'} />
 			<CountryFilter selected={country} onSelect={value => navigate({
-				to: '/rankings/grades/$grade', params: { grade }, search: {
-					country: value || undefined, page: 1, 
-				}, 
+				to: '/rankings/grades/$grade', params: { grade }, search: prev => ({
+					...prev, country: value || undefined, page: 1,
+				}),
 			})} />
 
 			<div className='page-contents'>

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PreviewRouteImport } from './routes/preview'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FriendsRouteImport } from './routes/friends'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
@@ -23,6 +24,7 @@ import { Route as RankingsGlobalRouteImport } from './routes/rankings/global'
 import { Route as RankingsCountryRouteImport } from './routes/rankings/country'
 import { Route as NewsAdminRouteImport } from './routes/news/admin'
 import { Route as NewsSlugRouteImport } from './routes/news/$slug'
+import { Route as MatchesIdRouteImport } from './routes/matches/$id'
 import { Route as MapsRequestsRouteImport } from './routes/maps/requests'
 import { Route as HelpFaqRouteImport } from './routes/help/faq'
 import { Route as CIdRouteImport } from './routes/c/$id'
@@ -31,6 +33,7 @@ import { Route as AuthDesktopRouteImport } from './routes/auth/desktop'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AdminSkinsRouteImport } from './routes/admin/skins'
 import { Route as AdminNominationRouteImport } from './routes/admin/nomination'
+import { Route as AdminMedalsRouteImport } from './routes/admin/medals'
 import { Route as AdminChatRouteImport } from './routes/admin/chat'
 import { Route as AdminBalancingRouteImport } from './routes/admin/balancing'
 import { Route as AdminAddonsRouteImport } from './routes/admin/addons'
@@ -52,6 +55,11 @@ const LogoutRoute = LogoutRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FriendsRoute = FriendsRouteImport.update({
+  id: '/friends',
+  path: '/friends',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownloadRoute = DownloadRouteImport.update({
@@ -109,6 +117,11 @@ const NewsSlugRoute = NewsSlugRouteImport.update({
   path: '/news/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MatchesIdRoute = MatchesIdRouteImport.update({
+  id: '/matches/$id',
+  path: '/matches/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapsRequestsRoute = MapsRequestsRouteImport.update({
   id: '/maps/requests',
   path: '/maps/requests',
@@ -147,6 +160,11 @@ const AdminSkinsRoute = AdminSkinsRouteImport.update({
 const AdminNominationRoute = AdminNominationRouteImport.update({
   id: '/admin/nomination',
   path: '/admin/nomination',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMedalsRoute = AdminMedalsRouteImport.update({
+  id: '/admin/medals',
+  path: '/admin/medals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminChatRoute = AdminChatRouteImport.update({
@@ -188,12 +206,14 @@ const RankingsGradesGradeRoute = RankingsGradesGradeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/download': typeof DownloadRoute
+  '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/preview': typeof PreviewRoute
   '/admin/addons': typeof AdminAddonsRoute
   '/admin/balancing': typeof AdminBalancingRoute
   '/admin/chat': typeof AdminChatRoute
+  '/admin/medals': typeof AdminMedalsRoute
   '/admin/nomination': typeof AdminNominationRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -202,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
   '/maps/requests': typeof MapsRequestsRoute
+  '/matches/$id': typeof MatchesIdRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/admin': typeof NewsAdminRoute
   '/rankings/country': typeof RankingsCountryRoute
@@ -219,12 +240,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/download': typeof DownloadRoute
+  '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/preview': typeof PreviewRoute
   '/admin/addons': typeof AdminAddonsRoute
   '/admin/balancing': typeof AdminBalancingRoute
   '/admin/chat': typeof AdminChatRoute
+  '/admin/medals': typeof AdminMedalsRoute
   '/admin/nomination': typeof AdminNominationRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -233,6 +256,7 @@ export interface FileRoutesByTo {
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
   '/maps/requests': typeof MapsRequestsRoute
+  '/matches/$id': typeof MatchesIdRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/admin': typeof NewsAdminRoute
   '/rankings/country': typeof RankingsCountryRoute
@@ -251,12 +275,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/download': typeof DownloadRoute
+  '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/preview': typeof PreviewRoute
   '/admin/addons': typeof AdminAddonsRoute
   '/admin/balancing': typeof AdminBalancingRoute
   '/admin/chat': typeof AdminChatRoute
+  '/admin/medals': typeof AdminMedalsRoute
   '/admin/nomination': typeof AdminNominationRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -265,6 +291,7 @@ export interface FileRoutesById {
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
   '/maps/requests': typeof MapsRequestsRoute
+  '/matches/$id': typeof MatchesIdRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/admin': typeof NewsAdminRoute
   '/rankings/country': typeof RankingsCountryRoute
@@ -284,12 +311,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/download'
+    | '/friends'
     | '/login'
     | '/logout'
     | '/preview'
     | '/admin/addons'
     | '/admin/balancing'
     | '/admin/chat'
+    | '/admin/medals'
     | '/admin/nomination'
     | '/admin/skins'
     | '/auth/callback'
@@ -298,6 +327,7 @@ export interface FileRouteTypes {
     | '/c/$id'
     | '/help/faq'
     | '/maps/requests'
+    | '/matches/$id'
     | '/news/$slug'
     | '/news/admin'
     | '/rankings/country'
@@ -315,12 +345,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/download'
+    | '/friends'
     | '/login'
     | '/logout'
     | '/preview'
     | '/admin/addons'
     | '/admin/balancing'
     | '/admin/chat'
+    | '/admin/medals'
     | '/admin/nomination'
     | '/admin/skins'
     | '/auth/callback'
@@ -329,6 +361,7 @@ export interface FileRouteTypes {
     | '/c/$id'
     | '/help/faq'
     | '/maps/requests'
+    | '/matches/$id'
     | '/news/$slug'
     | '/news/admin'
     | '/rankings/country'
@@ -346,12 +379,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/download'
+    | '/friends'
     | '/login'
     | '/logout'
     | '/preview'
     | '/admin/addons'
     | '/admin/balancing'
     | '/admin/chat'
+    | '/admin/medals'
     | '/admin/nomination'
     | '/admin/skins'
     | '/auth/callback'
@@ -360,6 +395,7 @@ export interface FileRouteTypes {
     | '/c/$id'
     | '/help/faq'
     | '/maps/requests'
+    | '/matches/$id'
     | '/news/$slug'
     | '/news/admin'
     | '/rankings/country'
@@ -378,12 +414,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DownloadRoute: typeof DownloadRoute
+  FriendsRoute: typeof FriendsRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   PreviewRoute: typeof PreviewRoute
   AdminAddonsRoute: typeof AdminAddonsRoute
   AdminBalancingRoute: typeof AdminBalancingRoute
   AdminChatRoute: typeof AdminChatRoute
+  AdminMedalsRoute: typeof AdminMedalsRoute
   AdminNominationRoute: typeof AdminNominationRoute
   AdminSkinsRoute: typeof AdminSkinsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -392,6 +430,7 @@ export interface RootRouteChildren {
   CIdRoute: typeof CIdRoute
   HelpFaqRoute: typeof HelpFaqRoute
   MapsRequestsRoute: typeof MapsRequestsRoute
+  MatchesIdRoute: typeof MatchesIdRoute
   NewsSlugRoute: typeof NewsSlugRoute
   NewsAdminRoute: typeof NewsAdminRoute
   RankingsCountryRoute: typeof RankingsCountryRoute
@@ -428,6 +467,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/friends': {
+      id: '/friends'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof FriendsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/download': {
@@ -507,6 +553,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/matches/$id': {
+      id: '/matches/$id'
+      path: '/matches/$id'
+      fullPath: '/matches/$id'
+      preLoaderRoute: typeof MatchesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/maps/requests': {
       id: '/maps/requests'
       path: '/maps/requests'
@@ -561,6 +614,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/nomination'
       fullPath: '/admin/nomination'
       preLoaderRoute: typeof AdminNominationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/medals': {
+      id: '/admin/medals'
+      path: '/admin/medals'
+      fullPath: '/admin/medals'
+      preLoaderRoute: typeof AdminMedalsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/chat': {
@@ -618,12 +678,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DownloadRoute: DownloadRoute,
+  FriendsRoute: FriendsRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   PreviewRoute: PreviewRoute,
   AdminAddonsRoute: AdminAddonsRoute,
   AdminBalancingRoute: AdminBalancingRoute,
   AdminChatRoute: AdminChatRoute,
+  AdminMedalsRoute: AdminMedalsRoute,
   AdminNominationRoute: AdminNominationRoute,
   AdminSkinsRoute: AdminSkinsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
@@ -632,6 +694,7 @@ const rootRouteChildren: RootRouteChildren = {
   CIdRoute: CIdRoute,
   HelpFaqRoute: HelpFaqRoute,
   MapsRequestsRoute: MapsRequestsRoute,
+  MatchesIdRoute: MatchesIdRoute,
   NewsSlugRoute: NewsSlugRoute,
   NewsAdminRoute: NewsAdminRoute,
   RankingsCountryRoute: RankingsCountryRoute,

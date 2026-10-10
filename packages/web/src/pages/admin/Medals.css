@@ -1,0 +1,99 @@
+.admin-medals {
+	width: 100%;
+	max-width: 1300px;
+	margin: 0 auto;
+	padding: 24px;
+}
+
+.admin-medals__meta {
+	color: hsl(var(--hsl-c2));
+	font-size: 13px;
+}
+
+.admin-medals section {
+	margin-top: 28px;
+}
+
+.admin-medals table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.admin-medals th {
+	text-align: left;
+	padding: 6px 8px;
+	color: hsl(var(--hsl-c2));
+	font-weight: 600;
+}
+
+.admin-medals td {
+	padding: 4px 8px;
+	vertical-align: middle;
+}
+
+/* one series per tbody, separated like the profile lines */
+.admin-medals tbody {
+	border-top: 1px solid hsla(var(--hsl-c2), 0.15);
+}
+
+.admin-medals__icon {
+	width: 40px;
+}
+
+.admin-medals__icon .medal-icon {
+	width: 36px;
+	height: 36px;
+}
+
+.admin-medals__row code {
+	display: block;
+	font-size: 11px;
+	opacity: 0.55;
+}
+
+.admin-medals__tier {
+	text-transform: capitalize;
+}
+
+.admin-medals__rule {
+	color: hsl(var(--hsl-c2));
+}
+
+.admin-medals__num {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.admin-medals .tier-bronze .admin-medals__tier {
+	color: #e39a5f;
+}
+.admin-medals .tier-silver .admin-medals__tier {
+	color: #dfe6ee;
+}
+.admin-medals .tier-gold .admin-medals__tier {
+	color: #ffd35a;
+}
+.admin-medals .tier-platinum .admin-medals__tier {
+	color: #a6e8ff;
+}
+.admin-medals .tier-divine .admin-medals__tier {
+	color: #e3a8ff;
+}
+
+@media (max-width: 760px) {
+	.admin-medals {
+		padding: 15px 10px;
+	}
+
+	.admin-medals table {
+		display: block;
+		overflow-x: auto;
+	}
+
+	.admin-medals td:nth-child(5),
+	.admin-medals td:nth-child(6) {
+		min-width: 200px;
+	}
+}

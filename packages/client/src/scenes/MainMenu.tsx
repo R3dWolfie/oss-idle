@@ -10,6 +10,7 @@ import {
 } from '../audio/MusicPlayer';
 import './MainMenu.css';
 import Background from './Background';
+import Multiplayer from '../online/multiplayer';
 import SceneManager, { SCENE } from './SceneManager';
 import Device from '../responsive/Device';
 import { useParallax } from '@osu-idle/shared/hooks/useParallax';
@@ -34,6 +35,8 @@ import DesktopUpdate from '../components/DesktopUpdate';
 import Auth from '../online/auth';
 import ContextMenu from '../components/ContextMenu';
 import { desktop } from '@osu-idle/shared/desktop';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord';
 
 interface Props {
 	/** play the white-flash "drop" entrance (true when arriving from the intro) */
@@ -180,9 +183,13 @@ export default function MainMenu({ flash = false }: Props) {
 			title: t`Multi`,
 			band: 'mid',
 			flip: false,
-			disabled: true,
+			disabled: character.isGuest() ? true : undefined,
 			order: 2,
-			onSelect: () => {},
+			onSelect: () => {
+				if (character.isGuest()) return;
+				clearTimeout(cancelTimeout);
+				SceneManager.set(Multiplayer.current.get() ? SCENE.MATCH : SCENE.LOBBY);
+			},
 		},
 		[OPTION.BACK]: {
 			menu: MENU.PLAY,
@@ -211,6 +218,15 @@ export default function MainMenu({ flash = false }: Props) {
 				<span className="menu__brand-name">osu!</span>
 				<span className="menu__brand-tag">idle</span>
 				<span className="menu__brand-version">v{VERSION}</span>
+				<a
+					className="menu__discord"
+					href="https://discord.gg/Yd5GEaX8AJ"
+					target="_blank"
+					rel="noreferrer"
+					aria-label="Discord"
+				>
+					<FontAwesomeIcon icon={faDiscord} />
+				</a>
 			</div>
 
 			<div className="menu__center" style={{ transform: `translate(${fgX}px, ${fgY}px)` }}>

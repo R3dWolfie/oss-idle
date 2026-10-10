@@ -1,0 +1,29 @@
+.friend-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	height: 40px;
+	padding: 0 25px;
+	border: none;
+	border-radius: 999px;
+	background: hsl(var(--hsl-b6));
+	color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 700;
+	cursor: pointer;
+}
+.friend-button:disabled {
+	cursor: default;
+}
+.friend-button:not(:disabled):hover {
+	filter: brightness(1.2);
+}
+.friend-button[data-state="friend"] {
+	background: hsl(var(--hsl-lime-1));
+	color: hsl(var(--hsl-b6));
+}
+.friend-button[data-state="mutual"] {
+	background: hsl(var(--hsl-pink-1));
+	color: hsl(var(--hsl-b6));
+}

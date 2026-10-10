@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { useState } from 'react';
 import './PlaylistOverlay.css';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
@@ -169,7 +170,7 @@ export default function PlaylistOverlay({ beatmap, onClose }: Props) {
 						onClick={() => void deleteSelected()}
 					>
 						{confirmingDelete ? 
-							t`Really delete "${selected?.name}"?` 
+							t`Really delete "${ph({ playlist: selected?.name ?? '' })}"?` 
 							: t`Delete the playlist`
 						}
 					</button>

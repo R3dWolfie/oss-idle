@@ -8,11 +8,15 @@ export interface ContextMenuOption {
 }
 
 type Props = {
-	title: string;
+	title?: string;
 	sub?: string;
+	/** shown top-left in place of the title, e.g. a player's card */
+	header?: React.ReactNode;
 	options: ContextMenuOption[];
 	/** clicking outside the buttons cancels, same as the gray Cancel option */
 	onClose: () => void;
+	/** osu!'s "1. Abort", "2. Cancel": the number is added here, never translated */
+	numbered?: boolean;
 };
 
 /**
@@ -20,15 +24,17 @@ type Props = {
  * full-width coloured buttons centred on the screen. Purely presentational -
  * the caller owns what the options do (and must close the menu itself).
  */
-export default function ContextMenu({ title, sub, options, onClose }: Props) {
+export default function ContextMenu({ title, sub, header, options, onClose, numbered }: Props) {
 	return (
 		<div className="ctxmenu" onClick={onClose}>
 			<div className="ctxmenu__header">
-				<div className="ctxmenu__title">{title}</div>
-				{sub && <div className="ctxmenu__sub">{sub}</div>}
+				{header ?? <>
+					<div className="ctxmenu__title">{title}</div>
+					{sub && <div className="ctxmenu__sub">{sub}</div>}
+				</>}
 			</div>
 			<div className="ctxmenu__options">
-				{options.map((o) => (
+				{options.map((o, i) => (
 					<button
 						key={o.label}
 						type="button"
@@ -36,7 +42,7 @@ export default function ContextMenu({ title, sub, options, onClose }: Props) {
 						style={{ '--accent': o.color } as React.CSSProperties}
 						onClick={(e) => { e.stopPropagation(); o.onClick(); }}
 					>
-						{o.label}
+						{numbered ? `${i + 1}. ${o.label}` : o.label}
 					</button>
 				))}
 			</div>

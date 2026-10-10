@@ -13,9 +13,26 @@ import PlayDock from '../components/dock/PlayDock';
 import SceneManager, { SCENE } from '../scenes/SceneManager';
 import { openPage } from '../globals';
 import PlayManager from '../online/playManager';
+import Multiplayer from '../online/multiplayer';
+import Entities from '../entity/entities';
+import Lobby from '../scenes/Lobby';
+import MatchSetup from '../scenes/MatchSetup';
+import Result from '../scenes/Result';
+import { Judgements } from '@osu-idle/shared/judgement';
+import type { JudgementCounts } from '@osu-idle/shared/score';
+import type { Match } from '@osu-idle/shared/multiplayer';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
 import Skill from '@osu-idle/shared/sim/skills/skill';
+import MedalUnlockOverlay from '../components/medals/MedalUnlockOverlay';
+import MedalCatalogue from './MedalCatalogue';
+import type { MedalUnlock } from '../achievements/medalUnlocks';
+import {
+	MEDALS_BACKFILL,
+	MEDALS_FIVE,
+	MEDALS_ONE,
+	MEDALS_THREE,
+} from './medalSamples';
 
 const gain = (
 	skill: string,
@@ -92,6 +109,36 @@ const tieredSkill = () => {
 	void skill.prestige.set(1);
 	return skill;
 };
+
+/** The whole unlock overlay over an empty stage. */
+const medalCase = (id: string, label: string, medals: () => MedalUnlock[]): PlaygroundCase => ({
+	id,
+	label,
+	render: () => <MedalUnlockOverlay medals={medals()} />,
+});
+
+/** A host alone in an 8-player room, the way a new match starts. */
+const fakeMatch = (): Match => {
+	const me = Entities.character.get().id;
+	return {
+		id: 1,
+		name: `${Entities.character.get().name}'s game`,
+		locked: false,
+		hostId: me,
+		changingBeatmap: false,
+		playing: false,
+		slots: Array.from({ length: 16 }, (_, i) => i === 0
+			? {
+				state: 'player', characterId: me, ready: false, noMap: false, playing: false,
+			}
+			: { state: i < 8 ? 'open' : 'locked' }),
+	};
+};
+
+/** Whose result the match result case shows: before the account resolves the
+ *  character is a placeholder (0), which the result screen would ask the server
+ *  for - a local id it reads locally. */
+const resultPlayer = () => Entities.character.get().id || -1;
 
 /** Each case renders one component in isolation, with the inputs that are
  *  awkward to reach by playing the game. */
@@ -181,5 +228,70 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 		id: 'xp-toggle',
 		label: 'Debug XP multiplier',
 		render: () => <XpMultiplierToggle />,
+	},
+	{
+		id: 'medals-catalogue',
+		label: 'Medals - every one',
+		render: () => <MedalCatalogue />,
+	},
+	medalCase('medals-one', 'Medal unlock - one', MEDALS_ONE),
+	medalCase('medals-three', 'Medal unlock - three, one secret', MEDALS_THREE),
+	medalCase('medals-five', 'Medal unlock - five', MEDALS_FIVE),
+	medalCase('medals-backfill', 'Medal unlock - backfill', MEDALS_BACKFILL),
+	{
+		id: 'mp-lobby',
+		label: 'Multiplayer lobby - one open room',
+		setup: () => {
+			void Multiplayer.matches.set([fakeMatch()]);
+		},
+		render: () => <Lobby />,
+	},
+	{
+		id: 'mp-result',
+		label: 'Multiplayer result - three players, round over',
+		setup: () => {
+			const me = resultPlayer();
+			void Multiplayer.current.set({
+				...fakeMatch(),
+				lastRound: {
+					beatmapId: 1, startedAt: 0, results: [
+						{
+							characterId: me, score: 912_345, combo: 412, failed: false,
+						},
+						{
+							characterId: -2, score: 640_120, combo: 233, failed: false,
+						},
+						{
+							characterId: -3, score: 210_004, combo: 58, failed: true,
+						},
+					],
+				},
+			});
+		},
+		render: () => <Result
+			score={{
+				id: 1,
+				characterId: resultPlayer(),
+				beatmapId: 1,
+				score: 912_345,
+				accuracy: 0.9734,
+				maxCombo: 412,
+				judgements: Object.fromEntries(Judgements.map(j => [j, 0])) as JudgementCounts,
+				grade: 'A',
+				pp: 123,
+				ur: 90,
+				pfc: false,
+				playedAt: Date.now(),
+			}}
+			progression={spread(4, 12)}
+		/>,
+	},
+	{
+		id: 'mp-match',
+		label: 'Multiplayer match setup - host alone',
+		setup: () => {
+			void Multiplayer.current.set(fakeMatch());
+		},
+		render: () => <MatchSetup />,
 	},
 ];

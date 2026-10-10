@@ -13,7 +13,7 @@ import {
 } from '../../globals';
 import Auth from '../../online/auth';
 import num from '@osu-idle/shared/display/num';
-import accuracy from '@osu-idle/shared/display/accuracy';
+import accuracyText from '@osu-idle/shared/display/accuracy';
 import hitAccuracy from '@osu-idle/shared/osu/hitAccuracy';
 import { xpForLevel } from '@osu-idle/shared/sim/skills/xp';
 import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
@@ -34,7 +34,7 @@ export default function UserCard({
 		xpForLevel(online_character.overallLevel) 
 		: undefined;
 	const pp = num(online_character?.pp);
-	const accText = online_stats && accuracy(hitAccuracy(online_stats));
+	const accuracy = online_stats && accuracyText(hitAccuracy(online_stats));
 	const level = num(online_character?.overallLevel);
 	return (
 		<div
@@ -57,7 +57,7 @@ export default function UserCard({
 				<span className="game__user-name">{character.name}</span>
 				{online_character && (<>
 					<span className="game__user-pp"><Trans>Performance: {pp}pp</Trans></span>
-					<span className="game__user-acc"><Trans>Accuracy: {accText}</Trans></span>
+					<span className="game__user-acc"><Trans>Accuracy: {accuracy}</Trans></span>
 					<span className="game__user-level"><Trans>Lv{level}</Trans></span>
 				</>)}
 				{!online_character && (

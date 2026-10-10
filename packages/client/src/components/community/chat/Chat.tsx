@@ -6,7 +6,6 @@ import {
 } from 'react';
 import { useLingui } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
-import useSync from '@osu-idle/shared/hooks/useSync';
 import { DEFAULT_CHANNEL } from '@osu-idle/shared/community/wire';
 import Socket from '../../../online/socket';
 import Tabs, { Tab } from '../../tabs/Tabs';
@@ -15,12 +14,35 @@ import {
 	LOGS_CHANNEL,
 	logLines,
 } from '../../../logs';
+import {
+	activeChatTab,
+	chatTabs,
+	pmContact,
+} from './state';
+import {
+	contactNames,
+	conversations,
+	sendPm,
+} from '../../../online/privateMessages';
+import { blocked } from '../../../online/blocks';
+import { isMatchChannel } from '@osu-idle/shared/multiplayer';
+import ChatText from './ChatText';
+
+/** A line as the log renders it; no `name` = a system line, coloured whole. */
+type LogLine = {
+	id: string,
+	at: number,
+	text: string,
+	color?: string,
+	name?: string,
+	link?: { label: string, path: string },
+};
 
 export default function Chat() {
 	const { t } = useLingui();
-	const [channels, setChannels] = useState<string[]>([DEFAULT_CHANNEL, LOGS_CHANNEL]);
-	const [active, setActive] = useState(DEFAULT_CHANNEL);
-	const [activeTab, activeId] = useSync<string>();
+	const [channels = []] = useSynced(chatTabs);
+	const [activeId] = useSynced(activeChatTab);
+	const [names = new Map<number, string>()] = useSynced(contactNames);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	// osu! behaviour: clicking anywhere in the chat focuses the compose input
@@ -29,20 +51,19 @@ export default function Chat() {
 	};
 
 	const closeChannel = (channel: string) => {
-		const next = channels.filter(c => c !== channel);
-		setChannels(next);
-		if (active === channel && next.length) setActive(next[0]);
+		void chatTabs.set(channels.filter(c => c !== channel));
 	};
 
 	const join = () => {
-		if (!channels.includes(DEFAULT_CHANNEL)) setChannels([DEFAULT_CHANNEL, ...channels]);
-		setActive(DEFAULT_CHANNEL);
+		if (!channels.includes(DEFAULT_CHANNEL)) void chatTabs.set([DEFAULT_CHANNEL, ...channels]);
 	};
 
 	// a span, not a button: the tab label already sits inside the Tabs <button>,
 	// and nested buttons are invalid DOM
 	const ChatTabButton = ({ channel } : { channel: string }) => <>
-		{channel}
+		{pmContact(channel) !== undefined
+			? names.get(pmContact(channel)!) ?? channel
+			: isMatchChannel(channel) ? '#multiplayer' : channel}
 		<span
 			role="button"
 			className="chat__close"
@@ -55,11 +76,27 @@ export default function Chat() {
 	</>;
 
 	const ChatTabContents = ({ channel } : { channel: string }) => {
+		const contact = pmContact(channel);
 		const [lines = []] = useSynced(channel === LOGS_CHANNEL ? logLines : Socket.chat);
+		const [pms = new Map()] = useSynced(conversations);
+		const [blockedIds = new Set<number>()] = useSynced(blocked);
 		const [draft, setDraft] = useState('');
 		const logRef = useRef<HTMLDivElement>(null);
 
-		const shown = lines.filter(l => l.channel === channel);
+		const shown: LogLine[] = contact === undefined
+			? lines.filter(l => l.channel === channel).map(l => {
+				if (l.kind === 'system') return {
+					id: l.id, at: l.at, text: l.text, color: l.color, name: l.name, link: l.link,
+				};
+				// a blocked player's line, with not even their name
+				if (blockedIds.has(l.from.userId)) return {
+					id: l.id, at: l.at, text: '<block>',
+				};
+				return {
+					id: l.id, at: l.at, text: l.text, color: l.from.color, name: l.from.name,
+				};
+			})
+			: (pms.get(contact) ?? []);
 
 		useEffect(() => {
 			const el = logRef.current;
@@ -79,7 +116,8 @@ export default function Chat() {
 			e.preventDefault();
 			const text = draft.trim();
 			if (!text || !channels.includes(channel)) return;
-			Socket.sendChat(handleCommand(text), channel);
+			if (contact === undefined) Socket.sendChat(handleCommand(text), channel);
+			else sendPm(contact, handleCommand(text));
 			setDraft('');
 		};
 
@@ -89,7 +127,7 @@ export default function Chat() {
 					const d = new Date(line.at);
 					const time = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
 
-					if (line.kind === 'system') {
+					if (line.name === undefined) {
 						return (
 							<div key={i} className="chat__line chat__line--system">
 								<span className="chat__text" style={{ color: line.color }}>{time} {line.text}</span>
@@ -101,9 +139,9 @@ export default function Chat() {
 						<div key={i} className="chat__line">
 							<span
 								className="chat__from"
-								style={{ color: line.from.color }}
-							>{`${time} ${line.from.name}:`}</span>
-							<span className="chat__text">{line.text}</span>
+								style={{ color: line.color }}
+							>{`${time} ${line.name}:`}</span>
+							<ChatText text={line.text} link={line.link} />
 						</div>
 					);
 				})}
@@ -134,7 +172,7 @@ export default function Chat() {
 	return (
 		<div className="chat" onClick={focusInput}>
 			<div className="chat__tabs">
-				<Tabs tabs={tabs} active={activeTab} onSelect={join} />
+				<Tabs tabs={tabs} active={activeChatTab} onSelect={join} />
 			</div>
 			{tabs.find(t => t.id === activeId)?.render()}
 		</div>

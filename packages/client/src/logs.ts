@@ -1,4 +1,7 @@
-import { t } from '@lingui/core/macro';
+import {
+	ph,
+	t,
+} from '@lingui/core/macro';
 import Synced from '@osu-idle/shared/helpers/synced';
 import type { ChatLine } from '@osu-idle/shared/community/wire';
 import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
@@ -16,9 +19,13 @@ const LEVELUP_COLOR = '#81fa9b';
 
 export const logLines = new Synced<ChatLine[]>([]);
 
+// local lines only need unique ids; crypto.randomUUID is missing outside
+// secure contexts (the LAN staging is plain http)
+let lineSeq = 0;
+
 export const log = (text: string, color = LOG_COLOR, at = Date.now()): void => {
 	const line: ChatLine = {
-		id: crypto.randomUUID(),
+		id: `log-${++lineSeq}`,
 		kind: 'system',
 		channel: LOGS_CHANNEL,
 		text,
@@ -61,7 +68,7 @@ export const logPlayFinished = (
 const logSkillLevelUps = (progression?: SkillProgress[], at = Date.now()): void => {
 	for (const g of progression ?? []) {
 		for (let level = g.fromLevel + 1; level <= g.toLevel; level++) {
-			log(t`${skillName(g.skill)} reached level ${level}!`, LEVELUP_COLOR, at);
+			log(t`${ph({ skill: skillName(g.skill) })} reached level ${level}!`, LEVELUP_COLOR, at);
 		}
 	}
 };

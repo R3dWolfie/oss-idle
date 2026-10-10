@@ -121,12 +121,13 @@ type PlaySession = {
 const answerResult = async (
 	ws: WSContext,
 	characterId: number,
-	token: string,
-	forceSee: boolean,
+	{
+		token, forceSee = false, medals = false,
+	}: Extract<ClientMessage, { type: 'play:result' }>,
 ): Promise<void> => {
 	let result: PlayResult;
 	try {
-		result = await fetchResult(characterId, token, forceSee);
+		result = await fetchResult(characterId, token, forceSee, medals);
 	} catch (e) {
 		console.error('[play] result failed for', characterId, e);
 		result = {
@@ -200,7 +201,7 @@ export const handlePlay = async (
 			await abortPlay(character.id, msg.token);
 			return true;
 		case 'play:result':
-			await answerResult(ws, character.id, msg.token, msg.forceSee ?? false);
+			await answerResult(ws, character.id, msg);
 			return true;
 		default:
 			return false;

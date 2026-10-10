@@ -44,3 +44,10 @@
 .opt-checkbox.is-on .opt-checkbox__tick {
 	transform: scale(1);
 }
+.opt-checkbox:disabled {
+	opacity: 0.4;
+	cursor: default;
+}
+.opt-checkbox:disabled:hover {
+	background: none;
+}

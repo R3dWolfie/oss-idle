@@ -32,8 +32,10 @@ export default class Game {
 
 	constructor(public readonly page: Page) {}
 
-	/** Load the client and wait for the dev bridge and the resolved session. */
+	/** Load the client and wait for the dev bridge and the resolved session.
+	 *  A reload first waits out the page's pending local saves. */
 	async open(): Promise<void> {
+		await this.page.evaluate(() => window.__idle?.saved());
 		await this.page.goto('/');
 		await this.page.waitForFunction(() => !!window.__idle, undefined, { timeout: 60_000 });
 		await this.page.waitForFunction(

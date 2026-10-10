@@ -12,11 +12,30 @@ import {
 } from '../globals';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import { useLingui } from '@lingui/react/macro';
+import { BASE_URL } from '../online/client';
+
+/** The page's address as someone else can open it: the desktop app's frame runs
+ *  on app://, but the site lives with the API. */
+const shareUrl = (path: string): string => `${BASE_URL || location.origin}${path}`;
+
+/** The clipboard API needs a secure context (the LAN staging origin isn't one). */
+const copy = (text: string): void => {
+	if (navigator.clipboard) {
+		void navigator.clipboard.writeText(text);
+		return;
+	}
+	const field = document.createElement('textarea');
+	field.value = text;
+	document.body.append(field);
+	field.select();
+	document.execCommand('copy');
+	field.remove();
+};
 
 /**
  * Lazer-style in-game browser: a fullscreen overlay that embeds the osu! web
  * platform (`/web`) in a same-origin iframe with minimal chrome
- * (back / forward / reload / close - no address bar).
+ * (back / forward / reload, the page's link to share, close).
  *
  * Because the frame is same-origin we can drive its history directly - and,
  * later, the OAuth flow can `postMessage` tokens back to the game across it.
@@ -32,6 +51,20 @@ export default function WebBrowser() {
 	const frameRef = useRef<HTMLIFrameElement>(null);
 	const [mounted, setMounted] = useState(false);
 	const [loaded, setLoaded] = useState(false);
+
+	// The site routes in-page (history.pushState), which fires no load event, so
+	// the address is read off the frame while it is open.
+	const [address, setAddress] = useState('');
+	useEffect(() => {
+		if (!open) return;
+		const read = () => {
+			const loc = frameRef.current?.contentWindow?.location;
+			if (loc?.pathname.startsWith('/web')) setAddress(shareUrl(loc.pathname + loc.search));
+		};
+		read();
+		const timer = setInterval(read, 500);
+		return () => clearInterval(timer);
+	}, [open]);
 
 	// Esc closes when the game (not the frame) holds focus.
 	Controls.back.usePress(() => { if (isWebOpen.get()) isWebOpen.set(false); });
@@ -85,7 +118,16 @@ export default function WebBrowser() {
 					>
 						⟳
 					</button>
-					<div className="web__spacer" />
+					<input
+						className="web__address"
+						value={address}
+						readOnly
+						aria-label={t`Page link`}
+						onFocus={e => e.currentTarget.select()}
+					/>
+					<button className="web__btn" title={t`Copy link`} onClick={() => copy(address)}>
+						{t`Copy`}
+					</button>
 					<button 
 						className="web__btn web__close"
 						title={t`Close (Esc)`}

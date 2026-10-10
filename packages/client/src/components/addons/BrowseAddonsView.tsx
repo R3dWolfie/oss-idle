@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	useEffect,
 	useState,
@@ -98,7 +99,7 @@ export default function BrowseAddonsView() {
 
 	const askInstall = (dto: Addon) => setConfirming({
 		title: t`Install add-on`,
-		sub: t`Add-ons run with full access to the game. Only install add-ons you trust. Install "${dto.name}"?`,
+		sub: t`Add-ons run with full access to the game. Only install add-ons you trust. Install "${ph({ addon: dto.name })}"?`,
 		confirmLabel: t`Install`,
 		color: '#ff66ab',
 		onConfirm: () => doInstall(dto),
@@ -188,10 +189,10 @@ export default function BrowseAddonsView() {
 											{a.name}<span className='addon__ver'>v{a.version}</span>
 										</div>
 										<div className='addon__by'>
-											<Trans>by</Trans> {a.authorName}
+											<Trans>by {ph({ author: a.authorName })}</Trans>
 											<span className='addon__downloads'>
 												{' · '}
-												<Plural value={a.downloads} one='# download' other='# downloads' />
+												<Plural value={ph({ downloads: a.downloads })} one='# download' other='# downloads' />
 											</span>
 										</div>
 										{a.description && <div className='addon__desc'>{a.description}</div>}

@@ -78,7 +78,6 @@
 	max-height: none;
 }
 
-
 .dock__body {
 	flex: 1;
 	min-width: 0;
@@ -283,7 +282,11 @@
 	gap: 4px;
 	opacity: 0;
 	padding-left: 1.5rem;
-	background: linear-gradient(90deg, transparent, rgba(12, 10, 16, 0.97) 1.5rem);
+	background: linear-gradient(
+		90deg,
+		transparent,
+		rgba(12, 10, 16, 0.97) 1.5rem
+	);
 	transition: opacity 0.12s ease;
 	pointer-events: none;
 }

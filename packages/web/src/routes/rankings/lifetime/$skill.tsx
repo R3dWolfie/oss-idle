@@ -13,8 +13,8 @@ export const Route = createFileRoute('/rankings/lifetime/$skill')({
 	validateSearch: zodValidator(pageCountrySearch),
 	loaderDeps: ({ search }) => search,
 	loader: ({ params, deps }) => deps.country
-		? getCountryLifetimeRanking(params.skill as SkillSort, deps.country, deps.page)
-		: getLifetimeRanking(params.skill as SkillSort, deps.page),
+		? getCountryLifetimeRanking(params.skill as SkillSort, deps.country, deps.page, deps.friends)
+		: getLifetimeRanking(params.skill as SkillSort, deps.page, deps.friends),
 	component: LifetimeRoute,
 	staticData: { title: msg`rankings` },
 });

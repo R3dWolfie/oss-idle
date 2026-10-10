@@ -1,6 +1,7 @@
 import {
-	t,
+	ph,
 	plural,
+	t,
 } from '@lingui/core/macro';
 import { CarouselItem } from '../../components/BeatmapCarousel';
 import { Grades } from '@osu-idle/shared/judgement';
@@ -56,14 +57,14 @@ function lengthGroup(ms: number): Group {
 	const min = Math.floor(ms / MINUTE);
 	if (min < 5) return { 
 		key: `l${min}`, 
-		label: t`${min}-${min + 1} min`, 
+		label: t`${ph({ from: min })}-${ph({ to: min + 1 })} min`, 
 		order: min,
 	};
 	if (min < 10) return {
-		key: 'l5', label: t`5-10 min`, order: 5, 
+		key: 'l5', label: t`${ph({ from: 5 })}-${ph({ to: 10 })} min`, order: 5, 
 	};
 	return {
-		key: 'l10', label: t`10+ min`, order: 10, 
+		key: 'l10', label: t`${ph({ from: 10 })}+ min`, order: 10, 
 	};
 }
 

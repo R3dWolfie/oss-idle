@@ -302,6 +302,69 @@
       "when": 1788565113894,
       "tag": "0042_pending_action",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "5",
+      "when": 1791564988416,
+      "tag": "0043_character_medal",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "5",
+      "when": 1791577144565,
+      "tag": "0044_upgrade_lifetime",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "5",
+      "when": 1791581646761,
+      "tag": "0045_best_pp_index",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "5",
+      "when": 1791581772377,
+      "tag": "0046_character_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "5",
+      "when": 1791584468457,
+      "tag": "0047_user_follow",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "5",
+      "when": 1791585977560,
+      "tag": "0048_private_messages",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "5",
+      "when": 1791586524788,
+      "tag": "0049_user_report",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "5",
+      "when": 1791587124788,
+      "tag": "0050_multiplayer_history",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "5",
+      "when": 1791587724788,
+      "tag": "0051_mp_game_score_detail",
+      "breakpoints": true
     }
   ]
 }

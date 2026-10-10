@@ -11,11 +11,14 @@ const schema = z.object({
 	// Dev and prod must never share a port - otherwise a running prod (systemd)
 	// service holds the port a local `npm run dev` needs. Resolved per-env below.
 	PORT: z.coerce.number().int().positive().default(3873),
-	PORT_PROD: z.coerce.number().int().positive().default(3874),
+	PORT_PROD: z.coerce.number().int().positive().default(3875),
 	// Client origin, per-env (resolved below) - used for CORS and the OAuth
 	// redirect. Dev and prod differ, but share one .env, so both are declared.
 	CLIENT_URL: z.url().default('http://localhost:5173'),
 	CLIENT_URL_PROD: z.url().default('https://osu.idle.rhythmgamers.net'),
+	// Dev only: where browsers reach this API, when not localhost - e.g. the LAN
+	// staging, which proxies /v1 through the game's dev server.
+	API_URL: z.url().optional(),
 
 	DB_HOST: z.string().min(1),
 	DB_PORT: z.coerce.number().int().positive().default(3306),
@@ -78,7 +81,7 @@ export const env = parsed.data;
 export const isProd = env.NODE_ENV === 'production';
 
 /**
- * Listening port, resolved per-environment so dev (3873) and prod (3874) never
+ * Listening port, resolved per-environment so dev (3873) and prod (3875) never
  * collide - the prod systemd service and a local `npm run dev` can run side by
  * side. The reverse proxy for api.osu.idle.rhythmgamers.net targets the prod port.
  */
@@ -111,13 +114,13 @@ export const redisDb = env.REDIS_DB;
 export const redisKeyPrefix = isProd ? 'osu-idle:prod:' : 'osu-idle:dev:';
 
 /**
- * Public origin of this API. Derived (not configured) because it depends on
- * dev vs prod - keeping it in sync by hand would be a footgun. Used to build
- * the osu! OAuth redirect URI, which must exactly match a registered callback.
+ * Public origin of this API. Fixed in prod; in dev localhost unless API_URL says
+ * otherwise. Used to build the osu! OAuth redirect URI, which must exactly match
+ * a registered callback.
  */
 export const apiBaseUrl = isProd
 	? 'https://api.osu.idle.rhythmgamers.net'
-	: `http://localhost:${port}`;
+	: env.API_URL ?? `http://localhost:${port}`;
 
 /** osu! OAuth callback (both dev + prod variants are registered on the app). */
 export const OSU_REDIRECT_URI = `${apiBaseUrl}/v1/auth/osu/callback`;

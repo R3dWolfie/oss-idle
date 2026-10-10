@@ -11,6 +11,7 @@ import {
 	ValueIn,
 } from '@osu-idle/shared/helpers/mapped';
 import SignIn from '../components/options/SignIn';
+import PmFromAnyone from '../components/options/PmFromAnyone';
 import {
 	Trans,
 	useLingui,
@@ -85,6 +86,15 @@ export default function Options() {
 						{
 							search: t`sign|in|login|connect|connexion`,
 							component: () => SignIn,
+						},
+					],
+				},
+				{
+					title: t`Chat`,
+					components: [
+						{
+							search: t`chat|message|private|pm|friends`,
+							component: () => PmFromAnyone,
 						},
 					],
 				},

@@ -11,6 +11,8 @@ import { redisKeyPrefix } from '../env';
 import { db } from '../db/client';
 import { characters } from '../db/schema/character';
 import { hub } from './hub';
+import { LOBBY_CHANNEL } from '@osu-idle/shared/multiplayer';
+import { channelMembers } from './multiplayer';
 
 /**
  * The chat relay + its moderation surface. Messages fan out over the socket and
@@ -22,7 +24,7 @@ import { hub } from './hub';
  */
 
 // Channels a client may post to / the console may browse. Extend as more land.
-const CHANNELS = new Set([DEFAULT_CHANNEL]);
+const CHANNELS = new Set([DEFAULT_CHANNEL, LOBBY_CHANNEL]);
 
 /** The browsable channel list (for the admin console). */
 export const chatChannels = (): string[] => [...CHANNELS];
@@ -38,11 +40,15 @@ const idxKey = (channel: string): string => `${redisKeyPrefix}chat:idx:${channel
 
 // Moderation state. Bans persist until lifted; timeouts auto-expire via TTL.
 const BAN_KEY = `${redisKeyPrefix}chat:banned`;
+/** characters that ever said something, for the first-chat medal */
+const CHATTED_KEY = `${redisKeyPrefix}chat:chatted`;
 const timeoutKey = (userId: number): string => `${redisKeyPrefix}chat:timeout:${userId}`;
 
 /** Chat username colours: a soft yellow for players, purple for admins. */
 export const PLAYER_NAME_COLOR = '#fff09a';
 export const ADMIN_NAME_COLOR = '#b06cff';
+/** BanchoBot, osu!'s bot, speaks in pink. */
+export const BOT_COLOR = '#ff66aa';
 /** `/announce` renders the whole line in this attention-grabbing red. */
 const ANNOUNCE_COLOR = '#ff6b6b';
 /** A deleted line's text is replaced with this, in history and live. */
@@ -51,7 +57,7 @@ const DELETED_TEXT = '<deleted>';
 export const nameColor = (userId: number): string =>
 	isAdmin(userId) ? ADMIN_NAME_COLOR : PLAYER_NAME_COLOR;
 
-const rateLimited = async (characterId: number): Promise<boolean> => {
+export const rateLimited = async (characterId: number): Promise<boolean> => {
 	const key = `${redisKeyPrefix}chat:rl:${characterId}`;
 	const count = await redis.incr(key);
 	if (count === 1) await redis.pexpire(key, WINDOW_MS);
@@ -140,7 +146,9 @@ export const handleChat = async (
 	const trimmed = text.trim();
 	if (!trimmed) return;
 
-	if (!CHANNELS.has(channel)) {
+	// a match's channel reaches its players only
+	const members = await channelMembers(channel);
+	if (members ? !members.includes(from.characterId) : !CHANNELS.has(channel)) {
 		hub.sendTo(from.characterId, {
 			type: 'error', message: `Unknown channel: ${channel}`,
 		});
@@ -165,16 +173,30 @@ export const handleChat = async (
 		id: randomUUID(),
 		kind: 'player',
 		channel,
-		from,
+		from: {
+			...from, userId,
+		},
 		text: trimmed.slice(0, MAX_CHAT_LENGTH),
 		at: Date.now(),
 	};
 
 	await store(channel, line);
-	hub.broadcast({
-		type: 'chat', line,
-	});
+	void redis.sadd(CHATTED_KEY, String(from.characterId));
+	if (members) {
+		for (const id of members) {
+			hub.sendTo(id, {
+				type: 'chat', line,
+			});
+		}
+	} else {
+		hub.broadcast({
+			type: 'chat', line,
+		});
+	}
 };
+
+export const hasChatted = async (characterId: number): Promise<boolean> =>
+	await redis.sismember(CHATTED_KEY, String(characterId)) === 1;
 
 /** Broadcast a server announcement (no sender) - e.g. a #1-rank notice. The
  *  whole line renders in `color`. Fire-and-forget history write. */

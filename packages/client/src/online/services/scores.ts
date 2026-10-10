@@ -85,3 +85,12 @@ export const getCountryBeatmapScores = async (
 			return scores;
 		}, 1000 * 60);
 };
+/** A character's latest score on a beatmap, if any. */
+export const getLatestScore = async (characterId: number, beatmapId: number) => {
+	const res = await endpoint.character[':character'].beatmap[':beatmap'].latest.$get({
+		param: {
+			character: String(characterId), beatmap: String(beatmapId),
+		},
+	});
+	return res.ok ? res.json() : undefined;
+};

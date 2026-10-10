@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	useRef,
 	useState,
@@ -43,7 +44,7 @@ export default function BeatmapCardXP({ insight }: {
 				</span>
 			)}
 			<span className="bm-card__xp-chip bm-card__xp-total">
-				<Trans>Total {bignum(insight.total)}xp</Trans>
+				<Trans>Total {ph({ xp: bignum(insight.total) })}xp</Trans>
 			</span>
 			{anchor && (
 				<BeatmapXPBreakdown insight={insight} anchor={anchor} onClose={close} />

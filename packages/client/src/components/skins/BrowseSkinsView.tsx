@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	useEffect,
 	useState,
@@ -162,7 +163,7 @@ export default function BrowseSkinsView() {
 											<Trans>by</Trans> {a.authorName}
 											<span className='skin__downloads'>
 												{' · '}
-												<Plural value={a.downloads} one='# download' other='# downloads' />
+												<Plural value={ph({ downloads: a.downloads })} one='# download' other='# downloads' />
 											</span>
 										</div>
 										{a.description && <div className='skin__desc'>{a.description}</div>}

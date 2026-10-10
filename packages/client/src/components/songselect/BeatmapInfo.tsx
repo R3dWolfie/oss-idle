@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { bpm } from '@osu-idle/shared/display/num';
 import { length } from '@osu-idle/shared/display/length';
@@ -35,19 +36,19 @@ export default function BeatmapInfo({
 							{title}
 						</div>
 						<div className="game__top_md_creator">
-							<Trans>Mapped by {version.set.metadata.creator}</Trans>
+							<Trans>Mapped by {ph({ creator: version.set.metadata.creator })}</Trans>
 						</div>
 					</div>
 				</div>
 				<div className="game__top_version">
 					<div className="game__top_music">
-						<Trans>Length: {totalLength} BPM: {bpmText} Objects: {version.metadata.objects}</Trans>
+						<Trans>Length: {totalLength} BPM: {bpmText} Objects: {ph({ objects: version.metadata.objects })}</Trans>
 					</div>
 					<div className="game__top_hos">
-						<Trans>Rice: {version.metadata.rice} LN: {version.metadata.ln}</Trans>
+						<Trans>Rice: {ph({ rice: version.metadata.rice })} LN: {ph({ ln: version.metadata.ln })}</Trans>
 					</div>
 					<div className="game__top_diff">
-						<Trans>Star Rating: {version.metadata.difficulty}★</Trans>
+						<Trans>Star Rating: {ph({ stars: version.metadata.difficulty })}★</Trans>
 					</div>
 				</div>
 			</div>

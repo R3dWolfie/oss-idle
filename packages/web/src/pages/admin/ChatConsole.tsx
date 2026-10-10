@@ -15,6 +15,8 @@ import {
 	sendChatMessage,
 } from '../../api/chat';
 import ChatUserMenu from './ChatUserMenu';
+import ChatReports from './ChatReports';
+import { getReports } from '../../api/social';
 
 const REFRESH_MS = 2000;
 
@@ -32,6 +34,13 @@ export default function ChatConsole() {
 	const [draft, setDraft] = useState('');
 	const [error, setError] = useState<string | null>(null);
 	const [menu, setMenu] = useState<MenuState | null>(null);
+	const [showReports, setShowReports] = useState(false);
+	const [openReports, setOpenReports] = useState(0);
+	useEffect(() => {
+		getReports()
+			.then(r => setOpenReports(r.filter(x => !x.resolvedAt).length))
+			.catch(() => undefined);
+	}, []);
 	const logRef = useRef<HTMLDivElement>(null);
 
 	const refresh = useCallback(() =>
@@ -80,8 +89,16 @@ export default function ChatConsole() {
 				<select value={channel} onChange={e => setChannel(e.target.value)}>
 					{data.channels.map(ch => <option key={ch} value={ch}>{ch}</option>)}
 				</select>
+				<button
+					type='button'
+					className='chat-console__reports'
+					data-active={showReports}
+					onClick={() => setShowReports(!showReports)}
+				>reports{openReports ? ` (${openReports})` : ''}</button>
 				{error && <span className='chat-console__error'>{error}</span>}
 			</div>
+
+			{showReports && <ChatReports onCount={setOpenReports} />}
 
 			<div className='chat-console__log' ref={logRef}>
 				{data.messages.map(m => {

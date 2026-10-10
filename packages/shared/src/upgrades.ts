@@ -13,6 +13,10 @@ export const UPGRADES_PER_PRESTIGE = 1;
 /** Real levels between two gear tiers - the slots past the base ladder. */
 export const GEAR_TIER_LEVELS = 1;
 export const UPGRADE_XP_BONUS = 0.1;
+/** XP-gain bonus per medal, by tier - compounded over every medal held. */
+export const MEDAL_XP_BONUS = {
+	bronze: 0.0025, silver: 0.005, gold: 0.01, platinum: 0.02, divine: 0.03,
+} as const;
 
 /** Real level the first prestige needs; each one taken raises it. */
 export const PRESTIGE_MIN_LEVEL = 100;

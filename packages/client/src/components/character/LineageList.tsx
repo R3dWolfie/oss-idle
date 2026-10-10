@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	useEffect,
 	useState,
@@ -55,10 +56,10 @@ export default function LineageList() {
 						>
 							<span className="lineage__name">{character.name}</span>
 							<span className="lineage__gen">
-								<Trans>Gen {character.generation}</Trans>
+								<Trans>Gen {ph({ generation: character.generation })}</Trans>
 							</span>
 							<span className="lineage__overall">
-								<Trans>Overall Lv{character.overallLevel}</Trans>
+								<Trans>Overall Lv{ph({ level: character.overallLevel })}</Trans>
 							</span>
 							<span className="lineage__unlocks">
 								{unlocks.length > 0 ? unlocks.join(', ') : <Trans>No unlocks</Trans>}

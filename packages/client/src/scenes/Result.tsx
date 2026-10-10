@@ -5,7 +5,10 @@ import { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
 import Background from './Background';
 import './Result.css';
 import Controls from '../input/Controls';
-import SceneManager, { SCENE } from './SceneManager';
+import Multiplayer from '../online/multiplayer';
+import MatchRanking from '../components/multiplayer/MatchRanking';
+import useMatchRanking from '../components/multiplayer/useMatchRanking';
+import SceneManager from './SceneManager';
 import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
 import Character from '../db/schema/character';
 import useSmoothNumber from '../animations/useSmoothNumber';
@@ -31,6 +34,8 @@ import ResultMeta from '../components/result/ResultMeta';
 import SkillProgression from '../components/result/SkillProgression';
 import { currentScore } from '../globals';
 import { showsDivine } from '@osu-idle/shared/rebirth';
+import MedalUnlockOverlay from '../components/medals/MedalUnlockOverlay';
+import { medalUnlocks } from '../achievements/medalUnlocks';
 
 /** Two per row. Divine pairs with marvelous at the top and pushes perfect down
  *  beside great; without divine the pairing is left exactly as it was. */
@@ -61,9 +66,11 @@ type Props = {
 	/** the map this score is of. Given, the screen names it itself instead of
 	 *  following the live selection, which browsing elsewhere can change. */
 	beatmap?: LightBeatmap,
+	/** medals this play unlocked: their overlay plays over this screen */
+	medals?: string[],
 };
 
-export default function Result({ score, game, progression, failed, beatmap }: Props) {
+export default function Result({ score, game, progression, failed, beatmap, medals }: Props) {
 	const [skin] = useSynced(currentSkin);
 
 	const count = (j: Judgement): number =>
@@ -87,7 +94,10 @@ export default function Result({ score, game, progression, failed, beatmap }: Pr
 
 	// leaving the result screen no longer stops anything: the queue runs whether
 	// or not a scene is watching it (stop it from the dock instead)
-	const onBack = () => SceneManager.set(SCENE.SELECT);
+	// a match play's standings, at the right edge as on osu!'s ranking screen
+	const ranking = useMatchRanking(score);
+
+	const onBack = () => SceneManager.set(Multiplayer.afterPlay());
 	Controls.back.usePress(onBack);
 
 	const player = useAsync(async () => Character.isLocalId(score.characterId)
@@ -110,6 +120,7 @@ export default function Result({ score, game, progression, failed, beatmap }: Pr
 		<Background beatmap={beatmap} />
 		<div className="resultscreen">
 			<ResultMeta playerName={playerName} playedAt={playedAt} beatmap={beatmap} />
+			{ranking && <MatchRanking ranking={ranking} />}
 			<button className="result__exit" onClick={onBack}>
 				<Trans>BACK</Trans>
 			</button>
@@ -188,5 +199,6 @@ export default function Result({ score, game, progression, failed, beatmap }: Pr
 
 			</div>
 		</div>
+		{medals?.length ? <MedalUnlockOverlay medals={medalUnlocks(medals)} /> : null}
 	</>);
 }

@@ -12,7 +12,10 @@ import {
 	desc,
 	count,
 } from 'drizzle-orm';
-import { beatmaps } from './beatmap';
+import {
+	beatmapListColumns,
+	beatmaps,
+} from './beatmap';
 import { beatmapset } from './beatmapset';
 
 export const firstPlace = mysqlTable('first_place', bestTableDefinition, table => [
@@ -36,7 +39,9 @@ export const getNbFirstPlaces = async (characterId: number) => (await db
 
 export const getFirstPlaces = async (characterId: number, page: number = 1) => {
 	return db
-		.select()
+		.select({
+			first_place: firstPlace, beatmap: beatmapListColumns, beatmapset,
+		})
 		.from(firstPlace)
 		.innerJoin(beatmaps, eq(beatmaps.id, firstPlace.beatmapId))
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))

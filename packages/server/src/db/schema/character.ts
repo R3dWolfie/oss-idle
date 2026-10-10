@@ -64,6 +64,8 @@ export const characters = mysqlTable('character', {
 	// server-relative upload path (e.g. /uploads/x.png); resolved to an absolute
 	// URL in characterToDTO, falling back to the osu! avatar.
 	avatarUrl: varchar({ length: 512 }),
+	// Profile banner upload, stored like avatarUrl.
+	bannerUrl: varchar({ length: 512 }),
 	...skillColumns,
 	overallLevel: skillColumn(),
 	overallXp: xpColumn(),
@@ -72,6 +74,9 @@ export const characters = mysqlTable('character', {
 	/** Rebirth number, 1 for a first character. Its unlock set is the first
 	 *  generation - 1 entries of the shared list. */
 	generation: int().notNull().default(1),
+	// lifetime counts for the upgrade medals: prestige resets the upgrades themselves
+	upgradesBought: int().notNull().default(0),
+	laddersCompleted: int().notNull().default(0),
 	pp: decimal({
 		precision: 10, scale: 3,
 	}).notNull().default('0'),
@@ -92,6 +97,10 @@ export const resolveAvatarUrl = (
 	userAvatarUrl?: string | null,
 ) =>
 	characterAvatarUrl ? `${apiBaseUrl}${characterAvatarUrl}` : userAvatarUrl || GUEST_AVATAR_URL;
+
+/** The profile banner as an absolute URL, absent when none was uploaded. */
+export const resolveBannerUrl = (characterBannerUrl: string | null) =>
+	characterBannerUrl ? `${apiBaseUrl}${characterBannerUrl}` : undefined;
 
 /** Map a character row to the shared wire contract (skill columns → nested skills). */
 export function characterToDTO(
@@ -115,6 +124,7 @@ export function characterToDTO(
 		userId: row.userId,
 		name: row.name,
 		avatarUrl: resolveAvatarUrl(row.avatarUrl, userAvatarUrl),
+		bannerUrl: resolveBannerUrl(row.bannerUrl),
 		country: userCountry,
 		generation: row.generation,
 		overallLevel: row.overallLevel,

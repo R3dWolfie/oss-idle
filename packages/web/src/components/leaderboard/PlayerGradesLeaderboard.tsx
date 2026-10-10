@@ -1,5 +1,6 @@
 import './PlayerLeaderboard.css';
 import Link from '../Link';
+import Pager from './Pager';
 import int from '@osu-idle/shared/math/int';
 import type { getGradesRanking } from '../../api/rankings';
 import Flag from '../Flag';
@@ -76,9 +77,9 @@ export default function PlayerGradesLeaderboard({ sort, country, page, players }
 				key={type}
 				to='/rankings/grades/$grade'
 				params={{ grade: type }}
-				search={{
-					page, country, 
-				}}
+				search={prev => ({
+					...prev, page, country,
+				})}
 				className={`${sort === type ? 'current' : ''}`}>
 				{sortLabel(type)}
 			</Link>)}
@@ -120,5 +121,6 @@ export default function PlayerGradesLeaderboard({ sort, country, page, players }
 				</tbody>
 			</table>
 		</div>
+		<Pager page={page} hasNext={players.length === 50} />
 	</div>);
 }

@@ -46,10 +46,12 @@ export default defineConfig({
 	server: {
 		port: 5174,
 		strictPort: true,
+		host: true,
+		allowedHosts: ['.lan'],
 		// The page is loaded via the game's origin (proxied), so point the HMR
-		// socket straight at this dev server to survive the proxy hop.
+		// socket straight at this dev server (on the page's host) to survive the
+		// proxy hop.
 		hmr: {
-			host: 'localhost',
 			protocol: 'ws',
 			port: 5174,
 		},

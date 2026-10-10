@@ -16,9 +16,9 @@ export default function ScoreRankings({ page, country, players }: {
 		<main>
 			<RankingsNav current={'global'} />
 			<CountryFilter selected={country} onSelect={value => navigate({
-				to: '/rankings/score', search: {
-					country: value || undefined, page: 1, 
-				}, 
+				to: '/rankings/score', search: prev => ({
+					...prev, country: value || undefined, page: 1,
+				}),
 			})} />
 
 			<div className='page-contents'>

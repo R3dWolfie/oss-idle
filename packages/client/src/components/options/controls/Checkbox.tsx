@@ -13,6 +13,7 @@ interface Props {
 	 * stack still live (e.g. `requestFullscreen`).
 	 */
 	onChange?: (next: boolean) => void;
+	disabled?: boolean;
 }
 
 /**
@@ -20,7 +21,7 @@ interface Props {
  * with the label on the left and a tick box on the right.
  * Backed by a `Synced<boolean>` so the state is subscribable outside the panel.
  */
-export default function Checkbox({ value, label, onChange }: Props) {
+export default function Checkbox({ value, label, onChange, disabled }: Props) {
 	const [checked] = useSynced(value);
 
 	const toggle = () => {
@@ -34,6 +35,7 @@ export default function Checkbox({ value, label, onChange }: Props) {
 			type="button"
 			className={`opt-checkbox ${checked ? 'is-on' : ''}`} 
 			onClick={toggle}
+			disabled={disabled}
 		>
 			<span className="opt-checkbox__box" aria-hidden>
 				<span className="opt-checkbox__tick" />

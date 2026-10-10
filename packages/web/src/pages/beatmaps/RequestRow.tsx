@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ph } from '@lingui/core/macro';
 import {
 	Trans,
 	useLingui,
@@ -9,31 +9,42 @@ import { dateAgo } from '@osu-idle/shared/display/ago';
 import type { MapRequest } from '../../api/mapRequests';
 import OutLink from '../../components/OutLink';
 import ProfilePicture from '../../components/ProfilePicture';
+import RequestActions from './RequestActions';
 import {
 	PHASE_LABEL,
 	phaseOf,
 } from './requestPhase';
 
 export default function RequestRow({
-	row, mine, admin, busy, onSupport, onResolve, onIngest, onDelete,
+	row, mine, admin, busy, selected, onSelect, onSupport, onResolve, onIngest, onDelete,
 }: {
 	row: MapRequest,
 	mine: boolean,
 	admin: boolean,
 	busy: boolean,
+	selected: boolean,
+	onSelect: (setId: number) => void,
 	onSupport: (setId: number) => void,
 	onResolve: (setId: number, status: 'accepted' | 'rejected', note?: string) => void,
 	onIngest: (setId: number) => void,
 	onDelete: (setId: number) => void,
 }) {
 	const { t, i18n } = useLingui();
-	const [note, setNote] = useState('');
 
 	const phase = phaseOf(row);
 	const open = phase === 'open';
 
 	return (
 		<div className={`request request--${phase}`}>
+			{admin && open && (
+				<input
+					type='checkbox'
+					className='request__select'
+					checked={selected}
+					disabled={busy}
+					onChange={() => onSelect(row.setId)}
+				/>
+			)}
 			<div
 				className='request__cover'
 				style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${row.setId}/covers/list.jpg')` }}
@@ -48,7 +59,7 @@ export default function RequestRow({
 					{row.title}
 				</OutLink>
 				<span className='request__artist'>{row.artist}</span>
-				<span className='request__creator'><Trans>mapped by {row.creator}</Trans></span>
+				<span className='request__creator'><Trans>mapped by {ph({ creator: row.creator })}</Trans></span>
 				<div className='request__bottom'>
 					<span className={`request__capsule request__capsule--${phase}`}>
 						{i18n._(PHASE_LABEL[phase])}
@@ -76,46 +87,16 @@ export default function RequestRow({
 			</button>
 
 			{(admin || (mine && open)) && (
-				<div className='request__actions'>
-					{admin && open && <>
-						<input
-							className='request__field'
-							value={note}
-							disabled={busy}
-							placeholder={t`reason (optional)`}
-							onChange={e => setNote(e.target.value)}
-						/>
-						<button
-							className='request__btn request__btn--primary'
-							disabled={busy}
-							title={t`Download the .osz and push it into the nomination queue`}
-							onClick={() => onIngest(row.setId)}
-						>
-							<Trans>Ingest</Trans>
-						</button>
-						<button
-							className='request__btn'
-							disabled={busy}
-							onClick={() => onResolve(row.setId, 'accepted', note || undefined)}
-						>
-							<Trans>Accept</Trans>
-						</button>
-						<button
-							className='request__btn request__btn--warn'
-							disabled={busy}
-							onClick={() => onResolve(row.setId, 'rejected', note || undefined)}
-						>
-							<Trans>Reject</Trans>
-						</button>
-					</>}
-					<button
-						className='request__btn request__btn--danger'
-						disabled={busy}
-						onClick={() => onDelete(row.setId)}
-					>
-						{mine && !admin ? <Trans>Withdraw</Trans> : <Trans>Delete</Trans>}
-					</button>
-				</div>
+				<RequestActions
+					setId={row.setId}
+					mine={mine}
+					admin={admin}
+					open={open}
+					busy={busy}
+					onResolve={onResolve}
+					onIngest={onIngest}
+					onDelete={onDelete}
+				/>
 			)}
 		</div>
 	);

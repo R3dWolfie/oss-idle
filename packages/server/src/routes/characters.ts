@@ -7,6 +7,7 @@ import {
 	characters,
 	getCharacterById,
 	resolveAvatarUrl,
+	resolveBannerUrl,
 } from '../db/schema/character';
 import { getUserById } from '../db/schema/user';
 import { getCharacterTotals } from '../db/schema/character_totals';
@@ -26,6 +27,7 @@ import {
 } from '../db/schema/first_place';
 import { getRecentCharacterScores } from '../db/schema/score';
 import { getFormerNames } from '../db/schema/name_history';
+import { getMedals } from '../db/schema/character_medal';
 
 const numberParam = z.coerce.number().int().positive();
 
@@ -44,8 +46,17 @@ export const charactersRoutes = new Hono()
 		return c.json({
 			...row,
 			avatarUrl: resolveAvatarUrl(row.avatarUrl, user?.avatarUrl),
+			bannerUrl: resolveBannerUrl(row.bannerUrl),
 			formerNames,
 		});
+	})
+
+	// The medals a character holds, newest first.
+	.get('/:id/medals', async c => {
+		const id = numberParam.parse(c.req.param('id'));
+		return c.json((await getMedals(id)).map(m => ({
+			id: m.medalId, unlockedAt: m.unlockedAt.getTime(),
+		})));
 	})
 
 	// Derived profile statistics: aggregates, grade/judgement totals and ranks.

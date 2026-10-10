@@ -10,6 +10,8 @@ export const pageSearch = z.object({
 		.int()
 		.positive()
 	, 1).default(1), 
+	// only the signed-in player and their friends
+	friends: fallback(z.boolean().optional(), undefined).optional(),
 });
 
 export const pageCountrySearch = pageSearch.extend({ country: z.string().optional() });

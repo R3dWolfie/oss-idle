@@ -2,6 +2,7 @@ import './PlayerGrid.css';
 import { useLingui } from '@lingui/react/macro';
 import type { PresenceEntry } from '@osu-idle/shared/community/presence';
 import PlayerCard from './PlayerCard';
+import { menuFor } from './state';
 
 /** The scrollable grid of online-character cards. */
 export default function PlayerGrid({ characters }: { characters: PresenceEntry[] }) {
@@ -13,7 +14,11 @@ export default function PlayerGrid({ characters }: { characters: PresenceEntry[]
 
 	return (
 		<div className="community-grid">
-			{characters.map(c => <PlayerCard key={c.characterId} character={c} />)}
+			{characters.map(c => <PlayerCard
+				key={c.characterId}
+				character={c}
+				onClick={() => void menuFor.set(c)}
+			/>)}
 		</div>
 	);
 }

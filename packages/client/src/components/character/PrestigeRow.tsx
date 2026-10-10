@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { useState } from 'react';
 import {
 	Trans,
@@ -38,6 +39,7 @@ export default function PrestigeRow({
 		level, prestige,
 	});
 	const multiplier = prestigeXPMultiplier(prestige);
+	const factor = multiplier.toFixed(2);
 	const next = prestigeXPMultiplier(prestige + 1);
 
 	const run = async () => {
@@ -55,7 +57,7 @@ export default function PrestigeRow({
 		const name = skillName(skill.name);
 		setConfirming({
 			title: t`Prestige ${name}?`,
-			sub: t`XP Lv${level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +${prestige + 1} bonus levels, ${maxUpgrades(prestige + 1)} gear slots and x${next.toFixed(2)} XP`,
+			sub: t`XP Lv${level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +${ph({ bonus: prestige + 1 })} bonus levels, ${ph({ slots: maxUpgrades(prestige + 1) })} gear slots and x${ph({ multiplier: next.toFixed(2) })} XP`,
 			confirmLabel: t`Prestige`,
 			color: '#ff4089',
 			onConfirm: () => void run(),
@@ -70,7 +72,7 @@ export default function PrestigeRow({
 					<Trans>Lv<SkillLevel level={level} xp={xp} prestige={prestige} lifetimeXp={lifetimeXp} /></Trans>
 				</span>
 				{prestige > 0 && (
-					<span className="upgrade__mult"><Trans>x{multiplier.toFixed(2)} XP</Trans></span>
+					<span className="upgrade__mult"><Trans>x{factor} XP</Trans></span>
 				)}
 			</div>
 			<div className="upgrade__info">

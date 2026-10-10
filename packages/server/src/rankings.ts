@@ -94,7 +94,7 @@ const memberCharacterId = (member: string) => Number(member.slice(member.indexOf
 // the member without a DB hit. Wiped/rebuilt with the sets (shares PREFIX).
 const beatmapIds = (beatmapId: number) => `${PREFIX}bm:${beatmapId}:ids`;
 
-const PAGE_SIZE = 50;
+export const PAGE_SIZE = 50;
 
 /** Add/refresh every set entry for one character in a single pipeline. */
 function index(
@@ -207,6 +207,18 @@ const rankIn = async (key: string, id: number): Promise<number | undefined> => {
 };
 
 export const globalRank = (m: GlobalMetric, id: number) => rankIn(globalKey(m), id);
+
+/** {@link globalRank} for many characters in one round trip, in order. */
+export const globalRanks = async (
+	m: GlobalMetric,
+	ids: number[],
+): Promise<(number | undefined)[]> => {
+	if (!ids.length) return [];
+	const pipeline = redis.pipeline();
+	for (const id of ids) pipeline.zrevrank(globalKey(m), String(id));
+	const res = await pipeline.exec();
+	return (res ?? []).map(([err, r]) => err || r === null ? undefined : (r as number) + 1);
+};
 export const countryRank = (
 	m: CountryMetric,
 	country: string, 
@@ -253,7 +265,26 @@ async function hydrate(ids: number[]) {
 	return ids.map(id => byId.get(id)).filter((r): r is NonNullable<typeof r> => !!r);
 }
 
-const hydratePage = async (key: string, page: number) => hydrate(await pageIds(key, page));
+/** A board narrowed to some characters (a player and their friends), ranked
+ *  among themselves. Characters not on the board are left out. */
+const amongPageIds = async (key: string, page: number, among: number[]): Promise<number[]> => {
+	if (!among.length) return [];
+	const pipeline = redis.pipeline();
+	for (const id of among) pipeline.zscore(key, String(id));
+	const res = await pipeline.exec();
+	const start = (page - 1) * PAGE_SIZE;
+	return among
+		.map((id, i) => ({
+			id, score: res?.[i]?.[1],
+		}))
+		.filter(r => r.score !== null && r.score !== undefined)
+		.sort((a, b) => Number(b.score) - Number(a.score))
+		.slice(start, start + PAGE_SIZE)
+		.map(r => r.id);
+};
+
+const hydratePage = async (key: string, page: number, among?: number[]) =>
+	hydrate(among ? await amongPageIds(key, page, among) : await pageIds(key, page));
 
 /** Countries that have at least one player, with their player count, most
  *  populated first. Cached briefly - the list changes only when a new country's
@@ -286,20 +317,24 @@ export const skillPage = (
 	skill: GlobalMetric,
 	page: number,
 	country?: string,
-) => hydratePage(metricKey(skill, country), page);
+	among?: number[],
+) => hydratePage(metricKey(skill, country), page, among);
 export const gradesPage = (
 	grade: GoodGrade | 'all', 
 	page: number,
 	country?: string,
-) => hydratePage(metricKey(grade === 'all' ? 'allgrades' : grade, country), page);
+	among?: number[],
+) => hydratePage(metricKey(grade === 'all' ? 'allgrades' : grade, country), page, among);
 export const ppPage = (
 	page: number,
 	country?: string,
-) => hydratePage(metricKey('pp', country), page);
+	among?: number[],
+) => hydratePage(metricKey('pp', country), page, among);
 export const scorePage = (
 	page: number, 
 	country?: string,
-) => hydratePage(metricKey('score', country), page);
+	among?: number[],
+) => hydratePage(metricKey('score', country), page, among);
 
 /** Per-beatmap leaderboard: the character ids with a best on this map, in score
  *  order (global or within one country). The route hydrates the `best` rows. */
@@ -457,10 +492,26 @@ async function* scanKeys(match: string): AsyncGenerator<string> {
 	} while (cursor !== '0');
 }
 
-/** Build the sets once per deploy (versioned), elected to a single cluster
- *  worker. Cheap to call on every boot: returns immediately once built. */
+/** Whether the pp board holds exactly MySQL's characters at their pp. Fails
+ *  when the database was swapped under the index (a restore, a staging clone). */
+const indexMatchesDb = async () => {
+	const rows = await db
+		.select({
+			id: characters.id, pp: characters.pp,
+		})
+		.from(characters)
+		.innerJoin(users, eq(users.id, characters.userId));
+	const scores = await redis.zrange(globalKey('pp'), 0, -1, 'WITHSCORES');
+	if (scores.length !== rows.length * 2) return false;
+	const indexed = new Map<string, number>();
+	for (let i = 0; i < scores.length; i += 2) indexed.set(scores[i], Number(scores[i + 1]));
+	return rows.every(row => indexed.get(String(row.id)) === Number(row.pp));
+};
+
+/** Build the sets on boot unless they are already built for this schema and
+ *  still match MySQL, elected to a single cluster worker. */
 export async function ensureRankings(): Promise<void> {
-	if (await redis.exists(builtKey)) return;
+	if (await redis.exists(builtKey) && await indexMatchesDb()) return;
 	const got = await redis.set(lockKey, '1', 'EX', 300, 'NX');
 	if (got !== 'OK') return;
 	try {

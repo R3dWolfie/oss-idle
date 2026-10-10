@@ -54,6 +54,11 @@ export class EffectPlayer {
 		});
 	}
 
+	/** The effect-volume bus, for sounds synthesised in code instead of sampled. */
+	public get output(): AudioNode {
+		return this.master;
+	}
+
 	/** Current audio-clock time in ms - pair with {@link play}'s `atMs`. */
 	public now(): number {
 		return this.context.currentTime * 1000;

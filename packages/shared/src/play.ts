@@ -106,6 +106,8 @@ export const playResultDTO = z.discriminatedUnion('ok', [
 		score: scoreDTO.optional(),
 		gains: z.array(skillGainDTO).optional(),
 		deltas: playDeltasDTO.optional(),
+		/** medals this play unlocked - only when asked for with `medals` */
+		medals: z.array(z.string()).optional(),
 	}),
 	z.object({
 		ok: z.literal(false),
@@ -156,6 +158,9 @@ export const playClientMessages = [
 		type: z.literal('play:result'),
 		token: z.string(),
 		forceSee: z.boolean().optional(),
+		/** the result screen is about to show this result: award its medals.
+		 *  The only way medals are earned, so an unshown play earns none. */
+		medals: z.boolean().optional(),
 	}),
 ] as const;
 

@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { music } from '../../audio/MusicPlayer';
 import LightBeatmap from '../../osu/beatmap/LightBeatmap';
@@ -26,7 +27,7 @@ export default function ResultMeta({
 				{track && <span className="result__version">[{track.version}]</span>}
 			</div>
 			{track && <div className="result__creator">
-				<Trans>Beatmap by {track.creator}</Trans>
+				<Trans>Beatmap by {ph({ creator: track.creator })}</Trans>
 			</div>}
 			<div className="result__played">
 				<Trans>Played by {playerName} on {playedAt}</Trans>

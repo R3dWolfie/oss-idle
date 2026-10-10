@@ -38,10 +38,11 @@ npm run backup:prod
 
 step "2/8 build and bump ($BUMP)"
 node scripts/version-bump.mjs "$BUMP" \
-  --verify "npm run i18n:upload && npm run i18n:download && node scripts/staged-build.mjs"
+  --verify "npm run i18n:upload && npm run i18n:download && node scripts/prod-build.mjs"
+node scripts/prod-build.mjs --follow
 
 step "3/8 stop the server"
-sudo systemctl stop osu-idle
+sudo systemctl stop osu-idle-prod
 
 step "4/8 dump the scores the snapshot predates (server is down, so the set is closed)"
 node scripts/dump-missing-scores.mjs "$SNAPSHOT" "$SCORES"
@@ -59,6 +60,6 @@ step "8/8 drop the rankings cache so it rebuilds from the restored data"
 node scripts/reset-rankings.mjs
 
 step "starting the server"
-sudo systemctl start osu-idle
+sudo systemctl start osu-idle-prod
 
 printf '\n\033[1;32mdone\033[0m - players rolled back, scores replayed, rankings rebuilding on boot\n'

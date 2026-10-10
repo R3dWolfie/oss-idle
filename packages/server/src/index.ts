@@ -5,6 +5,7 @@ import { app } from './app';
 import { port } from './env';
 import { redis } from './redis';
 import { sweepDuePlays } from './play';
+import { sweepMatches } from './ws/multiplayer';
 import { sweepRankedMaps } from './beatmaps/sweep';
 import {
 	ensureRankings,
@@ -34,8 +35,8 @@ const server = serve({
 
 injectWebSocket(server);
 
-// Build the Redis ranking index from MySQL once per deploy (one cluster worker
-// wins the lock; the rest return immediately).
+// Build the Redis ranking index from MySQL when it is missing or no longer
+// matches it (one cluster worker wins the lock; the rest return immediately).
 void ensureRankings();
 
 // Finalise plays whose end time has passed even if no client ever returns to
@@ -43,6 +44,10 @@ void ensureRankings();
 // claim in finalizePlay guarantees a single submit.
 const sweep = setInterval(() => void sweepDuePlays(), 3_000);
 sweep.unref();
+
+// End finished match rounds and free the seats of players who went offline.
+const matchSweep = setInterval(() => void sweepMatches(), 3_000);
+matchSweep.unref();
 
 // Announce scheduled maps whose rank time has passed (no redeploy needed).
 const rankSweep = setInterval(() => void sweepRankedMaps(), 30_000);

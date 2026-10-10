@@ -6,6 +6,8 @@ import Gameplay from './Gameplay';
 import { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
 import { Score } from '../db/schema/score';
 import Result from './Result';
+import Lobby from './Lobby';
+import MatchSetup from './MatchSetup';
 import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
 import type { Transition } from './Transition';
 import {
@@ -21,6 +23,8 @@ export const SCENE = mapped([
 	'SELECT',
 	'GAME',
 	'RESULT',
+	'LOBBY',
+	'MATCH',
 ]);
 export type Scene = ValueIn<typeof SCENE>;
 
@@ -57,13 +61,18 @@ export default class SceneManager {
 			progression?: SkillProgress[],
 			failed?: boolean,
 			beatmap?: LightBeatmap,
+			medals?: string[],
 		) => <Result
 			game={game}
 			score={score}
 			progression={progression}
 			failed={failed}
 			beatmap={beatmap}
+			medals={medals}
 		/>,
+
+		[SCENE.LOBBY]: () => <Lobby />,
+		[SCENE.MATCH]: () => <MatchSetup />,
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} as const satisfies Record<Scene, (...args: any[]) => JSX.Element>;

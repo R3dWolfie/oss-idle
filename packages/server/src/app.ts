@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { compress } from 'hono/compress';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { HTTPException } from 'hono/http-exception';
@@ -21,6 +22,7 @@ import { authRoutes } from './routes/auth';
 import { meRoutes } from './routes/me';
 import { newsRoutes } from './routes/news';
 import { scoresRoutes } from './routes/scores';
+import { medalsRoutes } from './routes/medals';
 import { charactersRoutes } from './routes/characters';
 import { statsRoutes } from './routes/stats';
 import { chatRoutes } from './routes/chat';
@@ -28,6 +30,8 @@ import { rankingRoutes } from './routes/ranking';
 import { beatmapsRoutes } from './routes/beatmap';
 import { addonsRoutes } from './routes/addons';
 import { skinsRoutes } from './routes/skins';
+import { matchesRoutes } from './routes/matches';
+import { socialRoutes } from './routes/social';
 
 // The desktop app loads its bundle from a registered `app://` scheme, so it
 // calls us from that origin (Bearer-authed, no cookie). In dev also accept the
@@ -36,7 +40,7 @@ import { skinsRoutes } from './routes/skins';
 // iterating on the web platform. Prod stays locked to CLIENT_URL + the app.
 const allowedOrigins = isProd
 	? [clientUrl, DESKTOP_ORIGIN]
-	: [clientUrl, DESKTOP_ORIGIN, 'http://localhost:5174'];
+	: [clientUrl, DESKTOP_ORIGIN, 'http://localhost:5173', 'http://localhost:5174'];
 
 // Versioned API surface. Mount future feature routers here.
 const v1 = new Hono()
@@ -52,6 +56,9 @@ const v1 = new Hono()
 	.route('/chat', chatRoutes)
 	.route('/addons', addonsRoutes)
 	.route('/skins', skinsRoutes)
+	.route('/medals', medalsRoutes)
+	.route('/social', socialRoutes)
+	.route('/matches', matchesRoutes)
 ;
 
 // Built as one chained expression so the route schema is captured in the type
@@ -59,6 +66,9 @@ const v1 = new Hono()
 // match the API's exact request/response types with no duplication.
 const app = new Hono()
 	.use('*', logger())
+	// Apache only deflates text/html-ish types, so JSON left uncompressed: the
+	// catalog was 441 KB a load (64 KB gzipped). Binary payloads are skipped.
+	.use('*', compress())
 	.use('*', cors({
 		origin: allowedOrigins, credentials: true, 
 	}))

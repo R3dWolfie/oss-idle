@@ -185,25 +185,13 @@
 	letter-spacing: 0.03em;
 	line-height: 16px;
 }
-.skins-admin__badge--unpublished {
+.skins-admin__badge--UNPUBLISHED {
 	background-color: hsl(var(--hsl-b4));
 	color: hsl(var(--hsl-c2));
 }
-.skins-admin__badge--pending {
-	background-color: hsl(var(--hsl-orange-1));
-	color: hsl(var(--hsl-b4));
-}
-.skins-admin__badge--onHold {
-	background-color: hsl(var(--hsl-blue-1));
-	color: hsl(var(--hsl-b4));
-}
-.skins-admin__badge--published {
+.skins-admin__badge--PUBLISHED {
 	background-color: hsl(var(--hsl-lime-1));
 	color: hsl(var(--hsl-b4));
-}
-.skins-admin__badge--denied {
-	background-color: hsl(var(--hsl-red-2));
-	color: hsl(var(--hsl-b5));
 }
 
 .skins-admin__desc {

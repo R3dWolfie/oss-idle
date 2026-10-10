@@ -4,7 +4,11 @@ import {
 	expect,
 } from 'vitest';
 import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
-import { xpForLevel } from '@osu-idle/shared/sim/skills/xp';
+import {
+	LATE_LEVEL_XP,
+	lateLevelXp,
+	xpForLevel,
+} from '@osu-idle/shared/sim/skills/xp';
 import { SKILL } from '@osu-idle/shared/skills';
 import Accuracy from '@osu-idle/shared/sim/skills/accuracy';
 
@@ -16,6 +20,17 @@ describe('xpForLevel curve', () => {
 	it('is strictly increasing across the level range', () => {
 		for (let level = 1; level <= 120; level++) {
 			expect(xpForLevel(level)).toBeGreaterThan(xpForLevel(level - 1));
+		}
+	});
+
+	it('grows the endgame tier by a whole step each level', () => {
+		expect(lateLevelXp(99)).toBe(0);
+		expect([100, 101, 102, 103, 104].map(lateLevelXp))
+			.toEqual([1, 3, 6, 10, 15].map(n => n * LATE_LEVEL_XP));
+		// the step itself is one more LATE_LEVEL_XP every level
+		for (let level = 101; level <= 120; level++) {
+			expect(lateLevelXp(level) - lateLevelXp(level - 1))
+				.toBe((level - 99) * LATE_LEVEL_XP);
 		}
 	});
 });

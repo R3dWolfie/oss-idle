@@ -1,6 +1,8 @@
 .fancy-graph {
 	display: block;
 	overflow: visible;
+	max-width: 100%;
+	height: auto;
 }
 
 .fancy-graph__line {

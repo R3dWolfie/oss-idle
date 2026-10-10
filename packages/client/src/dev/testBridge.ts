@@ -16,6 +16,7 @@ import BeatmapStore, { beatmapsVersion } from '../osu/beatmap/beatmap_store';
 import { Score } from '../db/schema/score';
 import { ScoreXP } from '../db/schema/score_xp';
 import { SETTINGS } from '../db/settings';
+import { DB } from '../db/dao';
 import type Synced from '@osu-idle/shared/helpers/synced';
 
 /**
@@ -184,6 +185,8 @@ const bridge = {
 	sessionReady: (): boolean =>
 		Account.resolved.get() && Entities.character.get().id !== 0,
 	character,
+	/** every local database write so far has reached IndexedDB */
+	saved: (): Promise<void> => DB.saved(),
 	play,
 	queue,
 	countdown: (): number | undefined => PlayManager.countdown.get(),

@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './MapRequests.css';
 
 import {
@@ -14,6 +15,7 @@ import Link from '../../components/Link';
 import MapsNav from './MapsNav';
 import RequestForm from './RequestForm';
 import RequestRow from './RequestRow';
+import RequestBulkBar, { type BulkProgress } from './RequestBulkBar';
 import {
 	deleteMapRequest,
 	ingestMapRequest,
@@ -50,6 +52,8 @@ export default function MapRequests({ filter, sort, page }: {
 	const [list, setList] = useState<MapRequest[]>();
 	const [error, setError] = useState<string>();
 	const [busy, setBusy] = useState(false);
+	const [selected, setSelected] = useState(new Set<number>());
+	const [progress, setProgress] = useState<BulkProgress>();
 
 	const refresh = useCallback(() => listMapRequests()
 		.then(setList)
@@ -69,6 +73,40 @@ export default function MapRequests({ filter, sort, page }: {
 			setBusy(false);
 		}
 	};
+
+	// One at a time, so the mirror is not hit with every download at once.
+	const bulk = async (fn: (setId: number) => Promise<unknown>) => {
+		const ids = [...selected];
+		const failed: string[] = [];
+		const startedAt = Date.now();
+		setBusy(true);
+		setError(undefined);
+		for (const [i, setId] of ids.entries()) {
+			const row = list?.find(r => r.setId === setId);
+			setProgress({
+				done: i,
+				total: ids.length,
+				current: row ? `${row.artist} - ${row.title}` : String(setId),
+				startedAt,
+			});
+			try {
+				await fn(setId);
+			} catch (e) {
+				failed.push(`${setId}: ${String((e as Error).message ?? e)}`);
+			}
+		}
+		setProgress(undefined);
+		setSelected(new Set());
+		if (failed.length) setError(failed.join('\n'));
+		await refresh();
+		setBusy(false);
+	};
+
+	const toggleSelect = (setId: number) => setSelected(prev => {
+		const next = new Set(prev);
+		if (!next.delete(setId)) next.add(setId);
+		return next;
+	});
 
 	const rows = useMemo(() => {
 		const kept = (list ?? []).filter(row => matches(row, filter));
@@ -111,8 +149,9 @@ export default function MapRequests({ filter, sort, page }: {
 				{user
 					? <RequestForm pending={pending} onSubmitted={refresh} />
 					: <p className='requests__signed-out'>
-						<Link to='/login'><Trans>Sign in</Trans></Link>
-						{' '}<Trans>to propose a map or support someone else's.</Trans>
+						<Trans>
+							<Link to='/login'>Sign in</Link> to propose a map or support someone else's.
+						</Trans>
 					</p>}
 
 				{error && <p className='requests__error'>{error}</p>}
@@ -152,6 +191,23 @@ export default function MapRequests({ filter, sort, page }: {
 				{!list && <p className='requests__muted'><Trans>Loading…</Trans></p>}
 				{list && !rows.length && <p className='requests__muted'><Trans>Nothing here yet.</Trans></p>}
 
+				{admin && (
+					<RequestBulkBar
+						count={selected.size}
+						progress={progress}
+						busy={busy}
+						onSelectPage={() => setSelected(new Set(shown
+							.filter(row => row.status === 'pending')
+							.map(row => row.setId)))}
+						onClear={() => setSelected(new Set())}
+						onIngest={() => void bulk(ingestMapRequest)}
+						onAccept={() => void bulk(setId => resolveMapRequest(setId, 'accepted'))}
+						onReject={() => void bulk(setId => resolveMapRequest(setId, 'rejected'))}
+						onDelete={() => confirm(t`Drop ${ph({ count: selected.size })} requests?`)
+							&& void bulk(deleteMapRequest)}
+					/>
+				)}
+
 				<div className='requests__list'>
 					{shown.map(row => (
 						<RequestRow
@@ -160,6 +216,8 @@ export default function MapRequests({ filter, sort, page }: {
 							mine={row.userId === user?.id}
 							admin={admin}
 							busy={busy}
+							selected={selected.has(row.setId)}
+							onSelect={toggleSelect}
 							onSupport={setId => void run(() => toggleMapSupport(setId))}
 							onResolve={(setId, status, note) => void run(() => resolveMapRequest(setId, status, note))}
 							onIngest={setId => void run(() => ingestMapRequest(setId))}

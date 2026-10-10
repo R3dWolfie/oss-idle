@@ -79,6 +79,25 @@ export default class PlayManager {
 	 *  Different from clearing - the queue keeps everything in it. */
 	public static paused = new Synced(false);
 
+	/** Things on screen the countdown waits for (the medal unlock), without
+	 *  pausing the queue. */
+	private static holds = 0;
+
+	/** Hold the next map back; call the returned release when done. */
+	public static hold(): () => void {
+		if (this.holds++ === 0) {
+			const left = this.countdown.get();
+			this.cancelChain();
+			this.remaining = left;
+		}
+		let released = false;
+		return () => {
+			if (released) return;
+			released = true;
+			if (--this.holds === 0 && !this.live.get()) this.scheduleNext();
+		};
+	}
+
 	public static setPaused(paused: boolean): void {
 		void this.paused.set(paused);
 		if (paused) {
@@ -305,7 +324,7 @@ export default class PlayManager {
 	 *  anywhere else it just happens. */
 	private static scheduleNext(): void {
 		if (this.chainTimer !== undefined) return;
-		if (this.paused.get()) return;
+		if (this.paused.get() || this.holds) return;
 		if (!PlayQueue.next()) return;
 
 		const delay = this.immediate
@@ -506,7 +525,7 @@ export default class PlayManager {
 		// yet - a sweep finalising first would otherwise mirror the score here and
 		// the scene would mirror it again on its own ending.
 		if (token === this.completedToken || scene === SCENE.GAME) return;
-		const res = await fetchPlayResult(token).catch(() => null);
+		const res = await fetchPlayResult(token, false, scene === SCENE.SELECT).catch(() => null);
 		if (!res || res.failed || !res.score) return;
 
 		const beatmap = await this.findDownloaded(res.score.beatmapId);
@@ -519,11 +538,11 @@ export default class PlayManager {
 
 		if (scene !== SCENE.SELECT) return;
 		music.beatmap.set(beatmap);
-		SceneManager.set(SCENE.RESULT, saved, undefined, res.gains, false, beatmap);
+		SceneManager.set(SCENE.RESULT, saved, undefined, res.gains, false, beatmap, res.medals);
 	}
 
 	/** The downloaded (playable) difficulty for a beatmap id, or null. */
-	private static async findDownloaded(
+	public static async findDownloaded(
 		beatmapId: number,
 	): Promise<LightBeatmap | null> {
 		for (const set of await BeatmapStore.getAllSets()) {

@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import Auth from '../../online/auth';
@@ -16,7 +17,7 @@ export default function SignIn() {
 		return (
 			<div className="opt-signin">
 				<span className="opt-signin__who">
-					<Trans>Signed in as {user.username}</Trans>
+					<Trans>Signed in as {ph({ username: user.username })}</Trans>
 				</span>
 				<Button 
 					label={<Trans>Sign out</Trans>} 

@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { useState } from 'react';
 import {
 	Trans,
@@ -61,7 +62,7 @@ export default function UpgradeRow({
 	const ratioText = overdriveText(ratio);
 	const odText = overdriveText(overdrive);
 	const multiplier = upgradeXPMultiplier(upgrades, overdrive);
-	const multiplierText = multiplier.toFixed(2);
+	const factor = multiplier.toFixed(2);
 
 	const buy = async () => {
 		if (busy) return;
@@ -80,11 +81,11 @@ export default function UpgradeRow({
 		const spent = num(Math.round(preview.spent));
 		const boost = upgradeXPMultiplier(preview.upgrades, preview.overdrive).toFixed(2);
 		const odSegment = preview.overdrive !== overdrive
-			? t` · Overdrive ${odText} → ${overdriveText(preview.overdrive)}`
+			? t` · Overdrive ${odText} → ${ph({ nextOd: overdriveText(preview.overdrive) })}`
 			: overdrive > 0 ? t` · Overdrive ${odText}` : '';
 		setConfirming({
 			title: t`Buy ${nextGear}?`,
-			sub: t`${name} XP Lv${level} → XP Lv${preview.level} · Costs ${spent}xp${odSegment} · XP boost x${boost}`,
+			sub: t`${name} XP Lv${level} → XP Lv${ph({ nextLevel: preview.level })} · Costs ${spent}xp${odSegment} · XP boost x${boost}`,
 			confirmLabel: t`Buy`,
 			color: '#ff4089',
 			onConfirm: () => void buy(),
@@ -102,7 +103,7 @@ export default function UpgradeRow({
 					{overdrive > 0 && (odText)}
 				</span>
 				{multiplier > 1 && (
-					<span className="upgrade__mult"><Trans>x{multiplierText} XP</Trans></span>
+					<span className="upgrade__mult"><Trans>x{factor} XP</Trans></span>
 				)}
 			</div>
 			<div className="upgrade__info">

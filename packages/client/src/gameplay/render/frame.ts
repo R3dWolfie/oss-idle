@@ -31,6 +31,8 @@ export type StrainHud = {
 	/** the bot whose live strain feeds the gauges */
 	bot: CharacterBot,
 	labels: Record<SkillName, string>,
+	/** where the gauges start, past anything drawn at the left edge */
+	left?: number,
 };
 
 export type DrawOptions = {

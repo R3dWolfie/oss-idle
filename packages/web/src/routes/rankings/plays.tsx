@@ -1,11 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { msg } from '@lingui/core/macro';
+import { getTopPlays } from '../../api/rankings';
 import PlaysRankings from '../../pages/rankings/TopPlays';
 import { pageSearch } from '../-rankingSearch';
 
 export const Route = createFileRoute('/rankings/plays')({
 	validateSearch: zodValidator(pageSearch),
-	component: PlaysRankings,
+	loaderDeps: ({ search }) => search,
+	loader: ({ deps }) => getTopPlays(deps.page, deps.friends),
+	component: PlaysRoute,
 	staticData: { title: msg`rankings` },
 });
+
+function PlaysRoute() {
+	const { page } = Route.useSearch();
+	return <PlaysRankings page={page} plays={Route.useLoaderData()} />;
+}

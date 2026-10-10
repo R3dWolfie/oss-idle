@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { MapSearchHit } from '../../api/mapRequests';
 
@@ -35,13 +36,15 @@ export default function RequestSearchHit({ hit, disabled, onPick }: {
 			<span className='request-hit__meta'>
 				<span className='request-hit__title'>{hit.title}</span>
 				<span className='request-hit__artist'>{hit.artist}</span>
-				<span className='request-hit__creator'><Trans>mapped by {hit.creator}</Trans></span>
+				<span className='request-hit__creator'>
+					<Trans>mapped by {ph({ creator: hit.creator })}</Trans>
+				</span>
 			</span>
 			<span className='request-hit__stats'>
 				<span className='request-hit__capsule'>{APPROVED_LABEL[hit.approved] ?? 'unknown'}</span>
 				<span className='request-hit__sr'>{sr}☆</span>
 				<span className='request-hit__diffs'>
-					<Trans>{hit.diffs} × 4K</Trans>
+					<Trans>{ph({ diffs: hit.diffs })} × 4K</Trans>
 				</span>
 			</span>
 		</button>

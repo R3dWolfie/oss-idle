@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './PlayOsuIdle.css';
 import useAsync from '@osu-idle/shared/hooks/useAsync';
 import {
@@ -37,10 +38,10 @@ export default function PlayOsuIdle() {
 					</p>
 					{primary
 						? <a className="cta-button playosu__cta" href={primary.href} download>
-							<span><Trans>Download for {primary.label} (v{version})</Trans></span>
+							<span><Trans>Download for {ph({ platform: primary.label })} (v{version})</Trans></span>
 						</a>
 						: <span className="cta-button playosu__cta playosu__cta--disabled">
-							<span><Trans>Not yet available for {PLATFORM_LABEL[platform]}</Trans></span>
+							<span><Trans>Not yet available for {ph({ platform: PLATFORM_LABEL[platform] })}</Trans></span>
 						</span>}
 
 					{alternatives.length > 0 && (

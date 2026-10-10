@@ -85,6 +85,7 @@ export type TestBridge = {
 	scene: () => Scene;
 	sessionReady: () => boolean;
 	character: () => CharacterView;
+	saved: () => Promise<void>;
 	play: () => PlayView | undefined;
 	queue: () => QueueView | undefined;
 	countdown: () => number | undefined;

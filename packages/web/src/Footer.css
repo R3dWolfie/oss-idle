@@ -28,3 +28,15 @@ footer {
 	font-weight: 700;
 	margin: 0 10px;
 }
+
+@media (max-width: 760px) {
+	footer {
+		font-size: 12px;
+		padding: 15px 10px 10px;
+	}
+
+	.footer__links {
+		row-gap: 8px;
+		margin-bottom: 10px;
+	}
+}

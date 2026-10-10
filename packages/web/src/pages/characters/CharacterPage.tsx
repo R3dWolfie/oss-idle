@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './CharacterPage.css';
 
 import {
@@ -15,6 +16,7 @@ import Flag from '../../components/Flag';
 import ProfilePicture from '../../components/ProfilePicture';
 import EditableProfilePicture from '../../components/EditableProfilePicture';
 import CharacterName from '../../components/character/CharacterName';
+import ProfileBanner from '../../components/character/ProfileBanner';
 import {
 	refreshCurrentUser,
 	useCurrentUser,
@@ -37,6 +39,8 @@ import { headlineGrades } from './headlineGrades';
 import { SkillBar } from '../../components/character/SkillBar';
 import { CharacterRanks } from '../../components/character/CharacterRanks';
 import RankGraph from '../../components/character/RankGraph';
+import CharacterMedals from '../../components/character/CharacterMedals';
+import ProfileSocialBar from '../../components/character/ProfileSocialBar';
 import { SkillName } from '@osu-idle/shared/skills';
 import { extractSkills } from '@osu-idle/shared/osu/level';
 import { Trans } from '@lingui/react/macro';
@@ -73,7 +77,7 @@ export default function CharacterPage({ id, character, stats }: {
 
 	return (
 		<main>
-			<div className='character__banner'></div>
+			<ProfileBanner key={id} bannerUrl={character.bannerUrl} editable={isSelf} />
 			<div className='character__info'>
 				{isSelf
 					? <EditableProfilePicture
@@ -154,8 +158,7 @@ export default function CharacterPage({ id, character, stats }: {
 			</div>
 			<div className='character__submeta'>
 			</div>
-			<div className='character__socialmeta'>
-			</div>
+			<ProfileSocialBar userId={character.userId} name={character.name} />
 			<div className='character__blocks'>
 				<div className='character__block character__block-skills'>
 					<div className='character__block-title'><Trans>Skills</Trans></div>
@@ -228,10 +231,10 @@ export default function CharacterPage({ id, character, stats }: {
 								<div className='mostplayed__bm'>
 									<div className='mostplayed__bminfo'>
 										<div className='mostplayed__bmt'>
-											<Trans>{mp.beatmap.title} [{mp.beatmap.version}] by {mp.beatmap.artist}</Trans>
+											<Trans>{ph({ title: mp.beatmap.title })} [{ph({ version: mp.beatmap.version })}] by {ph({ artist: mp.beatmap.artist })}</Trans>
 										</div>
 										<div className='mostplayed__bmc'>
-											<Trans>mapped by <b>{mp.beatmapset.creator}</b></Trans>
+											<Trans>mapped by <b>{ph({ creator: mp.beatmapset.creator })}</b></Trans>
 										</div>
 									</div>
 									<div className='mostplayed__pl'>
@@ -243,6 +246,7 @@ export default function CharacterPage({ id, character, stats }: {
 						</div>
 					</div>
 				</div>
+				<CharacterMedals id={id} />
 			</div>
 		</main>
 	);

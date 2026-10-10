@@ -15,12 +15,17 @@ import { merge } from 'ts-deepmerge';
 import { SkinDAO } from '../../db/schema/skin';
 import { z } from 'zod';
 import Log from '@osu-idle/shared/helpers/log';
-import { t } from '@lingui/core/macro';
+import {
+	ph,
+	t,
+} from '@lingui/core/macro';
 import {
 	deepPartial,
 	DeepPartial,
 } from '@osu-idle/shared/types/deep_partial';
 import { ValueIn } from '@osu-idle/shared/helpers/mapped';
+
+const COLUMN_RECORD_EXAMPLE = '{ 0: ..., 1: ..., 2: ..., 3: ... }';
 
 export const HITSOUND = { NORMAL: 'default/normal-hitnormal' } as const;
 export const Hitsounds = Object.values(HITSOUND);
@@ -70,7 +75,7 @@ const SkinDefinitionSchema = z.object({
 	hitObjects: z.record(
 		z.number(),
 		z.object({ color: ColorSchema }),
-		{ error: () => t`Expected a column record like ${'{ 0: ..., 1: ..., 2: ..., 3: ... }'}` },
+		{ error: () => t`Expected a column record like ${ph({ example: COLUMN_RECORD_EXAMPLE })}` },
 	),
 	hpBar: HpBarSchema,
 	grade: z.record(z.enum(Grades), z.string()),

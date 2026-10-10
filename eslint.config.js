@@ -31,6 +31,8 @@ export default tseslint.config(
 			'packages/client/osu!design/**',
 			'packages/server/drizzle/**',
 			'packages/shared/src/locales/*.ts',
+			'packages/e2e/playwright-report/**',
+			'packages/e2e/test-results/**',
 		],
 	},
 	...tseslint.configs.recommended,

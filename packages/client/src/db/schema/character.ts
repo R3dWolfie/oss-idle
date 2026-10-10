@@ -125,6 +125,34 @@ export default class Character extends DAO(t) {
 		await this.persistSkills();
 	}
 
+	/** Read the levels back off the XP the character has kept.
+	 *
+	 *  The curve's prices are tuned between releases; the XP spent against them
+	 *  never changes, so the levels are derived again rather than migrated once.
+	 *  Only the local lineage is reprocessed here - a server character's levels
+	 *  are its server's to say. */
+	public async relevel(): Promise<void> {
+		if (!this.isGuest()) return;
+
+		let moved = false;
+		for (const skill of this.skills) {
+			const next = xpGivesLevel(this[`${skill.name}TotalXp`]);
+			const xp = Math.round(next.xp);
+			if (next.level === skill.level.get() && xp === skill.xp.get()) continue;
+			skill.level.set(next.level);
+			skill.xp.set(xp);
+			moved = true;
+		}
+
+		const overall = xpGivesLevel(this.overallTotalXp).level;
+		if (overall !== this.overallLevel) {
+			this.overallLevel = overall;
+			moved = true;
+		}
+
+		if (moved) await this.persistSkills();
+	}
+
 	/** Make this the local character `guest()` returns, across reloads. */
 	public async makeCurrent(): Promise<void> {
 		await DB.run('UPDATE character SET current = 0 WHERE local = 1');
@@ -159,7 +187,9 @@ export default class Character extends DAO(t) {
 		const current = await Character.first(
 			'SELECT * FROM character WHERE local = 1 ORDER BY current DESC, generation DESC LIMIT 1',
 		);
-		return current ?? await Character.newCharacter();
+		if (!current) return await Character.newCharacter();
+		await current.relevel();
+		return current;
 	}
 
 	/** Whether an id belongs to the local lineage rather than a server character. */
@@ -168,7 +198,11 @@ export default class Character extends DAO(t) {
 	}
 
 	public static async locals(): Promise<Character[]> {
-		return await Character.query('SELECT * FROM character WHERE local = 1 ORDER BY generation');
+		const locals = await Character.query(
+			'SELECT * FROM character WHERE local = 1 ORDER BY generation',
+		);
+		for (const character of locals) await character.relevel();
+		return locals;
 	}
 	
 	static fromDTO(dto: CharacterDTO): Character {

@@ -1,0 +1,76 @@
+.friends__counters {
+	display: flex;
+	gap: 10px;
+	padding: 25px 50px;
+}
+
+.friends__counter {
+	width: 90px;
+	padding-top: 8px;
+	border-top: 3px solid var(--counter-colour);
+	color: hsl(var(--hsl-c2));
+	font-size: 11px;
+	font-weight: 700;
+}
+.friends__counter[data-active="true"] {
+	color: #fff;
+}
+.friends__counter b {
+	display: block;
+	font-size: 15px;
+	font-weight: 400;
+}
+.friends__counter[data-filter="all"] {
+	--counter-colour: #fff;
+}
+.friends__counter[data-filter="online"] {
+	--counter-colour: hsl(var(--hsl-lime-1));
+}
+.friends__counter[data-filter="offline"] {
+	--counter-colour: hsl(var(--hsl-b1));
+}
+
+.friends__body {
+	background-color: hsl(var(--hsl-b4));
+}
+
+.friends__sort {
+	justify-content: flex-end;
+	margin-bottom: 20px;
+}
+
+.friends__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.friend-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 2px 8px 2px 6px;
+	border: 2px solid transparent;
+	border-radius: 4px;
+	background: hsl(var(--hsl-b6));
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	text-decoration: none;
+}
+.friend-chip::before {
+	content: "";
+	width: 3px;
+	height: 12px;
+	border-radius: 2px;
+	background: hsl(var(--hsl-blue-1));
+}
+.friend-chip[data-role="admin"]::before {
+	background: hsl(var(--hsl-purple-1));
+}
+.friend-chip[data-mutual="true"] {
+	border-color: hsl(var(--hsl-pink-1));
+}
+.friend-chip:hover {
+	filter: brightness(1.3);
+}

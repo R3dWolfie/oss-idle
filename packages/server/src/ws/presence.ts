@@ -52,6 +52,7 @@ const buildEntry = async (params: {
 	const totals = await getCharacterTotals(character.id);
 	return {
 		characterId: character.id,
+		userId: user.id,
 		name: character.name,
 		avatarUrl: resolveAvatarUrl(character.avatarUrl, user.avatarUrl),
 		country: user.country,
@@ -75,6 +76,17 @@ const store = (entry: PresenceEntry): Promise<unknown> =>
 const readEntry = async (characterId: number): Promise<PresenceEntry | undefined> => {
 	const v = await redis.hget(PRESENCE_KEY, String(characterId));
 	return v ? JSON.parse(v) as PresenceEntry : undefined;
+};
+
+/** The timezone of a connected player's location, if known. */
+export const presenceTimezone = async (characterId: number): Promise<string | undefined> =>
+	(await readEntry(characterId))?.tz;
+
+/** Which of these characters are connected, in order. */
+export const areOnline = async (characterIds: number[]): Promise<boolean[]> => {
+	if (!characterIds.length) return [];
+	const found = await redis.hmget(PRESENCE_KEY, ...characterIds.map(String));
+	return found.map(v => v !== null);
 };
 
 /** Live count of connected players. */

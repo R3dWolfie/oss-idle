@@ -8,9 +8,9 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import './LeaderboardFilters.css';
 import { blackout } from '../../globals';
 
-type Filter = {
+export type Filter = {
 	label: string,
-	type: 'select',
+	type: 'select' | 'toggle',
 	selected?: string,
 	items: Item[],
 	onSelection: (item: Item) => void,
@@ -79,6 +79,14 @@ export default function LeaderboardFilters({ filters }: {
 			{filters.map(filter => <div key={filter.label} className='lb__filter'>
 				<div className='lb__filter_title'>{filter.label}</div>
 				{filter.type === 'select' && <Select filter={filter} />}
+				{filter.type === 'toggle' && <div className='lb__toggle'>
+					{filter.items.map(item => <button
+						key={item.value}
+						type='button'
+						className={item.value === filter.selected ? 'current' : ''}
+						onClick={() => filter.onSelection(item)}
+					>{item.label}</button>)}
+				</div>}
 			</div>)}
 		</div>
 	</div>);

@@ -106,7 +106,7 @@
 }
 
 @media (max-width: 760px) {
-	.player__lb_listing th:nth-child(n+3):not(.current),
+	.player__lb_listing th:nth-child(n + 3):not(.current),
 	.player__lb_listing td.dimmed {
 		display: none;
 	}

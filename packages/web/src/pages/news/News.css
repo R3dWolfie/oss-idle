@@ -91,7 +91,9 @@
 
 .news-article__banner {
 	position: relative;
-	height: 240px;
+	aspect-ratio: 16 / 9;
+	max-height: 340px;
+	width: 100%;
 	margin-bottom: 22px;
 	border-radius: 14px;
 	background-size: cover;
@@ -104,18 +106,29 @@
 	bottom: 14px;
 }
 
+.news-article__date,
+.news-article__title,
+.news-article__byline {
+	display: block;
+	max-width: 760px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .news-article__date {
 	font-size: 13px;
 	color: var(--muted);
 }
 .news-article__title {
-	margin: 8px 0 6px;
+	margin-top: 8px;
+	margin-bottom: 6px;
 	font-size: 32px;
 	color: #fff;
 	line-height: 1.15;
 }
 .news-article__byline {
-	margin: 0 0 24px;
+	margin-top: 0;
+	margin-bottom: 24px;
 	color: var(--muted);
 }
 

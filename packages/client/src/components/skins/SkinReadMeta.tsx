@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { SkinCreateBody } from '@osu-idle/shared/skin';
 import { Skin } from '../../online/skins';
@@ -14,7 +15,7 @@ export default function SkinReadMeta({ skin }: { skin: Skin | SkinCreateBody }) 
 					</div>
 					{'authorName' in skin && (
 						<div className='skin__by'>
-							<Trans>by {skin.authorName}</Trans>
+							<Trans>by {ph({ author: skin.authorName })}</Trans>
 						</div>
 					)}
 				</div>

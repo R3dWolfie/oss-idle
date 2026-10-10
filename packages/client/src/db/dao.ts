@@ -300,17 +300,18 @@ async function idbLoad(): Promise<Uint8Array | null> {
 	}
 }
 
+// resolves on commit, not on the put's success: a reload in between drops it
 async function idbSave(bytes: Uint8Array): Promise<void> {
-	const store = (await idb())
-		.transaction(IDB_STORE, 'readwrite')
-		.objectStore(IDB_STORE);
-	
+	const tx = (await idb()).transaction(IDB_STORE, 'readwrite');
+	tx.objectStore(IDB_STORE).put(bytes, DB_KEY);
 	await new Promise<void>((resolve, reject) => {
-		const req = store.put(bytes, DB_KEY);
-		req.onsuccess = () => resolve();
-		req.onerror = () => reject(req.error);
+		tx.oncomplete = () => resolve();
+		tx.onerror = tx.onabort = () => reject(tx.error);
 	});
 }
+
+// saves run one after another, so an older snapshot never lands last
+let saving: Promise<void> = Promise.resolve();
 
 const getDatabaseSchema = (db: Database) => {
 	const schema: any = {
@@ -476,13 +477,15 @@ export const DB = {
 	async write<T>(fn: (db: Database) => T): Promise<T> {
 		const db = await handle();
 		const result = fn(db);
-		try {
-			await idbSave(db.export());
-		} catch (e) {
-			console.warn('[dao] failed to persist database', e);
-		}
+		const bytes = db.export();
+		saving = saving
+			.then(() => idbSave(bytes))
+			.catch(e => console.warn('[dao] failed to persist database', e));
+		await saving;
 		return result;
 	},
+	/** Resolves once every write made so far is on disk. */
+	saved: (): Promise<void> => saving,
 };
 
 // ---- active-record base --------------------------------------------------

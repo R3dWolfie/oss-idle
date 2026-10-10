@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	useEffect,
 	useState,
@@ -195,7 +196,7 @@ export default function ManageAddonsView() {
 						onEdit={() => setEditing({ addon: a })}
 						onSubmit={() => setConfirming({
 							title: t`Submit add-on`,
-							sub: t`Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit "${a.name}" for review?`,
+							sub: t`Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit "${ph({ addon: a.name })}" for review?`,
 							confirmLabel: t`Submit`,
 							color: '#ff66ab',
 							onConfirm: () => run(() => submitAddon(a.id)),
@@ -203,7 +204,7 @@ export default function ManageAddonsView() {
 						onInstall={() => run(() => installAndEnable(a))}
 						onDelete={() => setConfirming({
 							title: t`Delete add-on`,
-							sub: t`Permanently delete "${a.name}"? This cannot be undone.`,
+							sub: t`Permanently delete "${ph({ addon: a.name })}"? This cannot be undone.`,
 							confirmLabel: t`Delete`,
 							onConfirm: () => run(() => deleteAddon(a.id)),
 						})}
@@ -228,7 +229,7 @@ export default function ManageAddonsView() {
 						onUpdate={() => openUpdate(a)}
 						onUninstall={() => setConfirming({
 							title: t`Uninstall add-on`,
-							sub: t`Remove "${a.name}" ?`,
+							sub: t`Remove "${ph({ addon: a.name })}" ?`,
 							confirmLabel: t`Uninstall`,
 							onConfirm: () => run(() => uninstallAddon(a)),
 						})}

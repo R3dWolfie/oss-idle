@@ -16,6 +16,8 @@ export type Popup = {
 	message: string,
 	type: PopupType,
 	sticky: boolean,
+	/** what clicking it does, besides dismissing it */
+	onClick?: () => void,
 };
 
 export default class Log {
@@ -28,12 +30,14 @@ export default class Log {
 		message: string, 
 		type: PopupType = POPUP_TYPE.neutral, 
 		sticky = false,
+		onClick?: () => void,
 	) {
 		void Log.listeners.popup.trigger({ 
 			id: Log.nextPopupId++, 
 			message, 
 			type,
 			sticky,
+			onClick,
 		});
 	}
 

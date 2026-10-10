@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './RankGraph.css';
 
 import {
@@ -61,7 +62,7 @@ export default function RankGraph({ ranks }: { ranks: number[] }) {
 						</div>
 						<div className='rank-graph__tooltip-when'>
 							<Plural
-								value={ranks.length - 1 - hover}
+								value={ph({ days: ranks.length - 1 - hover })}
 								_0='today'
 								one='# day ago'
 								other='# days ago'

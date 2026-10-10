@@ -18,7 +18,11 @@ import type { PresenceEntry } from '@osu-idle/shared/community/presence';
  * status-tinted strip. Shows the character's stats, swapping to its local time,
  * country and status on hover.
  */
-export default function PlayerCard({ character }: { character: PresenceEntry }) {
+export default function PlayerCard({ character, onClick, className = '' }: {
+	character: PresenceEntry;
+	onClick?: () => void;
+	className?: string;
+}) {
 	const { i18n } = useLingui();
 
 	// Fade the avatar in on load - but skip the fade if it's already cached
@@ -52,8 +56,9 @@ export default function PlayerCard({ character }: { character: PresenceEntry }) 
 
 	return (
 		<div
-			className="player-card"
+			className={`player-card ${className}`}
 			data-status={character.status}
+			onClick={onClick}
 		>
 			<div className="player-card__avatar">
 				<img

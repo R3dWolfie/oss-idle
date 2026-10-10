@@ -7,25 +7,23 @@ import {
 } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 
 import Link from './components/Link';
 import OutLink from './components/OutLink';
 import { Asset } from './router';
 import { useCurrentUser } from './hooks/useCurrentUser';
 import { useCurrentCharacter } from './hooks/useCurrentCharacter';
-import { useAdmin } from './hooks/useAdmin';
-import { SKILL_SORT } from './components/leaderboard/PlayerSkillLeaderboard';
 import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
 import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import { GOOD_GRADE } from '@osu-idle/shared/judgement';
+import HeaderLinks from './HeaderLinks';
 
 export default function Header() {
 	const { t } = useLingui();
 
-	const admin = useAdmin();
 	const user = useCurrentUser();
 	const character = useCurrentCharacter();
 	const userMenu = useRef<HTMLDivElement>(null);
@@ -33,6 +31,7 @@ export default function Header() {
 	const [menuHeight, setMenuHeight] = useState<number>();
 	const [userMenuActive, setUserMenuActive] = useState(false);
 	const [shrunk, setShrunk] = useState(false);
+	const [navOpen, setNavOpen] = useState(false);
 
 	// Grow the hover backdrop to reach the bottom of whichever submenu is open,
 	// so it always fits the content (no more hardcoded pixel height).
@@ -88,77 +87,21 @@ export default function Header() {
 						</div>
 					</Link>
 
-					<div className="topbar__link regular" {...showSub}>
-						<Link to='/' className="topbar__link-anchor"><span>{t`home`}</span></Link>
-						<div className='topbar__sub'>
-							<Link to='/news' className="topbar__sublink"><span>{t`news`}</span></Link>
-							<OutLink href='https://osu.ppy.sh' target='_blank' className="topbar__sublink"><span>{t`play osu!`}</span></OutLink>
-							<Link to='/download' className="topbar__sublink"><span>{t`play osu!idle`}</span></Link>
-						</div>
-					</div>
-
-					<div className="topbar__link regular" {...showSub}>
-						<Link to='/maps' className="topbar__link-anchor"><span>{t`beatmaps`}</span></Link>
-						<div className='topbar__sub'>
-							<Link to='/maps' className="topbar__sublink"><span>{t`beatmap listing`}</span></Link>
-							<Link to='/maps/requests' className="topbar__sublink"><span>{t`map requests`}</span></Link>
-						</div>
-					</div>
-
-					<div className="topbar__link regular" {...showSub}>
-						<Link to='/rankings/global' search={{ page: 1 }} className="topbar__link-anchor">
-							<span>{t`rankings`}</span>
-						</Link>
-						<div className='topbar__sub'>
-							<Link to='/rankings/global' search={{ page: 1 }} className="topbar__sublink">
-								<span>{t`global`}</span>
-							</Link>
-							<Link
-								to='/rankings/skills/$skill'
-								params={{ skill: SKILL_SORT.overall }}
-								search={{ page: 1 }}
-								className="topbar__sublink"
-							>
-								<span>{t`skills`}</span>
-							</Link>
-							<Link
-								to='/rankings/grades/$grade'
-								params={{ grade: GOOD_GRADE.X }}
-								search={{ page: 1 }}
-								className="topbar__sublink"
-							>
-								<span>{t`grades`}</span>
-							</Link>
-							<Link to='/rankings/country' search={{ page: 1 }} className="topbar__sublink">
-								<span>{t`country`}</span>
-							</Link>
-							<Link to='/rankings/plays' search={{ page: 1 }} className="topbar__sublink">
-								<span>{t`top plays`}</span>
-							</Link>
-						</div>
-					</div>
-
-					<div className="topbar__link regular" {...showSub}>
-						<Link to='/help/faq' className="topbar__link-anchor"><span>{t`help`}</span></Link>
-						<div className='topbar__sub'>
-							<Link to='/help/faq' className="topbar__sublink"><span>{t`faq`}</span></Link>
-						</div>
-					</div>
-
-					{admin && (
-						<div className="topbar__link regular" {...showSub}>
-							<Link to='/admin' className="topbar__link-anchor"><span>{t`admin`}</span></Link>
-							<div className='topbar__sub'>
-								<Link to='/admin/chat' className="topbar__sublink"><span>{t`chat console`}</span></Link>
-								<Link to='/admin/balancing' className="topbar__sublink"><span>{t`balancing`}</span></Link>
-								<Link to='/admin/nomination' className="topbar__sublink"><span>{t`map nomination`}</span></Link>
-								<Link to='/admin/addons' className="topbar__sublink"><span>{t`add-ons`}</span></Link>
-								<Link to='/admin/skins' className="topbar__sublink"><span>{t`skins`}</span></Link>
-							</div>
-						</div>
-					)}
+					<HeaderLinks open={navOpen} onNavigate={() => setNavOpen(false)} showSub={showSub} />
 				</nav>
 				<div className='topbar__group right'>
+					<button
+						type='button'
+						className={`topbar__burger link-icon ${navOpen ? 'active' : ''}`}
+						aria-label={t`menu`}
+						aria-expanded={navOpen}
+						onClick={() => {
+							setNavOpen(!navOpen);
+							setUserMenuActive(false);
+						}}
+					>
+						<FontAwesomeIcon icon={faBars} />
+					</button>
 					<div className='topbar__link'>
 						<OutLink href="https://discord.gg/Yd5GEaX8AJ" className='link-icon link-discord' target="_blank">
 							<FontAwesomeIcon icon={faDiscord} />
@@ -169,10 +112,10 @@ export default function Header() {
 							ref={userMenu}
 							className={`topbar__avatar ${userMenuActive ? 'active' : ''}`}
 							style={{ backgroundImage: `url(${Asset(user?.avatarUrl ? user.avatarUrl : GUEST_AVATAR_URL)})` }}
-							onClick={(e) => e.target === userMenu.current ? 
-								setUserMenuActive(!userMenuActive) 
-								: setUserMenuActive(true)
-							}
+							onClick={(e) => {
+								setNavOpen(false);
+								setUserMenuActive(e.target === userMenu.current ? !userMenuActive : true);
+							}}
 						>
 							{userMenuActive && (
 								<div className='usermenu'>
@@ -182,6 +125,7 @@ export default function Header() {
 											{character && <Link to='/c/$id' params={{ id: String(character.id) }} className="usermenu__link">
 												<Trans>My Profile</Trans>
 											</Link>}
+											<Link to='/friends' className="usermenu__link"><Trans>Friends</Trans></Link>
 											<Link to='/logout' className="usermenu__link"><Trans>Sign out</Trans></Link>
 										</>)}
 										{!user && (<>

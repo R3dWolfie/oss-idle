@@ -12,7 +12,10 @@ import {
 	eq,
 	sql,
 } from 'drizzle-orm';
-import { beatmaps } from './beatmap';
+import {
+	beatmapListColumns,
+	beatmaps,
+} from './beatmap';
 import { beatmapset } from './beatmapset';
 
 
@@ -33,7 +36,9 @@ export type NewBeatmapsPlayedRow = typeof beatmaps_played.$inferInsert;
 
 export const getMostPlayed = async (characterId: number, page: number = 1) => {
 	return db
-		.select()
+		.select({
+			beatmaps_played: beatmaps_played, beatmap: beatmapListColumns, beatmapset,
+		})
 		.from(beatmaps_played)
 		.innerJoin(beatmaps, eq(beatmaps.id, beatmaps_played.beatmapId))
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))

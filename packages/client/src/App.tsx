@@ -21,10 +21,12 @@ import Playground from './dev/Playground';
 import FloatingDeltas from './components/FloatingDeltas';
 import './online/versionWatch';
 import './online/characterWatch';
+import Multiplayer from './online/multiplayer';
 
 PlayManager.start();
 Presence.start();
 Socket.start();
+Multiplayer.start();
 
 /** Dev-only component bench; see dev/Playground.tsx. Checked once at load so a
  *  production build drops the whole tree. */

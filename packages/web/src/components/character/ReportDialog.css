@@ -1,0 +1,72 @@
+.report-dialog {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 520;
+	transform: translate(-50%, -50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	width: min(430px, calc(100vw - 30px));
+	padding: 20px 15px;
+	border-radius: 10px;
+	background: hsl(var(--hsl-b4));
+	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+}
+
+.report-dialog__icon {
+	font-size: 40px;
+}
+
+.report-dialog__title {
+	font-size: 26px;
+	text-align: center;
+}
+
+.report-dialog__label {
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.report-dialog select,
+.report-dialog textarea {
+	width: 100%;
+	padding: 10px;
+	border: none;
+	border-radius: 6px;
+	background: hsl(var(--hsl-b6));
+	color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+}
+
+.report-dialog textarea {
+	height: 130px;
+	resize: vertical;
+}
+
+.report-dialog__btn {
+	width: 200px;
+	padding: 12px;
+	border: none;
+	border-radius: 999px;
+	background: hsl(var(--hsl-b5));
+	color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 700;
+	cursor: pointer;
+}
+.report-dialog__btn--send {
+	background: hsl(0, 70%, 45%);
+}
+.report-dialog__btn:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.report-dialog__error {
+	color: hsl(var(--hsl-red-1, 0, 70%, 65%));
+	font-size: 13px;
+}

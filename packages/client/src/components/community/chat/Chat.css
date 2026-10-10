@@ -73,3 +73,10 @@
 .chat__compose input:focus {
 	outline: none;
 }
+
+.chat__link {
+	padding: 0 2px;
+	background: #2453b8;
+	color: #fff;
+	cursor: pointer;
+}

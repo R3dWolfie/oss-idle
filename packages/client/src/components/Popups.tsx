@@ -48,7 +48,7 @@ export default function Popups() {
 					key={p.id}
 					className={`popup ${p.type}`}
 					data-leaving={p.leaving}
-					onClick={() => dismiss(p.id)}
+					onClick={() => { p.onClick?.(); dismiss(p.id); }}
 				>
 					{p.message}
 				</div>

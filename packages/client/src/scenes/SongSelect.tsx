@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	useCallback,
 	useEffect,
@@ -43,6 +44,7 @@ import './SongSelect.css';
 import BeatmapStore, { beatmapsVersion } from '../osu/beatmap/beatmap_store';
 import Controls from '../input/Controls';
 import SceneManager, { SCENE } from './SceneManager';
+import Multiplayer from '../online/multiplayer';
 import {
 	debugMode,
 	openPage,
@@ -250,7 +252,8 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 		// without the scene under it also acting on the same keypress.
 		if (openPage.get()) { void openPage.set(undefined); return; }
 		SETTINGS.search.set('');
-		SceneManager.set(SCENE.MENU);
+		if (Multiplayer.picking.get()) Multiplayer.picked();
+		else SceneManager.set(SCENE.MENU);
 	};
 
 	Controls.back.usePress(onBack);
@@ -599,6 +602,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 		console.log('Clicked on card', beatmap.metadata.version);
 		if (beatmap.metadata.runtime && beatmap.is(selection.get())) {
 			if (queueing) PlayQueue.append(beatmap, queueLabel);
+			else if (Multiplayer.picking.get()) Multiplayer.picked(beatmap.metadata.id);
 			else play(beatmap);
 			return true;
 		}
@@ -733,8 +737,8 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 						</div>
 						<div className="songsearch__count">
 							{search.trim()
-								? <Trans>{filteredItems.length} of {total} results</Trans>
-								: <Plural value={items.length} one="# result" other="# results" />}
+								? <Trans>{ph({ shown: filteredItems.length })} of {total} results</Trans>
+								: <Plural value={ph({ results: items.length })} one="# result" other="# results" />}
 						</div>
 					</div>
 				</main>

@@ -1,5 +1,6 @@
 import './PlayerLeaderboard.css';
 import Link from '../Link';
+import Pager from './Pager';
 import int from '@osu-idle/shared/math/int';
 import type { getGlobalRanking } from '../../api/rankings';
 import Flag from '../Flag';
@@ -27,12 +28,12 @@ export default function PlayerLeaderboard({ sort, country, page, players }: {
 	return (<div className='player__lb'>
 		<div className='player__lb_sort'>
 			<span><Trans>Sort by</Trans></span>
-			<Link to='/rankings/global' search={{
-				page, country, 
-			}} className={sort === 'pp' ? 'current' : ''}>{t`Performance`}</Link>
-			<Link to='/rankings/score' search={{
-				page, country, 
-			}} className={sort === 'rankedScore' ? 'current' : ''}>{t`Ranked Score`}</Link>
+			<Link to='/rankings/global' search={prev => ({
+				...prev, page, country,
+			})} className={sort === 'pp' ? 'current' : ''}>{t`Performance`}</Link>
+			<Link to='/rankings/score' search={prev => ({
+				...prev, page, country,
+			})} className={sort === 'rankedScore' ? 'current' : ''}>{t`Ranked Score`}</Link>
 		</div>
 
 		<div className='player__lb_scroll'>
@@ -72,5 +73,6 @@ export default function PlayerLeaderboard({ sort, country, page, players }: {
 				</tbody>
 			</table>
 		</div>
+		<Pager page={page} hasNext={players.length === 50} />
 	</div>);
 }

@@ -1,4 +1,5 @@
 import {
+	boolean,
 	int,
 	mysqlTable,
 	timestamp,
@@ -14,6 +15,10 @@ export const users = mysqlTable('user', {
 	avatarUrl: varchar({ length: 512 }), // osu! avatar; the default profile picture
 	country: varchar({ length: 2 }).notNull().default('FR'), // osu! country code, e.g. 'FR'
 	currentCharacter: int(),
+	// "Recently active" on the friends page; touched while a socket is open
+	lastActiveAt: timestamp(),
+	// unticked: private messages only from the accounts this one added
+	pmFromAnyone: boolean().notNull().default(true),
 	createdAt: timestamp().notNull().defaultNow(),
 	updatedAt: timestamp().notNull().defaultNow().onUpdateNow(),
 });

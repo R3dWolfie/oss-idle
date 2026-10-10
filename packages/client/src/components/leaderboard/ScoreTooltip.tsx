@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './ScoreTooltip.css';
 import { createPortal } from 'react-dom';
 import { ScoreDTO } from '@osu-idle/shared/score';
@@ -8,7 +9,7 @@ import {
 	Judgements,
 } from '@osu-idle/shared/judgement';
 import { showsDivine } from '@osu-idle/shared/rebirth';
-import accuracy from '@osu-idle/shared/display/accuracy';
+import accuracyText from '@osu-idle/shared/display/accuracy';
 import { currentSkin } from '../../osu/skin/Skin';
 import { Score } from '../../db/schema/score';
 import { dateAgo } from '@osu-idle/shared/display/ago';
@@ -26,7 +27,7 @@ interface Props {
 export default function ScoreTooltip({ score, x, y }: Props) {
 	const [skin] = useSynced(currentSkin);
 	const date = new Date(score.playedAt).toLocaleString();
-	const acc = accuracy(score.accuracy);
+	const accuracy = accuracyText(score.accuracy);
 
 	const getJudge = (
 		j: Judgement, 
@@ -37,7 +38,7 @@ export default function ScoreTooltip({ score, x, y }: Props) {
 		<div className="score_tooltip" style={{
 			left: x, top: y, 
 		}}>
-			<Trans>Achieved on {date} ({dateAgo(score.playedAt)})</Trans><br />
+			<Trans>Achieved on {date} ({ph({ ago: dateAgo(score.playedAt) })})</Trans><br />
 			{Judgements
 				.filter(j => j !== JUDGEMENT.DIVINE || showsDivine(getJudge(j, score) ?? 0))
 				.map(j => (
@@ -47,7 +48,7 @@ export default function ScoreTooltip({ score, x, y }: Props) {
 						</span>: {getJudge(j, score)}&nbsp;
 					</span>
 				))}<br />
-			<Trans>Accuracy: {acc}</Trans>
+			<Trans>Accuracy: {accuracy}</Trans>
 		</div>,
 		document.body,
 	);

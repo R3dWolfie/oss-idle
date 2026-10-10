@@ -26,11 +26,11 @@ export default function Dashboard() {
 		return () => { alive = false; clearInterval(id); };
 	}, []);
 
-	if (error) return <main className='dashboard'>
-		<p className='dashboard__error'>{error}</p>
+	if (error) return <main className='admin-dashboard'>
+		<p className='admin-dashboard__error'>{error}</p>
 	</main>;
-	if (!stats) return <main className='dashboard'>
-		<p className='dashboard__muted'>Loading…</p>
+	if (!stats) return <main className='admin-dashboard'>
+		<p className='admin-dashboard__muted'>Loading…</p>
 	</main>;
 
 	const cards = [
@@ -53,53 +53,53 @@ export default function Dashboard() {
 	const total = stats.adoption.reduce((n, v) => n + v.count, 0);
 
 	return (
-		<main className='dashboard'>
-			<div className='dashboard__cards'>
+		<main className='admin-dashboard'>
+			<div className='admin-dashboard__cards'>
 				{cards.map(card => (
-					<div key={card.label} className='dashboard__card'>
-						<span className='dashboard__card-value'>{card.value}</span>
-						<span className='dashboard__card-label'>{card.label}</span>
+					<div key={card.label} className='admin-dashboard__card'>
+						<span className='admin-dashboard__card-value'>{card.value}</span>
+						<span className='admin-dashboard__card-label'>{card.label}</span>
 					</div>
 				))}
 			</div>
 
-			<section className='dashboard__section'>
-				<h2 className='dashboard__subtitle'>Version adoption</h2>
-				<span className='dashboard__muted'>
+			<section className='admin-dashboard__section'>
+				<h2 className='admin-dashboard__subtitle'>Version adoption</h2>
+				<span className='admin-dashboard__muted'>
 					Across {total.toLocaleString()} players active in the last 7 days
 				</span>
 				{total === 0
-					? <p className='dashboard__muted'>No version reports yet.</p>
-					: <div className='dashboard__adoption'>
+					? <p className='admin-dashboard__muted'>No version reports yet.</p>
+					: <div className='admin-dashboard__adoption'>
 						{stats.adoption.map(v => {
 							const pct = Math.round((v.count / total) * 100);
 							const current = v.version === stats.serverVersion;
 							const webPct = (v.web / v.count) * 100;
 							return (
-								<div key={v.version} className='dashboard__adoption-row'>
-									<span className={`dashboard__version ${current ? 'current' : ''}`}>
+								<div key={v.version} className='admin-dashboard__adoption-row'>
+									<span className={`admin-dashboard__version ${current ? 'current' : ''}`}>
 										{v.version}{current && ' (current)'}
 									</span>
-									<div className='dashboard__bar'>
+									<div className='admin-dashboard__bar'>
 										<div
-											className={`dashboard__bar-fill ${current ? 'current' : ''}`}
+											className={`admin-dashboard__bar-fill ${current ? 'current' : ''}`}
 											style={{ width: `${pct}%` }}
 										>
 											<div
-												className='dashboard__bar-seg web'
+												className='admin-dashboard__bar-seg web'
 												style={{ width: `${webPct}%` }}
 												title={`Web: ${v.web.toLocaleString()}`}
 											/>
 											<div
-												className='dashboard__bar-seg desktop'
+												className='admin-dashboard__bar-seg desktop'
 												style={{ width: `${100 - webPct}%` }}
 												title={`Desktop: ${v.desktop.toLocaleString()}`}
 											/>
 										</div>
 									</div>
-									<span className='dashboard__adoption-count'>
+									<span className='admin-dashboard__adoption-count'>
 										{v.count.toLocaleString()} · {pct}%
-										<span className='dashboard__adoption-split'>
+										<span className='admin-dashboard__adoption-split'>
 											{v.web.toLocaleString()} web · {v.desktop.toLocaleString()} desktop
 										</span>
 									</span>

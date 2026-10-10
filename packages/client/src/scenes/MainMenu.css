@@ -33,6 +33,8 @@
 	position: absolute;
 	bottom: 3px;
 	left: 3px;
+	/* above .menu__center, which covers the screen */
+	z-index: 6;
 	display: flex;
 	align-items: baseline;
 	gap: 0.15rem;
@@ -54,6 +56,21 @@
 	font-size: 0.75rem;
 	color: var(--text);
 	opacity: 0.85;
+}
+
+.menu__discord {
+	align-self: center;
+	margin-left: 0.4rem;
+	font-size: 1.1rem;
+	color: var(--text);
+	opacity: 0.85;
+	transition:
+		color 0.15s,
+		opacity 0.15s;
+}
+.menu__discord:hover {
+	color: #5865f2;
+	opacity: 1;
 }
 
 .menu__version {

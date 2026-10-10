@@ -1,6 +1,6 @@
 {
   "name": "@osu-idle/server",
-  "version": "0.19.1.0",
+  "version": "0.20.0.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -35,7 +35,9 @@
     "replay:scores": "tsx src/db/replay-scores.ts",
     "replay:scores:prod": "NODE_ENV=production tsx src/db/replay-scores.ts",
     "fix:overall": "tsx src/db/fix-overall-levels.ts",
-    "fix:overall:prod": "NODE_ENV=production tsx src/db/fix-overall-levels.ts"
+    "fix:overall:prod": "NODE_ENV=production tsx src/db/fix-overall-levels.ts",
+    "relevel": "tsx src/db/relevel-characters.ts",
+    "relevel:prod": "NODE_ENV=production tsx src/db/relevel-characters.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",

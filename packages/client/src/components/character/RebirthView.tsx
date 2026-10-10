@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { useState } from 'react';
 import {
 	Trans,
@@ -43,11 +44,11 @@ export default function RebirthView() {
 		if (!ready || busy) return;
 		const wanted = name.trim();
 		const handover = wanted === character.name
-			? t`${character.name} becomes ${character.name}_old`
-			: t`${character.name} keeps its name`;
+			? t`${ph({ name: character.name })} becomes ${ph({ name: character.name })}_old`
+			: t`${ph({ name: character.name })} keeps its name`;
 		setConfirming({
 			title: t`Rebirth as ${wanted}?`,
-			sub: t`${handover}, stays playable and ranked · The new character starts from zero and unlocks: ${next ?? 'nothing new'}`,
+			sub: t`${handover}, stays playable and ranked · The new character starts from zero and unlocks: ${ph({ unlocks: next ?? t`nothing new` })}`,
 			confirmLabel: t`Rebirth`,
 			color: '#ff4089',
 			onConfirm: () => void run(),
@@ -72,11 +73,11 @@ export default function RebirthView() {
 					<Trans>Generation {generation}</Trans>
 				</span>
 				<span>
-					<Trans>Overall Lv{character.overallLevel} / {REBIRTH_MIN_OVERALL_LEVEL}</Trans>
+					<Trans>Overall Lv{ph({ level: character.overallLevel })} / {ph({ required: REBIRTH_MIN_OVERALL_LEVEL })}</Trans>
 				</span>
 				<span>
 					{owned.length > 0
-						? <Trans>Unlocked: {owned.join(', ')}</Trans>
+						? <Trans>Unlocked: {ph({ unlocks: owned.join(', ') })}</Trans>
 						: <Trans>No unlocks yet</Trans>}
 				</span>
 				{next && (

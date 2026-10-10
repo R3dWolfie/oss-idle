@@ -36,6 +36,7 @@ export const presenceEntryDTO = characterDTO
 	.extend({
 		...characterStatsDTO.shape,
 		characterId: z.number().int().positive(),
+		userId: z.number().int().positive(),
 		country: z.string(),
 		rank: z.number().int().min(0).optional(),
 		status: z.enum(values(STATUS)),

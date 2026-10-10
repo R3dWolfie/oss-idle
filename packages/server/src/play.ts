@@ -68,6 +68,10 @@ import { redis } from './redis';
 import { getBestPlay } from './db/schema/best';
 import { applyPendingAction } from './character/pending';
 import { pushCharacter } from './character/push';
+import {
+	awardMedals,
+	medalMultiplier,
+} from './medals';
 import type { Beatmap } from 'osu-classes';
 import type { ScoreState } from '@osu-idle/shared/sim/scoring';
 
@@ -83,8 +87,13 @@ const decoder = new BeatmapDecoder();
  *  window of the live position, so a cheater can't read the whole outcome up front. */
 const STREAM_BUFFER_MS = 5000;
 
-/** Song-time gap between the accuracy/grade checkpoints kept for the live poll. */
-const SAMPLE_STEP_MS = 5000;
+/** Song-time gap between the checkpoints kept for the live poll and the
+ *  multiplayer scoreboard. */
+const SAMPLE_STEP_MS = 1000;
+
+/** [song time, accuracy, grade, score, combo, failed] - a failed play's score
+ *  and combo stay where they were when it failed. */
+export type PlaySample = [number, number, Grade, number?, number?, boolean?];
 
 /** A play's full server-side state. `offsets`/`reveals` are parallel and sorted by
  *  reveal time (the offset's note nominal time), so streaming is a simple cursor. */
@@ -99,10 +108,11 @@ type Pending = {
 	songStartMs: number,
 	draft: NewScoreRow,
 	skillXp: Record<SkillName, number>,
-	/** [song time, accuracy, grade] checkpoints for the live-state poll */
-	samples?: [number, number, Grade][],
+	samples?: PlaySample[],
 	skipped?: true,
 	failedAt?: number,
+	/** how far into the map a failed play got, 0-1 (a medal checks it) */
+	failProgress?: number,
 };
 
 /** Per-skill XP progression returned to the result screen. */
@@ -112,7 +122,7 @@ type Gains = Awaited<ReturnType<typeof applySkillXp>>;
  *  when finalised server-side (the sweep), so a result a client already saw on
  *  its own result screen isn't re-surfaced as a "missed" score. */
 type StoredResult =
-	| { token: string; failed: true; notify: boolean }
+	| { token: string; failed: true; notify: boolean; failProgress?: number }
 	| {
 		token: string;
 		failed: false;
@@ -292,6 +302,20 @@ export async function loadCharacterSkills(character: CharacterRow, beatmapId: nu
 	return skills;
 }
 
+/** When each character's play ends - moved by a skip or a debug finish - or
+ *  undefined once it is over. */
+export const playEnds = async (characterIds: number[]): Promise<(number | undefined)[]> => {
+	if (!characterIds.length) return [];
+	const ends = await redis.zmscore(PLAYING_KEY, ...characterIds.map(String));
+	const now = Date.now();
+	return ends.map(e => e !== null && Number(e) > now ? Number(e) : undefined);
+};
+
+/** A live play's start and checkpoints, for the multiplayer scoreboard. */
+type Timeline = Pick<Pending, 'startedAt' | 'endsAt' | 'samples' | 'draft' | 'failedAt'>;
+export const playTimeline = async (characterId: number): Promise<Timeline | undefined> =>
+	readPlay(characterId);
+
 /** Read the active play (if any) without claiming it. */
 async function readPlay(characterId: number): Promise<Pending | undefined> {
 	const raw = await redis.get(playKey(characterId));
@@ -419,6 +443,11 @@ export const getServerXP = async (
 		for (const name of MINDBLOCK_SKILLS) skillXp[name] = Math.floor(skillXp[name] * block);
 	}
 
+	const medals = await medalMultiplier(character.id);
+	for (const name of Object.keys(skillXp) as SkillName[]) {
+		skillXp[name] = Math.floor(skillXp[name] * medals);
+	}
+
 	if (compareGradeGTE(score.grade, GRADE.X) 
 		&& (!currentBest || compareGradeGT(score.grade, currentBest.grade))) {
 		skillXp.accuracy += Math.floor(1000 * Number(beatmap.sr));
@@ -443,12 +472,21 @@ async function simulateAndStore(
 	// advance to the end in steps, checkpointing accuracy/grade along the way
 	// (update judges incrementally, so stepping does no extra work) - the live
 	// state poll reads these back for the resume banner
-	const samples: [number, number, Grade][] = [];
+	const samples: PlaySample[] = [];
+	let frozen: PlaySample | undefined;
+	const sample = (t: number) => {
+		const { accuracy, grade, score, combo, failed } = game.score;
+		frozen ??= failed ? [t, accuracy, grade, Math.round(score), combo, true] : undefined;
+		samples.push(frozen
+			? [t, accuracy, grade, frozen[3], frozen[4], true]
+			: [t, accuracy, grade, Math.round(score), combo, false]);
+	};
 	for (let t = 0; t <= game.songEndMs; t += SAMPLE_STEP_MS) {
 		game.update(t);
-		samples.push([t, game.score.accuracy, game.score.grade]);
+		sample(t);
 	}
 	game.update(game.songEndMs + 1000); // past the end so every note is judged
+	sample(game.songEndMs + 1000);
 
 	const score = game.score;
 
@@ -510,6 +548,7 @@ async function simulateAndStore(
 	};
 	if (failedAt) {
 		entry.failedAt = failedAt;
+		entry.failProgress = endSongTime / lastNoteEnd;
 	}
 	await redis.set(playKey(character.id), JSON.stringify(entry));
 
@@ -561,6 +600,7 @@ const parsePlayResult = async (play: Pending, notify: boolean): Promise<StoredRe
 			token: play.token,
 			failed: true,
 			notify,
+			failProgress: play.failProgress,
 		};
 	}
 
@@ -689,10 +729,30 @@ const ScoreResult = (result: StoredResult): PlayResult => ({
 	deltas: result.failed ? undefined : result.deltas,
 });
 
+/** The result as sent, with the medals it unlocked when the screen asking is
+ *  about to show it (see awardMedals). */
+const resultWithMedals = async (
+	characterId: number,
+	result: StoredResult,
+	medals: boolean,
+): Promise<PlayResult> => {
+	const sent = ScoreResult(result);
+	if (!medals || !sent.ok) return sent;
+	const failedAt = result.failed ? result.failProgress : undefined;
+	const unlocked = await awardMedals(characterId, { failedAt }).catch(e => {
+		console.error('[play] medals failed for', characterId, e);
+		return [];
+	});
+	return {
+		...sent, medals: unlocked,
+	};
+};
+
 export async function fetchResult(
 	characterId: number,
 	token: string,
 	forceSee: boolean = false,
+	medals: boolean = false,
 ): Promise<PlayResult> {
 
 	const cached = await redis.get(resultKey(characterId));
@@ -705,7 +765,7 @@ export async function fetchResult(
 			}), 'KEEPTTL');
 		}
 		if (result.token === token) {
-			return ScoreResult(result);
+			return resultWithMedals(characterId, result, medals);
 		}
 	}
 
@@ -715,7 +775,7 @@ export async function fetchResult(
 
 	const result = (await finalizePlay(characterId));
 	
-	return result ? ScoreResult(result) : UnfinalizedResult;
+	return result ? resultWithMedals(characterId, result, medals) : UnfinalizedResult;
 }
 
 /** Player quit: drop the play without submitting (token must match). Every
