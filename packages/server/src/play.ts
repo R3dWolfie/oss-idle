@@ -741,10 +741,10 @@ const resultWithMedals = async (
 	const failedAt = result.failed ? result.failProgress : undefined;
 	const unlocked = await awardMedals(characterId, { failedAt }).catch(e => {
 		console.error('[play] medals failed for', characterId, e);
-		return [];
+		return undefined;
 	});
 	return {
-		...sent, medals: unlocked,
+		...sent, medals: unlocked?.ids ?? [], medalsHeld: unlocked?.held,
 	};
 };
 

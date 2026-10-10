@@ -34,17 +34,24 @@ export default function CommunityOverlay() {
 	// Auto-hide: close during gameplay, reopen afterwards - only if it was open
 	// and the toggle is on, so a manual close during play isn't undone.
 	useEffect(() => {
-		let autoClosed = false;
+		let reopen: { chat: boolean, users: boolean } | undefined;
 		void SceneManager.current.sync(scene => {
 			if (!autoHide.get()) return;
 			if (scene === SCENE.GAME) {
 				if (isCommunityOpen.get()) {
-					autoClosed = true;
+					reopen = {
+						chat: showChat.get(), users: showUsers.get(),
+					};
+					// the buttons read these, so they go too
 					void isCommunityOpen.set(false);
+					void showChat.set(false);
+					void showUsers.set(false);
 				}
-			} else if (autoClosed) {
-				autoClosed = false;
+			} else if (reopen) {
+				void showChat.set(reopen.chat);
+				void showUsers.set(reopen.users);
 				void isCommunityOpen.set(true);
+				reopen = undefined;
 			}
 		});
 	}, []);

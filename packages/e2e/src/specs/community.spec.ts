@@ -68,14 +68,18 @@ test.describe('community overlay', () => {
 		await autoHide.click();
 		await expect(autoHide).toHaveAttribute('data-on', 'true');
 
+		const users = page.locator('.community-controls button', { hasText: 'Online users' });
 		await game.playSelected();
-		// auto-hide: the playfield is not the place for it
+		// auto-hide: the playfield is not the place for it - and the buttons say so
 		await expect(panel).not.toHaveClass(/is-enabled/);
+		await expect(users).toHaveAttribute('data-on', 'false');
+		await expect(page.locator('.community-controls button', { hasText: 'Show chat' })).toBeVisible();
 
 		await game.waitForPlay();
 		await game.skipToEnd();
 		await game.expectScene('RESULT');
 		await expect(panel).toHaveClass(/is-enabled/);
+		await expect(users).toHaveAttribute('data-on', 'true');
 	});
 
 });

@@ -13,6 +13,7 @@ import { characters } from '../db/schema/character';
 import { hub } from './hub';
 import { LOBBY_CHANNEL } from '@osu-idle/shared/multiplayer';
 import { channelMembers } from './multiplayer';
+import { pushMedals } from '../medals';
 
 /**
  * The chat relay + its moderation surface. Messages fan out over the socket and
@@ -47,7 +48,7 @@ const timeoutKey = (userId: number): string => `${redisKeyPrefix}chat:timeout:${
 /** Chat username colours: a soft yellow for players, purple for admins. */
 export const PLAYER_NAME_COLOR = '#fff09a';
 export const ADMIN_NAME_COLOR = '#b06cff';
-/** BanchoBot, osu!'s bot, speaks in pink. */
+/** MakiseBot, our BanchoBot, speaks in pink. */
 export const BOT_COLOR = '#ff66aa';
 /** `/announce` renders the whole line in this attention-grabbing red. */
 const ANNOUNCE_COLOR = '#ff6b6b';
@@ -181,7 +182,9 @@ export const handleChat = async (
 	};
 
 	await store(channel, line);
-	void redis.sadd(CHATTED_KEY, String(from.characterId));
+	void redis.sadd(CHATTED_KEY, String(from.characterId))
+		.then(added => added ? pushMedals(from.characterId) : undefined)
+		.catch(e => console.error('[chat] medals failed for', from.characterId, e));
 	if (members) {
 		for (const id of members) {
 			hub.sendTo(id, {

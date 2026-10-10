@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-10 12:49\n"
+"PO-Revision-Date: 2026-10-10 14:03\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -142,12 +142,17 @@ msgstr "Une partie est déjà en cours. Jouer en local à la place ? Le score ne
 msgid "A new update is available. Click here to download it !"
 msgstr "Une nouvelle mise à jour est disponible. Cliquez pour la télécharger !"
 
+#: src/scenes/MainMenu.tsx
+msgid "A play is running"
+msgstr ""
+
 #: src/scenes/Gameplay.tsx
 msgid "abort"
 msgstr "abandonner"
 
 #: src/scenes/Gameplay.tsx
 #: src/scenes/Gameplay.tsx
+#: src/scenes/MainMenu.tsx
 msgid "Abort"
 msgstr "Abandonner"
 
@@ -155,9 +160,18 @@ msgstr "Abandonner"
 msgid "Abort it"
 msgstr "L'abandonner"
 
+#: src/scenes/MainMenu.tsx
+msgid "Abort it to play multiplayer?"
+msgstr ""
+
 #: src/scenes/Gameplay.tsx
 msgid "Abort the play?"
 msgstr "Abandonner la partie ?"
+
+#: src/online/multiplayer.ts
+#: src/online/multiplayer.ts
+msgid "Abort your running play to join a game."
+msgstr ""
 
 #: src/scenes/Result.tsx
 msgid "Accuracy"

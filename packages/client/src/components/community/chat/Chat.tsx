@@ -27,6 +27,8 @@ import {
 import { blocked } from '../../../online/blocks';
 import { isMatchChannel } from '@osu-idle/shared/multiplayer';
 import ChatText from './ChatText';
+import { isCommunityOpen } from '../../../globals';
+import { showChat } from '../state';
 
 /** A line as the log renders it; no `name` = a system line, coloured whole. */
 type LogLine = {
@@ -49,6 +51,15 @@ export default function Chat() {
 	const focusInput = () => {
 		inputRef.current?.focus();
 	};
+
+	// showing the chat puts you in its input; the frame wait lets it become visible
+	const [open] = useSynced(isCommunityOpen);
+	const [shown] = useSynced(showChat);
+	useEffect(() => {
+		if (!open || !shown) return;
+		const frame = requestAnimationFrame(() => inputRef.current?.focus());
+		return () => cancelAnimationFrame(frame);
+	}, [open, shown]);
 
 	const closeChannel = (channel: string) => {
 		void chatTabs.set(channels.filter(c => c !== channel));

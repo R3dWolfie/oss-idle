@@ -1,3 +1,4 @@
+import type { MedalBatch } from '@osu-idle/shared/play';
 import './Gameplay.css';
 import {
 	useEffect,
@@ -310,7 +311,7 @@ function GameplayInner({
 	/** the authoritative result, once the server has one */
 	const serverScoreRef = useRef<{ score: Score, gains?: SkillProgress[] } | undefined>(undefined);
 	/** medals the server awarded with this play's result, for the result screen */
-	const medalsRef = useRef<string[]>([]);
+	const medalsRef = useRef<MedalBatch>();
 	/** the play's token, which only a ranked play has */
 	const rankedToken = play.mode === 'ranked' ? play.token : undefined;
 
@@ -428,7 +429,7 @@ function GameplayInner({
 		// From here the result is ours: a slip while mirroring it must not ask the
 		// server again - it already handed this result (and its medals) over once.
 		console.log('[play] server result', JSON.stringify(result).slice(0, 160));
-		medalsRef.current = result.medals ?? [];
+		medalsRef.current = result.medals;
 		if (result.failed || !('score' in result) || !result.score) {
 			dispatch({
 				type: 'owner-result', hasScore: false,

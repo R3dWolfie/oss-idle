@@ -23,7 +23,7 @@ import {
 	chatTabs,
 } from '../components/community/chat/state';
 
-type JoinReason = 'full' | 'password' | 'gone';
+type JoinReason = 'full' | 'password' | 'gone' | 'playing';
 
 /** Survives a dev hot reload: this module sits under SceneManager, which
  *  reloads it with every scene edit, and a fresh copy would forget the room. */
@@ -134,11 +134,13 @@ export default class Multiplayer {
 		password: string,
 		size: number,
 		isPublic: boolean,
-	): Promise<void> {
+	): Promise<JoinReason | undefined> {
 		PlayQueue.stop();
-		await Socket.request({
+		const { reason } = await Socket.request({
 			type: 'mp:create', name, password, size, isPublic, beatmapId: music.beatmap.get()?.metadata.id,
 		}, 'mp:joined');
+		if (reason === 'playing') Log.popup(t`Abort your running play to join a game.`);
+		return reason;
 	}
 
 	/** Join a match; resolves with why it was refused, if it was. */
@@ -147,6 +149,7 @@ export default class Multiplayer {
 		const { reason } = await Socket.request({
 			type: 'mp:join', id, password,
 		}, 'mp:joined');
+		if (reason === 'playing') Log.popup(t`Abort your running play to join a game.`);
 		return reason;
 	}
 

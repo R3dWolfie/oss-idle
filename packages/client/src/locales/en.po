@@ -137,12 +137,17 @@ msgstr "A game is already in progress. Play locally instead? It won't be submitt
 msgid "A new update is available. Click here to download it !"
 msgstr "A new update is available. Click here to download it !"
 
+#: src/scenes/MainMenu.tsx
+msgid "A play is running"
+msgstr "A play is running"
+
 #: src/scenes/Gameplay.tsx
 msgid "abort"
 msgstr "abort"
 
 #: src/scenes/Gameplay.tsx
 #: src/scenes/Gameplay.tsx
+#: src/scenes/MainMenu.tsx
 msgid "Abort"
 msgstr "Abort"
 
@@ -150,9 +155,18 @@ msgstr "Abort"
 msgid "Abort it"
 msgstr "Abort it"
 
+#: src/scenes/MainMenu.tsx
+msgid "Abort it to play multiplayer?"
+msgstr "Abort it to play multiplayer?"
+
 #: src/scenes/Gameplay.tsx
 msgid "Abort the play?"
 msgstr "Abort the play?"
+
+#: src/online/multiplayer.ts
+#: src/online/multiplayer.ts
+msgid "Abort your running play to join a game."
+msgstr "Abort your running play to join a game."
 
 #: src/scenes/Result.tsx
 msgid "Accuracy"

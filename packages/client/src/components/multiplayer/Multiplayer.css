@@ -329,14 +329,27 @@
 	background: #fff;
 	flex-shrink: 0;
 }
-.mp-slot.is-ready .mp-slot__bar {
-	background: #6bd36b;
+/* osu!'s seat colours, by state: the bar in full, the name box tinted */
+.mp-slot.is-locked {
+	--slot: 0, 0, 0;
 }
-.mp-slot.is-no-map .mp-slot__bar {
-	background: #ff6a2a;
+.mp-slot.is-open {
+	--slot: 245, 250, 225;
 }
-.mp-slot.is-playing .mp-slot__bar {
-	background: #8fd3ff;
+.mp-slot.is-not-ready {
+	--slot: 200, 230, 120;
+}
+.mp-slot.is-no-map {
+	--slot: 255, 106, 42;
+}
+.mp-slot.is-playing {
+	--slot: 140, 140, 140;
+}
+.mp-slot.is-ready {
+	--slot: 70, 200, 70;
+}
+.mp-slot .mp-slot__bar {
+	background: rgb(var(--slot));
 }
 .mp-slot__name {
 	display: flex;
@@ -346,7 +359,7 @@
 	height: 100%;
 	padding: 0 calc(var(--mp-u) * 0.9);
 	border: none;
-	background: rgba(60, 60, 60, 0.6);
+	background: rgba(var(--slot), 0.35);
 	color: #fff;
 	font-size: calc(var(--mp-u) * 3.1);
 	font-family: inherit;
@@ -356,17 +369,22 @@
 	cursor: pointer;
 }
 .mp-slot:not(.is-locked) .mp-slot__name:hover {
-	background: rgba(100, 100, 100, 0.6);
+	background: rgba(var(--slot), 0.5);
 }
-.mp-slot.is-locked .mp-slot__name {
-	color: #999;
-	cursor: default;
-}
-.mp-slot.is-self .mp-slot__name {
+/* osu!'s own shades for these two */
+.mp-slot.is-ready .mp-slot__name {
 	background: rgba(120, 130, 30, 0.6);
 }
-.mp-slot.is-self.is-no-map .mp-slot__name {
+.mp-slot.is-no-map .mp-slot__name {
 	background: rgba(200, 80, 20, 0.6);
+}
+.mp-slot.is-open .mp-slot__name {
+	background: rgba(var(--slot), 0.5);
+}
+.mp-slot.is-locked .mp-slot__name {
+	background: rgba(0, 0, 0, 0.6);
+	color: #999;
+	cursor: default;
 }
 .mp-slot__rank {
 	margin-left: auto;
@@ -454,10 +472,19 @@
 	left: 0;
 	top: max(136px, calc(24% - 14px));
 	z-index: 5;
-	display: flex;
-	flex-direction: column;
-	gap: calc(var(--mp-u) * 0.55);
+	--mp-score-step: calc(var(--mp-u) * 6.15);
+	/* the self card sits 1.1 further right */
+	width: calc(var(--mp-u) * 21.5);
+	height: calc(var(--rows) * var(--mp-score-step));
 	pointer-events: none;
+}
+/* each card sits at its place and travels there, over the others, when it changes */
+.mp-scoreboard__slot {
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform: translateY(calc(var(--row) * var(--mp-score-step)));
+	transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .mp-score {
 	position: relative;

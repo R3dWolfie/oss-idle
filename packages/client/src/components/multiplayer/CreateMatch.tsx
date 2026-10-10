@@ -41,8 +41,9 @@ export default function CreateMatch({ onClose }: { onClose: () => void }) {
 			return;
 		}
 		const historyPublic = !locked || isPublic.get();
-		await Multiplayer.create(name.trim(), locked ? password : '', size.get(), historyPublic);
-		SceneManager.set(SCENE.MATCH);
+		const pass = locked ? password : '';
+		const reason = await Multiplayer.create(name.trim(), pass, size.get(), historyPublic);
+		if (!reason) SceneManager.set(SCENE.MATCH);
 	};
 
 	return (

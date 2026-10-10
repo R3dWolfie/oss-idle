@@ -31,6 +31,8 @@ import {
 } from './db/schema/character_medal';
 import { presenceTimezone } from './ws/presence';
 import { hasChatted } from './ws/chat';
+import { hub } from './ws/hub';
+import type { MedalBatch } from '@osu-idle/shared/play';
 
 /** What a finished play adds that the database does not keep. */
 export type PlayFacts = {
@@ -241,17 +243,28 @@ export const earnedMedals = async (
 };
 
 /**
- * The one place medals are awarded: a ranked play's result, read by a screen
- * about to show it (the result screen asks with `medals: true`, and only clients
- * that have the medal overlay do). A result nobody looks at awards nothing; the
- * next one that is shown catches up on everything earned before, which is also
- * how existing characters get their backfill. Returns the medals just unlocked.
+ * Award a ranked play's medals, for a result screen about to show it (it asks
+ * with `medals: true`). It also catches up on everything earned before and never
+ * shown, which is how existing characters got their backfill.
  */
-export const awardMedals = async (characterId: number, play: PlayFacts): Promise<string[]> => {
+export const awardMedals = async (characterId: number, play: PlayFacts): Promise<MedalBatch> => {
 	const character = await getCharacterById(characterId);
-	if (!character) return [];
+	if (!character) return {
+		ids: [], held: 0,
+	};
 	const tz = await presenceTimezone(characterId);
 	return addMedals(characterId, await earnedMedals(character, play, tz));
+};
+
+/** Award what was earned away from a play (a first chat, a purchase) and show it
+ *  on the character's devices right away. */
+export const pushMedals = async (characterId: number): Promise<void> => {
+	const character = await getCharacterById(characterId);
+	if (!character) return;
+	const medals = await addMedals(characterId, await earnedMedals(character));
+	if (medals.ids.length) hub.sendTo(characterId, {
+		type: 'medals', medals,
+	});
 };
 
 /** XP multiplier from the medals a character holds. */

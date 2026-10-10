@@ -10,6 +10,8 @@ export default function CommunityToggle({
 		<button
 			className="community-controls__btn"
 			data-on={on}
+			tabIndex={-1}
+			onMouseDown={e => e.preventDefault()}
 			onClick={() => {
 				if (onClick) {
 					onClick?.();

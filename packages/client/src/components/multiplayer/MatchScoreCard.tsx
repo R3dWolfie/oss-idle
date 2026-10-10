@@ -1,6 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import type { PresenceEntry } from '@osu-idle/shared/community/presence';
 import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import useSmoothNumber from '../../animations/useSmoothNumber';
+import { linear } from '../../animations/smoothNumber';
+
+/** standings arrive once a second: the score ticks up steadily between them */
+const SCORE_GLIDE = {
+	duration: 1000, easing: linear,
+};
 
 /** One player in osu!'s multiplayer scoreboard: in game, and the ranking tabs after. */
 export default function MatchScoreCard({ player, score, combo, position, failed, self, onClick }: {
@@ -13,6 +20,7 @@ export default function MatchScoreCard({ player, score, combo, position, failed,
 	onClick?: () => void,
 }) {
 	const { i18n } = useLingui();
+	const shown = useSmoothNumber(score, SCORE_GLIDE);
 	return (
 		<button
 			type="button"
@@ -24,7 +32,7 @@ export default function MatchScoreCard({ player, score, combo, position, failed,
 			<span className="mp-score__main">
 				<span className="mp-score__name">{player?.name ?? '...'}</span>
 				<span className="mp-score__line">
-					<span>{Math.round(score).toLocaleString(i18n.locale)}</span>
+					<span>{Math.round(shown).toLocaleString(i18n.locale)}</span>
 					<span className="mp-score__combo">{combo}x</span>
 				</span>
 			</span>

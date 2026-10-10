@@ -42,6 +42,7 @@ import {
 } from '../character/pending';
 import { assertNameAvailable } from '../character/names';
 import { announceCharacter } from '../character/push';
+import { pushMedals } from '../medals';
 import type { PendingAction } from '@osu-idle/shared/pendingAction';
 import type { UserRow } from '../db/schema/user';
 
@@ -307,6 +308,7 @@ const characterById = async (id: number, user: UserRow) => {
 	const [row] = await db.select().from(characters).where(eq(characters.id, id)).limit(1);
 	const dto = characterToDTO(row!, user.avatarUrl, user.country);
 	announceCharacter(dto);
+	void pushMedals(id).catch(e => console.error('[me] medals failed for', id, e));
 	return dto;
 };
 

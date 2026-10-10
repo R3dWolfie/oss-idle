@@ -465,11 +465,20 @@ export default class PlayManager {
 		// Both aborts end the play by clearing its state, and that lands in
 		// endedHere, which chains - immediately, since `immediate` is set. Doing it
 		// here as well would run two chains, and the queue would advance twice.
-		if (localPlayState.get()) {
-			abortLocalPlay(live.token);
-			return;
-		}
-		await abortPlaySession(live.token);
+		await this.drop(live.token);
+	}
+
+	/** Drop the running play and the queue with it (multiplayer needs the player free). */
+	public static async abort(): Promise<void> {
+		PlayQueue.stop();
+		this.cancelChain();
+		const live = this.live.get();
+		if (live) await this.drop(live.token);
+	}
+
+	private static async drop(token: string): Promise<void> {
+		if (localPlayState.get()) abortLocalPlay(token);
+		else await abortPlaySession(token);
 	}
 
 	// --- server state -------------------------------------------------------

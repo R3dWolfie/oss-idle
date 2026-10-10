@@ -17,6 +17,7 @@ import Multiplayer from '../online/multiplayer';
 import Entities from '../entity/entities';
 import Lobby from '../scenes/Lobby';
 import MatchSetup from '../scenes/MatchSetup';
+import MatchScoreboard from '../components/multiplayer/MatchScoreboard';
 import Result from '../scenes/Result';
 import { Judgements } from '@osu-idle/shared/judgement';
 import type { JudgementCounts } from '@osu-idle/shared/score';
@@ -114,7 +115,10 @@ const tieredSkill = () => {
 const medalCase = (id: string, label: string, medals: () => MedalUnlock[]): PlaygroundCase => ({
 	id,
 	label,
-	render: () => <MedalUnlockOverlay medals={medals()} />,
+	render: () => {
+		const list = medals();
+		return <MedalUnlockOverlay medals={list} held={list.length} />;
+	},
 });
 
 /** A host alone in an 8-player room, the way a new match starts. */
@@ -133,6 +137,47 @@ const fakeMatch = (): Match => {
 			}
 			: { state: i < 8 ? 'open' : 'locked' }),
 	};
+};
+
+/** A round under way: me and two others, standings climbing every second the
+ *  way the server feeds them. */
+const roundOf = (me: number): Match => {
+	const match = fakeMatch();
+	match.playing = true;
+	match.beatmap = {
+		id: 1, setId: 1, artist: 'Artist', title: 'Title', version: 'Hard', creator: 'Mapper', sr: 3.2,
+	};
+	[me, -2, -3].forEach((characterId, i) => match.slots[i] = {
+		state: 'player', characterId, ready: false, noMap: false, playing: true,
+	});
+	return match;
+};
+
+// the character id is a placeholder until the account resolves, so the seat
+// follows it each tick
+const liveRound = () => {
+	let second = 0;
+	let rival = 0;
+	setInterval(() => {
+		second++;
+		// the rival speeds up and slows down, so places swap now and then
+		rival += second % 6 < 3 ? 14_000 : 6_000;
+		const me = Entities.character.get().id;
+		if (!Multiplayer.current.get()?.slots.some(s => s.state === 'player' && s.characterId === me)) {
+			void Multiplayer.current.set(roundOf(me));
+		}
+		void Multiplayer.scores.set([
+			{
+				characterId: me, score: second * 9_870, combo: second * 4, failed: false,
+			},
+			{
+				characterId: -2, score: rival, combo: second * 3, failed: false,
+			},
+			{
+				characterId: -3, score: second * 4_020, combo: second, failed: false,
+			},
+		]);
+	}, 1000);
 };
 
 /** Whose result the match result case shows: before the account resolves the
@@ -285,6 +330,40 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 			}}
 			progression={spread(4, 12)}
 		/>,
+	},
+	{
+		id: 'mp-abort-confirm',
+		label: 'Multiplayer - abort the running play first',
+		render: () => <ConfirmMenu
+			title="A play is running"
+			sub="Abort it to play multiplayer?"
+			confirmLabel="Abort"
+			onConfirm={() => {}}
+			onClose={() => {}}
+		/>,
+	},
+	{
+		id: 'mp-scoreboard',
+		label: 'Multiplayer live scoreboard - three players, scores climbing',
+		setup: liveRound,
+		render: () => <MatchScoreboard beatmapId={1} />,
+	},
+	{
+		id: 'mp-slots',
+		label: 'Multiplayer match setup - every seat state',
+		setup: () => {
+			const match = fakeMatch();
+			type Flags = Partial<Record<'ready' | 'noMap' | 'playing', boolean>>;
+			const seat = (characterId: number, state: Flags) => ({
+				state: 'player' as const, characterId, ready: false, noMap: false, playing: false, ...state,
+			});
+			match.slots[1] = seat(-2, { ready: true });
+			match.slots[2] = seat(-3, { noMap: true });
+			match.slots[3] = seat(-4, { playing: true });
+			match.slots[4] = seat(-5, {});
+			void Multiplayer.current.set(match);
+		},
+		render: () => <MatchSetup />,
 	},
 	{
 		id: 'mp-match',

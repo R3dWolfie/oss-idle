@@ -96,6 +96,13 @@ export const playDeltasDTO = z.object({
 });
 export type PlayDeltas = z.infer<typeof playDeltasDTO>;
 
+/** Medals just unlocked, and how many the character holds with them. */
+export const medalBatchDTO = z.object({
+	ids: z.array(z.string()),
+	held: z.number().int(),
+});
+export type MedalBatch = z.infer<typeof medalBatchDTO>;
+
 /** Outcome of `play:result`. Not-ok reasons: `unknown` = no such play/result,
  *  `cache-miss` = already surfaced elsewhere, `unfinalized` = the finalise
  *  failed, `tooSoon` = the play hasn't ended yet. */
@@ -108,6 +115,8 @@ export const playResultDTO = z.discriminatedUnion('ok', [
 		deltas: playDeltasDTO.optional(),
 		/** medals this play unlocked - only when asked for with `medals` */
 		medals: z.array(z.string()).optional(),
+		/** how many medals the character holds, these included */
+		medalsHeld: z.number().int().optional(),
 	}),
 	z.object({
 		ok: z.literal(false),
@@ -159,7 +168,7 @@ export const playClientMessages = [
 		token: z.string(),
 		forceSee: z.boolean().optional(),
 		/** the result screen is about to show this result: award its medals.
-		 *  The only way medals are earned, so an unshown play earns none. */
+		 *  Catches up on everything earned since the last award. */
 		medals: z.boolean().optional(),
 	}),
 ] as const;

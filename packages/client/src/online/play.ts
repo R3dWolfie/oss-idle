@@ -157,7 +157,13 @@ export async function fetchPlayResult(
 	if (!res.result.ok) throw new PlayResultError(res.result.reason);
 	// a freshly received score: float its profile movement, wherever we are
 	if (res.result.deltas) showDeltas(res.result.deltas);
-	return res.result;
+	const { medals: ids, medalsHeld, ...result } = res.result;
+	return {
+		...result,
+		medals: ids && {
+			ids, held: medalsHeld ?? ids.length,
+		},
+	};
 }
 
 /** Tell the server the player skipped the lead-in so its timeline moves forward

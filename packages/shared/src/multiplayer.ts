@@ -180,6 +180,6 @@ export const multiplayerServerMessages = [
 		type: z.literal('mp:joined'),
 		match: matchDTO.optional(),
 		/** why a join was refused */
-		reason: z.enum(['full', 'password', 'gone']).optional(),
+		reason: z.enum(['full', 'password', 'gone', 'playing']).optional(),
 	}),
 ] as const;

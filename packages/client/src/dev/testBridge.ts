@@ -12,7 +12,7 @@ import {
 	finishLocalPlay,
 } from '../online/localPlay';
 import BeatmapAPI from '../osu/beatmap/beatmap_api';
-import BeatmapStore, { beatmapsVersion } from '../osu/beatmap/beatmap_store';
+import BeatmapStore from '../osu/beatmap/beatmap_store';
 import { Score } from '../db/schema/score';
 import { ScoreXP } from '../db/schema/score_xp';
 import { SETTINGS } from '../db/settings';
@@ -166,7 +166,6 @@ const download = async (setId: number): Promise<number[]> => {
 	const meta = manifest.beatmaps.find(m => m.id === setId);
 	if (!meta) throw new Error(`no such set in the catalog: ${setId}`);
 	await BeatmapAPI.downloadOsz(meta);
-	void beatmapsVersion.set(beatmapsVersion.get() + 1);
 	const set = (await BeatmapStore.getAllSets()).find(s => s.metadata.id === setId);
 	return set?.getPlayableBeatmaps().map(b => b.metadata.id) ?? [];
 };

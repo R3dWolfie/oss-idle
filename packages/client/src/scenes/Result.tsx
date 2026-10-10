@@ -36,6 +36,7 @@ import { currentScore } from '../globals';
 import { showsDivine } from '@osu-idle/shared/rebirth';
 import MedalUnlockOverlay from '../components/medals/MedalUnlockOverlay';
 import { medalUnlocks } from '../achievements/medalUnlocks';
+import type { MedalBatch } from '@osu-idle/shared/play';
 
 /** Two per row. Divine pairs with marvelous at the top and pushes perfect down
  *  beside great; without divine the pairing is left exactly as it was. */
@@ -67,7 +68,7 @@ type Props = {
 	 *  following the live selection, which browsing elsewhere can change. */
 	beatmap?: LightBeatmap,
 	/** medals this play unlocked: their overlay plays over this screen */
-	medals?: string[],
+	medals?: MedalBatch,
 };
 
 export default function Result({ score, game, progression, failed, beatmap, medals }: Props) {
@@ -199,6 +200,8 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 
 			</div>
 		</div>
-		{medals?.length ? <MedalUnlockOverlay medals={medalUnlocks(medals)} /> : null}
+		{medals?.ids.length
+			? <MedalUnlockOverlay medals={medalUnlocks(medals.ids)} held={medals.held} />
+			: null}
 	</>);
 }

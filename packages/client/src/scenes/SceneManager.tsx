@@ -1,3 +1,4 @@
+import type { MedalBatch } from '@osu-idle/shared/play';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import IntroScreen from './IntroScreen';
 import MainMenu from './MainMenu';
@@ -61,7 +62,7 @@ export default class SceneManager {
 			progression?: SkillProgress[],
 			failed?: boolean,
 			beatmap?: LightBeatmap,
-			medals?: string[],
+			medals?: MedalBatch,
 		) => <Result
 			game={game}
 			score={score}

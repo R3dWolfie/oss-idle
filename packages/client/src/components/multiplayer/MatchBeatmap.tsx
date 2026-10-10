@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import {
+	useEffect,
+	useState,
+} from 'react';
 import { Trans } from '@lingui/react/macro';
 import useAsync from '@osu-idle/shared/hooks/useAsync';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
@@ -9,6 +12,7 @@ import BeatmapAPI from '../../osu/beatmap/beatmap_api';
 import { beatmapsVersion } from '../../osu/beatmap/beatmap_store';
 import LightBeatmapSet from '../../osu/beatmap/LightBeatmapSet';
 import PlayManager from '../../online/playManager';
+import { music } from '../../audio/MusicPlayer';
 
 /** The match's map as song select's card, from the library or the catalog. */
 const findCard = async (beatmapId: number, setId: number) => {
@@ -27,6 +31,14 @@ export default function MatchBeatmap({ match, noMap }: { match: Match, noMap: bo
 	const [download, setDownload] = useState<DownloadState>();
 	const map = match.beatmap;
 	const card = useAsync(async () => map && findCard(map.id, map.setId), [map?.id, library]);
+
+	// the host's pick plays for everyone, as song select would
+	useEffect(() => {
+		const beatmap = card?.beatmap;
+		if (!beatmap || beatmap.is(music.beatmap.get())) return;
+		void music.beatmap.set(beatmap)
+			.then(() => music.play(beatmap.metadata.runtime ? beatmap.metadata.previewTime : 0));
+	}, [card?.beatmap]);
 
 	if (match.changingBeatmap) {
 		return <div className="mp-map__changing"><Trans>Host is changing map...</Trans></div>;

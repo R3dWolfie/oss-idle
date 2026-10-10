@@ -30,6 +30,7 @@ import { liveDiffCondition } from '../beatmaps/catalog';
 import {
 	playEnds,
 	playTimeline,
+	isPlaying,
 	startPlay,
 	type PlaySample,
 } from '../play';
@@ -283,14 +284,14 @@ export const leaveMatch = async (
 	});
 };
 
-/** osu!'s BanchoBot line on entering a match, linking its history. */
+/** MakiseBot's line on entering a match (osu!'s BanchoBot one), linking its history. */
 const historyLine = (characterId: number, matchId: number): void => hub.sendTo(characterId, {
 	type: 'chat',
 	line: {
 		id: randomUUID(),
 		kind: 'system',
 		channel: matchChannel(matchId),
-		name: 'BanchoBot',
+		name: 'MakiseBot',
 		color: BOT_COLOR,
 		text: 'Match history available here.',
 		link: {
@@ -300,10 +301,17 @@ const historyLine = (characterId: number, matchId: number): void => hub.sendTo(c
 	},
 });
 
+type JoinAnswer = {
+	match?: Match,
+	/** a running play has to be aborted first: its round would start without it */
+	reason?: 'full' | 'password' | 'gone' | 'playing',
+};
+
 const create = async (
 	characterId: number,
 	{ name, password, size, isPublic, beatmapId }: Extract<ClientMessage, { type: 'mp:create' }>,
-): Promise<Match> => {
+): Promise<JoinAnswer> => {
+	if (await isPlaying(characterId)) return { reason: 'playing' };
 	const beatmap = beatmapId === undefined ? undefined : await findBeatmap(beatmapId);
 	await leaveMatch(characterId);
 	const id = await openMatch(name, isPublic);
@@ -322,19 +330,17 @@ const create = async (
 	await redis.hset(MEMBERS, String(characterId), String(id));
 	await withLock(id, () => save(m));
 	historyLine(characterId, id);
-	return toDTO(m);
-};
-
-type JoinAnswer = {
-	match?: Match,
-	reason?: 'full' | 'password' | 'gone',
+	return { match: toDTO(m) };
 };
 
 const join = async (
 	characterId: number,
 	{ id, password }: Extract<ClientMessage, { type: 'mp:join' }>,
 ): Promise<JoinAnswer> => {
-	if (await memberOf(characterId) !== id) await leaveMatch(characterId);
+	if (await memberOf(characterId) !== id) {
+		if (await isPlaying(characterId)) return { reason: 'playing' };
+		await leaveMatch(characterId);
+	}
 	const answer: JoinAnswer = { reason: 'gone' };
 	let seated = false;
 	const m = await change(id, m => {
@@ -575,7 +581,7 @@ export const handleMultiplayer = async (
 		}
 		case 'mp:create':
 			hub.sendLocal(ws, {
-				type: 'mp:joined', match: await create(characterId, msg),
+				type: 'mp:joined', ...await create(characterId, msg),
 			});
 			return true;
 		case 'mp:join':

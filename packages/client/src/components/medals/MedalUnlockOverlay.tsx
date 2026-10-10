@@ -48,11 +48,12 @@ const useParallax = (root: RefObject<HTMLDivElement | null>, on: boolean) => use
 }, [on, root]);
 
 type Props = {
-	/** what the result screen's play unlocked */
 	medals: MedalUnlock[],
+	/** medals the character holds once these are in */
+	held: number,
 };
 
-export default function MedalUnlockOverlay({ medals }: Props) {
+export default function MedalUnlockOverlay({ medals, held }: Props) {
 	// the batch is the one this screen opened with
 	const [batch] = useState(medals);
 	const [bitmaps, setBitmaps] = useState<Map<string, string>>();
@@ -118,6 +119,7 @@ export default function MedalUnlockOverlay({ medals }: Props) {
 	>
 		<MedalShowcase
 			medals={batch}
+			held={held}
 			bitmaps={bitmaps}
 			skip={skip}
 			onArrived={onArrived}

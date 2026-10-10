@@ -1,6 +1,7 @@
 import {
 	useCallback,
 	useRef,
+	type CSSProperties,
 } from 'react';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import { scoreboardEdge } from './scoreboardEdge';
@@ -35,17 +36,28 @@ export default function MatchScoreboard({ beatmapId }: { beatmapId: number }) {
 	if (!inRound) return null;
 	const me = Entities.character.get()?.id;
 	return (
-		<div className="mp-scoreboard" ref={measure}>
+		<div
+			className="mp-scoreboard"
+			ref={measure}
+			style={{ '--rows': scores.length } as CSSProperties}
+		>
 			{scores.map((s, i) => (
-				<MatchScoreCard
+				<div
 					key={s.characterId}
-					player={players.get(s.characterId)}
-					score={s.score}
-					combo={s.combo}
-					position={i + 1}
-					failed={s.failed}
-					self={s.characterId === me}
-				/>
+					className="mp-scoreboard__slot"
+					style={{
+						'--row': i, zIndex: scores.length - i,
+					} as CSSProperties}
+				>
+					<MatchScoreCard
+						player={players.get(s.characterId)}
+						score={s.score}
+						combo={s.combo}
+						position={i + 1}
+						failed={s.failed}
+						self={s.characterId === me}
+					/>
+				</div>
 			))}
 		</div>
 	);

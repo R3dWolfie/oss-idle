@@ -3,6 +3,8 @@
 interface ImportMetaEnv {
 	/** Base URL of the osu! idle backend. */
 	readonly VITE_API_URL?: string
+	/** Where the game and the web platform are served (the desktop app runs on app://). */
+	readonly VITE_SITE_URL?: string
 }
 
 interface ImportMeta {

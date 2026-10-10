@@ -12,11 +12,11 @@ import {
 } from '../globals';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import { useLingui } from '@lingui/react/macro';
-import { BASE_URL } from '../online/client';
 
 /** The page's address as someone else can open it: the desktop app's frame runs
- *  on app://, but the site lives with the API. */
-const shareUrl = (path: string): string => `${BASE_URL || location.origin}${path}`;
+ *  on app://, not on the site. */
+const SITE_URL = import.meta.env.VITE_SITE_URL || location.origin;
+const shareUrl = (path: string): string => `${SITE_URL}${path}`;
 
 /** The clipboard API needs a secure context (the LAN staging origin isn't one). */
 const copy = (text: string): void => {

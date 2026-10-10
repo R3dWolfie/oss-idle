@@ -8,6 +8,7 @@ import {
 	presenceEntryDTO,
 } from './presence.js';
 import {
+	medalBatchDTO,
 	playClientMessages,
 	playServerMessages,
 } from '../play.js';
@@ -49,7 +50,7 @@ export const chatLineDTO = z.discriminatedUnion('kind', [
 		kind: z.literal('system'),
 		...chatLineBase,
 		color: z.string(),
-		/** a bot speaking (BanchoBot), coloured like a player's name */
+		/** a bot speaking (MakiseBot), coloured like a player's name */
 		name: z.string().optional(),
 		/** the part of `text` that opens a web platform page */
 		link: z.object({
@@ -174,6 +175,11 @@ export const serverMessage = z.discriminatedUnion('type', [
 	z.object({
 		type: z.literal('character'),
 		character: characterDTO,
+	}),
+	// Medals earned away from a play's result (a first chat, a purchase).
+	z.object({
+		type: z.literal('medals'),
+		medals: medalBatchDTO,
 	}),
 	z.object({
 		type: z.literal('error'),

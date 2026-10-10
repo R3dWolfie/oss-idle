@@ -412,6 +412,7 @@ export default class BeatmapStore {
 				);
 			}
 		});
+		void beatmapsVersion.set(beatmapsVersion.get() + 1);
 
 		return {
 			setId: metadata.id, metadata: runtimeMetadata, osu, 

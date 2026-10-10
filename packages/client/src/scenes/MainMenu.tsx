@@ -34,6 +34,8 @@ import { VERSION } from '@osu-idle/shared/version';
 import DesktopUpdate from '../components/DesktopUpdate';
 import Auth from '../online/auth';
 import ContextMenu from '../components/ContextMenu';
+import ConfirmMenu from '../components/ConfirmMenu';
+import PlayManager from '../online/playManager';
 import { desktop } from '@osu-idle/shared/desktop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord';
@@ -74,6 +76,7 @@ export default function MainMenu({ flash = false }: Props) {
 	const { t } = useLingui();
 	const [menu, setMenu] = useState<Menu>(MENU.CLOSED);
 	const [exitConfirm, setExitConfirm] = useState(false);
+	const [multiConfirm, setMultiConfirm] = useState(false);
 	const [parallaxOn] = useSynced(SETTINGS.parallax);
 	const parallax = useParallax(0.08, parallaxOn);
 	const [character] = useSynced(Entities.character);
@@ -188,7 +191,9 @@ export default function MainMenu({ flash = false }: Props) {
 			onSelect: () => {
 				if (character.isGuest()) return;
 				clearTimeout(cancelTimeout);
-				SceneManager.set(Multiplayer.current.get() ? SCENE.MATCH : SCENE.LOBBY);
+				if (Multiplayer.current.get()) SceneManager.set(SCENE.MATCH);
+				else if (PlayManager.live.get()) setMultiConfirm(true);
+				else SceneManager.set(SCENE.LOBBY);
 			},
 		},
 		[OPTION.BACK]: {
@@ -307,6 +312,16 @@ export default function MainMenu({ flash = false }: Props) {
 							label: t`Cancel`, color: '#6b6b6b', onClick: () => setExitConfirm(false), 
 						},
 					]}
+				/>
+			)}
+
+			{multiConfirm && (
+				<ConfirmMenu
+					title={t`A play is running`}
+					sub={t`Abort it to play multiplayer?`}
+					confirmLabel={t`Abort`}
+					onConfirm={() => void PlayManager.abort().then(() => SceneManager.set(SCENE.LOBBY))}
+					onClose={() => setMultiConfirm(false)}
 				/>
 			)}
 

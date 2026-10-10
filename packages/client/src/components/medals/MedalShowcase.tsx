@@ -11,6 +11,7 @@ import {
 	type MedalTier,
 } from '@osu-idle/shared/achievements/medal';
 import { MEDAL_XP_BONUS } from '@osu-idle/shared/upgrades';
+import { MEDALS } from '@osu-idle/shared/achievements/catalogue';
 import type { MedalUnlock } from '../../achievements/medalUnlocks';
 import {
 	medalFinale,
@@ -82,6 +83,8 @@ const useTwinkle = (stage: RefObject<HTMLDivElement | null>) => useEffect(() => 
 
 type Props = {
 	medals: MedalUnlock[],
+	/** medals the character holds once this batch is in */
+	held: number,
 	/** bitmaps by look; arrivals wait for them so none appears half-loaded */
 	bitmaps?: Map<string, string>,
 	/** everything at once, silently */
@@ -91,7 +94,7 @@ type Props = {
 };
 
 export default function MedalShowcase({
-	medals, bitmaps, skip, onArrived, onFocus,
+	medals, held, bitmaps, skip, onArrived, onFocus,
 }: Props) {
 	const sorted = useMemo(
 		() => [...medals].sort((a, b) => rank(a.look.tier) - rank(b.look.tier)),
@@ -140,7 +143,7 @@ export default function MedalShowcase({
 			<div className="medal-showcase__title">
 				{sorted.length > 1 ? <Trans>Medals unlocked</Trans> : <Trans>Medal unlocked</Trans>}
 			</div>
-			{sorted.length > 1 && <div className="medal-showcase__count">{shown} / {sorted.length}</div>}
+			<div className="medal-showcase__count">{held - sorted.length + shown} / {MEDALS.length}</div>
 			<div className="medal-showcase__bonus"><Trans>+{percent}% XP</Trans></div>
 		</div>
 		<div ref={stage} className="medal-showcase__stage" style={{
