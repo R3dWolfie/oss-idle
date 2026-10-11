@@ -34,8 +34,7 @@ import ResultMeta from '../components/result/ResultMeta';
 import SkillProgression from '../components/result/SkillProgression';
 import { currentScore } from '../globals';
 import { showsDivine } from '@osu-idle/shared/rebirth';
-import MedalUnlockOverlay from '../components/medals/MedalUnlockOverlay';
-import { medalUnlocks } from '../achievements/medalUnlocks';
+import { showMedals } from '../online/medalWatch';
 import type { MedalBatch } from '@osu-idle/shared/play';
 
 /** Two per row. Divine pairs with marvelous at the top and pushes perfect down
@@ -67,7 +66,7 @@ type Props = {
 	/** the map this score is of. Given, the screen names it itself instead of
 	 *  following the live selection, which browsing elsewhere can change. */
 	beatmap?: LightBeatmap,
-	/** medals this play unlocked: their overlay plays over this screen */
+	/** medals this play unlocked, shown as this screen opens */
 	medals?: MedalBatch,
 };
 
@@ -92,6 +91,10 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 		currentScore.set(score);
 		return () => { currentScore.set(undefined); };
 	}, []);
+
+	useEffect(() => {
+		if (medals) showMedals(medals);
+	}, [medals]);
 
 	// leaving the result screen no longer stops anything: the queue runs whether
 	// or not a scene is watching it (stop it from the dock instead)
@@ -200,8 +203,5 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 
 			</div>
 		</div>
-		{medals?.ids.length
-			? <MedalUnlockOverlay medals={medalUnlocks(medals.ids)} held={medals.held} />
-			: null}
 	</>);
 }

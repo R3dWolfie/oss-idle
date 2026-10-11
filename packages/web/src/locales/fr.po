@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-10 12:49\n"
+"PO-Revision-Date: 2026-10-10 21:52\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -22,6 +22,10 @@ msgstr ""
 msgid "(match in progress)"
 msgstr "(partie en cours)"
 
+#: src/components/character/ProfileMedal.tsx
+msgid "{category} ({tier})"
+msgstr ""
+
 #: src/pages/beatmaps/RequestBulkBar.tsx
 msgid "{count} selected"
 msgstr "{count} sélectionnée(s)"
@@ -33,6 +37,10 @@ msgstr "{days, plural, =0 {aujourd'hui} one {il y a # jour} other {il y a # jour
 #: src/pages/beatmaps/RequestSearchHit.tsx
 msgid "{diffs} × 4K"
 msgstr "{diffs} × 4K"
+
+#: src/components/character/ProfileMedal.tsx
+msgid "{holders} players ({share})"
+msgstr ""
 
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
@@ -116,6 +124,10 @@ msgstr "précision"
 #: src/pages/rankings/Country.tsx
 msgid "Accuracy"
 msgstr "Précision"
+
+#: src/components/character/ProfileMedal.tsx
+msgid "Achieved on {date}"
+msgstr ""
 
 #: src/pages/help/FAQ.tsx
 msgid "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
@@ -977,10 +989,6 @@ msgstr "Score total"
 #: src/components/character/ProfileMenu.tsx
 msgid "Unblock"
 msgstr "Débloquer"
-
-#: src/components/character/ProfileMedal.tsx
-msgid "Unlocked {ago}"
-msgstr "Débloquée {ago}"
 
 #: src/components/EditableProfilePicture.tsx
 msgid "Upload a profile picture"

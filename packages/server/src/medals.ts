@@ -24,9 +24,13 @@ import {
 	getCharacterById,
 	type CharacterRow,
 } from './db/schema/character';
-import { getCharacterTotals } from './db/schema/character_totals';
+import {
+	character_totals,
+	getCharacterTotals,
+} from './db/schema/character_totals';
 import {
 	addMedals,
+	characterMedals,
 	getMedals,
 } from './db/schema/character_medal';
 import { presenceTimezone } from './ws/presence';
@@ -145,7 +149,13 @@ const progress = async (character: CharacterRow, play: PlayFacts, tz?: string) =
 
 type Progress = Awaited<ReturnType<typeof progress>>;
 /** When a medal is earned, and the same in words for the admin page. */
-type Rule = { test: (p: Progress) => boolean, rule: string };
+type Rule = {
+	test: (p: Progress) => boolean,
+	rule: string,
+	/** the counted value and its goal, for medals earned at a threshold */
+	value?: (p: Progress) => number,
+	goal?: number,
+};
 
 const amount = (n: number) => n.toLocaleString('en-US');
 
@@ -157,6 +167,8 @@ const series = (
 ): Record<string, Rule> => Object.fromEntries(Object.entries(at).map(([id, min]) => [id, {
 	test: (p: Progress) => value(p) >= min,
 	rule: `${label} ≥ ${amount(min)}`,
+	value,
+	goal: min,
 }]));
 
 const one = (rule: string, test: (p: Progress) => boolean): Rule => ({
@@ -242,6 +254,21 @@ export const earnedMedals = async (
 	return MEDALS.filter(m => RULES[m.id].test(p)).map(m => m.id);
 };
 
+/** How far a character is toward each threshold medal; secret ones stay secret. */
+export const medalProgress = async (
+	character: CharacterRow,
+): Promise<Record<string, { value: number, goal: number }>> => {
+	const p = await progress(character, {});
+	return Object.fromEntries(MEDALS.flatMap(m => {
+		const { value, goal } = RULES[m.id];
+		return m.category !== 'secret' && value && goal !== undefined
+			? [[m.id, {
+				value: value(p), goal, 
+			}]]
+			: [];
+	}));
+};
+
 /**
  * Award a ranked play's medals, for a result screen about to show it (it asks
  * with `medals: true`). It also catches up on everything earned before and never
@@ -265,6 +292,23 @@ export const pushMedals = async (characterId: number): Promise<void> => {
 	if (medals.ids.length) hub.sendTo(characterId, {
 		type: 'medals', medals,
 	});
+};
+
+/** How many characters hold each medal, out of every character that has played. */
+export const medalHolders = async () => {
+	const [held, [{ players }]] = await Promise.all([
+		db.select({
+			id: characterMedals.medalId, n: count(),
+		})
+			.from(characterMedals)
+			.groupBy(sql`${characterMedals.medalId}`),
+		db.select({ players: count() })
+			.from(character_totals)
+			.where(gt(character_totals.playCount, 0)),
+	]);
+	return {
+		players, held: Object.fromEntries(held.map(h => [h.id, h.n])),
+	};
 };
 
 /** XP multiplier from the medals a character holds. */

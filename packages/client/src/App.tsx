@@ -19,7 +19,7 @@ import PageOverlay from './components/page/PageOverlay';
 import PlayDock from './components/dock/PlayDock';
 import Playground from './dev/Playground';
 import FloatingDeltas from './components/FloatingDeltas';
-import PushedMedals from './components/medals/PushedMedals';
+import ShownMedals from './components/medals/ShownMedals';
 import './online/versionWatch';
 import './online/characterWatch';
 import Multiplayer from './online/multiplayer';
@@ -53,7 +53,7 @@ export default function App() {
 			<WebBrowser />
 			<CommunityOverlay />
 			<FloatingDeltas />
-			<PushedMedals />
+			<ShownMedals />
 			<Popups />
 			<FpsCounter />
 			{!isMobile && <Cursor />}

@@ -6,10 +6,7 @@ import {
 	type RefObject,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import {
-	MedalTiers,
-	type MedalTier,
-} from '@osu-idle/shared/achievements/medal';
+import type { MedalTier } from '@osu-idle/shared/achievements/medal';
 import { MEDAL_XP_BONUS } from '@osu-idle/shared/upgrades';
 import { MEDALS } from '@osu-idle/shared/achievements/catalogue';
 import type { MedalUnlock } from '../../achievements/medalUnlocks';
@@ -37,8 +34,6 @@ const FOOTER_PX = 70;
 const SIDE_PX = 32;
 const SLOW = GAPS_MS.length + 1;
 
-const rank = (tier: MedalTier) => MedalTiers.indexOf(tier);
-
 const gapBefore = (i: number) => i < SLOW
 	? GAPS_MS[i - 1] ?? 0
 	: Math.max(FASTEST_MS, POUR_MS * Math.pow(RAMP, i - SLOW));
@@ -60,13 +55,16 @@ const useViewport = () => {
 	return size;
 };
 
-/** Sound for the i-th arrival: a full reveal while they come slowly, a rising
- *  tick once they pour in. */
-const arrivalSound = (medals: MedalUnlock[], i: number) => {
+/** A medal's place in its wave: arrivals are paced and voiced per wave. */
+type Place = { i: number, last: number };
+
+/** Sound for the i-th arrival of a wave: a full reveal while they come slowly,
+ *  a rising tick once they pour in. */
+const arrivalSound = (tier: MedalTier, { i, last }: Place) => {
 	if (i === 0) medalWhoosh();
-	if (i < SLOW) setTimeout(() => medalReveal(medals[i].look.tier), LAND_MS);
-	else medalTick(i - SLOW, medals.length - SLOW);
-	if (i === medals.length - 1 && i >= SLOW) medalFinale();
+	if (i < SLOW) setTimeout(() => medalReveal(tier), LAND_MS);
+	else medalTick(i - SLOW, last + 1 - SLOW);
+	if (i === last && i >= SLOW) medalFinale();
 };
 
 /** A random medal on a crowded stage catches the light now and then. */
@@ -82,44 +80,47 @@ const useTwinkle = (stage: RefObject<HTMLDivElement | null>) => useEffect(() => 
 }, [stage]);
 
 type Props = {
-	medals: MedalUnlock[],
-	/** medals the character holds once this batch is in */
+	/** one per batch, each arriving after the one before */
+	waves: MedalUnlock[][],
+	/** medals the character holds once all of these are in */
 	held: number,
 	/** bitmaps by look; arrivals wait for them so none appears half-loaded */
 	bitmaps?: Map<string, string>,
-	/** everything at once, silently */
-	skip: boolean,
-	onArrived: () => void,
+	/** the medals before this index appear at once, silently */
+	skipTo: number,
+	onArrived: (count: number) => void,
 	onFocus: (medal: MedalUnlock) => void,
 };
 
 export default function MedalShowcase({
-	medals, held, bitmaps, skip, onArrived, onFocus,
+	waves, held, bitmaps, skipTo, onArrived, onFocus,
 }: Props) {
-	const sorted = useMemo(
-		() => [...medals].sort((a, b) => rank(a.look.tier) - rank(b.look.tier)),
-		[medals],
+	const medals = useMemo(() => waves.flat(), [waves]);
+	const places = useMemo(
+		() => waves.flatMap(w => w.map((_, i): Place => ({
+			i, last: w.length - 1,
+		}))),
+		[waves],
 	);
 	const [arrived, setArrived] = useState(0);
 	const viewport = useViewport();
 	const stage = useRef<HTMLDivElement>(null);
 	useTwinkle(stage);
 
-	const shown = skip ? sorted.length : arrived;
-	const arriving = !!bitmaps && !skip && arrived < sorted.length;
+	const shown = Math.min(medals.length, Math.max(arrived, skipTo));
+	const next = medals[shown];
+	const arriving = !!next && !!bitmaps?.has(lookKey(next.look));
 
 	useEffect(() => {
 		if (!arriving) return;
 		const timer = setTimeout(() => {
-			arrivalSound(sorted, arrived);
-			setArrived(arrived + 1);
-		}, gapBefore(arrived));
+			arrivalSound(medals[shown].look.tier, places[shown]);
+			setArrived(shown + 1);
+		}, gapBefore(places[shown].i));
 		return () => clearTimeout(timer);
-	}, [arrived, arriving, sorted]);
+	}, [arriving, places, shown, medals]);
 
-	useEffect(() => {
-		if (shown === sorted.length) onArrived();
-	}, [onArrived, shown, sorted.length]);
+	useEffect(() => onArrived(shown), [onArrived, shown]);
 
 	const width = viewport.width - SIDE_PX * 2;
 	const height = viewport.height - HEADER_PX - FOOTER_PX;
@@ -127,10 +128,10 @@ export default function MedalShowcase({
 	const slots = medalSlots(shown, width, height);
 	// a medal not here yet waits where it will land, so arriving moves nothing
 	const landing = useMemo(
-		() => sorted.map((_, i) => medalSlots(i + 1, width, height)[i]),
-		[height, sorted, width],
+		() => medals.map((_, i) => medalSlots(i + 1, width, height)[i]),
+		[height, medals, width],
 	);
-	const visible = sorted.slice(0, shown);
+	const visible = medals.slice(0, shown);
 	const best = visible[visible.length - 1]?.look.tier ?? 'bronze';
 	const percent = ((bonusOf(visible) - 1) * 100).toFixed(1);
 	const origin = {
@@ -141,22 +142,22 @@ export default function MedalShowcase({
 		<div className="medal-showcase__rays" />
 		<div className="medal-showcase__header">
 			<div className="medal-showcase__title">
-				{sorted.length > 1 ? <Trans>Medals unlocked</Trans> : <Trans>Medal unlocked</Trans>}
+				{medals.length > 1 ? <Trans>Medals unlocked</Trans> : <Trans>Medal unlocked</Trans>}
 			</div>
-			<div className="medal-showcase__count">{held - sorted.length + shown} / {MEDALS.length}</div>
+			<div className="medal-showcase__count">{held - medals.length + shown} / {MEDALS.length}</div>
 			<div className="medal-showcase__bonus"><Trans>+{percent}% XP</Trans></div>
 		</div>
 		<div ref={stage} className="medal-showcase__stage" style={{
 			left: SIDE_PX, top: HEADER_PX, width, height,
 		}}>
-			{sorted.map((medal, i) => <MedalTile
+			{medals.map((medal, i) => <MedalTile
 				key={medal.id}
 				medal={medal}
 				slot={i < shown ? slots[i] : landing[i]}
 				origin={origin}
 				index={i}
 				shown={i < shown}
-				celebrate={!skip && (i < SLOW || i === sorted.length - 1)}
+				celebrate={i >= skipTo && (places[i].i < SLOW || places[i].i === places[i].last)}
 				bitmap={bitmaps?.get(lookKey(medal.look))}
 				onFocus={onFocus}
 			/>)}

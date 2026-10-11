@@ -145,7 +145,7 @@ export const ingestOsz = async (buffer: Buffer): Promise<IngestResult> => {
 			bpm = map.bpm;
 			objects = map.nObjects;
 			rice = map.nCircles;
-			ln = map.nSliders;
+			ln = map.nHolds;
 			map.free();
 		} catch { /* leave defaults if rosu can't read it */ }
 

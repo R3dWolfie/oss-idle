@@ -17,6 +17,10 @@ msgstr ""
 msgid "(match in progress)"
 msgstr "(match in progress)"
 
+#: src/components/character/ProfileMedal.tsx
+msgid "{category} ({tier})"
+msgstr "{category} ({tier})"
+
 #: src/pages/beatmaps/RequestBulkBar.tsx
 msgid "{count} selected"
 msgstr "{count} selected"
@@ -28,6 +32,10 @@ msgstr "{days, plural, =0 {today} one {# day ago} other {# days ago}}"
 #: src/pages/beatmaps/RequestSearchHit.tsx
 msgid "{diffs} × 4K"
 msgstr "{diffs} × 4K"
+
+#: src/components/character/ProfileMedal.tsx
+msgid "{holders} players ({share})"
+msgstr "{holders} players ({share})"
 
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
@@ -111,6 +119,10 @@ msgstr "accuracy"
 #: src/pages/rankings/Country.tsx
 msgid "Accuracy"
 msgstr "Accuracy"
+
+#: src/components/character/ProfileMedal.tsx
+msgid "Achieved on {date}"
+msgstr "Achieved on {date}"
 
 #: src/pages/help/FAQ.tsx
 msgid "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
@@ -972,10 +984,6 @@ msgstr "Total Score"
 #: src/components/character/ProfileMenu.tsx
 msgid "Unblock"
 msgstr "Unblock"
-
-#: src/components/character/ProfileMedal.tsx
-msgid "Unlocked {ago}"
-msgstr "Unlocked {ago}"
 
 #: src/components/EditableProfilePicture.tsx
 msgid "Upload a profile picture"

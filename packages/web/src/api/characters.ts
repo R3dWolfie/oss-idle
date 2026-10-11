@@ -7,7 +7,7 @@ import {
 export const getCharacter = (id: number | string) =>
 	unwrap(rpc.v1.characters[':id'].$get({ param: { id: String(id) } }));
 
-/** Public: the medals a character holds, newest first. */
+/** Public: the medals a character holds, newest first, and its progress toward the rest. */
 export const getCharacterMedals = (id: number | string) =>
 	unwrap(rpc.v1.characters[':id'].medals.$get({ param: { id: String(id) } }));
 

@@ -79,25 +79,6 @@ export default class PlayManager {
 	 *  Different from clearing - the queue keeps everything in it. */
 	public static paused = new Synced(false);
 
-	/** Things on screen the countdown waits for (the medal unlock), without
-	 *  pausing the queue. */
-	private static holds = 0;
-
-	/** Hold the next map back; call the returned release when done. */
-	public static hold(): () => void {
-		if (this.holds++ === 0) {
-			const left = this.countdown.get();
-			this.cancelChain();
-			this.remaining = left;
-		}
-		let released = false;
-		return () => {
-			if (released) return;
-			released = true;
-			if (--this.holds === 0 && !this.live.get()) this.scheduleNext();
-		};
-	}
-
 	public static setPaused(paused: boolean): void {
 		void this.paused.set(paused);
 		if (paused) {
@@ -324,7 +305,7 @@ export default class PlayManager {
 	 *  anywhere else it just happens. */
 	private static scheduleNext(): void {
 		if (this.chainTimer !== undefined) return;
-		if (this.paused.get() || this.holds) return;
+		if (this.paused.get()) return;
 		if (!PlayQueue.next()) return;
 
 		const delay = this.immediate

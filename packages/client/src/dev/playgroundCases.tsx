@@ -25,9 +25,14 @@ import type { Match } from '@osu-idle/shared/multiplayer';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
 import Skill from '@osu-idle/shared/sim/skills/skill';
-import MedalUnlockOverlay from '../components/medals/MedalUnlockOverlay';
+import ShownMedals from '../components/medals/ShownMedals';
 import MedalCatalogue from './MedalCatalogue';
 import type { MedalUnlock } from '../achievements/medalUnlocks';
+import {
+	closeMedals,
+	showMedals,
+	shownMedals,
+} from '../online/medalWatch';
 import {
 	MEDALS_BACKFILL,
 	MEDALS_FIVE,
@@ -111,14 +116,28 @@ const tieredSkill = () => {
 	return skill;
 };
 
-/** The whole unlock overlay over an empty stage. */
-const medalCase = (id: string, label: string, medals: () => MedalUnlock[]): PlaygroundCase => ({
+const showSample = (medals: () => MedalUnlock[]) => {
+	const ids = medals().map(m => m.id);
+	showMedals({
+		ids, held: (shownMedals.get()?.held ?? 0) + ids.length,
+	});
+};
+
+/** The whole unlock overlay over an empty stage; `more` lands while it is open. */
+const medalCase = (
+	id: string,
+	label: string,
+	medals: () => MedalUnlock[],
+	more?: () => MedalUnlock[],
+): PlaygroundCase => ({
 	id,
 	label,
-	render: () => {
-		const list = medals();
-		return <MedalUnlockOverlay medals={list} held={list.length} />;
+	setup: () => {
+		closeMedals();
+		showSample(medals);
+		if (more) setTimeout(() => showSample(more), 4000);
 	},
+	render: () => <ShownMedals />,
 });
 
 /** A host alone in an 8-player room, the way a new match starts. */
@@ -283,6 +302,7 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 	medalCase('medals-three', 'Medal unlock - three, one secret', MEDALS_THREE),
 	medalCase('medals-five', 'Medal unlock - five', MEDALS_FIVE),
 	medalCase('medals-backfill', 'Medal unlock - backfill', MEDALS_BACKFILL),
+	medalCase('medals-more', 'Medal unlock - five more while open', MEDALS_THREE, MEDALS_FIVE),
 	{
 		id: 'mp-lobby',
 		label: 'Multiplayer lobby - one open room',

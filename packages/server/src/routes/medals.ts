@@ -1,17 +1,13 @@
 import { Hono } from 'hono';
-import {
-	count,
-	gt,
-	sql,
-} from 'drizzle-orm';
+import { gt } from 'drizzle-orm';
 import { MEDALS } from '@osu-idle/shared/achievements/catalogue';
 import { requireAdmin } from '../auth/admin';
 import { db } from '../db/client';
-import { characterMedals } from '../db/schema/character_medal';
 import { character_totals } from '../db/schema/character_totals';
 import { getCharacterById } from '../db/schema/character';
 import {
 	earnedMedals,
+	medalHolders,
 	medalRules,
 } from '../medals';
 
@@ -40,15 +36,10 @@ export const medalsRoutes = new Hono()
 	// Every medal with its rule, how many characters hold it, and how many
 	// already qualify (those get it on their next shown result).
 	.get('/admin', requireAdmin, async c => {
-		const [held, { at, players, counts }] = await Promise.all([
-			db.select({
-				id: characterMedals.medalId, n: count(),
-			})
-				.from(characterMedals)
-				.groupBy(sql`${characterMedals.medalId}`),
+		const [{ held }, { at, players, counts }] = await Promise.all([
+			medalHolders(),
 			countQualifying(),
 		]);
-		const holders = new Map(held.map(h => [h.id, h.n]));
 		const rules = medalRules();
 		return c.json({
 			players,
@@ -56,7 +47,7 @@ export const medalsRoutes = new Hono()
 			medals: MEDALS.map(m => ({
 				id: m.id,
 				rule: rules[m.id],
-				held: holders.get(m.id) ?? 0,
+				held: held[m.id] ?? 0,
 				qualifying: counts.get(m.id) ?? 0,
 			})),
 		});

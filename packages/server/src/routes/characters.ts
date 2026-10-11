@@ -28,6 +28,10 @@ import {
 import { getRecentCharacterScores } from '../db/schema/score';
 import { getFormerNames } from '../db/schema/name_history';
 import { getMedals } from '../db/schema/character_medal';
+import {
+	medalHolders,
+	medalProgress,
+} from '../medals';
 
 const numberParam = z.coerce.number().int().positive();
 
@@ -51,12 +55,23 @@ export const charactersRoutes = new Hono()
 		});
 	})
 
-	// The medals a character holds, newest first.
+	// The medals a character holds, newest first, and its progress toward the rest.
 	.get('/:id/medals', async c => {
 		const id = numberParam.parse(c.req.param('id'));
-		return c.json((await getMedals(id)).map(m => ({
-			id: m.medalId, unlockedAt: m.unlockedAt.getTime(),
-		})));
+		const character = await getCharacterById(id);
+		if (!character) throw new HTTPException(404, { message: 'Character not found' });
+		const [held, progress, holders] = await Promise.all([
+			getMedals(id),
+			medalProgress(character),
+			medalHolders(),
+		]);
+		return c.json({
+			held: held.map(m => ({
+				id: m.medalId, unlockedAt: m.unlockedAt.getTime(),
+			})),
+			progress,
+			holders,
+		});
 	})
 
 	// Derived profile statistics: aggregates, grade/judgement totals and ranks.

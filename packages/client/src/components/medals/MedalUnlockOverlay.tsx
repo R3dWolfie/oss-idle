@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { Trans } from '@lingui/react/macro';
 import type { MedalUnlock } from '../../achievements/medalUnlocks';
-import PlayManager from '../../online/playManager';
+import { closeMedals } from '../../online/medalWatch';
 import {
 	lookKey,
 	medalBitmaps,
@@ -16,16 +16,13 @@ import MedalFocus from './MedalFocus';
 import MedalShowcase from './MedalShowcase';
 import './medals.css';
 
-/** a batch this small closes on its own; a bigger one waits to be looked at */
-const AUTO_CLOSE_MAX = 5;
-const AUTO_CLOSE_MS = 3000;
 const CLOSE_MS = 350;
 const KEYS = ['Escape', 'Enter', ' '];
 
 /** Feed the cursor to the medals' 3D tilt as CSS variables - no re-render. */
-const useParallax = (root: RefObject<HTMLDivElement | null>, on: boolean) => useEffect(() => {
+const useParallax = (root: RefObject<HTMLDivElement | null>) => useEffect(() => {
 	const el = root.current;
-	if (!on || !el) return;
+	if (!el) return;
 	let frame = 0;
 	let x = window.innerWidth / 2;
 	let y = window.innerHeight / 2;
@@ -45,58 +42,50 @@ const useParallax = (root: RefObject<HTMLDivElement | null>, on: boolean) => use
 		window.removeEventListener('pointermove', onMove);
 		cancelAnimationFrame(frame);
 	};
-}, [on, root]);
+}, [root]);
 
 type Props = {
-	medals: MedalUnlock[],
-	/** medals the character holds once these are in */
+	waves: MedalUnlock[][],
+	/** medals the character holds once all of these are in */
 	held: number,
 };
 
-export default function MedalUnlockOverlay({ medals, held }: Props) {
-	// the batch is the one this screen opened with
-	const [batch] = useState(medals);
+export default function MedalUnlockOverlay({ waves, held }: Props) {
+	const count = waves.flat().length;
 	const [bitmaps, setBitmaps] = useState<Map<string, string>>();
-	const [skip, setSkip] = useState(false);
-	const [finished, setFinished] = useState(false);
+	/** everything up to here is shown at once, silently */
+	const [skipTo, setSkipTo] = useState(0);
+	const [arrived, setArrived] = useState(0);
 	const [focused, setFocused] = useState<MedalUnlock>();
-	const [closing, setClosing] = useState(false);
-	const [closed, setClosed] = useState(false);
+	/** how many medals were up when the player closed; a newcomer reopens it */
+	const [closedAt, setClosedAt] = useState<number>();
 	const root = useRef<HTMLDivElement>(null);
 
-	const showing = !closed && batch.length > 0;
-	// the queue's countdown waits until the medals have had their moment
-	useEffect(() => showing ? PlayManager.hold() : undefined, [showing]);
-	useParallax(root, showing);
+	const finished = arrived === count;
+	const closing = closedAt === count;
+	useParallax(root);
 
 	useEffect(() => {
 		let live = true;
-		void medalBitmaps(batch.map(m => m.look)).then(b => live && setBitmaps(b));
+		void medalBitmaps(waves.flat().map(m => m.look)).then(b => live && setBitmaps(b));
 		return () => {
 			live = false;
 		};
-	}, [batch]);
+	}, [waves]);
 
-	const close = useCallback(() => {
-		if (closing) return;
-		setClosing(true);
-		setTimeout(() => setClosed(true), CLOSE_MS);
+	useEffect(() => {
+		if (!closing) return;
+		const timer = setTimeout(closeMedals, CLOSE_MS);
+		return () => clearTimeout(timer);
 	}, [closing]);
 
 	const advance = useCallback(() => {
 		if (focused) setFocused(undefined);
-		else if (finished) close();
-		else setSkip(true);
-	}, [close, finished, focused]);
+		else if (finished) setClosedAt(count);
+		else setSkipTo(count);
+	}, [count, finished, focused]);
 
 	useEffect(() => {
-		if (!finished || focused || batch.length > AUTO_CLOSE_MAX) return;
-		const timer = setTimeout(close, AUTO_CLOSE_MS);
-		return () => clearTimeout(timer);
-	}, [batch.length, close, finished, focused]);
-
-	useEffect(() => {
-		if (!showing) return;
 		const onKey = (e: KeyboardEvent) => {
 			if (!KEYS.includes(e.key)) return;
 			e.preventDefault();
@@ -105,12 +94,9 @@ export default function MedalUnlockOverlay({ medals, held }: Props) {
 		};
 		window.addEventListener('keydown', onKey, { capture: true });
 		return () => window.removeEventListener('keydown', onKey, { capture: true });
-	}, [advance, showing]);
+	}, [advance]);
 
-	const onArrived = useCallback(() => setFinished(true), []);
 	const unfocus = useCallback(() => setFocused(undefined), []);
-
-	if (!showing) return null;
 
 	return <div
 		ref={root}
@@ -118,11 +104,11 @@ export default function MedalUnlockOverlay({ medals, held }: Props) {
 		onClick={advance}
 	>
 		<MedalShowcase
-			medals={batch}
+			waves={waves}
 			held={held}
 			bitmaps={bitmaps}
-			skip={skip}
-			onArrived={onArrived}
+			skipTo={skipTo}
+			onArrived={setArrived}
 			onFocus={setFocused}
 		/>
 		{focused && <MedalFocus

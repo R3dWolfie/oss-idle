@@ -16,12 +16,12 @@ import './CharacterMedals.css';
 export default function CharacterMedals({ id }: { id: string }) {
 	const medals = useAsync(() => getCharacterMedals(id), [id]);
 	if (!medals) return null;
-	const held = new Map(medals.map(m => [m.id, m.unlockedAt]));
+	const held = new Map(medals.held.map(m => [m.id, m.unlockedAt]));
 
 	return <div className='character__block'>
 		<div className='character__block-title'><Trans>Medals</Trans></div>
 		<div className='profile-medals__count'>
-			<Trans>{ph({ unlocked: medals.length })} / {ph({ total: MEDALS.length })} unlocked</Trans>
+			<Trans>{ph({ unlocked: medals.held.length })} / {ph({ total: MEDALS.length })} unlocked</Trans>
 		</div>
 		{MedalCategories.map(category => <div key={category} className='character__block-section'>
 			<div className='character__block-section-title'>{medalCategoryName(category)}</div>
@@ -30,7 +30,14 @@ export default function CharacterMedals({ id }: { id: string }) {
 					{line.flatMap(medalId => {
 						const medal = medalById(medalId);
 						return medal
-							? [<ProfileMedal key={medalId} medal={medal} unlockedAt={held.get(medalId)} />]
+							? [<ProfileMedal
+								key={medalId}
+								medal={medal}
+								unlockedAt={held.get(medalId)}
+								progress={medals.progress[medalId]}
+								holders={medals.holders.held[medalId] ?? 0}
+								players={medals.holders.players}
+							/>]
 							: [];
 					})}
 				</div>)}

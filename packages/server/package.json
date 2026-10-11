@@ -1,6 +1,6 @@
 {
   "name": "@osu-idle/server",
-  "version": "0.20.2.0",
+  "version": "0.20.3.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -37,7 +37,9 @@
     "fix:overall": "tsx src/db/fix-overall-levels.ts",
     "fix:overall:prod": "NODE_ENV=production tsx src/db/fix-overall-levels.ts",
     "relevel": "tsx src/db/relevel-characters.ts",
-    "relevel:prod": "NODE_ENV=production tsx src/db/relevel-characters.ts"
+    "relevel:prod": "NODE_ENV=production tsx src/db/relevel-characters.ts",
+    "fix:ln": "tsx src/db/fix-ln-counts.ts",
+    "fix:ln:prod": "NODE_ENV=production tsx src/db/fix-ln-counts.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
