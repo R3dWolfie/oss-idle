@@ -12,6 +12,7 @@ import {
 } from '@osu-idle/shared/helpers/mapped';
 import SignIn from '../components/options/SignIn';
 import PmFromAnyone from '../components/options/PmFromAnyone';
+import LinkDiscord from '../components/options/LinkDiscord';
 import {
 	Trans,
 	useLingui,
@@ -86,6 +87,10 @@ export default function Options() {
 						{
 							search: t`sign|in|login|connect|connexion`,
 							component: () => SignIn,
+						},
+						{
+							search: t`discord|link|role`,
+							component: () => LinkDiscord,
 						},
 					],
 				},

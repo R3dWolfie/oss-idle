@@ -39,3 +39,11 @@
 .community-controls__btn[data-on="true"] {
 	opacity: 1;
 }
+
+@media (max-width: 850px) {
+	.community-controls__btn {
+		padding: 3px 8px;
+		font-size: 12px;
+		white-space: nowrap;
+	}
+}

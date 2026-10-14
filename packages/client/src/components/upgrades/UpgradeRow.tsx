@@ -1,141 +1,86 @@
-import { ph } from '@lingui/core/macro';
-import { useState } from 'react';
-import {
-	Trans,
-	useLingui,
-} from '@lingui/react/macro';
-import type Skill from '@osu-idle/shared/sim/skills/skill';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import { Trans } from '@lingui/react/macro';
+import Skill from '@osu-idle/shared/sim/skills/skill';
 import {
 	skillName,
 	upgradeDescription,
 	upgradeLabel,
 } from '@osu-idle/shared/display/skills';
-import {
-	maxUpgrades,
-	upgradeCost,
-	applyUpgrade,
-	canUpgrade,
-	upgradeXPMultiplier,
-	upgradeMinLevel,
-	type UpgradeState,
-} from '@osu-idle/shared/upgrades';
-import num from '@osu-idle/shared/display/num';
 import SkillLevel from '@osu-idle/shared/display/SkillLevel';
 import { overdriveText } from '@osu-idle/shared/display/overdrive';
-import ConfirmMenu, { type Confirm } from '../ConfirmMenu';
-import { purchaseUpgrade } from '../../online/services/upgrades';
-import UpgradeBuyButton from './UpgradeBuyButton';
-
-/** Dry-run of what buying right now would do; undefined when not purchasable. */
-const previewPurchase = (locked: boolean, state: UpgradeState) => {
-	if (locked || !canUpgrade(state)) return undefined;
-	return applyUpgrade(state);
-};
+import ConfirmMenu from '../ConfirmMenu';
+import { useUpgrade } from './useUpgrade';
+import UpgradeTrack from './UpgradeTrack';
+import UpgradeAction from './UpgradeAction';
+import UpgradeTooltip from './UpgradeTooltip';
 
 export default function UpgradeRow({
 	skill,
-	lifetimeXp,
 	locked,
+	lifetimeXp,
 }: {
 	skill: Skill,
 	locked: boolean,
 	/** xp ever earned on the skill, shown as a level behind it on hover */
 	lifetimeXp?: number,
 }) {
-	const { t } = useLingui();
-	const [level] = useSynced(skill.level);
-	const [xp] = useSynced(skill.xp);
-	const [upgrades] = useSynced(skill.upgrades);
-	const [overdrive] = useSynced(skill.overdrive);
-	const [prestige] = useSynced(skill.prestige);
-	const [busy, setBusy] = useState(false);
-	const [confirming, setConfirming] = useState<Confirm | undefined>(undefined);
-
-	const maxed = upgrades >= maxUpgrades(prestige);
-	const minLevel = upgradeMinLevel(upgrades);
-	const preview = previewPurchase(locked, {
-		level, xp, upgrades, overdrive, prestige,
-	});
-	const purchasable = !!preview;
-	const ratio = preview?.ratio ?? 0;
-	const ratioText = overdriveText(ratio);
-	const odText = overdriveText(overdrive);
-	const multiplier = upgradeXPMultiplier(upgrades, overdrive);
-	const factor = multiplier.toFixed(2);
-
-	const buy = async () => {
-		if (busy) return;
-		setBusy(true);
-		try {
-			await purchaseUpgrade(skill.name);
-		} finally {
-			setBusy(false);
-		}
-	};
-
-	const confirm = () => {
-		if (!preview || busy) return;
-		const name = skillName(skill.name);
-		const nextGear = upgradeLabel(skill.name, upgrades + 1);
-		const spent = num(Math.round(preview.spent));
-		const boost = upgradeXPMultiplier(preview.upgrades, preview.overdrive).toFixed(2);
-		const odSegment = preview.overdrive !== overdrive
-			? t` · Overdrive ${odText} → ${ph({ nextOd: overdriveText(preview.overdrive) })}`
-			: overdrive > 0 ? t` · Overdrive ${odText}` : '';
-		setConfirming({
-			title: t`Buy ${nextGear}?`,
-			sub: t`${name} XP Lv${level} → XP Lv${ph({ nextLevel: preview.level })} · Costs ${spent}xp${odSegment} · XP boost x${boost}`,
-			confirmLabel: t`Buy`,
-			color: '#ff4089',
-			onConfirm: () => void buy(),
-		});
-	};
+	const u = useUpgrade(skill, locked);
+	const from = u.minLevel - u.cost;
+	const at = u.level + u.xp / Skill.xpForLevel(u.level);
+	const progress = Math.min(1, Math.max(0, (at - from) / u.cost));
+	const factor = u.multiplier.toFixed(2);
+	const state = u.maxed ? 'is-maxed' : u.preview ? 'is-ready' : '';
 
 	return (
-		<div className={`upgrade__row ${maxed ? 'is-maxed' : purchasable ? 'is-ready' : ''}`}>
-			<div className="upgrade__meta">
-				<span className="upgrade__skill">{skillName(skill.name)}</span>
-				<span className="upgrade__level">
+		<div className={`ladder-row ${state}`}>
+			<div className="ladder-row__skill">
+				<span className="ladder-row__name">{skillName(skill.name)}</span>
+				<span className="ladder-row__lv">
 					<Trans>Lv<SkillLevel
-						level={level} xp={xp} prestige={prestige} lifetimeXp={lifetimeXp}
-					/></Trans>{' '}
-					{overdrive > 0 && (odText)}
+						level={u.level} xp={u.xp} prestige={u.prestige} lifetimeXp={lifetimeXp}
+					/></Trans>
 				</span>
-				{multiplier > 1 && (
-					<span className="upgrade__mult"><Trans>x{factor} XP</Trans></span>
-				)}
+				<span className={`ladder-row__mult ${u.multiplier > 1 ? '' : 'is-base'}`}>
+					<Trans>x{factor} XP</Trans>
+				</span>
+				{u.overdrive > 0 && <span className="ladder-row__od">{overdriveText(u.overdrive)}</span>}
 			</div>
-			<div className="upgrade__info">
-				<span className="upgrade__desc">{upgradeDescription(skill.name)}</span>
-				<div className="upgrade__gear">
-					<span className="upgrade__gear-current">{upgradeLabel(skill.name, upgrades)}</span>
-					{!maxed && (<>
-						<span className="upgrade__gear-arrow">→</span>
-						<span className="upgrade__gear-next">{upgradeLabel(skill.name, upgrades + 1)}</span>
-					</>)}
+			<div className="ladder-row__ladder" title={upgradeDescription(skill.name)}>
+				<div className="ladder-row__gear">
+					<span className="ladder-row__now">{upgradeLabel(skill.name, u.upgrades)}</span>
+					{!u.maxed && (
+						<span className="ladder-row__next">
+							<span className="ladder-row__arrow">›</span>
+							{upgradeLabel(skill.name, u.upgrades + 1)}
+						</span>
+					)}
+					<span className="ladder-row__count">{u.upgrades}/{u.max}</span>
 				</div>
-			</div>
-			<div className="upgrade__action">
-				{ratio > 1 && (
-					<span className="upgrade__overdrive">
-						<Trans>Overdrive +{ratioText}</Trans>
-					</span>
-				)}
-				<UpgradeBuyButton
-					maxed={maxed}
-					purchasable={purchasable}
-					busy={busy}
-					cost={upgradeCost(upgrades)}
-					minLevel={minLevel}
-					onBuy={() => void buy()}
-					onConfirm={confirm}
+				<UpgradeTrack
+					upgrades={u.upgrades}
+					max={u.max}
+					maxed={u.maxed}
+					ready={!!u.preview}
+					progress={progress}
 				/>
 			</div>
-			{confirming && <ConfirmMenu
-				{...confirming}
-				onClose={() => setConfirming(undefined)}
-			/>}
+			<UpgradeAction
+				progress={progress}
+				maxed={u.maxed}
+				preview={u.preview}
+				busy={u.busy}
+				minLevel={u.minLevel}
+				onBuy={() => void u.buy()}
+				onConfirm={u.confirm}
+				tip={<UpgradeTooltip
+					level={u.level}
+					xp={u.xp}
+					upgrades={u.upgrades}
+					overdrive={u.overdrive}
+					minLevel={u.minLevel}
+					preview={u.preview}
+				/>}
+			/>
+			{u.confirming && <ConfirmMenu {...u.confirming} onClose={u.closeConfirm} />}
 		</div>
 	);
 }

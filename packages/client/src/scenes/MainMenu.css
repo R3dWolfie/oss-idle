@@ -220,7 +220,8 @@
 .menu_option_contents {
 	position: absolute;
 	z-index: 10;
-	left: 32%;
+	/* clear of the logo at its hovered size */
+	left: 38%;
 }
 
 .menu__option_bg_safe .menu__option_bg {
@@ -275,5 +276,11 @@
 @media (max-width: 850px) {
 	.menu__top {
 		display: none;
+	}
+}
+
+@media (max-height: 600px) {
+	.menu__option {
+		font-size: 8vh;
 	}
 }

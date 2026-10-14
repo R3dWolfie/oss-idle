@@ -49,11 +49,11 @@ export const assertNameAvailable = async (
 	}
 
 	const [results1] = await pool.promise().query<RowDataPacket[]>(
-		// the column is latin1: a name outside it (kana, emoji) must not error
+		// latin1 / utf8mb3 columns: a name outside them (kana, emoji) must not error
 		'SELECT * FROM stats.osu_user WHERE osu_id != ? AND CONVERT(username USING utf8mb4) = ?',
 		[userId, name]);
 	const [results2] = await pool.promise().query<RowDataPacket[]>(
-		'SELECT * FROM farm.user WHERE osu_id != ? AND username = ?',
+		'SELECT * FROM farm.user WHERE osu_id != ? AND CONVERT(username USING utf8mb4) = ?',
 		[userId, name]);
 
 	if ((results1 && results1.length) || (results2 && results2.length)) {

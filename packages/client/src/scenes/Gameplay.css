@@ -186,8 +186,23 @@
 	}
 	/* the accuracy sits lower on mobile (baseline ~90px), so drop the badge to match */
 	.play__grade {
-		top: 85px;
-		right: 15px;
+		top: 62px;
 		height: 36px;
+	}
+}
+
+/* too narrow for the title between the play actions and the accuracy */
+@media (max-width: 600px) {
+	.play__title {
+		top: 5.6rem;
+		left: 1.2rem;
+		/* clear of the grade badge and the accuracy */
+		max-width: calc(100% - 230px);
+		transform: none;
+		text-align: left;
+		font-size: 0.85rem;
+	}
+	.play__autopilot {
+		top: 8rem;
 	}
 }

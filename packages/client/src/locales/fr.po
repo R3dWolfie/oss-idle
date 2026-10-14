@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-10 17:15\n"
+"PO-Revision-Date: 2026-10-14 21:58\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -18,11 +18,11 @@ msgstr ""
 "X-Crowdin-File: /packages/client/src/locales/en.po\n"
 "X-Crowdin-File-ID: 39\n"
 
-#: src/components/upgrades/UpgradeRow.tsx
+#: src/components/upgrades/useUpgrade.ts
 msgid " · Overdrive {odText}"
 msgstr " · Overdrive {odText}"
 
-#: src/components/upgrades/UpgradeRow.tsx
+#: src/components/upgrades/useUpgrade.ts
 msgid " · Overdrive {odText} → {nextOd}"
 msgstr " · Overdrive {odText} → {nextOd}"
 
@@ -88,7 +88,7 @@ msgstr "{name} gardera son pseudo"
 msgid "{name} played {map} and got a {accuracy} {grade}. {gains}"
 msgstr "{name} a joué {map} et a fait un {accuracy} {grade}. {gains}"
 
-#: src/components/upgrades/UpgradeRow.tsx
+#: src/components/upgrades/useUpgrade.ts
 msgid "{name} XP Lv{level} → XP Lv{nextLevel} · Costs {spent}xp{odSegment} · XP boost x{boost}"
 msgstr "{name} XP Lv{level} → XP Lv{nextLevel}. Coûte {spent}xp{odSegment}. XP boost x{boost}"
 
@@ -123,6 +123,10 @@ msgstr "{shown} sur {total} résultats"
 #: src/logs.ts
 msgid "{skill} reached level {level}!"
 msgstr "{skill} a atteint le niveau {level} !"
+
+#: src/components/upgrades/UpgradeTooltip.tsx
+msgid "{toGo, plural, one {# level} other {# levels}}"
+msgstr ""
 
 #: src/components/BeatmapCarousel.tsx
 msgid "{totalCount, plural, one {that's all # difficulty} other {that's all # difficulties}}"
@@ -268,6 +272,10 @@ msgstr "pilote|auto|automatique|mode|playlist|boucle|suivant|musique"
 msgid "Available"
 msgstr "Disponible"
 
+#: src/components/upgrades/UpgradesSummary.tsx
+msgid "Average XP boost"
+msgstr ""
+
 #: src/components/addons/AddonView.tsx
 #: src/components/page/Page.tsx
 #: src/components/skins/SkinView.tsx
@@ -313,6 +321,10 @@ msgstr "Beatmap par {creator}"
 msgid "Beatmap deleted"
 msgstr "Map supprimée"
 
+#: src/components/upgrades/UpgradesSummary.tsx
+msgid "Best XP boost"
+msgstr ""
+
 #: src/scenes/Addons.tsx
 #: src/scenes/Skins.tsx
 msgid "Browse"
@@ -339,18 +351,18 @@ msgstr "Des maps sont disponibles par défaut dans <0>l'écran de sélection</0>
 msgid "Bundled maps are listed in <0>song select</0>:<1> double-tap</1> a map to download it, then <2>single-tap</2> to start playing."
 msgstr "Des maps sont disponibles par défaut dans <0>l'écran de sélection</0>:<1> double-tappez</1> sur une map pour la télécharger, puis <2>tapez</2> dessus pour démarrer."
 
-#: src/components/upgrades/UpgradeBuyButton.tsx
-#: src/components/upgrades/UpgradeRow.tsx
+#: src/components/upgrades/UpgradeAction.tsx
+#: src/components/upgrades/useUpgrade.ts
 msgid "Buy"
 msgstr "Acheter"
 
-#: src/components/upgrades/UpgradeRow.tsx
+#: src/components/upgrades/useUpgrade.ts
 msgid "Buy {nextGear}?"
 msgstr "Acheter {nextGear}?"
 
-#: src/components/upgrades/UpgradeBuyButton.tsx
-msgid "Buy for {cost, plural, one {# level} other {# levels}}"
-msgstr "Acheter pour {cost, plural, one {# niveau} other {# niveaux}}"
+#: src/components/upgrades/UpgradeAction.tsx
+msgid "Buy now"
+msgstr ""
 
 #: src/components/addons/InstalledAddonRow.tsx
 #: src/components/skins/BrowseSkinsView.tsx
@@ -446,6 +458,7 @@ msgstr "Changements"
 msgid "Changing beatmap..."
 msgstr "Changement de map..."
 
+#: src/dev/UpgradesPreview.tsx
 #: src/scenes/Character.tsx
 msgid "Character"
 msgstr "Personnage"
@@ -628,6 +641,10 @@ msgstr "Description"
 #: src/components/skins/SkinDAORow.tsx
 msgid "Details"
 msgstr "Détails"
+
+#: src/scenes/Options.tsx
+msgid "discord|link|role"
+msgstr ""
 
 #: src/components/Announce.tsx
 msgid "Dismiss"
@@ -910,6 +927,10 @@ msgstr "Laisser le play se finir puis attendre"
 msgid "Level up"
 msgstr "Gain de niveau"
 
+#: src/components/options/LinkDiscord.tsx
+msgid "Link Discord account"
+msgstr ""
+
 #: src/components/BeatmapCarousel.tsx
 msgid "loading library…"
 msgstr "chargement de la bibliothèque…"
@@ -998,7 +1019,8 @@ msgstr "Configuration"
 msgid "Max Players:"
 msgstr "Joueurs max:"
 
-#: src/components/upgrades/UpgradeBuyButton.tsx
+#: src/components/upgrades/UpgradeAction.tsx
+#: src/components/upgrades/UpgradesSummary.tsx
 msgid "Maxed"
 msgstr "Niveau max"
 
@@ -1242,7 +1264,11 @@ msgstr "Global Lv{level}"
 msgid "Overall Lv{level} / {required}"
 msgstr "Global Lv{level} / {required}"
 
-#: src/components/upgrades/UpgradeRow.tsx
+#: src/components/upgrades/UpgradeTooltip.tsx
+msgid "Overdrive"
+msgstr ""
+
+#: src/components/upgrades/UpgradeAction.tsx
 msgid "Overdrive +{ratioText}"
 msgstr "Overdrive +{ratioText}"
 
@@ -1354,6 +1380,7 @@ msgstr "Playlists"
 
 #: src/components/character/PrestigeRow.tsx
 #: src/components/character/PrestigeRow.tsx
+#: src/dev/UpgradesPreview.tsx
 #: src/scenes/Character.tsx
 msgid "Prestige"
 msgstr "Prestige"
@@ -1412,6 +1439,10 @@ msgstr "Atteindre le niveau d'XP Lv{PRESTIGE_MIN_LEVEL} sur une compétence perm
 msgid "Read the full article"
 msgstr "Lire en entier"
 
+#: src/components/upgrades/UpgradesSummary.tsx
+msgid "Ready to buy"
+msgstr ""
+
 #: src/components/multiplayer/ReadyButton.tsx
 msgid "Ready!"
 msgstr "Prêt !"
@@ -1422,6 +1453,7 @@ msgstr "Vraiment supprimer \"{playlist}\"?"
 
 #: src/components/character/RebirthView.tsx
 #: src/components/character/RebirthView.tsx
+#: src/dev/UpgradesPreview.tsx
 #: src/scenes/Character.tsx
 msgid "Rebirth"
 msgstr "Renaissance"
@@ -1437,6 +1469,10 @@ msgstr "Recevoir les messages de tout le monde"
 #: src/components/songselect/TopBar.tsx
 msgid "Recently Played"
 msgstr "Joué récemment"
+
+#: src/components/options/LinkDiscord.tsx
+msgid "Relink Discord account"
+msgstr ""
 
 #: src/components/WebBrowser.tsx
 msgid "Reload"
@@ -1472,7 +1508,7 @@ msgid "Requires overall Lv{REBIRTH_MIN_OVERALL_LEVEL}"
 msgstr "Nécessite Global Lv{REBIRTH_MIN_OVERALL_LEVEL}"
 
 #: src/components/character/PrestigeRow.tsx
-#: src/components/upgrades/UpgradeBuyButton.tsx
+#: src/components/upgrades/UpgradeAction.tsx
 msgid "Requires XP Lv{required}"
 msgstr "Nécessite le niveau d'XP Lv{required}"
 
@@ -1770,6 +1806,10 @@ msgstr "thumb|thumbnail"
 msgid "Time Zone"
 msgstr "Fuseau horaire"
 
+#: src/components/upgrades/UpgradeTooltip.tsx
+msgid "To go"
+msgstr ""
+
 #: src/osu/beatmap/grouping.ts
 msgid "Today"
 msgstr "Aujourd'hui"
@@ -1778,6 +1818,7 @@ msgstr "Aujourd'hui"
 msgid "Total {xp}xp"
 msgstr "Total {xp}xp"
 
+#: src/dev/UpgradesPreview.tsx
 #: src/scenes/Character.tsx
 msgid "Trade skill levels for permanent XP boosts"
 msgstr "Échange des niveaux de compétence contre des boosts d'XP"
@@ -1833,9 +1874,14 @@ msgstr "Mis à jour"
 msgid "upgrades"
 msgstr "upgrades"
 
+#: src/dev/UpgradesPreview.tsx
 #: src/scenes/Character.tsx
 msgid "Upgrades"
 msgstr "Améliorations"
+
+#: src/components/upgrades/UpgradesSummary.tsx
+msgid "Upgrades owned"
+msgstr ""
 
 #: src/components/Onboarding.tsx
 msgid "Upload a profile picture"
@@ -1931,13 +1977,27 @@ msgstr "Carte du Monde"
 msgid "x{factor} XP"
 msgstr "x{factor} XP"
 
+#: src/components/upgrades/UpgradeTooltip.tsx
+#: src/components/upgrades/UpgradeTooltip.tsx
+msgid "XP boost"
+msgstr ""
+
 #: src/components/BeatmapXPBreakdown.tsx
 msgid "XP gained last play"
 msgstr "XP gagnée"
 
+#: src/components/upgrades/UpgradeTooltip.tsx
+#: src/components/upgrades/UpgradeTooltip.tsx
+msgid "XP level"
+msgstr ""
+
 #: src/components/character/PrestigeRow.tsx
 msgid "XP Lv{level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +{bonus} bonus levels, {slots} gear slots and x{multiplier} XP"
 msgstr "XP Lv{level} → XP Lv0 · Perd toutes les améliorations et l'Overdrive · Garde +{bonus} niveaux bonus, {slots} tiers d'améliorations et x{multiplier} XP"
+
+#: src/components/upgrades/UpgradeTooltip.tsx
+msgid "XP spent"
+msgstr ""
 
 #: src/osu/beatmap/grouping.ts
 msgid "Yesterday"
@@ -1972,8 +2032,8 @@ msgid "Your character can play <0>on-repeat</0>, automatically, on playlists you
 msgstr "Votre personnage peut jouer <0>en boucle</0>, automatiquement, sur des playlists que vous avez conçu. <1>Maintenez votre doigt</1> sur une map pour l'ajouter et <2>groupez par playlist</2>, puis lancez la map pour utiliser le mode playlist."
 
 #: src/components/Tutorial.tsx
-msgid "Your character can play <0>on-repeat</0>, automatically, on playlists you crafted.<1> Righ-click</1> a beatmap to add it and <2>group by playlist</2>, then start a beatmap to enter playlist mode."
-msgstr "Votre personnage peut jouer <0>en boucle</0>, automatiquement, sur des playlists que vous avez conçu. Faites un <1>clique droit</1> sur une map pour l'ajouter et <2>groupez par playlist</2>, puis lancez la map pour utiliser le mode playlist."
+msgid "Your character can play <0>on-repeat</0>, automatically, on playlists you crafted.<1> Right-click</1> a beatmap to add it and <2>group by playlist</2>, then start a beatmap to enter playlist mode."
+msgstr ""
 
 #: src/scenes/Gameplay.tsx
 msgid "Your character is still playing another map. Abort that play to start this one?"

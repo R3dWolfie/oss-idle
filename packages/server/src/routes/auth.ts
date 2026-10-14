@@ -4,11 +4,16 @@ import {
 	deleteCookie,
 } from 'hono/cookie';
 import { HTTPException } from 'hono/http-exception';
-import { eq } from 'drizzle-orm';
+import {
+	and,
+	eq,
+	ne,
+} from 'drizzle-orm';
 import { db } from '../db/client';
 import {
 	users,
 	toUserDTO,
+	getUserById,
 } from '../db/schema/user';
 import {
 	clientUrl,
@@ -20,10 +25,18 @@ import {
 	fetchOsuUser,
 } from '../auth/osu';
 import {
+	signLinkState,
 	signSession,
 	signState,
+	verifyLinkState,
 	verifyState,
 } from '../auth/jwt';
+import {
+	discordAuthorizeUrl,
+	fetchDiscordId,
+} from '../auth/discord';
+import { pushCharacter } from '../character/push';
+import { env } from '../env';
 import {
 	requireAuth,
 	SESSION_COOKIE,
@@ -127,6 +140,45 @@ export const authRoutes = new Hono()
 		const [row] = await db.select().from(users).where(eq(users.id, c.get('userId'))).limit(1);
 		if (!row) throw new HTTPException(401, { message: 'User not found' });
 		return c.json(toUserDTO(row));
+	})
+
+	// Discord link: whether one is linked, and a fresh URL to link (or relink) one.
+	.get('/discord', requireAuth, async c => {
+		if (!env.DISCORD_CLIENT_SECRET) throw new HTTPException(503, { message: 'Discord linking is not configured' });
+		const user = await getUserById(c.get('userId'));
+		if (!user) throw new HTTPException(401, { message: 'User not found' });
+		return c.json({
+			linked: !!user.discordId,
+			url: discordAuthorizeUrl(await signLinkState(user.id)),
+		});
+	})
+
+	.get('/discord/callback', async c => {
+		const code = c.req.query('code');
+		const state = c.req.query('state');
+		if (!code || !state) return c.redirect(`${clientUrl}/web/auth/error`);
+
+		let uid: number;
+		let nonce: string;
+		try {
+			({ uid, nonce } = await verifyLinkState(state));
+		} catch {
+			throw new HTTPException(400, { message: 'Invalid or expired state' });
+		}
+		if (!await claimStateNonce(nonce)) return c.redirect(`${clientUrl}/web/auth/discord`);
+
+		const discordId = await fetchDiscordId(code);
+		// One osu!idle account per Discord account: a relink moves it.
+		await db.update(users)
+			.set({ discordId: null })
+			.where(and(eq(users.discordId, discordId), ne(users.id, uid)));
+		await db.update(users).set({ discordId }).where(eq(users.id, uid));
+
+		// The bot listens for character pushes, so this gives the role right away.
+		const user = await getUserById(uid);
+		if (user?.currentCharacter) await pushCharacter(user.currentCharacter);
+
+		return c.redirect(`${clientUrl}/web/auth/discord`);
 	})
 
 	.post('/logout', c => {

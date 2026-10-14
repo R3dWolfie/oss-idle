@@ -646,3 +646,19 @@
 		gap: calc(var(--mp-u) * 1.1);
 	}
 }
+
+/* phones held sideways: the chat keeps a smaller share (CommunityOverlay.css) */
+@media (max-height: 500px) {
+	.mp {
+		padding-bottom: max(33.33vh, 110px);
+	}
+	.mp__top .community-music {
+		display: none;
+	}
+	.mp-filters {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	.mp-filters .opt-checkbox {
+		padding: 1px 6px;
+	}
+}

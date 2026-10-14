@@ -59,3 +59,22 @@
 	outline: none;
 	border-bottom-color: var(--osu-pink);
 }
+
+@media (max-width: 850px) {
+	.community-header {
+		flex-wrap: wrap;
+		gap: 6px 20px;
+	}
+	.community-header__brand {
+		font-size: 40px;
+	}
+	.community-header__online {
+		font-size: 16px;
+	}
+	.community-header__filters {
+		font-size: 16px;
+	}
+	.community-header .community-music {
+		min-width: 0;
+	}
+}

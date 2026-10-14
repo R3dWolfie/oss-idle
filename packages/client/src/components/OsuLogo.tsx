@@ -77,7 +77,7 @@ export default function OsuLogo({ size = 380, onClick }: Props) {
 				width: size, height: size, 
 			}}
 			onClick={handleClick}
-			onPointerEnter={() => (hoverTarget.current = 1)}
+			onPointerEnter={e => { if (e.pointerType === 'mouse') hoverTarget.current = 1; }}
 			onPointerLeave={() => (hoverTarget.current = 0)}
 			aria-label="osu! logo"
 		>

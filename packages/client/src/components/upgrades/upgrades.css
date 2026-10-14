@@ -43,6 +43,9 @@
 	min-width: 0;
 }
 .upgrade__skill {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
 	font-size: 1.05rem;
 	font-weight: 400;
 }
@@ -52,10 +55,6 @@
 }
 .upgrade__mult {
 	color: #9be48b;
-	font-size: 0.85rem;
-}
-.upgrade__od {
-	color: var(--osu-pink-light);
 	font-size: 0.85rem;
 }
 
@@ -70,35 +69,11 @@
 	font-size: 0.82rem;
 }
 
-.upgrade__gear {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	min-width: 0;
-	flex-wrap: wrap;
-}
-.upgrade__gear-current {
-	color: var(--text-dim);
-}
-.upgrade__gear-arrow {
-	color: var(--osu-pink);
-}
-.upgrade__gear-next {
-	color: var(--text);
-}
-.is-maxed .upgrade__gear-current {
-	color: #9be48b;
-}
-
 .upgrade__action {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	justify-self: end;
-}
-.upgrade__overdrive {
-	color: var(--osu-pink-light);
-	font-size: 0.9rem;
 }
 
 .upgrade__buy {
@@ -117,16 +92,6 @@
 	background: rgba(255, 64, 137, 0.8);
 }
 
-/* shift-click skips the confirm, so the button has to look like it will */
-.upgrade__buy.is-instant:not(:disabled) {
-	background: rgba(255, 210, 74, 0.55);
-	color: #1a1420;
-}
-.upgrade__buy.is-instant:hover:not(:disabled) {
-	background: #ffd24a;
-	color: #1a1420;
-	box-shadow: 0 0 12px rgba(255, 210, 74, 0.55);
-}
 .upgrade__buy:disabled {
 	background: rgba(255, 255, 255, 0.08);
 	color: var(--text-dim);

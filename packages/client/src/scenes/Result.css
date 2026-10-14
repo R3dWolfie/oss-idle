@@ -379,6 +379,18 @@
 	filter: brightness(1.08);
 }
 
+/* the xp rows need ~470px: beside the judgements they ran under the grade */
+@media (max-width: 1500px) {
+	.result__topleft {
+		flex-direction: column;
+		gap: 2rem;
+	}
+	.result__panel,
+	.result__progression {
+		width: 100%;
+	}
+}
+
 /* MOBILE */
 
 @media (max-width: 1100px) {

@@ -132,6 +132,7 @@ export const beatmapsRoutes = new Hono()
 				'Content-Type': 'application/octet-stream',
 				'Content-Length': String(buf.length),
 				'Content-Disposition': `attachment; filename="${id}.osz"`,
+				'Cache-Control': 'public, max-age=31536000, immutable',
 			},
 		});
 	})
@@ -154,6 +155,7 @@ export const beatmapsRoutes = new Hono()
 			headers: {
 				'Content-Type': PREVIEW_MIME[ext] ?? 'application/octet-stream',
 				'Content-Length': String(buf.length),
+				'Cache-Control': 'public, max-age=31536000, immutable',
 			},
 		});
 	})

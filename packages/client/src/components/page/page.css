@@ -162,3 +162,43 @@
 .page__baraction--static:hover {
 	background: none;
 }
+
+@media (max-width: 600px) {
+	.page__tabs {
+		padding: 10px 10px 0;
+	}
+	.page__tab {
+		padding: 8px 18px;
+		font-size: 1rem;
+	}
+	.page__header {
+		padding: 12px 16px 4px;
+	}
+	.page__title {
+		font-size: 2rem;
+	}
+	.page__body {
+		padding: 8px 16px 20px;
+	}
+}
+
+@media (max-height: 500px) {
+	.page__tabs {
+		padding-top: 6px;
+	}
+	.page__tab {
+		padding: 5px 24px;
+	}
+	.page__header {
+		padding-top: 6px;
+	}
+	.page__title {
+		font-size: 1.8rem;
+	}
+	.page__bottombar {
+		height: 52px;
+	}
+	.page__baraction {
+		font-size: 1.3rem;
+	}
+}

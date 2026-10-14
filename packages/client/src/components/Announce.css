@@ -125,8 +125,11 @@
 	grid-template-rows: 0fr;
 	transition: grid-template-rows 0.35s cubic-bezier(0.2, 1, 0.35, 1);
 }
-.announce:hover .announce__preview {
-	grid-template-rows: 1fr;
+/* a tap leaves :hover stuck on touch screens */
+@media (hover: hover) {
+	.announce:hover .announce__preview {
+		grid-template-rows: 1fr;
+	}
 }
 .announce__preview > div {
 	overflow: hidden;
@@ -207,9 +210,15 @@
 
 @media (max-width: 850px) {
 	.announce {
-		bottom: 1rem;
+		bottom: 2.4rem;
 	}
 	.announce__cover {
+		display: none;
+	}
+}
+
+@media (max-height: 500px) {
+	.announce__summary {
 		display: none;
 	}
 }

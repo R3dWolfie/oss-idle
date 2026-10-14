@@ -54,3 +54,17 @@ export async function verifyState(
 		poll: typeof payload.poll === 'string' ? payload.poll : undefined,
 	};
 }
+
+/** State for linking a Discord account: names the signed-in account, since the
+ *  Discord round-trip may run in a browser that holds no session (desktop). */
+export const signLinkState = (uid: number): Promise<string> => sign({
+	nonce: crypto.randomUUID(), uid, link: 'discord', iat: now(), exp: now() + STATE_TTL,
+}, env.JWT_SECRET);
+
+export const verifyLinkState = async (state: string): Promise<{ uid: number; nonce: string }> => {
+	const payload = await verify(state, env.JWT_SECRET, 'HS256');
+	if (payload.link !== 'discord') throw new Error('Not a link state');
+	return {
+		uid: payload.uid as number, nonce: payload.nonce as string,
+	};
+};

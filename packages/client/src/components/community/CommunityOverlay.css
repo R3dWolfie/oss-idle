@@ -56,3 +56,10 @@
 		visibility 0s linear 0s;
 	pointer-events: all;
 }
+
+/* the multiplayer scenes stop above it (Multiplayer.css) */
+@media (max-height: 500px) {
+	.community-chat-container {
+		min-height: 110px;
+	}
+}

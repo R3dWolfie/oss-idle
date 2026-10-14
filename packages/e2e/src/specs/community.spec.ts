@@ -82,4 +82,23 @@ test.describe('community overlay', () => {
 		await expect(users).toHaveAttribute('data-on', 'true');
 	});
 
+	test('a half-typed chat line survives the scene changing under it', async ({ game, page }) => {
+		await game.start();
+		const { set, version } = await game.installEasiest();
+		await game.search(set.title);
+		await game.selectCard(version.id);
+		await game.playSelected();
+		await game.waitForPlay();
+
+		await page.keyboard.press('F8');
+		const input = page.locator('.chat__compose input');
+		await input.fill('half a sentence');
+		// hidden, not unmounted: it would cover the skip button
+		await page.keyboard.press('F8');
+		await game.skipToEnd();
+		await game.expectScene('RESULT');
+		await page.keyboard.press('F8');
+		await expect(input).toHaveValue('half a sentence');
+	});
+
 });

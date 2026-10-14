@@ -4,7 +4,9 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
+import useSynced from '@osu-idle/shared/hooks/useSynced';
 import { openPage } from '../globals';
+import Entities from '../entity/entities';
 import Page from '../components/page/Page';
 import UpgradesView from '../components/upgrades/UpgradesView';
 import PrestigeView from '../components/character/PrestigeView';
@@ -13,6 +15,7 @@ import RebirthView from '../components/character/RebirthView';
 /** The character page: the three progression loops, one per tab. */
 export default function Character() {
 	const { t } = useLingui();
+	const [character] = useSynced(Entities.character);
 
 	return (
 		<Page
@@ -23,7 +26,7 @@ export default function Character() {
 					id: 'upgrades',
 					label: <Trans>Upgrades</Trans>,
 					subtitle: t`Trade skill levels for permanent XP boosts`,
-					render: () => <UpgradesView />,
+					render: () => <UpgradesView character={character} />,
 				},
 				{
 					id: 'prestige',

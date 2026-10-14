@@ -100,3 +100,27 @@
 		font-size: 20px;
 	}
 }
+
+@media (max-width: 600px) {
+	.ctxmenu__header {
+		padding: 10px 12px;
+	}
+}
+
+@media (max-height: 500px) {
+	.ctxmenu__header {
+		padding: 6px 12px;
+	}
+	.ctxmenu__title,
+	.ctxmenu__sub {
+		font-size: 18px;
+	}
+	.ctxmenu__options {
+		gap: 8px;
+		margin-top: 40px;
+	}
+	.ctxmenu__option {
+		padding: 4px 0;
+		font-size: 22px;
+	}
+}

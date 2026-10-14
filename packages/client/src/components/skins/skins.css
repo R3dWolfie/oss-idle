@@ -534,3 +534,17 @@
 .skin-diff__line--remove .skin-diff__sigil {
 	color: #ef8888;
 }
+
+/* phones: the buttons take a line under the name */
+@media (max-width: 600px) {
+	.skin {
+		flex-wrap: wrap;
+	}
+	.skin__main {
+		flex-basis: calc(100% - 70px);
+	}
+	.skin__actions {
+		width: 100%;
+		justify-content: flex-end;
+	}
+}

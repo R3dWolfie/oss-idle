@@ -9,3 +9,9 @@
 	gap: 6px;
 	padding: 4px 14px;
 }
+
+@media (max-width: 600px) {
+	.community-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}

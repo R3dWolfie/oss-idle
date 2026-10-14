@@ -19,6 +19,8 @@ export const users = mysqlTable('user', {
 	lastActiveAt: timestamp(),
 	// unticked: private messages only from the accounts this one added
 	pmFromAnyone: boolean().notNull().default(true),
+	// linked from the options; the Discord bot gives this account's level role to it
+	discordId: varchar({ length: 32 }).unique(),
 	createdAt: timestamp().notNull().defaultNow(),
 	updatedAt: timestamp().notNull().defaultNow().onUpdateNow(),
 });

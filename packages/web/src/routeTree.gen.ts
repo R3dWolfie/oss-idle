@@ -29,6 +29,7 @@ import { Route as MapsRequestsRouteImport } from './routes/maps/requests'
 import { Route as HelpFaqRouteImport } from './routes/help/faq'
 import { Route as CIdRouteImport } from './routes/c/$id'
 import { Route as AuthErrorRouteImport } from './routes/auth/error'
+import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
 import { Route as AuthDesktopRouteImport } from './routes/auth/desktop'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AdminSkinsRouteImport } from './routes/admin/skins'
@@ -142,6 +143,11 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/auth/error',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthDiscordRoute = AuthDiscordRouteImport.update({
+  id: '/auth/discord',
+  path: '/auth/discord',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthDesktopRoute = AuthDesktopRouteImport.update({
   id: '/auth/desktop',
   path: '/auth/desktop',
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
+  '/auth/discord': typeof AuthDiscordRoute
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
+  '/auth/discord': typeof AuthDiscordRoute
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
+  '/auth/discord': typeof AuthDiscordRoute
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
@@ -323,6 +332,7 @@ export interface FileRouteTypes {
     | '/admin/skins'
     | '/auth/callback'
     | '/auth/desktop'
+    | '/auth/discord'
     | '/auth/error'
     | '/c/$id'
     | '/help/faq'
@@ -357,6 +367,7 @@ export interface FileRouteTypes {
     | '/admin/skins'
     | '/auth/callback'
     | '/auth/desktop'
+    | '/auth/discord'
     | '/auth/error'
     | '/c/$id'
     | '/help/faq'
@@ -391,6 +402,7 @@ export interface FileRouteTypes {
     | '/admin/skins'
     | '/auth/callback'
     | '/auth/desktop'
+    | '/auth/discord'
     | '/auth/error'
     | '/c/$id'
     | '/help/faq'
@@ -426,6 +438,7 @@ export interface RootRouteChildren {
   AdminSkinsRoute: typeof AdminSkinsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthDesktopRoute: typeof AuthDesktopRoute
+  AuthDiscordRoute: typeof AuthDiscordRoute
   AuthErrorRoute: typeof AuthErrorRoute
   CIdRoute: typeof CIdRoute
   HelpFaqRoute: typeof HelpFaqRoute
@@ -588,6 +601,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/discord': {
+      id: '/auth/discord'
+      path: '/auth/discord'
+      fullPath: '/auth/discord'
+      preLoaderRoute: typeof AuthDiscordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/desktop': {
       id: '/auth/desktop'
       path: '/auth/desktop'
@@ -690,6 +710,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminSkinsRoute: AdminSkinsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthDesktopRoute: AuthDesktopRoute,
+  AuthDiscordRoute: AuthDiscordRoute,
   AuthErrorRoute: AuthErrorRoute,
   CIdRoute: CIdRoute,
   HelpFaqRoute: HelpFaqRoute,

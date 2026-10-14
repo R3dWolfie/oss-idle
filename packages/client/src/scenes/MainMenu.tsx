@@ -1,5 +1,6 @@
 import {
 	useCallback,
+	useEffect,
 	useState,
 } from 'react';
 import OsuLogo from '../components/OsuLogo';
@@ -81,12 +82,10 @@ export default function MainMenu({ flash = false }: Props) {
 	const parallax = useParallax(0.08, parallaxOn);
 	const [character] = useSynced(Entities.character);
 
-	const maxHeight = window.innerHeight * 0.5;
-	const maxWidth = window.innerWidth * 0.75;
-	const getLogoSize = () => Math.min(maxHeight, maxWidth);
+	const getLogoSize = () => Math.min(window.innerHeight * 0.5, window.innerWidth * 0.75);
 
 	const [logoSize, setLogoSize] = useState(getLogoSize());
-	Device.resize.on(() => setLogoSize(getLogoSize()));
+	useEffect(() => Device.resize.on(() => setLogoSize(getLogoSize())), []);
 
 	let cancelTimeout = 0;
 	const mainClick = useCallback(() => {

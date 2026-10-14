@@ -63,14 +63,14 @@ test.describe('progression', () => {
 
 		// the dock's primary action is the way to the character page
 		await page.locator('.dock__btn--upgrades').first().click();
-		await expect(page.locator('.upgrades__list')).toBeVisible();
+		await expect(page.locator('.ladder__list')).toBeVisible();
 
-		const row = page.locator('.upgrade__row.is-ready').first();
+		const row = page.locator('.ladder-row.is-ready').first();
 		await expect(row).toBeVisible();
-		const skill = await row.locator('.upgrade__skill').innerText();
+		const skill = await row.locator('.ladder-row__name').innerText();
 
 		// the plain click asks first - the confirm names what the purchase costs
-		await row.locator('.upgrade__buy').click();
+		await row.locator('.ladder-act__buy').click();
 		const menu = page.locator('.ctxmenu');
 		await expect(menu).toBeVisible();
 		await expect(menu.locator('.ctxmenu__sub')).toContainText('XP Lv');
@@ -104,12 +104,12 @@ test.describe('progression', () => {
 
 		await game.expectScene('SELECT');
 		await page.locator('.dock__btn--upgrades').first().click();
-		await expect(page.locator('.upgrades__list')).toBeVisible();
+		await expect(page.locator('.ladder__list')).toBeVisible();
 
 		// holding shift skips the confirm; the button says so before it is clicked
-		const buy = page.locator('.upgrade__row.is-ready').first().locator('.upgrade__buy');
+		const buy = page.locator('.ladder-row.is-ready').first().locator('.ladder-act__buy');
 		await page.keyboard.down('Shift');
-		await expect(buy).toHaveText('Buy');
+		await expect(buy).toHaveText('Buy now');
 		await buy.click();
 		await page.keyboard.up('Shift');
 		await expect.poll(async () => {

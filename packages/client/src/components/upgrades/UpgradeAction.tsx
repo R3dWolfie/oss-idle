@@ -1,0 +1,76 @@
+import { Trans } from '@lingui/react/macro';
+import type { ReactNode } from 'react';
+import useShiftHeld from '@osu-idle/shared/hooks/useShiftHeld';
+import HoverCard from '@osu-idle/shared/display/HoverCard';
+import { overdriveText } from '@osu-idle/shared/display/overdrive';
+import type { UpgradePurchase } from '@osu-idle/shared/upgrades';
+
+/** Overdrive gain, then the buy button over its progress bar. Every slot keeps
+ *  its size whatever it holds, so rows stay aligned.
+ *  Shift buys without the confirm, and the button says so while it is held. */
+export default function UpgradeAction({
+	progress,
+	maxed,
+	preview,
+	busy,
+	minLevel,
+	onBuy,
+	onConfirm,
+	tip,
+}: {
+	/** 0..1 from the last upgrade's required level to the next one's */
+	progress: number,
+	maxed: boolean,
+	preview: UpgradePurchase | undefined,
+	busy: boolean,
+	minLevel: number,
+	onBuy: () => void,
+	onConfirm: () => void,
+	/** hover card over the button; none when maxed */
+	tip: ReactNode,
+}) {
+	const instant = useShiftHeld();
+	const ratio = preview?.ratio ?? 0;
+	const ratioText = overdriveText(ratio);
+	const required = minLevel;
+
+	const button = () => {
+		if (maxed) {
+			return <span className="ladder-act__state is-maxed"><span><Trans>Maxed</Trans></span></span>;
+		}
+		if (!preview) {
+			return (
+				<span className="ladder-act__state">
+					<span><Trans>Requires XP Lv{required}</Trans></span>
+				</span>
+			);
+		}
+		return (
+			<button
+				className={`ladder-act__buy ${instant ? 'is-instant' : ''}`}
+				disabled={busy}
+				onClick={(e) => (e.shiftKey ? onBuy() : onConfirm())}
+			>
+				<span>
+					{instant ? <Trans>Buy now</Trans> : <Trans>Buy</Trans>}
+				</span>
+			</button>
+		);
+	};
+
+	return (
+		<div className="ladder-act">
+			<span className="ladder-act__od">
+				{ratio > 1 && <Trans>Overdrive +{ratioText}</Trans>}
+			</span>
+			<div className="ladder-act__main">
+				<HoverCard className="ladder-act__hover" card={maxed ? undefined : tip}>
+					{button()}
+				</HoverCard>
+				<span className={`ladder-act__progress ${maxed ? 'is-hidden' : ''}`}>
+					<span style={{ transform: `scaleX(${progress})` }} />
+				</span>
+			</div>
+		</div>
+	);
+}

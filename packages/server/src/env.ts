@@ -61,6 +61,11 @@ const schema = z.object({
 	USER_FEED_WEBHOOK: z.string(),
 	ERROR_FEED_WEBHOOK: z.string(),
 
+	// The osu!idle Discord app: OAuth links a player's Discord account so the bot
+	// (packages/discord) can give them their level role. No secret, no linking.
+	DISCORD_CLIENT_ID: z.string().min(1).default('1517803750968918037'),
+	DISCORD_CLIENT_SECRET: z.string().optional(),
+
 	// MaxMind GeoLite2-City database, used to place online players on the world
 	// map (anonymous, coarse) and derive their timezone. Optional: without it the
 	// map/timezone features degrade to country-level. The file is provisioned out
@@ -124,6 +129,9 @@ export const apiBaseUrl = isProd
 
 /** osu! OAuth callback (both dev + prod variants are registered on the app). */
 export const OSU_REDIRECT_URI = `${apiBaseUrl}/v1/auth/osu/callback`;
+
+/** Discord OAuth callback (both dev + prod variants are registered on the app). */
+export const DISCORD_REDIRECT_URI = `${apiBaseUrl}/v1/auth/discord/callback`;
 
 /** Origin the desktop renderer reports (it loads its bundle from a registered
  *  `app://` scheme). Allowed through CORS so the Bearer-authed app can call us. */

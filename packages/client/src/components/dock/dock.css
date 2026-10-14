@@ -329,3 +329,62 @@
 	font-size: 0.95rem;
 	margin-bottom: 0.45rem;
 }
+
+@media (max-height: 500px) {
+	.dock--above-bar {
+		bottom: 74px;
+	}
+	.dock--left-scene {
+		bottom: 64px;
+	}
+}
+
+/* the queue column, where the carousel leaves no 500px for it (SongSelect.css
+   moves the carousel out of the way to match) */
+@media (max-width: 850px) and (orientation: landscape) {
+	.dock--left {
+		width: 40%;
+	}
+}
+@media (max-width: 850px) and (orientation: portrait) {
+	.dock--left {
+		right: 0;
+		bottom: auto;
+		width: auto;
+		height: 35vh;
+		border-right: 0;
+		border-bottom: 1px solid gray;
+	}
+}
+
+/* over gameplay on a phone: low enough to stay under the receptors */
+@media (max-width: 600px), (max-height: 500px) {
+	.dock--pill {
+		gap: 0.5rem;
+		padding: 0.4rem 0.5rem;
+	}
+	.dock--pill .dock__btn {
+		height: 34px;
+		min-width: 5.5rem;
+		padding: 0 0.7rem;
+		font-size: 0.9rem;
+	}
+}
+
+@media (max-height: 500px) {
+	.dock--panel {
+		padding: 0.5rem 0.6rem;
+	}
+	.dock--panel .dock__btn {
+		height: 34px;
+		font-size: 0.9rem;
+	}
+	.dock__controls {
+		margin-top: 0.5rem;
+	}
+}
+
+/* it is app-level, above every scene: it would cover the menu's buttons */
+body:has(.ctxmenu, .plmgr) .dock {
+	display: none;
+}

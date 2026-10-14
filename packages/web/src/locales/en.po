@@ -319,6 +319,10 @@ msgstr "Delete"
 msgid "Delete selected"
 msgstr "Delete selected"
 
+#: src/routes/auth/discord.tsx
+msgid "Discord linked"
+msgstr "Discord linked"
+
 #: src/pages/help/FAQ.tsx
 msgid "Do I have to watch my plays?"
 msgstr "Do I have to watch my plays?"
@@ -1076,3 +1080,11 @@ msgstr "You're signed in!"
 #: src/pages/help/FAQ.tsx
 msgid "Your character has eleven skills: accuracy, speed, stamina, jack speed, coordination, release, reading, consistency, concentration, speed jam and memory. Each one levels up on its own, from the parts of a map that test it. A jack-heavy map trains jack speed, a long map trains stamina, and so on. Your overall level grows with all of them."
 msgstr "Your character has eleven skills: accuracy, speed, stamina, jack speed, coordination, release, reading, consistency, concentration, speed jam and memory. Each one levels up on its own, from the parts of a map that test it. A jack-heavy map trains jack speed, a long map trains stamina, and so on. Your overall level grows with all of them."
+
+#: src/pages/DiscordLinked.tsx
+msgid "Your Discord account is linked!"
+msgstr "Your Discord account is linked!"
+
+#: src/pages/DiscordLinked.tsx
+msgid "Your level role will show up on the osu!idle Discord server. You can close this tab."
+msgstr "Your level role will show up on the osu!idle Discord server. You can close this tab."

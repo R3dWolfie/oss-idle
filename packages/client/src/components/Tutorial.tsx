@@ -59,10 +59,10 @@ export default function Tutorial() {
 			title: t`Pick a song`,
 			body: isMobile ? <Trans>
 				Bundled maps are listed in <b>song select</b>:
-				<b> double-click</b> a map to download it, then <b>single-click</b> to start playing.
+				<b> double-tap</b> a map to download it, then <b>single-tap</b> to start playing.
 			</Trans> : <Trans>
 				Bundled maps are listed in <b>song select</b>:
-				<b> double-tap</b> a map to download it, then <b>single-tap</b> to start playing.
+				<b> double-click</b> a map to download it, then <b>single-click</b> to start playing.
 			</Trans>,
 		},
 		{
@@ -76,10 +76,10 @@ export default function Tutorial() {
 			title: t`Playlists`,
 			body: isMobile ? <Trans>
 				Your character can play <b>on-repeat</b>, automatically, on playlists you crafted.
-				<b> Righ-click</b> a beatmap to add it and <b>group by playlist</b>, then start a beatmap to enter playlist mode.
+				<b> Hold down</b> a beatmap to add it and <b>group by playlist</b>, then start a beatmap to enter playlist mode.
 			</Trans> : <Trans>
 				Your character can play <b>on-repeat</b>, automatically, on playlists you crafted.
-				<b> Hold down</b> a beatmap to add it and <b>group by playlist</b>, then start a beatmap to enter playlist mode.
+				<b> Right-click</b> a beatmap to add it and <b>group by playlist</b>, then start a beatmap to enter playlist mode.
 			</Trans>,
 		},
 		{

@@ -264,6 +264,14 @@ export default function NewsAdmin() {
 						</small>
 					</div>
 
+					<div className="news-field">
+						<span>Preview</span>
+						<div
+							className="news-article__body news-preview"
+							dangerouslySetInnerHTML={{ __html: draft.content }}
+						/>
+					</div>
+
 					<AnnounceToggle announce={announce} announced={announced} onChange={setAnnounce} />
 
 					{error && <p className="news-msg news-msg--error">{error}</p>}

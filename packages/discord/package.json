@@ -1,0 +1,24 @@
+{
+  "name": "@osu-idle/discord",
+  "version": "0.20.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "start:prod": "NODE_ENV=production tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@osu-idle/shared": "*",
+    "discord.js": "^14.27.0",
+    "dotenv": "^16.4.7",
+    "ioredis": "^5.11.1",
+    "mysql2": "^3.12.0",
+    "tsx": "^4.19.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.6.3"
+  }
+}

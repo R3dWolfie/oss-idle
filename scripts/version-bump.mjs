@@ -34,6 +34,7 @@ const PACKAGE_JSONS = [
 	'packages/client/package.json',
 	'packages/web/package.json',
 	'packages/desktop/package.json',
+	'packages/discord/package.json',
 ];
 
 // Generated runtime carrier consumed via `@osu-idle/shared/version`.

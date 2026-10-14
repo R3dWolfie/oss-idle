@@ -172,7 +172,9 @@ export default class Socket {
 
 		const base = (BASE_URL || location.origin).replace(/^http/, 'ws');
 		const token = desktop()?.getToken();
-		const url = `${base}/v1/ws${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+		const query = new URLSearchParams({ tz: Intl.DateTimeFormat().resolvedOptions().timeZone });
+		if (token) query.set('token', token);
+		const url = `${base}/v1/ws?${query}`;
 
 		const ws = this.ws = new WebSocket(url);
 		ws.onopen = () => {

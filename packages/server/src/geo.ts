@@ -74,3 +74,13 @@ export const geoLookup = async (ip?: string, country?: string): Promise<GeoResul
 	const centroid = country ? COUNTRY_CENTROIDS[country.toUpperCase()] : undefined;
 	return centroid ? { loc: project(centroid.lat, centroid.lng) } : {};
 };
+
+/** A client-sent IANA timezone, if the runtime knows it. */
+export const validTimezone = (tz?: string): string | undefined => {
+	if (!tz) return undefined;
+	try {
+		return new Intl.DateTimeFormat('en-US', { timeZone: tz }).resolvedOptions().timeZone;
+	} catch {
+		return undefined;
+	}
+};

@@ -24,6 +24,7 @@ import { verifySession } from '../auth/jwt';
 import {
 	clientIp,
 	geoLookup,
+	validTimezone,
 } from '../geo';
 import type { WSContext } from 'hono/ws';
 import { hub } from './hub';
@@ -113,7 +114,9 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 
 		const { character, user } = resolved;
 		const userId = session.uid;
+		// the city DB has no timezones, so the client's own wins
 		const geo = await geoLookup(clientIp(c), user.country);
+		geo.tz = validTimezone(c.req.query('tz')) ?? geo.tz;
 		let beat: ReturnType<typeof setInterval> | undefined;
 		let feed: PlayFeed | undefined;
 		let scores: MatchFeed | undefined;

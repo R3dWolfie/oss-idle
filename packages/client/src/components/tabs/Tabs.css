@@ -35,3 +35,10 @@
 	color: black;
 	z-index: 2;
 }
+
+@media (max-width: 600px) {
+	.tabs.classic .tab {
+		padding: 8px 22px;
+		font-size: 15px;
+	}
+}

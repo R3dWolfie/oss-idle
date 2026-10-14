@@ -4,6 +4,9 @@ import SkillXPBar from '../components/SkillXPBar';
 import SkillProgression from '../components/result/SkillProgression';
 import XpMultiplierToggle from '../components/songselect/XpMultiplierToggle';
 import UpgradeRow from '../components/upgrades/UpgradeRow';
+import UpgradesView from '../components/upgrades/UpgradesView';
+import UpgradesPreview from './UpgradesPreview';
+import { sampleCharacter } from './upgradeSample';
 import ConfirmMenu from '../components/ConfirmMenu';
 import DockPanel from '../components/dock/DockPanel';
 import DockPill from '../components/dock/DockPill';
@@ -236,6 +239,11 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 		id: 'upgrade-tier',
 		label: 'Upgrade row - Lv101 with overdrive, buying a gear tier',
 		render: () => <UpgradeRow skill={tieredSkill()} locked={false} />,
+	},
+	{
+		id: 'upgrades',
+		label: 'Upgrades - every row state',
+		render: () => <UpgradesPreview><UpgradesView character={sampleCharacter()} /></UpgradesPreview>,
 	},
 	{
 		id: 'confirm-rebirth',
