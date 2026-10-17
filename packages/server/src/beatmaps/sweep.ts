@@ -9,6 +9,7 @@ import { beatmaps } from '../db/schema/beatmap';
 import { beatmapset } from '../db/schema/beatmapset';
 import { announceRanked } from './announce';
 import { hub } from '../ws/hub';
+import { recordCurators } from '../medals';
 
 /**
  * Announce scheduled maps whose rank time has passed. Runs on the periodic
@@ -34,16 +35,19 @@ export const sweepRankedMaps = async (): Promise<void> => {
 			.where(and(eq(beatmapset.id, set.id), eq(beatmapset.announced, false)));
 		if (!claim.affectedRows) continue;
 		wentLive = true;
+		await recordCurators(set.osuId);
 
 		const diffs = await db
 			.select({
-				version: beatmaps.version, sr: beatmaps.sr,
+				version: beatmaps.version, sr: beatmaps.sr, background: beatmaps.background,
 			})
 			.from(beatmaps)
 			.where(and(eq(beatmaps.setId, set.id), eq(beatmaps.ranked, true)));
 
 		await announceRanked({
-			setId: set.id,
+			id: set.id,
+			osuId: set.osuId,
+			background: diffs.find(d => d.background)?.background,
 			artist: set.artist,
 			title: set.title,
 			creator: set.creator,

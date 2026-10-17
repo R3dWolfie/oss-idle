@@ -346,7 +346,9 @@ export default class BeatmapStore {
 			.reduce((set, file) => {
 				const text = decoder.decode(files[file]);
 				const beatmap = (new BeatmapDecoder()).decodeFromString(text);
-				const meta = metadata.versions.find(v => v.id === beatmap.metadata.beatmapId);
+				const meta = metadata.versions.find(v => v.file
+					? v.file === file
+					: v.id === beatmap.metadata.beatmapId);
 				const audio = beatmap.general.audioFilename;
 
 				if (!meta) {
@@ -355,7 +357,7 @@ export default class BeatmapStore {
 				}
 				if (audio) keptAudio.add(normalizeName(audio));
 
-				set[beatmap.metadata.beatmapId] = text;
+				set[meta.id] = text;
 
 				runtimeMetadata.audio = beatmap.general.audioFilename;
 				if (beatmap.events.backgroundPath) {
@@ -363,7 +365,7 @@ export default class BeatmapStore {
 				}
 
 				runtimeMetadata.versions.push({
-					id: beatmap.metadata.beatmapId,
+					id: meta.id,
 					runtime: true,
 					audio: beatmap.general.audioFilename,
 					background: beatmap.events.backgroundPath ?? runtimeMetadata.background,

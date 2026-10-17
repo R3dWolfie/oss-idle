@@ -43,6 +43,7 @@ import {
 import { assertNameAvailable } from '../character/names';
 import { announceCharacter } from '../character/push';
 import { pushMedals } from '../medals';
+import { characterMedals } from '../db/schema/character_medal';
 import type { PendingAction } from '@osu-idle/shared/pendingAction';
 import type { UserRow } from '../db/schema/user';
 
@@ -50,6 +51,8 @@ const characterId = z.number().int().positive();
 const characterRenameBody = characterNameBody.extend({ characterId: characterId.optional() });
 
 const characterSelectBody = z.object({ characterId });
+
+const titleBody = z.object({ medalId: z.string().max(32).optional() });
 
 // Re-throw the ZodError so the app's onError returns the standard shape.
 const jsonBody = <T extends z.ZodType>(schema: T) =>
@@ -178,6 +181,22 @@ export const meRoutes = new Hono()
 	// Remove the profile banner.
 	.delete('/banner', requireAuth, async c => {
 		return c.json(await setCurrentCharacterImages(c.get('userId'), { bannerUrl: null }));
+	})
+
+	// Show a held medal's name as the current character's title, or none.
+	.put('/title', requireAuth, jsonBody(titleBody), async c => {
+		const { medalId } = c.req.valid('json');
+		const [user] = await db.select().from(users).where(eq(users.id, c.get('userId'))).limit(1);
+		const id = user?.currentCharacter;
+		if (!id) throw new HTTPException(409, { message: 'No character' });
+		if (medalId) {
+			const [held] = await db.select().from(characterMedals)
+				.where(and(eq(characterMedals.characterId, id), eq(characterMedals.medalId, medalId)))
+				.limit(1);
+			if (!held) throw new HTTPException(403, { message: 'Medal not held' });
+		}
+		await db.update(characters).set({ title: medalId ?? null }).where(eq(characters.id, id));
+		return c.json({ title: medalId });
 	})
 
 	// Buy the current character's next upgrade for a skill: spends levels

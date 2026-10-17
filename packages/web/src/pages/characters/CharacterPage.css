@@ -57,6 +57,17 @@
 	font-size: 24px;
 }
 
+.character__meta-title {
+	display: block;
+	color: #fff;
+	font-size: 16px;
+}
+
+.character__meta-title.is-empty {
+	color: hsl(var(--hsl-f1));
+	font-style: italic;
+}
+
 .character__meta-down {
 	display: flex;
 	gap: 4px;

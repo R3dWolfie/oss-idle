@@ -150,8 +150,9 @@ export function buildBarlines(beatmap: Beatmap, songEndMs: number): Barline[] {
 	for (let i = 0; i < reds.length; i++) {
 		const tp = reds[i];
 		const end = i + 1 < reds.length ? reds[i + 1].startTime : songEndMs;
-		const measure = tp.beatLengthUnlimited * Math.max(1, tp.timeSignature);
-		if (measure <= 0) continue;
+		// Clamped beatLength (6 to 60000ms): gimmick maps put red lines as short
+		// as 6e-96ms, a step that never advances `t` past the section start.
+		const measure = tp.beatLength * Math.max(1, tp.timeSignature);
 		for (let t = tp.startTime; t < end - 1; t += measure) {
 			lines.push({ time: t });
 		}

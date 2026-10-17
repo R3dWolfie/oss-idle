@@ -21,6 +21,12 @@ import {
 import { character_totals } from './db/schema/character_totals';
 import { users } from './db/schema/user';
 import { best } from './db/schema/best';
+import {
+	characterMedals,
+	getMedals,
+} from './db/schema/character_medal';
+import { medalWeight } from '@osu-idle/shared/achievements/catalogue';
+import { recordProgress } from './medals';
 import { redisKeyPrefix } from './env';
 import {
 	GoodGrades,
@@ -50,7 +56,7 @@ import {
 type LifetimeMetric = `lifetime:${SkillName | 'overall'}`;
 type PrestigeMetric = `prestige:${SkillName | 'total'}`;
 type GlobalMetric = 'pp' | 'score' | 'overall' | SkillName | GoodGrade | 'allgrades'
-	| LifetimeMetric | PrestigeMetric;
+	| LifetimeMetric | PrestigeMetric | 'medals';
 type CountryMetric = GlobalMetric;
 
 const PREFIX = `${redisKeyPrefix}ranking:`;
@@ -59,7 +65,7 @@ const PREFIX = `${redisKeyPrefix}ranking:`;
 // in parallel).
 const META = `${redisKeyPrefix}rankmeta:`;
 // Bump when the set layout changes so the next deploy rebuilds from MySQL.
-const SCHEMA = 8;   // lifetime and prestige boards alongside the skill ones
+const SCHEMA = 12;  // the medal board, and every character's best counters recorded
 const builtKey = `${META}built:v${SCHEMA}`;
 const lockKey = `${META}lock:v${SCHEMA}`;
 
@@ -100,10 +106,14 @@ export const PAGE_SIZE = 50;
 function index(
 	pipeline: ReturnType<typeof redis.pipeline>, 
 	data: Awaited<ReturnType<typeof getCharacterFields>>,
+	medals: string[],
 ) {
 	if (!data) return;
 
 	const member = String(data.character.id);
+	const weight = medalWeight(medals);
+	pipeline.zadd(globalKey('medals'), weight, member);
+	pipeline.zadd(countryKey('medals', data.user.country), weight, member);
 	pipeline.zadd(globalKey('pp'), Number(data.character.pp), member);
 	pipeline.zadd(globalKey('score'), data.character_totals?.rankedScore ?? 0, member);
 	pipeline.zadd(globalKey('overall'), data.character.overallTotalXp, member);
@@ -172,8 +182,9 @@ const getCharacterFields = async (id: number) => {
 export const reindexCharacter = async (id: number) => {
 	const character = await getCharacterFields(id);
 	if (!character) return;
+	await recordProgress(id);
 	const pipeline = redis.pipeline();
-	index(pipeline, character);
+	index(pipeline, character, (await getMedals(id)).map(m => m.medalId));
 	await pipeline.exec();
 	await refreshTodayRank(character.character);
 };
@@ -336,6 +347,32 @@ export const scorePage = (
 	among?: number[],
 ) => hydratePage(metricKey('score', country), page, among);
 
+const medalCounts = (ids: number[]) => db
+	.select({
+		id: characterMedals.characterId, n: count(),
+	})
+	.from(characterMedals)
+	.where(inArray(characterMedals.characterId, ids))
+	.groupBy(characterMedals.characterId);
+
+/** The medal board, each row with its medals held and the board's value. */
+export const medalsPage = async (page: number, country?: string, among?: number[]) => {
+	const key = metricKey('medals', country);
+	const rows = await hydratePage(key, page, among);
+	if (!rows.length) return [];
+	const ids = rows.map(r => r.character.id);
+	const pipeline = redis.pipeline();
+	for (const id of ids) pipeline.zscore(key, String(id));
+	const [scores, counts] = await Promise.all([pipeline.exec(), medalCounts(ids)]);
+	const held = new Map(counts.map(r => [r.id, r.n]));
+	return rows.map((row, i) => ({
+		...row,
+		medals: {
+			held: held.get(row.character.id) ?? 0, score: Number(scores?.[i]?.[1] ?? 0),
+		},
+	}));
+};
+
 /** Per-beatmap leaderboard: the character ids with a best on this map, in score
  *  order (global or within one country). The route hydrates the `best` rows. */
 export const beatmapPageIds = async (
@@ -406,10 +443,16 @@ export async function rebuildAll(): Promise<void> {
 		.leftJoin(character_totals, eq(character_totals.id, characters.id))
 		.innerJoin(users, eq(users.id, characters.userId))
 		.orderBy(desc(characters.pp));
+	const held = new Map<number, string[]>();
+	for (const m of await db.select().from(characterMedals)) {
+		held.set(m.characterId, [...held.get(m.characterId) ?? [], m.medalId]);
+	}
+
+	for (const row of rows) await recordProgress(row.character.id);
 
 	let pipeline = redis.pipeline();
 	for (let i = 0; i < rows.length; i++) {
-		index(pipeline, rows[i]);
+		index(pipeline, rows[i], held.get(rows[i].character.id) ?? []);
 		if (i % 200 === 199) {
 			await pipeline.exec();
 			pipeline = redis.pipeline();

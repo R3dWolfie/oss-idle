@@ -19,18 +19,25 @@ export default function SkillLevel({
 	xp,
 	prestige = 0,
 	lifetimeXp,
+	xpLevel,
 }: {
 	level: number,
 	xp: number,
 	prestige?: number,
 	/** xp ever earned on the skill, shown as the level it would be worth */
 	lifetimeXp?: number,
+	/** show the xp level, the one upgrade and prestige costs count */
+	xpLevel?: boolean,
 }) {
-	const shown = effectiveLevelOf(level, xp, prestige);
+	const total = effectiveLevelOf(level, xp, prestige);
+	const shown = xpLevel ? total - prestige : total;
 
 	return <HoverCard card={<>
 		<HoverCardRow label="XP level">{levelFromXp(level, xp)}</HoverCardRow>
 		{prestige > 0 && <HoverCardRow label="Prestige">+{prestige}</HoverCardRow>}
+		{xpLevel && prestige > 0 && <HoverCardRow label="Level">
+			{levelNode(total, total - Math.floor(total))}
+		</HoverCardRow>}
 		{!!lifetimeXp && <HoverCardRow label="Lifetime">{levelFromTotalXp(lifetimeXp)}</HoverCardRow>}
 	</>}>
 		{levelNode(shown, shown - Math.floor(shown))}

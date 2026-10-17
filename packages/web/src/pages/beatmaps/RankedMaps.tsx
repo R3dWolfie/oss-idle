@@ -7,9 +7,10 @@ import {
 import { dateAgo } from '@osu-idle/shared/display/ago';
 import Link from '../../components/Link';
 import MapsNav from './MapsNav';
-import type {
-	getAllMaps,
-	getPopularMaps,
+import {
+	coverBackground,
+	type getAllMaps,
+	type getPopularMaps,
 } from '../../api/maps';
 import { bignum } from '@osu-idle/shared/display/num';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -58,9 +59,15 @@ export default function RankedMaps({ sort, dir, mapsets }: {
 			<div className="page-contents">
 				<div className='list__beatmap-container'>
 					{mapsets.map(mapset => <div className='list__beatmap'>
-						<div className='list__beatmap_background' style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${mapset.id}/covers/list.jpg')` }}></div>
+						<div
+							className='list__beatmap_background'
+							style={{ backgroundImage: coverBackground(mapset, 'list') }}
+						></div>
 						<div className='list__beatmap_safe'>
-							<div className='list__beatmap_foreground' style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${mapset.id}/covers/list.jpg')` }}>
+							<div
+								className='list__beatmap_foreground'
+								style={{ backgroundImage: coverBackground(mapset, 'list') }}
+							>
 								<div className='list__beatmap_contents'>
 									<span className='list__beatmap_title'>{mapset.title}</span>
 									<span className='list__beatmap_artist'><Trans>by {ph({ artist: mapset.artist })}</Trans></span>

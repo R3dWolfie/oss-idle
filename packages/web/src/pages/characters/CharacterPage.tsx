@@ -16,12 +16,15 @@ import Flag from '../../components/Flag';
 import ProfilePicture from '../../components/ProfilePicture';
 import EditableProfilePicture from '../../components/EditableProfilePicture';
 import CharacterName from '../../components/character/CharacterName';
+import CharacterTitle from '../../components/character/CharacterTitle';
 import ProfileBanner from '../../components/character/ProfileBanner';
 import {
 	refreshCurrentUser,
 	useCurrentUser,
 } from '../../hooks/useCurrentUser';
 import { useState } from 'react';
+import { useShowMore } from '../../hooks/useShowMore';
+import ShowMoreLink from '../../components/ShowMoreLink';
 import {
 	JUDGEMENT,
 	Judgements,
@@ -46,6 +49,7 @@ import { extractSkills } from '@osu-idle/shared/osu/level';
 import { Trans } from '@lingui/react/macro';
 import { countryName } from '@osu-idle/shared/display/country';
 import { i18n } from '../../i18n';
+import { coverBackground } from '../../api/maps';
 
 
 type Character = Awaited<ReturnType<typeof getCharacter>>;
@@ -64,14 +68,14 @@ export default function CharacterPage({ id, character, stats }: {
 	const [avatarOverride, setAvatarOverride] = useState<string | null>();
 
 	const countplayed = useAsync(() => getCharacterCountPlayed(id), [id]);
-	const mostplayed = useAsync(() => getCharacterMostPlayed(id, 1), [id]);
+	const mostplayed = useShowMore(page => getCharacterMostPlayed(id, page), [id]);
 
-	const bestpp = useAsync(() => getCharacterBestPP(id, 1), [id]);
+	const bestpp = useShowMore(page => getCharacterBestPP(id, page), [id]);
 
 	const countfirstplaces = useAsync(() => getCharacterNbFirstPlaces(id), [id]);
-	const firstplaces = useAsync(() => getCharacterFirstPlaces(id, 1), [id]);
+	const firstplaces = useShowMore(page => getCharacterFirstPlaces(id, page), [id]);
 
-	const recentscores = useAsync(() => getCharacterRecent(id, 1), [id]);
+	const recentscores = useShowMore(page => getCharacterRecent(id, page), [id]);
 
 	if (!user) return <main><Trans>Loading…</Trans></main>;
 
@@ -94,6 +98,7 @@ export default function CharacterPage({ id, character, stats }: {
 							formerNames={character.formerNames}
 							editable={isSelf}
 						/>
+						<CharacterTitle title={character.title ?? undefined} editable={isSelf} />
 					</div>
 					<div className='character__meta-down'>
 						<div className='character__meta-flag'><Flag country={user.country} /></div>
@@ -185,10 +190,11 @@ export default function CharacterPage({ id, character, stats }: {
 							</div>
 						</div>
 						<div className='character__best_pp'>
-							{bestpp?.map(score => (
+							{bestpp.items?.map(score => (
 								<ScoreRow key={score.best_pp.id} score={score.best_pp} beatmap={score.beatmap} />
 							))}
 						</div>
+						<ShowMoreLink {...bestpp} onClick={bestpp.more} />
 					</div>
 					<div className='character__block-section'>
 						<div className='character__block-section-title'>
@@ -198,23 +204,25 @@ export default function CharacterPage({ id, character, stats }: {
 							</div>
 						</div>
 						<div className='character__first_places'>
-							{firstplaces?.map(score => (
+							{firstplaces.items?.map(score => (
 								<ScoreRow key={score.first_place.id} score={score.first_place} beatmap={score.beatmap} />
 							))}
 						</div>
+						<ShowMoreLink {...firstplaces} onClick={firstplaces.more} />
 					</div>
 					<div className='character__block-section'>
 						<div className='character__block-section-title'>
 							<Trans>Recent scores</Trans>
 							<div className='character__block-section-title-count'>
-								{num(recentscores?.length)}
+								{num(recentscores.items?.length)}
 							</div>
 						</div>
 						<div className='character__first_places'>
-							{recentscores?.map(score => (
+							{recentscores.items?.map(score => (
 								<ScoreRow key={score.score.id} score={score.score} beatmap={score.beatmap} />
 							))}
 						</div>
+						<ShowMoreLink {...recentscores} onClick={recentscores.more} />
 					</div>
 				</div>
 				<div className='character__block character__block-skills'>
@@ -226,8 +234,15 @@ export default function CharacterPage({ id, character, stats }: {
 							</div>
 						</div>
 						<div className='character__mostplayed'>
-							{mostplayed?.map(mp => <div key={mp.beatmap.id} className='mostplayed__container'>
-								<div className='mostplayed__bg' style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${mp.beatmapset.id}/covers/list.jpg')` }}></div>
+							{mostplayed.items?.map(mp => <div key={mp.beatmap.id} className='mostplayed__container'>
+								<div
+									className='mostplayed__bg'
+									style={{
+										backgroundImage: coverBackground({
+											...mp.beatmapset, background: mp.beatmap.background,
+										}, 'list'), 
+									}}
+								></div>
 								<div className='mostplayed__bm'>
 									<div className='mostplayed__bminfo'>
 										<div className='mostplayed__bmt'>
@@ -244,6 +259,7 @@ export default function CharacterPage({ id, character, stats }: {
 								</div>
 							</div>)}
 						</div>
+						<ShowMoreLink {...mostplayed} onClick={mostplayed.more} />
 					</div>
 				</div>
 				<CharacterMedals id={id} />

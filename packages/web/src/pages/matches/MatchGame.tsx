@@ -4,6 +4,7 @@ import {
 } from '@lingui/react/macro';
 import MatchGameScore from './MatchGameScore';
 import type { HistoryGame } from './types';
+import { coverBackground } from '../../api/maps';
 
 /** A map played in the match: its cover, when, and every player's score. */
 export default function MatchGame({ game }: { game: HistoryGame }) {
@@ -16,7 +17,11 @@ export default function MatchGame({ game }: { game: HistoryGame }) {
 		<section className='match__game'>
 			<div
 				className='match__game-header'
-				style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${beatmap.setId}/covers/cover.jpg')` }}
+				style={{
+					backgroundImage: coverBackground({
+						id: beatmap.setId, osuId: beatmap.osuSetId, background: beatmap.background,
+					}, 'cover'), 
+				}}
 			>
 				<div className='match__game-info'>
 					<span>

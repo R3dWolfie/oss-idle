@@ -1,15 +1,27 @@
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
 import { PRESTIGE_MIN_LEVEL } from '@osu-idle/shared/upgrades';
-import Entities from '../../entity/entities';
+import type Character from '../../db/schema/character';
+import PrestigeSummary from './PrestigeSummary';
 import PrestigeRow from './PrestigeRow';
+import '../upgrades/ladder.css';
 
-export default function PrestigeView() {
-	const [character] = useSynced(Entities.character);
+export default function PrestigeView({ character }: { character: Character }) {
+	const locked = character.id === 0;
 
 	return (
-		<div className="upgrades">
-			<p className="upgrades__hint">
+		<div className="ladder">
+			<PrestigeSummary skills={character.skills} locked={locked} />
+			<div className="ladder__list">
+				{character.skills.map(skill => (
+					<PrestigeRow
+						key={`${character.id}:${skill.name}`}
+						skill={skill}
+						locked={locked}
+						lifetimeXp={character[`${skill.name}LifetimeXp`]}
+					/>
+				))}
+			</div>
+			<p className="ladder__hint">
 				<Trans>
 					Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You
 					lose its upgrades and Overdrive, and gain a permanent bonus level, an
@@ -17,16 +29,6 @@ export default function PrestigeView() {
 					one more level than the last.
 				</Trans>
 			</p>
-			<div className="upgrades__list">
-				{character.skills.map(skill => (
-					<PrestigeRow
-						key={`${character.id}:${skill.name}`}
-						skill={skill}
-						locked={character.id === 0}
-						lifetimeXp={character[`${skill.name}LifetimeXp`]}
-					/>
-				))}
-			</div>
 		</div>
 	);
 }

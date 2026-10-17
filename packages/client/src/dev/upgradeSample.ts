@@ -8,7 +8,7 @@ type Seed = [level: number, upgrades: number, overdrive: number, prestige: numbe
  *  base ladder on a prestige, overdriven, untouched. */
 const SEEDS: Record<SkillName, Seed> = {
 	accuracy: [101, 10, 4.2, 1],
-	speed: [64, 5, 0, 0],
+	speed: [64, 5, 0, 7],
 	stamina: [47, 4, 1.3, 0],
 	jackspeed: [33, 3, 0, 0],
 	coordination: [88, 2, 0, 0],

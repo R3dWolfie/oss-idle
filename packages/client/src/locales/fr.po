@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-14 21:58\n"
+"PO-Revision-Date: 2026-10-17 11:43\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -104,10 +104,6 @@ msgstr "{nbMaps} maps"
 msgid "{online} users connected"
 msgstr "{online} utilisateurs en ligne"
 
-#: src/components/character/PrestigeRow.tsx
-msgid "{prestige} prestiges · +{prestige} bonus levels"
-msgstr "{prestige} prestiges. +{prestige} niveaux bonus"
-
 #: src/online/presence.ts
 msgid "{result} on {map}"
 msgstr "{result} sur {map}"
@@ -132,11 +128,19 @@ msgstr ""
 msgid "{totalCount, plural, one {that's all # difficulty} other {that's all # difficulties}}"
 msgstr "{totalCount, plural, one {c'est la seule # difficulté} other {c'était l'ensemble des # difficultés}}"
 
+#: src/components/character/PrestigeRow.tsx
+msgid "+{bonus} Lv · +{slots} gear slot · x{multiplier} XP"
+msgstr ""
+
 #: src/components/medals/MedalFocus.tsx
 #: src/components/medals/MedalShowcase.tsx
 #: src/components/medals/MedalTile.tsx
 msgid "+{percent}% XP"
 msgstr "+{percent}% XP"
+
+#: src/components/character/PrestigeRow.tsx
+msgid "+{prestige} Lv"
+msgstr ""
 
 #: src/scenes/Gameplay.tsx
 msgid "A game is already in progress. Play locally instead? It won't be submitted."
@@ -272,6 +276,7 @@ msgstr "pilote|auto|automatique|mode|playlist|boucle|suivant|musique"
 msgid "Available"
 msgstr "Disponible"
 
+#: src/components/character/PrestigeSummary.tsx
 #: src/components/upgrades/UpgradesSummary.tsx
 msgid "Average XP boost"
 msgstr ""
@@ -321,6 +326,7 @@ msgstr "Beatmap par {creator}"
 msgid "Beatmap deleted"
 msgstr "Map supprimée"
 
+#: src/components/character/PrestigeSummary.tsx
 #: src/components/upgrades/UpgradesSummary.tsx
 msgid "Best XP boost"
 msgstr ""
@@ -957,11 +963,6 @@ msgstr "En boucle"
 msgid "Lv{level}"
 msgstr "Lv{level}"
 
-#: src/components/character/PrestigeRow.tsx
-#: src/components/upgrades/UpgradeRow.tsx
-msgid "Lv<0/>"
-msgstr "Lv<0/>"
-
 #: src/scenes/Options.tsx
 msgid "Main menu"
 msgstr "Menu principal"
@@ -1158,10 +1159,6 @@ msgstr "Personne n'est en ligne"
 #: src/components/PlaylistOverlay.tsx
 msgid "No playlists yet. Type a name above and press Enter."
 msgstr "Aucune playlist. Saisissez un nom plus haut et appuyez sur Entrée."
-
-#: src/components/character/PrestigeRow.tsx
-msgid "No prestige"
-msgstr "Pas de prestige"
 
 #: src/scenes/Result.tsx
 msgid "No replay data"
@@ -1389,6 +1386,10 @@ msgstr "Prestige"
 msgid "Prestige {name}?"
 msgstr "Prestige {name}?"
 
+#: src/components/character/PrestigeSummary.tsx
+msgid "Prestiges taken"
+msgstr ""
+
 #: src/components/skins/SkinView.tsx
 #: src/components/skins/SkinView.tsx
 msgid "Preview"
@@ -1441,6 +1442,10 @@ msgstr "Lire en entier"
 
 #: src/components/upgrades/UpgradesSummary.tsx
 msgid "Ready to buy"
+msgstr ""
+
+#: src/components/character/PrestigeSummary.tsx
+msgid "Ready to prestige"
 msgstr ""
 
 #: src/components/multiplayer/ReadyButton.tsx
@@ -1806,6 +1811,7 @@ msgstr "thumb|thumbnail"
 msgid "Time Zone"
 msgstr "Fuseau horaire"
 
+#: src/components/character/PrestigeRow.tsx
 #: src/components/upgrades/UpgradeTooltip.tsx
 msgid "To go"
 msgstr ""
@@ -1977,6 +1983,10 @@ msgstr "Carte du Monde"
 msgid "x{factor} XP"
 msgstr "x{factor} XP"
 
+#: src/components/character/PrestigeRow.tsx
+msgid "XP"
+msgstr ""
+
 #: src/components/upgrades/UpgradeTooltip.tsx
 #: src/components/upgrades/UpgradeTooltip.tsx
 msgid "XP boost"
@@ -1994,6 +2004,11 @@ msgstr ""
 #: src/components/character/PrestigeRow.tsx
 msgid "XP Lv{level} → XP Lv0 · Loses every upgrade and all Overdrive · Keeps +{bonus} bonus levels, {slots} gear slots and x{multiplier} XP"
 msgstr "XP Lv{level} → XP Lv0 · Perd toutes les améliorations et l'Overdrive · Garde +{bonus} niveaux bonus, {slots} tiers d'améliorations et x{multiplier} XP"
+
+#: src/components/character/PrestigeRow.tsx
+#: src/components/upgrades/UpgradeRow.tsx
+msgid "XP Lv<0/>"
+msgstr ""
 
 #: src/components/upgrades/UpgradeTooltip.tsx
 msgid "XP spent"

@@ -6,7 +6,10 @@ import type {
 	getGeneralStats,
 	getRecentStats,
 } from '../api/stats';
-import type { getRecentMaps } from '../api/maps';
+import {
+	coverBackground,
+	type getRecentMaps,
+} from '../api/maps';
 import NewsCard, { articleToCard } from '../components/NewsCard';
 import FancyGraph from '../components/FancyGraph';
 import num from '@osu-idle/shared/display/num';
@@ -52,7 +55,10 @@ export default function Home({ articles, stats, recent, recentMaps }: {
 					</div>
 					<div className='dashboard__ranked_list'>
 						{recentMaps.map(map => (<a className='dashboard__ranked_list_map'>
-							<div className='dashboard__ranked_list_map-bg' style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${map.id}/covers/list.jpg')` }}></div>
+							<div
+								className='dashboard__ranked_list_map-bg'
+								style={{ backgroundImage: coverBackground(map, 'list') }}
+							></div>
 							<div className='dashboard__ranked_list_map-md'>
 								<div className='dashboard__ranked_list_map-md-title'>{map.title}</div>
 								<div className='dashboard__ranked_list_map-md-artist'>{map.artist}</div>

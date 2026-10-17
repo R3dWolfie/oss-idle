@@ -1,0 +1,126 @@
+.medal-progress {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 12px;
+	margin-top: 10px;
+}
+
+.medal-progress__card {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 14px;
+	border-radius: 8px;
+	background-color: hsl(var(--hsl-b4));
+}
+
+.medal-progress__title {
+	color: hsl(var(--hsl-c1));
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.medal-line {
+	display: flex;
+	gap: 6px;
+}
+
+.medal-line__icon {
+	display: block;
+	flex: none;
+	width: 28px;
+	height: 28px;
+}
+
+.medal-line__icon.is-locked .medal-icon {
+	opacity: 0.35;
+	filter: grayscale(1);
+}
+
+.medal-progress__rows {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	font-size: 12px;
+}
+
+.medal-progress__row {
+	display: grid;
+	grid-template-columns: 32px auto 1fr auto 28px;
+	gap: 8px;
+	align-items: center;
+	padding: 3px 6px;
+	border-radius: 4px;
+	background-color: hsl(var(--hsl-b5));
+}
+
+.medal-progress__row .country-flag {
+	font-size: 18px;
+}
+
+.medal-progress__rank,
+.medal-progress__empty {
+	color: hsl(var(--hsl-f1));
+}
+
+.medal-progress__name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.medal-progress__value {
+	color: hsl(var(--hsl-c2));
+	font-weight: 600;
+}
+
+.medal-progress__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 14px;
+	margin: 10px 0;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.medal-progress__next {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 140px;
+}
+
+.medal-progress__bar {
+	position: relative;
+	flex: 1;
+	height: 4px;
+	border-radius: 2px;
+	background-color: hsl(var(--hsl-b2));
+}
+
+.medal-progress__bar > div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	max-width: 100%;
+	height: 100%;
+	border-radius: 2px;
+	background-color: hsl(var(--hsl-l1));
+}
+
+.medal-progress__bar > .is-best {
+	opacity: 0.35;
+}
+
+.medal-progress__now {
+	margin-right: 6px;
+	color: hsl(var(--hsl-f1));
+	font-size: 10px;
+	font-weight: 400;
+}
+
+td .medal-progress__now,
+td .medal-line__icon {
+	margin: 0 auto;
+}

@@ -41,3 +41,29 @@ export const resolveMapRequest = (setId: number, status: BeatmapRequestStatus, n
 /** Admin: pull the .osz off the mirror and push it into the nomination queue. */
 export const ingestMapRequest = (setId: number) =>
 	unwrap(rpc.v1.beatmap.request[':setId'].ingest.$post({ param: { setId: String(setId) } }));
+
+/** Temporary: the ranked maps nobody proposed, and which of them the player claims. */
+export const getMapClaims = () => unwrap(rpc.v1.beatmap.claim.$get());
+
+/** Replace the player's claims with this selection. */
+export const saveMapClaims = (setIds: number[]) =>
+	unwrap(rpc.v1.beatmap.claim.$put({ json: { setIds } }));
+
+/** Admin: every open claim. */
+export const listMapClaims = () => unwrap(rpc.v1.beatmap.claim.admin.$get());
+
+export type MapClaim = Awaited<ReturnType<typeof listMapClaims>>[number];
+
+const claimParam = (setId: number, userId: number) => ({
+	param: {
+		setId: String(setId), userId: String(userId),
+	},
+});
+
+/** Admin: attribute the map to this claimer. */
+export const acceptMapClaim = (setId: number, userId: number) =>
+	unwrap(rpc.v1.beatmap.claim[':setId'][':userId'].$post(claimParam(setId, userId)));
+
+/** Admin: drop one claim. */
+export const rejectMapClaim = (setId: number, userId: number) =>
+	unwrap(rpc.v1.beatmap.claim[':setId'][':userId'].$delete(claimParam(setId, userId)));

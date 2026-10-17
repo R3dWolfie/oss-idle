@@ -35,8 +35,8 @@ export default function UpgradeRow({
 			<div className="ladder-row__skill">
 				<span className="ladder-row__name">{skillName(skill.name)}</span>
 				<span className="ladder-row__lv">
-					<Trans>Lv<SkillLevel
-						level={u.level} xp={u.xp} prestige={u.prestige} lifetimeXp={lifetimeXp}
+					<Trans>XP Lv<SkillLevel
+						level={u.level} xp={u.xp} prestige={u.prestige} lifetimeXp={lifetimeXp} xpLevel
 					/></Trans>
 				</span>
 				<span className={`ladder-row__mult ${u.multiplier > 1 ? '' : 'is-base'}`}>

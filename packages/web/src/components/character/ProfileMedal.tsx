@@ -11,8 +11,8 @@ import {
 	medalTierName,
 } from '@osu-idle/shared/display/medals';
 import MedalIcon from './MedalIcon';
+import MedalProgressBar from './MedalProgressBar';
 
-const amount = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
 const share = new Intl.NumberFormat(undefined, {
 	style: 'percent', maximumSignificantDigits: 3,
 });
@@ -24,7 +24,7 @@ const day = new Intl.DateTimeFormat(undefined, {
 export default function ProfileMedal({ medal, unlockedAt, progress, holders, players }: {
 	medal: MedalDef,
 	unlockedAt?: number,
-	progress?: { value: number, goal: number },
+	progress?: { value: number, current: number, goal: number },
 	holders: number,
 	players: number,
 }) {
@@ -42,18 +42,15 @@ export default function ProfileMedal({ medal, unlockedAt, progress, holders, pla
 			<div className='profile-medal__main'>
 				<div className='profile-medal__big'>{icon}</div>
 				<div className='profile-medal__name'>{hidden ? '???' : medalName(medal.id)}</div>
-				<div className='profile-medal__desc'>{hidden ? <Trans>A hidden medal</Trans> : medalDescription(medal.id)}</div>
+				<div className='profile-medal__desc'>
+					{hidden ? <Trans>A hidden medal</Trans> : medalDescription(medal.id)}
+				</div>
 			</div>
 			<div className='profile-medal__foot'>
 				<div className='profile-medal__rarity'>
 					<Trans>{ph({ holders: holders.toLocaleString() })} players ({ph({ share: share.format(players ? holders / players : 0) })})</Trans>
 				</div>
-				{locked && progress && <>
-					<div className='profile-medal__date'>{amount.format(Math.min(progress.value, progress.goal))} / {amount.format(progress.goal)}</div>
-					<div className='profile-medal__progress'>
-						<div style={{ width: `${Math.min(1, progress.value / progress.goal) * 100}%` }} />
-					</div>
-				</>}
+				{locked && progress && <MedalProgressBar {...progress} />}
 				{!locked && <div className='profile-medal__date'>
 					<Trans>Achieved on {ph({ date: day.format(unlockedAt) })}</Trans>
 				</div>}

@@ -37,6 +37,7 @@ export default function RankingsNav({ current }: {
 			className={item('grades')}>
 			{t`grades`}
 		</Link>
+		<Link to='/rankings/medals' search={{ page: 1 }} className={item('medals')}>{t`medals`}</Link>
 		<Link to='/rankings/country' search={{ page: 1 }} className={item('country')}>{t`country`}</Link>
 		<Link to='/rankings/plays' search={{ page: 1 }} className={item('top plays')}>{t`top plays`}</Link>
 	</Nav>);

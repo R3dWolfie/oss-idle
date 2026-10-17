@@ -138,7 +138,7 @@ const games = async (matchId: number) => {
 		.select({
 			game: matchGames,
 			beatmap: {
-				...beatmapListColumns, creator: beatmapset.creator,
+				...beatmapListColumns, creator: beatmapset.creator, osuSetId: beatmapset.osuId,
 			},
 		})
 		.from(matchGames)

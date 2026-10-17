@@ -13,69 +13,6 @@
 	margin: 0;
 }
 
-.upgrades__list {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.upgrade__row {
-	display: grid;
-	grid-template-columns: 200px 1fr auto;
-	align-items: center;
-	gap: 16px;
-	padding: 10px 16px;
-	background: rgba(255, 255, 255, 0.04);
-	border-left: 3px solid rgba(255, 255, 255, 0.12);
-}
-.upgrade__row.is-ready {
-	border-left-color: var(--osu-pink);
-	background: rgba(255, 64, 137, 0.08);
-}
-.upgrade__row.is-maxed {
-	border-left-color: #9be48b;
-}
-
-.upgrade__meta {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	min-width: 0;
-}
-.upgrade__skill {
-	display: flex;
-	align-items: baseline;
-	gap: 8px;
-	font-size: 1.05rem;
-	font-weight: 400;
-}
-.upgrade__level {
-	color: var(--text-dim);
-	font-size: 0.85rem;
-}
-.upgrade__mult {
-	color: #9be48b;
-	font-size: 0.85rem;
-}
-
-.upgrade__info {
-	display: flex;
-	flex-direction: column;
-	gap: 3px;
-	min-width: 0;
-}
-.upgrade__desc {
-	color: var(--text-dim);
-	font-size: 0.82rem;
-}
-
-.upgrade__action {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	justify-self: end;
-}
-
 .upgrade__buy {
 	padding: 8px 18px;
 	background: rgba(255, 64, 137, 0.55);
@@ -96,14 +33,4 @@
 	background: rgba(255, 255, 255, 0.08);
 	color: var(--text-dim);
 	cursor: default;
-}
-
-@media (max-width: 720px) {
-	.upgrade__row {
-		grid-template-columns: 1fr;
-		gap: 8px;
-	}
-	.upgrade__action {
-		justify-self: start;
-	}
 }

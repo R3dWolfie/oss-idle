@@ -239,10 +239,6 @@ msgid "Build a better warmup routine to endure long maps"
 msgstr "Build a better warmup routine to endure long maps"
 
 #: src/display/medals.ts
-msgid "Buy {count} upgrades"
-msgstr "Buy {count} upgrades"
-
-#: src/display/medals.ts
 msgid "Buy every upgrade of a skill"
 msgstr "Buy every upgrade of a skill"
 
@@ -530,6 +526,10 @@ msgid "Hit {count} notes"
 msgstr "Hit {count} notes"
 
 #: src/display/medals.ts
+msgid "Hold {count} upgrades at once"
+msgstr "Hold {count} upgrades at once"
+
+#: src/display/medals.ts
 msgid "Hold #1 on {count} ranked maps"
 msgstr "Hold #1 on {count} ranked maps"
 
@@ -631,8 +631,8 @@ msgid "Mastery"
 msgstr "Mastery"
 
 #: src/display/medals.ts
-msgid "Max out the upgrades of a skill {count} times"
-msgstr "Max out the upgrades of a skill {count} times"
+msgid "Max out the upgrades of {count} skills at once"
+msgstr "Max out the upgrades of {count} skills at once"
 
 #: src/display/medals.ts
 msgid "Meltdown"

@@ -106,7 +106,7 @@ export const MEDALS: MedalDef[] = [
 	def('ladders-1', 'mastery', 'silver', 'gear'),
 	def('ladders-5', 'mastery', 'gold', 'gear'),
 	def('ladders-10', 'mastery', 'platinum', 'gear'),
-	def('ladders-15', 'mastery', 'divine', 'gear'),
+	def('ladders-11', 'mastery', 'divine', 'gear'),
 	def('overdrive-2', 'mastery', 'silver', 'gauge'),
 	def('overdrive-10', 'mastery', 'gold', 'gauge'),
 	def('overdrive-100', 'mastery', 'platinum', 'gauge'),
@@ -161,7 +161,7 @@ export const MEDAL_LINES: Record<MedalCategory, string[][]> = {
 		Skills.map(skill => `${skill}-110`),
 		['overall-25', 'overall-50', 'overall-75', 'overall-100', 'overall-105', 'overall-110'],
 		['upgrades-1', 'upgrades-10', 'upgrades-50', 'upgrades-100'],
-		['ladders-1', 'ladders-5', 'ladders-10', 'ladders-15'],
+		['ladders-1', 'ladders-5', 'ladders-10', 'ladders-11'],
 		['overdrive-2', 'overdrive-10', 'overdrive-100', 'overdrive-1000'],
 		['prestige-1', 'prestige-5', 'prestige-25', 'prestige-100'],
 		['rebirth'],
@@ -185,3 +185,10 @@ export const medalXPMultiplier = (ids: readonly string[]): number => ids.reduce(
 	const medal = BY_ID.get(id);
 	return medal ? product * (1 + MEDAL_XP_BONUS[medal.tier]) : product;
 }, 1);
+
+/** The medal ranking's value: each medal held weighs what its tier adds to xp,
+ *  counted in bronze medals. */
+export const medalWeight = (ids: readonly string[]): number => ids.reduce((sum, id) => {
+	const medal = BY_ID.get(id);
+	return medal ? sum + MEDAL_XP_BONUS[medal.tier] / MEDAL_XP_BONUS.bronze : sum;
+}, 0);

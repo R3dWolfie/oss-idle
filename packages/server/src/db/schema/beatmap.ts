@@ -13,8 +13,12 @@ import {
 } from 'drizzle-orm';
 
 export const beatmaps = mysqlTable('beatmap', {
-	id: int().primaryKey(),
+	id: int().primaryKey().autoincrement(),
+	// osu!'s beatmap id, when the map has one
+	osuId: int().unique(),
 	setId: int().notNull(),
+	// its .osu inside the set's .osz
+	file: text(),
 	sr: decimal({
 		precision: 10, scale: 3, 
 	}).notNull(),

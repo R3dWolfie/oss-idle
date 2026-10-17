@@ -7,6 +7,8 @@ import {
 	desc,
 	eq,
 	getTableColumns,
+	isNull,
+	max,
 	ne,
 	sum,
 } from 'drizzle-orm';
@@ -21,6 +23,7 @@ import {
 	readdir,
 	rm,
 } from 'node:fs/promises';
+import { beatmapClaimRoutes } from './beatmapClaim';
 import { db } from '../db/client';
 import { beatmaps } from '../db/schema/beatmap';
 import {
@@ -82,6 +85,7 @@ export const beatmapsRoutes = new Hono()
 			.select({
 				...getTableColumns(beatmapset),
 				plays: sum(beatmaps.plays),
+				background: max(beatmaps.background),
 			})
 			.from(beatmapset)
 			.innerJoin(beatmaps, eq(beatmapset.id, beatmaps.setId))
@@ -92,7 +96,10 @@ export const beatmapsRoutes = new Hono()
 	})
 	.get('/recent', async c => {
 		return c.json(await db
-			.select(getTableColumns(beatmapset))
+			.select({
+				...getTableColumns(beatmapset),
+				background: max(beatmaps.background),
+			})
 			.from(beatmapset)
 			.innerJoin(beatmaps, eq(beatmapset.id, beatmaps.setId))
 			.where(listedCondition)
@@ -108,6 +115,7 @@ export const beatmapsRoutes = new Hono()
 			.select({
 				...getTableColumns(beatmapset),
 				plays,
+				background: max(beatmaps.background),
 			})
 			.from(beatmapset)
 			.innerJoin(beatmaps, eq(beatmapset.id, beatmaps.setId))
@@ -166,9 +174,11 @@ export const beatmapsRoutes = new Hono()
 			.select({
 				...getTableColumns(beatmapset),
 				plays: sum(beatmaps.plays),
+				background: max(beatmaps.background),
 			})
 			.from(beatmapset)
 			.leftJoin(beatmaps, eq(beatmapset.id, beatmaps.setId))
+			.where(isNull(beatmapset.deletedAt))
 			.groupBy(beatmapset.id)
 			.orderBy(desc(beatmapset.id));
 
@@ -191,13 +201,13 @@ export const beatmapsRoutes = new Hono()
 			else bySet.set(diff.setId, [diff]);
 		}
 
-		const requesters = await requestersForSets(sets.map(set => set.id));
+		const requesters = await requestersForSets(sets.flatMap(set => set.osuId ?? []));
 
 		return c.json(sets.map(set => ({
 			...set,
 			diffs: (bySet.get(set.id) ?? []).sort((a, b) => Number(a.sr) - Number(b.sr)),
 			// Set when the map got here through a player's request.
-			requestedBy: requesters.get(set.id),
+			requestedBy: set.osuId ? requesters.get(set.osuId) : undefined,
 		})));
 	})
 	.post('/nomination', requireAdmin, async c => {
@@ -209,7 +219,7 @@ export const beatmapsRoutes = new Hono()
 		try {
 			const result = await ingestOsz(buffer);
 			// A map someone asked for is answered the moment its file lands.
-			await acceptRequestsForSet(result.setId, c.get('userId'));
+			if (result.osuSetId) await acceptRequestsForSet(result.osuSetId, c.get('userId'));
 			return c.json(result);
 		} catch (e) {
 			throw new HTTPException(400, { message: e instanceof Error ? e.message : 'Could not ingest beatmap' });
@@ -279,15 +289,17 @@ export const beatmapsRoutes = new Hono()
 	.delete('/nomination/:setId', requireAdmin, async c => {
 		const id = idParam.parse(c.req.param('setId'));
 
-		// Scores have no FK on beatmapId: purge progression before the rows go.
+		// Scores have no FK on beatmapId: purge progression first.
 		const diffs = await db
 			.select({ id: beatmaps.id })
 			.from(beatmaps)
 			.where(eq(beatmaps.setId, id));
 		for (const diff of diffs) await purgeBeatmapScores(diff.id);
 
-		await db.delete(beatmaps).where(eq(beatmaps.setId, id));
-		const [res] = await db.delete(beatmapset).where(eq(beatmapset.id, id));
+		// The rows stay, so the ids are never reused and a re-upload gets them back.
+		const [res] = await db.update(beatmapset).set({
+			deletedAt: new Date(), status: 'pending', rankedAt: null, announced: false,
+		}).where(eq(beatmapset.id, id));
 
 		await rm(oszPath(id), { force: true });
 		const previews = await readdir(PREVIEW_DIR).catch(() => [] as string[]);
@@ -304,6 +316,7 @@ export const beatmapsRoutes = new Hono()
 	// Player-facing ranking propositions. Mounted before the `:id` catch-all so
 	// `/request` isn't swallowed by it.
 	.route('/request', beatmapRequestRoutes)
+	.route('/claim', beatmapClaimRoutes)
 
 	// Single beatmap (difficulty), live-only. Keep last: catch-all `:id`.
 	.get('/:id', async c => {

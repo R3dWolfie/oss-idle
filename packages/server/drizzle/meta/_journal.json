@@ -372,6 +372,41 @@
       "when": 1791936000000,
       "tag": "0052_user_discord",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1792022400000,
+      "tag": "0053_character_title",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "5",
+      "when": 1792108800000,
+      "tag": "0054_character_progress",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "5",
+      "when": 1792195200000,
+      "tag": "0055_beatmap_claim",
+      "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "5",
+      "when": 1792281600000,
+      "tag": "0056_map_ids",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "5",
+      "when": 1792368000000,
+      "tag": "0057_beatmapset_deleted",
+      "breakpoints": true
     }
   ]
 }

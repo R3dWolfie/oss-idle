@@ -5,6 +5,7 @@ import {
 } from 'drizzle-orm/mysql-core';
 import { characters } from './character';
 import { db } from '../client';
+import { profilePage } from '../profilePage';
 import {
 	and,
 	count,
@@ -34,8 +35,8 @@ export type BeatmapsPlayedRow = typeof beatmaps_played.$inferSelect;
 export type NewBeatmapsPlayedRow = typeof beatmaps_played.$inferInsert;
 
 
-export const getMostPlayed = async (characterId: number, page: number = 1) => {
-	return db
+export const getMostPlayed = (characterId: number, page: number = 1) =>
+	profilePage(page, (offset, limit) => db
 		.select({
 			beatmaps_played: beatmaps_played, beatmap: beatmapListColumns, beatmapset,
 		})
@@ -44,10 +45,8 @@ export const getMostPlayed = async (characterId: number, page: number = 1) => {
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
 		.where(eq(beatmaps_played.characterId, characterId))
 		.orderBy(desc(beatmaps_played.plays))
-		.offset(page === 1 ? 0 : 5 + ((page - 2) * 50))
-		.limit(page === 1 ? 5 : 50)
-	;
-};
+		.offset(offset)
+		.limit(limit));
 
 export const getTotalPlayed = async (characterId: number) => {
 	return (await db

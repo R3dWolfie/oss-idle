@@ -1,11 +1,15 @@
 import {
+	apiBaseUrl,
 	env,
 	isProd,
 } from '../env';
 import { publish } from '../discord/publish';
+import {
+	mapCoverUrl,
+	type MapCover,
+} from '@osu-idle/shared/beatmap';
 
-export type AnnounceSet = {
-	setId: number;
+export type AnnounceSet = MapCover & {
 	artist: string;
 	title: string;
 	creator: string;
@@ -18,6 +22,7 @@ export type AnnounceSet = {
 export const announceRanked = async (set: AnnounceSet): Promise<void> => {
 	if (!isProd || !env.MAP_FEED_WEBHOOK) return;
 
+	const cover = mapCoverUrl(set, 'cover', apiBaseUrl);
 	const asc = [...set.difficulties].sort((a, b) => a.sr - b.sr);
 
 	await publish(env.MAP_FEED_WEBHOOK, {
@@ -30,7 +35,7 @@ export const announceRanked = async (set: AnnounceSet): Promise<void> => {
 				fields: [{
 					name: 'Ranked', value: `<t:${Math.floor(Date.now() / 1000)}:R>`, 
 				}],
-				image: { url: `https://assets.ppy.sh/beatmaps/${set.setId}/covers/cover.jpg` },
+				...cover && { image: { url: cover } },
 			},
 		],
 		attachments: [],

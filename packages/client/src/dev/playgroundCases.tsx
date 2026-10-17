@@ -7,6 +7,7 @@ import UpgradeRow from '../components/upgrades/UpgradeRow';
 import UpgradesView from '../components/upgrades/UpgradesView';
 import UpgradesPreview from './UpgradesPreview';
 import { sampleCharacter } from './upgradeSample';
+import PrestigeView from '../components/character/PrestigeView';
 import ConfirmMenu from '../components/ConfirmMenu';
 import DockPanel from '../components/dock/DockPanel';
 import DockPill from '../components/dock/DockPill';
@@ -244,6 +245,13 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 		id: 'upgrades',
 		label: 'Upgrades - every row state',
 		render: () => <UpgradesPreview><UpgradesView character={sampleCharacter()} /></UpgradesPreview>,
+	},
+	{
+		id: 'prestige',
+		label: 'Prestige - every row state',
+		render: () => <UpgradesPreview tab="prestige">
+			<PrestigeView character={sampleCharacter()} />
+		</UpgradesPreview>,
 	},
 	{
 		id: 'confirm-rebirth',

@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import type { Nomination } from '../../api/maps';
+import {
+	coverBackground,
+	type Nomination,
+} from '../../api/maps';
 import NominationDiffs from './NominationDiffs';
 import { phaseOf } from './nominationStatus';
+import { osuSetUrl } from '@osu-idle/shared/beatmap';
 
 /** ISO timestamp -> value for an <input type="datetime-local"> (local time). */
 const toLocalInput = (iso: string | null): string => {
@@ -64,9 +68,17 @@ export default function NominationRow({ row, busy, onPatch, onToggleDiff, onDele
 	return (
 		<div className='nomination__entry'>
 			<div className='nomination__info'>
-				<div className='nomination__cover' style={{ backgroundImage: `url('https://assets.ppy.sh/beatmaps/${row.id}/covers/list.jpg')` }} />
+				<div
+					className='nomination__cover'
+					style={{ backgroundImage: coverBackground(row, 'list') }}
+				/>
 				<div className='nomination__meta'>
-					<a className='nomination__title' href={`https://osu.ppy.sh/beatmapsets/${row.id}`} target='_blank' rel='noreferrer'>
+					<a
+						className='nomination__title'
+						href={osuSetUrl(row.osuId)}
+						target='_blank'
+						rel='noreferrer'
+					>
 						{row.artist} - {row.title}
 					</a>
 					<span className='nomination__creator'>by {row.creator}</span>

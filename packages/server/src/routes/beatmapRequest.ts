@@ -6,6 +6,7 @@ import {
 	count,
 	eq,
 	inArray,
+	isNull,
 } from 'drizzle-orm';
 import { z } from 'zod';
 import {
@@ -100,7 +101,10 @@ const listRequests = async (viewerId?: number) => {
 		})
 		.from(beatmapRequests)
 		.leftJoin(users, eq(users.id, beatmapRequests.userId))
-		.leftJoin(beatmapset, eq(beatmapset.id, beatmapRequests.setId));
+		.leftJoin(beatmapset, and(
+			eq(beatmapset.osuId, beatmapRequests.setId),
+			isNull(beatmapset.deletedAt),
+		));
 
 	const tallies = await db
 		.select({
@@ -173,7 +177,7 @@ export const beatmapRequestRoutes = new Hono()
 		const [ingested] = await db
 			.select({ status: beatmapset.status })
 			.from(beatmapset)
-			.where(eq(beatmapset.id, setId))
+			.where(and(eq(beatmapset.osuId, setId), isNull(beatmapset.deletedAt)))
 			.limit(1);
 		if (ingested) {
 			throw new HTTPException(409, {
@@ -299,7 +303,7 @@ export const beatmapRequestRoutes = new Hono()
 	})
 ;
 
-/** Who asked for each of these sets, for the nomination queue's own listing. */
+/** Who asked for each of these osu! sets, for the nomination queue's own listing. */
 export const requestersForSets = async (setIds: number[]) => {
 	if (!setIds.length) return new Map<number, { userId: number; username: string }>();
 	const rows = await db

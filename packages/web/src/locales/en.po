@@ -37,6 +37,10 @@ msgstr "{diffs} × 4K"
 msgid "{holders} players ({share})"
 msgstr "{holders} players ({share})"
 
+#: src/components/character/MedalProgressBar.tsx
+msgid "{now} / {goal} (best {best})"
+msgstr "{now} / {goal} (best {best})"
+
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
 msgstr "{skill} Ranking"
@@ -73,6 +77,10 @@ msgstr "{who} joined the match"
 msgid "{who} left the match"
 msgstr "{who} left the match"
 
+#: src/components/leaderboard/medalLine.ts
+msgid "#1 ranks"
+msgstr "#1 ranks"
+
 #: src/pages/help/FAQ.tsx
 msgid "<0>Guest:</0> signed out. Saved in your browser only, with local experience."
 msgstr "<0>Guest:</0> signed out. Saved in your browser only, with local experience."
@@ -80,6 +88,10 @@ msgstr "<0>Guest:</0> signed out. Saved in your browser only, with local experie
 #: src/pages/help/FAQ.tsx
 msgid "<0>Ranked:</0> signed in, on a ranked difficulty. The server decides the score, which counts for pp, rankings, medals and experience."
 msgstr "<0>Ranked:</0> signed in, on a ranked difficulty. The server decides the score, which counts for pp, rankings, medals and experience."
+
+#: src/pages/beatmaps/MapClaims.tsx
+msgid "<0>Sign in</0> to claim your maps."
+msgstr "<0>Sign in</0> to claim your maps."
 
 #: src/pages/beatmaps/MapRequests.tsx
 msgid "<0>Sign in</0> to propose a map or support someone else's."
@@ -273,6 +285,10 @@ msgstr "chat console"
 msgid "Cheating"
 msgstr "Cheating"
 
+#: src/routes/maps/claim.tsx
+msgid "claim your proposals"
+msgstr "claim your proposals"
+
 #: src/pages/beatmaps/RequestBulkBar.tsx
 msgid "Clear"
 msgstr "Clear"
@@ -371,6 +387,10 @@ msgstr "faq"
 msgid "FAQ"
 msgstr "FAQ"
 
+#: src/pages/beatmaps/MapClaims.tsx
+msgid "Filter by artist, title or mapper"
+msgstr "Filter by artist, title or mapper"
+
 #: src/pages/characters/CharacterPage.tsx
 msgid "First Place Ranks"
 msgstr "First Place Ranks"
@@ -415,6 +435,10 @@ msgstr "help"
 msgid "hi !"
 msgstr "hi !"
 
+#: src/components/leaderboard/medalLine.ts
+msgid "Highest overdrive"
+msgstr "Highest overdrive"
+
 #: src/pages/matches/MatchGame.tsx
 msgid "Highest Score"
 msgstr "Highest Score"
@@ -431,6 +455,10 @@ msgstr "Hit Accuracy"
 #: src/HeaderLinks.tsx
 msgid "home"
 msgstr "home"
+
+#: src/components/leaderboard/medalLine.ts
+msgid "Hours played"
+msgstr "Hours played"
 
 #: src/pages/help/FAQ.tsx
 msgid "How do I earn experience?"
@@ -487,6 +515,7 @@ msgstr "lifetime"
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/friends/Friends.tsx
+#: src/pages/settings/TitleSettings.tsx
 msgid "Loading…"
 msgstr "Loading…"
 
@@ -501,6 +530,10 @@ msgstr "login"
 #: src/routes/news/admin.tsx
 msgid "manage news"
 msgstr "manage news"
+
+#: src/routes/admin/claims.tsx
+msgid "map claims"
+msgstr "map claims"
 
 #: src/HeaderLinks.tsx
 msgid "map nomination"
@@ -534,12 +567,19 @@ msgstr "match history"
 msgid "match in progress"
 msgstr "match in progress"
 
+#: src/components/leaderboard/PlayerMedalLeaderboard.tsx
+msgid "Medal Score"
+msgstr "Medal Score"
+
 #: src/HeaderLinks.tsx
+#: src/pages/rankings/RankingsNav.tsx
 #: src/routes/admin/medals.tsx
 msgid "medals"
 msgstr "medals"
 
 #: src/components/character/CharacterMedals.tsx
+#: src/components/leaderboard/MedalBoardTabs.tsx
+#: src/components/leaderboard/PlayerMedalLeaderboard.tsx
 msgid "Medals"
 msgstr "Medals"
 
@@ -585,10 +625,19 @@ msgstr "News"
 msgid "next"
 msgstr "next"
 
+#: src/pages/rankings/MedalProgressLine.tsx
+msgid "Next medal"
+msgstr "Next medal"
+
 #: src/pages/news/News.tsx
 #: src/pages/PublicLanding.tsx
 msgid "No news yet. Check back soon!"
 msgstr "No news yet. Check back soon!"
+
+#: src/components/character/CharacterTitle.tsx
+#: src/pages/settings/TitleSettings.tsx
+msgid "no title"
+msgstr "no title"
 
 #: src/pages/help/FAQ.tsx
 msgid "No. A play keeps running when you leave the gameplay screen, and a ranked one even when you close the game. You can come back to it from any device and watch the rest."
@@ -598,9 +647,17 @@ msgstr "No. A play keeps running when you leave the gameplay screen, and a ranke
 msgid "No. Without signing in you play as a guest: everything is saved in your browser only and nothing is ranked. Sign in with osu! to get a character on the server, ranked scores, pp and a public profile."
 msgstr "No. Without signing in you play as a guest: everything is saved in your browser only and nothing is ranked. Sign in with osu! to get a character on the server, ranked scores, pp and a public profile."
 
+#: src/components/leaderboard/MedalProgressCard.tsx
+msgid "Nobody yet"
+msgstr "Nobody yet"
+
 #: src/pages/PlayOsuIdle.tsx
 msgid "Not yet available for {platform}"
 msgstr "Not yet available for {platform}"
+
+#: src/components/leaderboard/medalLine.ts
+msgid "Notes hit"
+msgstr "Notes hit"
 
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "Nothing found. If the map isn't listed, paste its beatmapset link instead."
@@ -609,6 +666,11 @@ msgstr "Nothing found. If the map isn't listed, paste its beatmapset link instea
 #: src/pages/beatmaps/MapRequests.tsx
 msgid "Nothing here yet."
 msgstr "Nothing here yet."
+
+#: src/components/leaderboard/MedalProgressCard.tsx
+#: src/pages/rankings/MedalProgressLine.tsx
+msgid "now {now}"
+msgstr "now {now}"
 
 #: src/pages/friends/Friends.tsx
 msgid "Offline"
@@ -662,8 +724,13 @@ msgstr "page {page}"
 msgid "Performance"
 msgstr "Performance"
 
+#: src/components/leaderboard/medalLine.ts
+msgid "Play count"
+msgstr "Play count"
+
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
+#: src/components/leaderboard/PlayerMedalLeaderboard.tsx
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/characters/CharacterPreview.tsx
 #: src/pages/rankings/Country.tsx
@@ -716,6 +783,10 @@ msgstr "previous"
 msgid "Privacy"
 msgstr "Privacy"
 
+#: src/components/leaderboard/MedalBoardTabs.tsx
+msgid "Progress"
+msgstr "Progress"
+
 #: src/pages/help/FAQ.tsx
 msgid "Progression"
 msgstr "Progression"
@@ -723,6 +794,14 @@ msgstr "Progression"
 #: src/pages/help/FAQ.tsx
 msgid "Propose it on the <0>map requests</0> page. Any 4K map from osu! can be proposed, even a graveyarded one. Other players can back your request, and the team reviews the queue: an accepted map goes through nomination before it is ranked."
 msgstr "Propose it on the <0>map requests</0> page. Any 4K map from osu! can be proposed, even a graveyarded one. Other players can back your request, and the team reviews the queue: an accepted map goes through nomination before it is ranked."
+
+#: src/pages/beatmaps/MapClaims.tsx
+msgid "Proposed maps for ranking on Discord? Tick the ones you proposed and save, and they will count for your curator medals once an admin confirms."
+msgstr "Proposed maps for ranking on Discord? Tick the ones you proposed and save, and they will count for your curator medals once an admin confirms."
+
+#: src/components/leaderboard/medalLine.ts
+msgid "Proposed maps ranked"
+msgstr "Proposed maps ranked"
 
 #: src/pages/friends/Friends.tsx
 msgid "Rank"
@@ -751,6 +830,9 @@ msgstr "Ranked Score"
 #: src/routes/rankings/global.tsx
 #: src/routes/rankings/grades/$grade.tsx
 #: src/routes/rankings/lifetime/$skill.tsx
+#: src/routes/rankings/medals/index.tsx
+#: src/routes/rankings/medals/progress/$line.tsx
+#: src/routes/rankings/medals/progress/index.tsx
 #: src/routes/rankings/plays.tsx
 #: src/routes/rankings/prestige/$skill.tsx
 #: src/routes/rankings/score.tsx
@@ -831,6 +913,15 @@ msgstr "Rules"
 msgid "Save"
 msgstr "Save"
 
+#. placeholder {0}: picked.size
+#: src/pages/beatmaps/MapClaims.tsx
+msgid "Save ({0})"
+msgstr "Save ({0})"
+
+#: src/pages/beatmaps/MapClaims.tsx
+msgid "Saved. An admin will check your claims."
+msgstr "Saved. An admin will check your claims."
+
 #: src/pages/beatmaps/requestPhase.ts
 msgid "scheduled"
 msgstr "scheduled"
@@ -867,15 +958,31 @@ msgstr "Send Report"
 msgid "Server Status"
 msgstr "Server Status"
 
+#: src/routes/settings.tsx
+msgid "settings"
+msgstr "settings"
+
+#: src/Header.tsx
+msgid "Settings"
+msgstr "Settings"
+
 #: src/components/leaderboard/useFriendsFilter.ts
 msgid "show"
 msgstr "show"
+
+#: src/components/ShowMoreLink.tsx
+msgid "Show more"
+msgstr "Show more"
 
 #: src/Header.tsx
 #: src/pages/Login.tsx
 #: src/pages/PublicLanding.tsx
 msgid "Sign in"
 msgstr "Sign in"
+
+#: src/pages/settings/Settings.tsx
+msgid "Sign in to change your settings."
+msgstr "Sign in to change your settings."
 
 #: src/pages/friends/Friends.tsx
 msgid "Sign in to see your friends."
@@ -912,6 +1019,10 @@ msgstr "skills"
 msgid "Skills"
 msgstr "Skills"
 
+#: src/components/leaderboard/medalLine.ts
+msgid "Skills fully upgraded"
+msgstr "Skills fully upgraded"
+
 #: src/HeaderLinks.tsx
 #: src/routes/admin/skins.tsx
 msgid "skins"
@@ -921,6 +1032,7 @@ msgstr "skins"
 msgid "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
 msgstr "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
 
+#: src/components/leaderboard/MedalBoardTabs.tsx
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
 #: src/components/leaderboard/PlayerSkillLeaderboard.tsx
@@ -966,6 +1078,10 @@ msgstr "The ultimate<0/>osu!mania idle game"
 msgid "This request has been answered"
 msgstr "This request has been answered"
 
+#: src/pages/settings/Settings.tsx
+msgid "Title"
+msgstr "Title"
+
 #: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "top plays"
@@ -989,6 +1105,10 @@ msgstr "Total Score"
 msgid "Unblock"
 msgstr "Unblock"
 
+#: src/components/leaderboard/medalLine.ts
+msgid "Upgrades held"
+msgstr "Upgrades held"
+
 #: src/components/EditableProfilePicture.tsx
 msgid "Upload a profile picture"
 msgstr "Upload a profile picture"
@@ -1008,6 +1128,10 @@ msgstr "Using multiple accounts"
 #: src/pages/PublicLanding.tsx
 msgid "View all"
 msgstr "View all"
+
+#: src/pages/settings/TitleSettings.tsx
+msgid "Wear the name of a medal you hold under your name on your profile."
+msgstr "Wear the name of a medal you hold under your name on your profile."
 
 #: src/pages/help/FAQ.tsx
 msgid "What are add-ons?"

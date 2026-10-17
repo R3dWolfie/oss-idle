@@ -36,3 +36,7 @@ export const removeBanner = () => unwrap(rpc.v1.me.banner.$delete());
  *  updated character. The old name joins its permanent name history. */
 export const renameCharacter = (name: string) =>
 	unwrap(rpc.v1.me.username.$post({ json: { name } }));
+
+/** Show a held medal's name as the signed-in character's title, or clear it. */
+export const setTitle = (medalId?: string) =>
+	unwrap(rpc.v1.me.title.$put({ json: { medalId } }));

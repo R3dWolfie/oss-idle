@@ -7,6 +7,7 @@ import {
 	type ScoreRow,
 } from './score';
 import { db } from '../client';
+import { profilePage } from '../profilePage';
 import {
 	eq,
 	desc,
@@ -37,8 +38,8 @@ export const getNbFirstPlaces = async (characterId: number) => (await db
 	.limit(1))[0]?.count ?? 0
 ;
 
-export const getFirstPlaces = async (characterId: number, page: number = 1) => {
-	return db
+export const getFirstPlaces = (characterId: number, page: number = 1) =>
+	profilePage(page, (offset, limit) => db
 		.select({
 			first_place: firstPlace, beatmap: beatmapListColumns, beatmapset,
 		})
@@ -47,10 +48,8 @@ export const getFirstPlaces = async (characterId: number, page: number = 1) => {
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
 		.where(eq(firstPlace.characterId, characterId))
 		.orderBy(desc(firstPlace.playedAt))
-		.offset(page === 1 ? 0 : 5 + ((page - 2) * 50))
-		.limit(page === 1 ? 5 : 50)
-	;
-};
+		.offset(offset)
+		.limit(limit));
 
 export const getFirstPlace = async (beatmapId: number) => {
 	return (await db

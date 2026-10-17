@@ -8,6 +8,7 @@ import {
 	type ScoreRow,
 } from './score';
 import { db } from '../client';
+import { profilePage } from '../profilePage';
 import {
 	eq,
 	and,
@@ -47,8 +48,8 @@ export const setNewBestPPPlay = async (score: ScoreRow) => db
 	.onDuplicateKeyUpdate({ set: score });
 
 
-export const getBestPP = async (characterId: number, page: number = 1) => {
-	return db
+export const getBestPP = (characterId: number, page: number = 1) =>
+	profilePage(page, (offset, limit) => db
 		.select({
 			best_pp: bestPP, beatmap: beatmapListColumns, beatmapset,
 		})
@@ -57,7 +58,5 @@ export const getBestPP = async (characterId: number, page: number = 1) => {
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
 		.where(eq(bestPP.characterId, characterId))
 		.orderBy(desc(bestPP.pp))
-		.offset(page === 1 ? 0 : 5 + ((page - 2) * 50))
-		.limit(page === 1 ? 5 : 50)
-	;
-};
+		.offset(offset)
+		.limit(limit));

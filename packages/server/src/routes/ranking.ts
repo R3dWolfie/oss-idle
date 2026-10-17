@@ -16,6 +16,11 @@ import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core';
 import { db } from '../db/client';
 import { sessionUserId } from '../auth/middleware';
 import { friendCharacterIds } from '../social';
+import {
+	progressOverview,
+	progressPage,
+	ProgressLines,
+} from '../medals';
 import { characters } from '../db/schema/character';
 import { character_totals } from '../db/schema/character_totals';
 import { users } from '../db/schema/user';
@@ -26,6 +31,7 @@ import {
 } from '../db/schema/beatmap';
 import {
 	gradesPage,
+	medalsPage,
 	PAGE_SIZE,
 	playerCountries,
 	ppPage,
@@ -125,6 +131,14 @@ const amongFor = async (c: Context): Promise<number[] | undefined> => {
 	return viewer === undefined ? [] : friendCharacterIds(viewer);
 };
 
+const progressQuery = zValidator(
+	'query',
+	z.object({
+		friends: z.literal('1').optional(), country: z.string().optional(),
+	}),
+	result => { if (!result.success) throw result.error; },
+);
+
 export const rankingRoutes = new Hono()
 	.get('/country/:page', async c => c.json(await countryPage(idParam.parse(c.req.param('page')))))
 	.get('/plays/:page', friendsQuery, async c => c.json(
@@ -153,6 +167,26 @@ export const rankingRoutes = new Hono()
 			c.req.param('country'),
 			await amongFor(c)),
 	))
+	.get('/medals/:page', friendsQuery, async c => c.json(
+		await medalsPage(idParam.parse(c.req.param('page')), undefined, await amongFor(c)),
+	))
+	.get('/medals/country/:country/:page', friendsQuery, async c => c.json(
+		await medalsPage(
+			idParam.parse(c.req.param('page')),
+			c.req.param('country'),
+			await amongFor(c)),
+	))
+	.get('/progress', async c => c.json(await progressOverview()))
+	.get('/progress/:line/:page', progressQuery, async c => {
+		const line = z.enum(ProgressLines).parse(c.req.param('line'));
+		return c.json(await progressPage(
+			line,
+			idParam.parse(c.req.param('page')),
+			PAGE_SIZE,
+			c.req.valid('query').country,
+			await amongFor(c),
+		));
+	})
 	.get('/skill/:skill/page/:page', friendsQuery, async c => c.json(
 		await skillRanking(
 			c.req.param('skill'), 

@@ -17,6 +17,7 @@ import {
 import { characters } from './character';
 import type { ScoreDTO } from '@osu-idle/shared/score';
 import { db } from '../client';
+import { profilePage } from '../profilePage';
 import {
 	eq,
 	and,
@@ -135,8 +136,8 @@ export const getAllCharacterScores = (characterId: number) => db
 	.from(scores)
 	.where(eq(scores.characterId, characterId));
 	
-export const getRecentCharacterScores = async (characterId: number, page: number = 1) => {
-	return db
+export const getRecentCharacterScores = (characterId: number, page: number = 1) =>
+	profilePage(page, (offset, limit) => db
 		.select({
 			score: scores, beatmap: beatmapListColumns, beatmapset,
 		})
@@ -145,7 +146,5 @@ export const getRecentCharacterScores = async (characterId: number, page: number
 		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
 		.where(eq(scores.characterId, characterId))
 		.orderBy(desc(scores.playedAt))
-		.offset(page === 1 ? 0 : 5 + ((page - 2) * 50))
-		.limit(page === 1 ? 5 : 50)
-	;
-};
+		.offset(offset)
+		.limit(limit));

@@ -11,7 +11,9 @@ import { db } from '../client';
 import { eq } from 'drizzle-orm';
 
 export const beatmapset = mysqlTable('beatmapset', {
-	id: int().primaryKey(),
+	id: int().primaryKey().autoincrement(),
+	// osu!'s set id, when the map has one
+	osuId: int().unique(),
 	artist: text().notNull(),
 	title: text().notNull(),
 	creator: text().notNull(),
@@ -27,6 +29,8 @@ export const beatmapset = mysqlTable('beatmapset', {
 	// When the set entered the queue (uploaded / submitted). Drives the
 	// nomination list's sort.
 	submittedAt: timestamp().notNull().defaultNow(),
+	// Deleted from the queue: rows kept so a re-upload gets the same ids back.
+	deletedAt: timestamp(),
 });
 
 export type BeatmapsetRow = typeof beatmapset.$inferSelect;

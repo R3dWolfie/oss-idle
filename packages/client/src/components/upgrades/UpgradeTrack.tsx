@@ -1,15 +1,9 @@
 import type { CSSProperties } from 'react';
 import { BASE_MAX_UPGRADES } from '@osu-idle/shared/upgrades';
-
-/** Colours cycle past the fourth layer. */
-const LAYERS = 4;
-
-/** How many times slot `i` has been bought over: the ladder wraps like a boss
- *  hp bar, prestige slots starting a new layer from the left. */
-const layerOf = (i: number, bought: number) =>
-	bought > i ? Math.floor((bought - 1 - i) / BASE_MAX_UPGRADES) + 1 : 0;
-
-const colour = (layer: number) => (layer > 0 ? `is-layer-${(layer - 1) % LAYERS + 1}` : '');
+import {
+	layerClass as colour,
+	layerOf,
+} from './layers';
 
 export default function UpgradeTrack({
 	upgrades,
@@ -32,7 +26,7 @@ export default function UpgradeTrack({
 			{Array.from({ length: Math.min(max, BASE_MAX_UPGRADES) }, (_, i) => {
 				const isNext = !maxed && i === next;
 				return (
-					<span key={i} className={`ladder-track__slot ${colour(layerOf(i, upgrades))}`}>
+					<span key={i} className={`ladder-track__slot ${colour(layerOf(i, upgrades, BASE_MAX_UPGRADES))}`}>
 						{isNext && (
 							<span
 								className={`ladder-track__next ${colour(nextLayer)} ${ready ? 'is-ready' : ''}`}

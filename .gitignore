@@ -35,6 +35,7 @@ packages/client/public/metadata
 packages/client/public/previews
 packages/client/public/download
 graphify-out/
+screenshots/
 
 # tmp
 *.tsbuildinfo

@@ -1,6 +1,6 @@
 {
   "name": "@osu-idle/discord",
-  "version": "0.20.4.0",
+  "version": "0.21.0.0",
   "private": true,
   "type": "module",
   "scripts": {

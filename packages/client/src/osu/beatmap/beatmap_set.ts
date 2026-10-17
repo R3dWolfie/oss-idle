@@ -33,7 +33,11 @@ export default class BeatmapSet {
 	get beatmaps(): Promise<Record<number, Beatmap>> {
 		return this._beatmaps ??= this.getRecord().then(r => Object.entries(r.osu)
 			.reduce((set, [id, text]) => {
-				set[Number(id)] = (new BeatmapDecoder()).decodeFromString(text);
+				const beatmap = (new BeatmapDecoder()).decodeFromString(text);
+				// the catalog's ids, over whatever an older stored file says
+				beatmap.metadata.beatmapId = Number(id);
+				beatmap.metadata.beatmapSetId = this.id;
+				set[Number(id)] = beatmap;
 				return set;
 			}, {} as Record<number, Beatmap>),
 		);

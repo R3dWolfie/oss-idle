@@ -66,6 +66,8 @@ export const characters = mysqlTable('character', {
 	avatarUrl: varchar({ length: 512 }),
 	// Profile banner upload, stored like avatarUrl.
 	bannerUrl: varchar({ length: 512 }),
+	/** A held medal's id, its name shown under the character's name. */
+	title: varchar({ length: 32 }),
 	...skillColumns,
 	overallLevel: skillColumn(),
 	overallXp: xpColumn(),

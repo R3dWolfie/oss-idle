@@ -133,3 +133,37 @@ export const getTopPlays = (page: number = 1, friends?: boolean) =>
 	unwrap(rpc.v1.ranking.plays[':page'].$get({
 		param: { page: String(page) }, query: friendsQuery(friends),
 	}));
+
+/** Medals held, each weighted by its tier. */
+export const getMedalRanking = (page: number = 1, friends?: boolean) =>
+	unwrap(rpc.v1.ranking.medals[':page'].$get({
+		param: { page: String(page) }, query: friendsQuery(friends),
+	}));
+
+export const getCountryMedalRanking = (country: string, page: number = 1, friends?: boolean) =>
+	unwrap(rpc.v1.ranking.medals.country[':country'][':page'].$get({
+		param: {
+			country, page: String(page),
+		},
+		query: friendsQuery(friends),
+	}));
+
+/** Every medal line's top players. */
+export const getProgressOverview = () =>
+	unwrap(rpc.v1.ranking.progress.$get());
+
+/** The players furthest along one medal line. */
+export const getProgressRanking = (
+	line: string,
+	page: number = 1,
+	country?: string,
+	friends?: boolean,
+) =>
+	unwrap(rpc.v1.ranking.progress[':line'][':page'].$get({
+		param: {
+			line, page: String(page),
+		},
+		query: {
+			...friendsQuery(friends), ...country ? { country } : {},
+		},
+	}));

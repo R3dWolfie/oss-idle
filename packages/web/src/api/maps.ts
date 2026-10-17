@@ -5,7 +5,17 @@ import {
 	unwrap,
 	withAuth,
 } from './client';
-import type { BeatmapStatus } from '@osu-idle/shared/beatmap';
+import {
+	mapCoverUrl,
+	type BeatmapStatus,
+	type MapCover,
+} from '@osu-idle/shared/beatmap';
+
+/** A set's cover as a CSS background-image: osu!'s, else our own preview. */
+export const coverBackground = (set: MapCover, size: 'list' | 'cover') => {
+	const url = mapCoverUrl(set, size, apiUrl(''));
+	return url && `url('${url}')`;
+};
 
 /** Public: live general stats (online/playing counts, totals). */
 export const getRecentMaps = () =>

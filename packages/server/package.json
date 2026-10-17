@@ -1,6 +1,6 @@
 {
   "name": "@osu-idle/server",
-  "version": "0.20.4.0",
+  "version": "0.21.0.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -28,6 +28,8 @@
     "script:prod": "NODE_ENV=production tsx src/db/set_map_plays.ts",
     "migrate:beatmaps": "tsx src/db/migrate-beatmaps.ts",
     "migrate:beatmaps:prod": "NODE_ENV=production tsx src/db/migrate-beatmaps.ts",
+    "reingest:beatmaps": "tsx src/db/reingest-beatmaps.ts",
+    "reingest:beatmaps:prod": "NODE_ENV=production tsx src/db/reingest-beatmaps.ts",
     "webhook:preview": "tsx src/db/webhookPreview.ts",
     "news:preview": "tsx src/news/preview.ts",
     "news:preview:prod": "NODE_ENV=production tsx src/news/preview.ts",

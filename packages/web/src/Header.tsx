@@ -126,6 +126,7 @@ export default function Header() {
 												<Trans>My Profile</Trans>
 											</Link>}
 											<Link to='/friends' className="usermenu__link"><Trans>Friends</Trans></Link>
+											<Link to='/settings' className="usermenu__link"><Trans>Settings</Trans></Link>
 											<Link to='/logout' className="usermenu__link"><Trans>Sign out</Trans></Link>
 										</>)}
 										{!user && (<>

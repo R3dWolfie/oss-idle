@@ -32,7 +32,7 @@ export default function Character() {
 					id: 'prestige',
 					label: <Trans>Prestige</Trans>,
 					subtitle: t`Reset a skill for a permanent level bonus`,
-					render: () => <PrestigeView />,
+					render: () => <PrestigeView character={character} />,
 				},
 				{
 					id: 'rebirth',

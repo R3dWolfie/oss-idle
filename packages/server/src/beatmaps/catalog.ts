@@ -39,6 +39,8 @@ export const isSetLive = async (setId: number): Promise<boolean> => {
 // opposed to its local runtime store of downloaded sets.
 type CatalogVersion = {
 	id: number;
+	// its .osu inside the .osz; older rows only have their id in the file
+	file?: string;
 	runtime: false;
 	version: string;
 	difficulty: number;
@@ -104,6 +106,7 @@ export const buildCatalog = async (): Promise<Catalog> => {
 
 		set.versions.push({
 			id: row.b.id,
+			file: row.b.file ?? undefined,
 			runtime: false,
 			version: row.b.version,
 			difficulty: Math.round(Number(row.b.sr) * 100) / 100,

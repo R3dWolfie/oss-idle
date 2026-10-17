@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-10 12:34\n"
+"PO-Revision-Date: 2026-10-15 12:41\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -242,10 +242,6 @@ msgstr "Rejouer la map en boucle"
 #: src/display/skills.ts
 msgid "Build a better warmup routine to endure long maps"
 msgstr "Améliore ton warm up pour gérer des maps plus longues"
-
-#: src/display/medals.ts
-msgid "Buy {count} upgrades"
-msgstr "{count} améliorations achetées"
 
 #: src/display/medals.ts
 msgid "Buy every upgrade of a skill"
@@ -535,6 +531,10 @@ msgid "Hit {count} notes"
 msgstr "Jouer {count} notes"
 
 #: src/display/medals.ts
+msgid "Hold {count} upgrades at once"
+msgstr ""
+
+#: src/display/medals.ts
 msgid "Hold #1 on {count} ranked maps"
 msgstr "Maintenir la première place sur {count} maps classées"
 
@@ -636,8 +636,8 @@ msgid "Mastery"
 msgstr "Maîtrise"
 
 #: src/display/medals.ts
-msgid "Max out the upgrades of a skill {count} times"
-msgstr "Obtenez toutes les améliorations d'une compétence {count} fois"
+msgid "Max out the upgrades of {count} skills at once"
+msgstr ""
 
 #: src/display/medals.ts
 msgid "Meltdown"
