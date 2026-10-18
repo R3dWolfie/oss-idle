@@ -399,7 +399,7 @@ export default class PlayManager {
 	private static async startInBackground(beatmap: LightBeatmap): Promise<StartResult> {
 		const character = Entities.character.get();
 		const beatmapId = beatmap.metadata.id;
-		const session = await startPlaySession(character, beatmapId);
+		const session = await startPlaySession(character, beatmapId, beatmap.lockedRate);
 		if (session.mode === 'ranked') {
 			// start-or-join: another tab or device may already have a play running,
 			// and the server hands that one back instead. It is not this map, so the
@@ -533,7 +533,8 @@ export default class PlayManager {
 		const res = await fetchPlayResult(token, false, scene === SCENE.SELECT).catch(() => null);
 		if (!res || res.failed || !res.score) return;
 
-		const beatmap = await this.findDownloaded(res.score.beatmapId);
+		// the one started keeps its playlist's locked rate
+		const beatmap = this.known.get(token) ?? await this.findDownloaded(res.score.beatmapId);
 		if (!beatmap) return;
 
 		const score = Score.fromDTO(res.score);

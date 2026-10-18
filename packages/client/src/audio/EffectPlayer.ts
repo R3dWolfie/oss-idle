@@ -2,6 +2,7 @@ import Log from '@osu-idle/shared/helpers/log';
 import { audioContext } from './audioContext';
 import { SETTINGS } from '../db/settings';
 import Synced from '@osu-idle/shared/helpers/synced';
+import { unwrapWav } from './wav';
 
 export type PlayOptions = {
 	/** start this many ms from now (default 0 = as soon as possible) */
@@ -82,8 +83,7 @@ export class EffectPlayer {
 		const promise = (async () => {
 			try {
 				const res = await fetch(url);
-				const bytes = await res.arrayBuffer();
-				const buffer = await this.context.decodeAudioData(bytes);
+				const buffer = await this.decode(await res.arrayBuffer());
 				this.buffers.set(key, buffer);
 				return buffer;
 			} catch (e) {
@@ -96,6 +96,15 @@ export class EffectPlayer {
 
 		this.loading.set(key, promise);
 		return promise;
+	}
+
+	private async decode(bytes: ArrayBuffer): Promise<AudioBuffer> {
+		const wav = unwrapWav(bytes);
+		if (!wav) return this.context.decodeAudioData(bytes);
+		if (wav instanceof Uint8Array) return this.context.decodeAudioData(wav.slice().buffer);
+		const buffer = this.context.createBuffer(wav.channels.length, wav.channels[0].length, wav.rate);
+		wav.channels.forEach((c, i) => buffer.copyToChannel(c, i));
+		return buffer;
 	}
 
 	/** Decode and cache a batch of samples keyed by name. */

@@ -30,6 +30,9 @@ export const SortOptions = [
 export const SORT_OPTION = mapped(SortOptions);
 export type SortOption = ValueIn<typeof SORT_OPTION>;
 
+/** Frames per second cap, or the display's refresh rate / no cap at all. */
+export type FrameLimit = 'vsync' | 'unlimited' | number;
+
 export class Setting<T, K extends string = string> extends Synced<T> {
 
 
@@ -116,7 +119,9 @@ const defaults = [
 	 * amount (0 = fully visible, 1 = black).
 	 */
 	option<boolean>()('showFps', false),
+	option<FrameLimit>()('frameLimiter', 'vsync'),
 	option<boolean>()('fullscreen', false),
+	option<number>()('uiScale', 1),
 	option<boolean>()('parallax', true),
 	option<boolean>()('osuMusicTheme', true),
 	option<boolean>()('showThumbnails', true),

@@ -2,6 +2,10 @@ import {
 	rateStars,
 	starsOf,
 } from '../gameplay/rateStars';
+import {
+	canPlayAt,
+	liveSpeedUpgrades,
+} from '../gameplay/playRate';
 import { ph } from '@lingui/core/macro';
 import {
 	useCallback,
@@ -196,7 +200,9 @@ function buildCarouselRows(
 			if (!bucket) buckets.set(g.key, bucket = {
 				group: g, items: [], 
 			});
-			bucket.items.push(item);
+			bucket.items.push(g.rate === undefined ? item : {
+				...item, beatmap: item.beatmap.at(g.rate),
+			});
 		}
 	}
 	const ordered = [...buckets.values()].sort(
@@ -284,7 +290,6 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 
 	const [version] = useSynced(selection);
 	const [downloads, setDownloads] = useState<Record<number, DownloadState>>({});
-	const [hasDownloaded, setHasDownloaded] = useState(false);
 	const [debugBeatmap, setDebugBeatmap] = useState<LightBeatmap>();
 	const [search] = useSynced(SETTINGS.search);
 	const searchRef = useRef<HTMLInputElement>(null);
@@ -302,7 +307,6 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 				),
 			);
 			const localMaps = runtime.flatMap(r => r.getCarouselItems());
-			setHasDownloaded(localMaps.length > 0);
 			const sets = new Map<number, CarouselItem>();
 			remoteMaps.forEach(m => sets.set(m.beatmap.metadata.id, m));
 			localMaps.forEach(m => sets.set(m.beatmap.metadata.id, m));
@@ -411,7 +415,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 	// below re-runs only on a genuine membership change, not on every recompute.
 	const activeGroupKeys = useMemo(() => {
 		if (group === 'No Grouping' || !version) return '';
-		const item = items.find((i) => i.beatmap.is(version));
+		const item = items.find((i) => i.beatmap.is(version.metadata.id));
 		if (!item) return '';
 		return groupsOf(
 			item, 
@@ -473,22 +477,30 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 		void music.play(version.metadata.runtime ? version.metadata.previewTime : 0);
 	}, [version, previews]);
 
+	// a playlist entry locked at a rate out of the character's reach is skipped
+	const [speedUpgrades] = useSynced(liveSpeedUpgrades);
+	const selectableItems = useMemo(
+		() => orderedItems.filter((i) => canPlayAt(i.beatmap.lockedRate)),
+		[orderedItems, speedUpgrades],
+	);
+
 	const move = useCallback((step: number) => {
-		const current = orderedItems
+		const current = selectableItems
 			.findIndex((i) => i.beatmap.is(selection.get()));
 		// when nothing is selected, next lands on the first card, previous the last
 		const next = current === -1
-			? (step === 1 ? 0 : orderedItems.length - 1)
-			: Math.min(Math.max(current + step, 0), orderedItems.length - 1);
-		void selectItem(orderedItems[next].beatmap);
-	}, [orderedItems, selectItem]);
+			? (step === 1 ? 0 : selectableItems.length - 1)
+			: Math.min(Math.max(current + step, 0), selectableItems.length - 1);
+		const item = selectableItems[next];
+		if (item) void selectItem(item.beatmap);
+	}, [selectableItems, selectItem]);
 
 	// osu!'s F2: a random map of the list, never the one already selected
 	const random = useCallback(() => {
-		const others = orderedItems.filter(i => !i.beatmap.is(selection.get()));
+		const others = selectableItems.filter(i => !i.beatmap.is(selection.get()));
 		const pick = others[Math.floor(Math.random() * others.length)];
 		if (pick) void selectItem(pick.beatmap);
-	}, [orderedItems, selectItem, selection]);
+	}, [selectableItems, selectItem, selection]);
 
 	// osu!'s F3: the selected card's menu
 	const beatmapOptions = useCallback(() => {
@@ -525,7 +537,8 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 			if (mode === AUTOPILOT_MODE.LOOP) {
 				PlayQueue.start(beatmap.set.metadata.title, [beatmap], 0);
 			} else if (mode !== AUTOPILOT_MODE.PLAYLIST || group === 'By Playlist') {
-				const pool = expanded ? expanded.items : orderedItems;
+				const pool = (expanded ? expanded.items : orderedItems)
+					.filter((i) => canPlayAt(i.beatmap.lockedRate));
 				const index = pool.findIndex((i) => i.beatmap.is(beatmap));
 				if (index >= 0) 
 					PlayQueue.start(
@@ -597,6 +610,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 		pointer: boolean = true,
 	) => {
 		if (scoreView) return false;
+		if (!canPlayAt(beatmap.lockedRate)) return true;
 		console.log('Clicked on card', beatmap.metadata.version);
 		if (beatmap.metadata.runtime && beatmap.is(selection.get())) {
 			if (queueing) PlayQueue.append(beatmap, queueLabel);
@@ -647,7 +661,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 
 	// dev-only: open the strain debug overlay for the selected, downloaded diff
 	const handleDebug = useCallback(() => {
-		const item = items.find((i) => i.beatmap.is(version));
+		const item = version && items.find((i) => i.beatmap.is(version.metadata.id));
 		if (!item) return;
 		if (!item.beatmap.metadata.runtime) {
 			Log.popup(t`Download the beatmap first`);
@@ -703,7 +717,6 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 							onCardClick={handleCardClick}
 							onCardDoubleClick={handleCardDoubleClick}
 							onCardRightClick={handleCardRightClick}
-							hasDownloaded={hasDownloaded}
 							onToggleGroup={toggleGroup}
 							loading={loading}
 							downloads={downloads}

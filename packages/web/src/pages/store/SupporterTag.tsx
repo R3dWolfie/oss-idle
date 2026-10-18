@@ -53,8 +53,8 @@ export default function SupporterTag({ me, subscribed }: { me: UserDTO; subscrib
 		<div className='store__product-text'>
 			<p>
 				<Trans>
-					osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it:
-					a heart on your profile and a yellow name in chat. It changes nothing in the game, and every feature stays free for everyone.
+					osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it.
+					It changes nothing in the game.
 				</Trans>
 			</p>
 			<ul>
@@ -74,10 +74,12 @@ export default function SupporterTag({ me, subscribed }: { me: UserDTO; subscrib
 				</label>
 				<label className='store__check'>
 					<input type='checkbox' checked={waiver} onChange={e => setWaiver(e.target.checked)} />
-					<Trans>
-						I accept the <Link to='/legal/terms' target='_blank'>terms of sale</Link>,
-						I want the supporter tag to start right away, and I give up my 14-day withdrawal right.
-					</Trans>
+					<span>
+						<Trans>
+							I accept the <Link to='/legal/terms' target='_blank'>terms of sale</Link>,
+							I want the supporter tag to start right away, and I give up my 14-day withdrawal right.
+						</Trans>
+					</span>
 				</label>
 			</div>
 			<div className='store__actions'>

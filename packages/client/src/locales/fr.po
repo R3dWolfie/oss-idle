@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-18 13:24\n"
+"PO-Revision-Date: 2026-10-18 21:52\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -144,11 +144,11 @@ msgstr "+{prestige} Lv"
 
 #: src/components/mods/ModSelect.tsx
 msgid "1. Reset All Mods"
-msgstr ""
+msgstr "1. Réinitialiser les mods"
 
 #: src/components/mods/ModSelect.tsx
 msgid "2. Close"
-msgstr ""
+msgstr "2. Fermer"
 
 #: src/scenes/Gameplay.tsx
 msgid "A game is already in progress. Play locally instead? It won't be submitted."
@@ -187,7 +187,7 @@ msgstr "Abandonner la partie ?"
 #: src/online/multiplayer.ts
 #: src/online/multiplayer.ts
 msgid "Abort your running play to join a game."
-msgstr "Abandonnez votre partie en cours pour rejoindre un lobby."
+msgstr "Abandonnez votre partie en cours pour rejoindre une partie."
 
 #: src/scenes/Result.tsx
 msgid "Accuracy"
@@ -210,6 +210,10 @@ msgstr "Ajouter comme ami"
 #: src/components/PlaylistOverlay.tsx
 msgid "Add this difficulty"
 msgstr "Ajouter cette difficulté"
+
+#: src/components/PlaylistOverlay.tsx
+msgid "Add this difficulty locked at {rate}"
+msgstr "Ajouter cette difficulté bloquée en {rate}"
 
 #: src/components/songselect/CardContextMenu.tsx
 msgid "Add to queue"
@@ -248,17 +252,21 @@ msgstr "Tout"
 msgid "All beatmaps deleted."
 msgstr "Toutes les maps ont été supprimées."
 
+#: src/components/options/DownloadAllWarning.tsx
+msgid "All ranked beatmaps downloaded."
+msgstr "Toutes les maps classées ont été téléchargées."
+
 #: src/scenes/Gameplay.tsx
 msgid "Already playing"
 msgstr "Déjà en jeu"
 
 #: src/components/character/RebirthView.tsx
-msgid "Already reborn"
-msgstr ""
+msgid "Already reborn with this character"
+msgstr "Déjà effectué avec ce personnage"
 
 #: src/components/upgrades/UpgradesView.tsx
-msgid "An upgrade costs {UPGRADE_LEVELS} raw levels of the skill and permanently boosts its XP gains by {bonus}%. Buying above the required level spends more XP and feeds Overdrive, which multiplies the boost."
-msgstr "Une amélioration coûte {UPGRADE_LEVELS} niveaux brutes de la compétence et améliore les gains d'XP de {bonus}%. Acheter avec un nouveau plus élevé consomme plus d'XP et ajoute de l'Overdrive, ce qui multiplie encore les gains."
+msgid "An upgrade costs {UPGRADE_LEVELS} raw levels of the skill and boosts its XP gains by {bonus}%. Buying above the required level spends more XP and feeds Overdrive, which multiplies the gains further."
+msgstr "Une amélioration coûte {UPGRADE_LEVELS} niveaux bruts de la compétence et améliore les gains d'XP de {bonus}%. Acheter avec un niveau plus élevé consomme plus d'XP et ajoute de l'Overdrive, ce qui multiplie encore les gains."
 
 #: src/scenes/MainMenu.tsx
 msgid "Are you sure you want to quit?"
@@ -340,7 +348,7 @@ msgstr "Map supprimée"
 
 #: src/components/songselect/SongSelectFooter.tsx
 msgid "Beatmap Options"
-msgstr ""
+msgstr "Options de la map"
 
 #: src/components/character/PrestigeSummary.tsx
 #: src/components/upgrades/UpgradesSummary.tsx
@@ -438,6 +446,7 @@ msgid "By Title"
 msgstr "Par titre"
 
 #: src/components/addons/AddonView.tsx
+#: src/components/community/chat/ReportMessageDialog.tsx
 #: src/components/ConfirmMenu.tsx
 #: src/components/multiplayer/CreateMatch.tsx
 #: src/components/multiplayer/PasswordPrompt.tsx
@@ -493,6 +502,10 @@ msgstr "Chat"
 msgid "chat|message|private|pm|friends"
 msgstr "chat|message|privé|pm|amis"
 
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Cheating"
+msgstr "Triche"
+
 #: src/components/dock/DockControls.tsx
 msgid "clear"
 msgstr "vider"
@@ -542,6 +555,7 @@ msgid "close"
 msgstr "fermer"
 
 #: src/components/community/PlayerMenu.tsx
+#: src/components/options/DownloadAllWarning.tsx
 #: src/components/PlaylistOverlay.tsx
 msgid "Close"
 msgstr "Fermer"
@@ -614,7 +628,7 @@ msgid "Create new skin"
 msgstr "Créer un nouveau skin"
 
 #: src/components/Onboarding.tsx
-msgid "Create your character to finish setting up your account."
+msgid "Create your first character to finish setting up your account."
 msgstr "Créez votre premier personnage pour finaliser la création de votre compte."
 
 #: src/scenes/MatchSetup.tsx
@@ -661,11 +675,11 @@ msgstr "Détails"
 
 #: src/components/mods/ModSelect.tsx
 msgid "Difficulty Increase"
-msgstr ""
+msgstr "Difficile"
 
 #: src/components/mods/ModSelect.tsx
 msgid "Difficulty Reduction"
-msgstr ""
+msgstr "Facile"
 
 #: src/scenes/Options.tsx
 msgid "discord|link|role"
@@ -678,19 +692,43 @@ msgstr "Ignorer"
 #: src/components/mods/ModSelect.tsx
 #: src/components/result/ResultMods.tsx
 msgid "Double"
-msgstr ""
+msgstr "Double"
 
 #: src/components/BeatmapCard.tsx
 msgid "Double click to download"
 msgstr "Double-cliquez pour télécharger"
 
+#: src/components/options/DownloadAllWarning.tsx
+msgid "Download all"
+msgstr "Tout télécharger"
+
+#: src/components/options/DownloadAllBeatmaps.tsx
+msgid "Download all ranked beatmaps"
+msgstr "Télécharger les maps classées"
+
+#: src/components/options/DownloadAllWarning.tsx
+msgid "Download every ranked beatmap?"
+msgstr "Télécharger toutes les maps classées ?"
+
+#: src/components/options/DownloadAllWarning.tsx
+msgid "Download stopped."
+msgstr "Téléchargement annulé."
+
 #: src/scenes/SongSelect.tsx
 msgid "Download the beatmap first"
 msgstr "Téléchargez d'abord la beatmap"
 
+#: src/scenes/Options.tsx
+msgid "download|beatmap|beatmaps|ranked|supporter"
+msgstr "download|télécharger|beatmap|beatmaps|map|classé|ranked|supporter"
+
 #: src/osu/beatmap/grouping.ts
 msgid "Downloaded"
 msgstr "Téléchargé"
+
+#: src/components/options/DownloadAllBeatmaps.tsx
+msgid "Downloading beatmaps: {done}/{total} (click to stop)"
+msgstr "Téléchargement des maps: {done}/{total} (cliquez pour annuler)"
 
 #: src/components/DesktopUpdate.tsx
 msgid "Downloading update… {percent}%"
@@ -706,7 +744,7 @@ msgstr "Chaque partie complétée octroie de <0>l'XP</0> et <1>des niveaux</1> �
 
 #: src/components/mods/RateStepper.tsx
 msgid "Each Speed upgrade unlocks one more step"
-msgstr ""
+msgstr "Chaque amélioration de la vitesse débloque un incrément"
 
 #: src/components/addons/MyAddonRow.tsx
 #: src/components/skins/MySkinRow.tsx
@@ -729,6 +767,10 @@ msgstr "Activé"
 #: src/components/multiplayer/CreateMatch.tsx
 msgid "Enter a password before attempting to start the game..."
 msgstr "Entrez un mot de passe avant de commencer la partie..."
+
+#: src/components/options/DownloadAllBeatmaps.tsx
+msgid "Every ranked beatmap is already downloaded."
+msgstr "Toutes les maps ranked ont déjà été téléchargées."
 
 #: src/scenes/MainMenu.tsx
 #: src/scenes/MainMenu.tsx
@@ -762,6 +804,14 @@ msgstr "Suivant"
 #: src/scenes/Options.tsx
 msgid "fps|frame|rate|refresh|hz"
 msgstr "fps|ips|frame|image|hz"
+
+#: src/scenes/Options.tsx
+msgid "fps|frame|rate|refresh|hz|limit|vsync"
+msgstr "fps|frame|rate|refresh|hz|limit|vsync"
+
+#: src/components/options/FrameLimiter.tsx
+msgid "Frame limiter"
+msgstr "Limiteur de fps"
 
 #: src/components/multiplayer/MatchSettings.tsx
 msgid "Free Mods"
@@ -840,7 +890,7 @@ msgstr "Invité"
 #: src/components/mods/ModSelect.tsx
 #: src/components/result/ResultMods.tsx
 msgid "Half"
-msgstr ""
+msgstr "Half"
 
 #: src/components/character/LineageList.tsx
 msgid "Hall of fame"
@@ -850,13 +900,17 @@ msgstr "Hall des légendes"
 msgid "Head-to-head"
 msgstr "Face-à-face"
 
+#: src/components/options/DownloadAllWarning.tsx
+msgid "Here they are stored by your browser: the desktop app is better suited to keeping this many."
+msgstr "Les maps sont enregistrées dans votre navigateur : l'application est préférable pour télécharger autant de maps."
+
 #: src/components/dock/DockControls.tsx
 msgid "hide"
 msgstr "cacher"
 
 #: src/components/addons/AddonCodePane.tsx
 msgid "Hide changes"
-msgstr ""
+msgstr "Cacher les changements"
 
 #: src/components/community/CommunityControls.tsx
 msgid "Hide chat"
@@ -864,7 +918,7 @@ msgstr "Cacher le chat"
 
 #: src/components/addons/AddonCodePane.tsx
 msgid "Hide code"
-msgstr ""
+msgstr "Cacher le code"
 
 #: src/components/dock/DockControls.tsx
 msgid "Hide the playfield and keep playing in the background"
@@ -883,13 +937,17 @@ msgstr "L'hôte change de map..."
 msgid "Icon"
 msgstr "Icône"
 
-#: src/components/Tutorial.tsx
-msgid "In Beta"
-msgstr "En beta"
-
 #: src/online/presence.ts
 msgid "In the menus"
 msgstr "Dans les menus"
+
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Inappropriate chat behaviour"
+msgstr "Comportement inapproprié"
+
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Inappropriate content"
+msgstr "Contenu inapproprié"
 
 #: src/scenes/Lobby.tsx
 msgid "Incorrect password."
@@ -964,7 +1022,7 @@ msgstr "Quitter le match"
 
 #: src/online/play.ts
 msgid "Leave the match to play on your own."
-msgstr ""
+msgstr "Quitter le match et jouer seul."
 
 #: src/components/songselect/BeatmapInfo.tsx
 msgid "Length: {totalLength} BPM: {bpmText} Objects: {objects}"
@@ -1088,8 +1146,8 @@ msgid "Mods"
 msgstr "Mods"
 
 #: src/components/mods/ModSelect.tsx
-msgid "Mods change how a map plays. A faster rate is harder for your character, a slower one easier, but its score is cut."
-msgstr ""
+msgid "Mods change how a map plays. A faster rate usually makes the map harder, and a slower one easier."
+msgstr "Les mods changent comment la map se joue. Un rate plus rapide rend généralement la map plus dure et inversement."
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
@@ -1101,7 +1159,7 @@ msgid "Move it down"
 msgstr "Déplacer en bas"
 
 #: src/components/dock/DockQueue.tsx
-msgid "Move it up - the top of the queue plays next"
+msgid "Move up"
 msgstr "Déplacer vers le haut"
 
 #: src/scenes/MainMenu.tsx
@@ -1280,16 +1338,12 @@ msgid "Options"
 msgstr "Options"
 
 #: src/components/options/OsuMusicTheme.tsx
-msgid "osu! music theme"
+msgid "osu! music at startup"
 msgstr "Musique osu! au lancement"
 
 #: src/components/Tutorial.tsx
 msgid "osu!idle features <0>online leaderboards</0>, just like osu!. Sign in with your osu! account to compete and save your progression online."
 msgstr "osu!idle propose des <0>classements en ligne</0>, tout comme osu!. Connectez-vous avec votre compte osu! pour vous mesurer aux autres et sauvegarder votre progression en ligne."
-
-#: src/components/Tutorial.tsx
-msgid "osu!idle is in <0>beta</0> and under active development - if you hit a bug, report it on <1>discord</1>. Have fun!"
-msgstr "osu!idle est en <0>beta</0> et est toujours développé activement. Si vous trouvez un bug, faites-en part sur <1>discord</1>. Amusez-vous bien!"
 
 #: src/components/multiplayer/MatchRow.tsx
 msgid "osu!mania (head-to-head)"
@@ -1298,6 +1352,10 @@ msgstr "osu!mania (tête-à-tête)"
 #: src/scenes/Options.tsx
 msgid "osu|music|theme"
 msgstr "osu|musique|theme"
+
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Other (type below)"
+msgstr "Autre (écrire)"
 
 #: src/osu/beatmap/grouping.ts
 msgid "Over 5 months ago"
@@ -1374,16 +1432,16 @@ msgid "Pick a song"
 msgstr "Choisir une musique"
 
 #: src/components/dock/DockControls.tsx
-msgid "Pick maps to queue"
+msgid "Pick maps to add"
 msgstr "Sélectionner des maps à ajouter"
 
 #: src/components/options/PitchFollowsRate.tsx
 msgid "Pitch follows the rate (Double and Half mods)"
-msgstr ""
+msgstr "Pitch adaptatif (mods Double et Half)"
 
 #: src/scenes/Options.tsx
 msgid "pitch|rate|speed|double|half|nightcore|mods"
-msgstr ""
+msgstr "pitch|rate|vitesse|double|half|nightcore|mods"
 
 #: src/components/character/LineageList.tsx
 #: src/components/community/MusicControls.tsx
@@ -1401,7 +1459,7 @@ msgstr "Parties : {playCount} (Lv{level})"
 
 #: src/components/songselect/CardContextMenu.tsx
 msgid "Play next"
-msgstr "Jouer en suivant"
+msgstr "Jouer la prochaine"
 
 #: src/components/Tutorial.tsx
 msgid "Play online"
@@ -1484,7 +1542,7 @@ msgstr "Quitter en continuant à jouer"
 
 #: src/components/songselect/SongSelectFooter.tsx
 msgid "Random"
-msgstr ""
+msgstr "Aléatoire"
 
 #: src/components/community/CommunityBody.tsx
 msgid "Rank"
@@ -1496,10 +1554,10 @@ msgstr "rang : {best} - {worst}"
 
 #: src/components/upgrades/SkillPerk.tsx
 msgid "Rates"
-msgstr ""
+msgstr "Rates"
 
 #: src/components/character/PrestigeView.tsx
-msgid "Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You lose its upgrades and Overdrive, and gain a permanent bonus level, an extra gear slot and a multiplicative XP bonus. Each prestige asks for one more level than the last."
+msgid "Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You lose its upgrades and Overdrive, and gain a bonus level, an extra gear slot and a multiplicative XP bonus. Each prestige asks for one more level than the last."
 msgstr "Atteindre le niveau d'XP Lv{PRESTIGE_MIN_LEVEL} sur une compétence permet de la réinitialiser. Vous perdrez les améliorations et l'Overdrive, et obtiendrez un niveau bonus, débloquerez un rang d'amélioration supplémentaire et un bonus d'XP multiplicatif. Chaque prestige nécessite un niveau de plus que le dernier."
 
 #: src/components/Announce.tsx
@@ -1562,6 +1620,10 @@ msgid "Remove this difficulty"
 msgstr "Supprimer cette difficulté"
 
 #: src/components/PlaylistOverlay.tsx
+msgid "Remove this difficulty at {rate}"
+msgstr "Retirer cette difficulté en {rate}"
+
+#: src/components/PlaylistOverlay.tsx
 #: src/components/PlaylistOverlay.tsx
 msgid "Rename"
 msgstr "Renommer"
@@ -1569,6 +1631,18 @@ msgstr "Renommer"
 #: src/scenes/Options.tsx
 msgid "Renderer"
 msgstr "Vidéo"
+
+#: src/components/community/PlayerMenu.tsx
+msgid "Report"
+msgstr "Signaler"
+
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Report {name}?"
+msgstr "Signaler {name} ?"
+
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Report sent."
+msgstr "Signalement envoyé."
 
 #: src/components/multiplayer/CreateMatch.tsx
 msgid "Require password to join"
@@ -1586,6 +1660,10 @@ msgstr "Nécessite le niveau d'XP Lv{required}"
 #: src/scenes/Character.tsx
 msgid "Reset a skill for a permanent level bonus"
 msgstr "Réinitialisez une compétence pour un bonus de niveau permanent"
+
+#: src/components/options/FrameLimiter.tsx
+msgid "Restart the game to apply"
+msgstr "Redémarrez le jeu pour appliquer"
 
 #: src/components/result/ResultMeta.tsx
 msgid "Result"
@@ -1624,7 +1702,7 @@ msgstr "Score"
 #. placeholder {0}: scoreMultiplier(rate).toFixed(2)
 #: src/components/mods/ModSelect.tsx
 msgid "Score Multiplier: {0}x"
-msgstr ""
+msgstr "Multiplicateur: {0}x"
 
 #: src/components/dock/DockControls.tsx
 msgid "screensaver"
@@ -1662,6 +1740,10 @@ msgstr "Choisir une langue"
 #: src/online/presence.ts
 msgid "Selecting a song"
 msgstr "Sélectionne une map"
+
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Send Report"
+msgstr "Signaler"
 
 #: src/components/multiplayer/MatchSettings.tsx
 msgid "Set Password"
@@ -1852,7 +1934,15 @@ msgstr "Mode d'équipe :"
 
 #: src/components/SupporterHeart.tsx
 msgid "Thanks for your generosity!"
-msgstr ""
+msgstr "Merci de votre générosité !"
+
+#: src/components/options/DownloadAllWarning.tsx
+msgid "That's why downloading them all at once is an osu!supporter perk."
+msgstr "C'est pourquoi ce téléchargement nécessite le tag supporter."
+
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "The report could not be sent."
+msgstr "Le signalement n'a pas pu être envoyé."
 
 #: src/scenes/Lobby.tsx
 msgid "There are no matches available."
@@ -1869,6 +1959,10 @@ msgstr "Cette difficulté n'a aucune note à jouer."
 #: src/scenes/IntroScreen.tsx
 msgid "This game is an unofficial, fanmade version of osu!stable and is not affiliated with osu.ppy.sh"
 msgstr "Ce jeu est une version non officielle d'osu!stable, réalisée par des fans et n'est pas affilié à osu.ppy.sh"
+
+#: src/components/options/DownloadAllWarning.tsx
+msgid "This is a very big download: {count} beatmap sets, taking about {size} of disk space."
+msgstr "C'est un très gros téléchargement : {count} mapsets, pesant environ {size} d'espace disque."
 
 #: src/components/Tutorial.tsx
 msgid "This is an <0>automated, idle</0> osu!mania stable client: your character plays the maps on its own and progresses with every play."
@@ -1901,13 +1995,25 @@ msgstr "Total {xp}xp"
 
 #: src/dev/UpgradesPreview.tsx
 #: src/scenes/Character.tsx
-msgid "Trade skill levels for permanent XP boosts"
+msgid "Trade skill levels for XP boosts"
 msgstr "Échange des niveaux de compétence contre des boosts d'XP"
 
 #: src/scenes/Options.tsx
 #: src/scenes/SongSelect.tsx
 msgid "Type to search!"
 msgstr "Tapez pour rechercher !"
+
+#: src/components/options/UIScaling.tsx
+msgid "UI scaling"
+msgstr "Taille de l'interface"
+
+#: src/components/options/UIScaling.tsx
+msgid "UI scaling: use your browser's zoom (Ctrl + / Ctrl -)"
+msgstr "Taille de l'interface : utilisez le zoom de votre navigateur (Ctrl + / Ctrl -)"
+
+#: src/scenes/Options.tsx
+msgid "ui|scale|scaling|zoom|size"
+msgstr "ui|scale|scaling|zoom|size"
 
 #: src/db/schema/skin.ts
 msgid "Unable to load \"{skin}\": Malformed definition"
@@ -1922,6 +2028,10 @@ msgstr "Désinstaller"
 #: src/components/addons/ManageAddonsView.tsx
 msgid "Uninstall add-on"
 msgstr "Désinstaller l'add-on"
+
+#: src/components/options/FrameLimiter.tsx
+msgid "Unlimited"
+msgstr "Illimité"
 
 #: src/components/character/RebirthView.tsx
 msgid "Unlocked: {unlocks}"
@@ -1952,7 +2062,7 @@ msgstr "Mis à jour"
 
 #: src/components/mods/ModSelect.tsx
 msgid "Upgrade Speed to unlock rates"
-msgstr ""
+msgstr "Améliore la Vitesse pour débloquer des rates"
 
 #: src/components/dock/DockControls.tsx
 #: src/components/dock/DockPill.tsx
@@ -1981,6 +2091,10 @@ msgstr "Envoyer une image"
 msgid "Uploading…"
 msgstr "Envoi…"
 
+#: src/components/community/chat/ReportMessageDialog.tsx
+msgid "Using multiple accounts"
+msgstr "Utilisation de multi-comptes"
+
 #: src/components/skins/SkinView.tsx
 msgid "Validation errors"
 msgstr "Erreurs de validation"
@@ -2000,11 +2114,11 @@ msgstr "La version {version} est disponible ! Vous pouvez mettre à jour depuis 
 
 #: src/components/addons/AddonCodePane.tsx
 msgid "View changes"
-msgstr ""
+msgstr "Voir les changements"
 
 #: src/components/addons/AddonCodePane.tsx
 msgid "View code"
-msgstr ""
+msgstr "Voir le code"
 
 #: src/components/community/PlayerMenu.tsx
 msgid "View Profile"
@@ -2031,15 +2145,15 @@ msgstr "En attente de la prochaine map"
 
 #: src/components/multiplayer/RoundWaiting.tsx
 msgid "Waiting for the other players to finish..."
-msgstr ""
+msgstr "En attente des autres joueurs..."
 
 #: src/components/dock/DockWatchButton.tsx
 msgid "watch"
 msgstr "regarder"
 
 #: src/components/dock/DockWatchButton.tsx
-msgid "Watch it, from the list so the queue fills"
-msgstr "Regarder en conservant une liste de lecture"
+msgid "Watch, keeping the playlist"
+msgstr "Regarder en conservant la playlist"
 
 #: src/scenes/MainMenu.tsx
 msgid "Website"
@@ -2084,7 +2198,7 @@ msgid "XP boost"
 msgstr "Boost d'XP"
 
 #: src/components/BeatmapXPBreakdown.tsx
-msgid "XP gained last play"
+msgid "XP gained"
 msgstr "XP gagnée"
 
 #: src/components/upgrades/UpgradeTooltip.tsx
@@ -2115,7 +2229,7 @@ msgstr "Vous êtes joueur."
 
 #: src/components/SupporterHeart.tsx
 msgid "You are a supporter."
-msgstr ""
+msgstr "Vous êtes un supporter."
 
 #: src/scenes/MatchSetup.tsx
 msgid "You are the host!"
@@ -2134,12 +2248,12 @@ msgid "You haven't created any skins yet."
 msgstr "Vous n'avez pas encore créé de skins."
 
 #: src/components/RestrictedNotice.tsx
-msgid "Your account has been <0>restricted</0>: you can't play or chat. If you think it's a mistake, write to <1>{email}</1>"
-msgstr ""
+msgid "Your account has been <0>restricted</0>: you can't play or chat. If you think it's a mistake: <1>{email}</1>"
+msgstr "Votre compte a été <0>restreint</0>: vous ne pouvez ni jouer ni parler. Si vous pensez que c'est une erreur : <1>{email}</1>"
 
 #: src/online/play.ts
 msgid "Your account is restricted, so you can't play. Write to {email} if you think it's a mistake."
-msgstr ""
+msgstr "Votre compte a été restreint, vous ne pouvez donc plus jouer. Contactez {email} si vous pensez que c'est une erreur."
 
 #: src/components/addons/ManageAddonsView.tsx
 msgid "Your add-ons"

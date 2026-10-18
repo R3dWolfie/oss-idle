@@ -6,6 +6,7 @@ import {
 } from '../db/schema/character';
 import { users } from '../db/schema/user';
 import { hub } from '../ws/hub';
+import { refresh as refreshPresence } from '../ws/presence';
 import type { CharacterDTO } from '@osu-idle/shared/character';
 
 /**
@@ -27,6 +28,7 @@ export const pushCharacter = async (characterId: number): Promise<void> => {
 	if (!row) return;
 
 	announceCharacter(characterToDTO(row.character, row.user.avatarUrl, row.user.country));
+	await refreshPresence(row.character, row.user);
 };
 
 /** The same announcement, for a caller that already read the row - a route

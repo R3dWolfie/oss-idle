@@ -1,3 +1,4 @@
+import { statSync } from 'node:fs';
 import {
 	and,
 	eq,
@@ -9,6 +10,7 @@ import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
 import { db } from '../db/client';
 import { beatmaps } from '../db/schema/beatmap';
 import { beatmapset } from '../db/schema/beatmapset';
+import { oszPath } from './storage';
 
 /** A set is live - listed, downloadable, previewable - only once it's ranked and
  *  its scheduled rank time has passed. Pending (null rankedAt) and future-dated
@@ -68,6 +70,8 @@ type CatalogSet = {
 	creator: string;
 	background?: string;
 	audio?: string;
+	/** the .osz's size in bytes */
+	size: number;
 	versions: CatalogVersion[];
 };
 
@@ -101,6 +105,7 @@ export const buildCatalog = async (): Promise<Catalog> => {
 				title: row.title,
 				artist: row.artist,
 				creator: row.creator,
+				size: statSync(oszPath(row.setId), { throwIfNoEntry: false })?.size ?? 0,
 				versions: [],
 			};
 			sets.set(row.setId, set);

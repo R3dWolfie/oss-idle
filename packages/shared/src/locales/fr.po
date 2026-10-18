@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-17 16:49\n"
+"PO-Revision-Date: 2026-10-18 21:52\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -560,11 +560,11 @@ msgstr "Couleur #hexa invalide"
 
 #: src/types/color.ts
 msgid "Invalid color: use a #hex (e.g. #63b3ff) or rgb()/rgba() value"
-msgstr "Couleur invalide : utilisez #hexa (comme 63b3ff) ou une valeur rgba()/rgba()"
+msgstr "Couleur invalide : utilisez #hexa (comme #63b3ff) ou une valeur rgb()/rgba()"
 
 #: src/types/color.ts
 msgid "Invalid rgb()/rgba() color"
-msgstr "Couleur rgba()/rgba() invalide"
+msgstr "Couleur rgb()/rgba() invalide"
 
 #: src/display/medals.ts
 msgid "Iron Combo"

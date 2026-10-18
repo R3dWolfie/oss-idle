@@ -50,14 +50,16 @@ export default class BeatmapAPI {
 		});
 	}
 
+	/** `bulk`: one of many in a row, which the server sends rate-capped. */
 	public static async downloadOsz(
 		metadata: Metadata,
 		onProgress?: (progress: number) => void,
+		bulk = false,
 	): Promise<SetRecord> {
 		const existing = await BeatmapStore.getSet(metadata.id);
 		if (existing) return existing;
 
-		const res = await API.fetch(`${BASE_URL}/v1/beatmap/osz/${metadata.id}`);
+		const res = await API.fetch(`${BASE_URL}/v1/beatmap/osz/${metadata.id}${bulk ? '?bulk' : ''}`);
 		const buf = await this.readWithProgress(res, onProgress);
 		const files = await new Promise<Unzipped>((resolve, reject) => {
 			unzip(buf, (err, data) => (err ? reject(err) : resolve(data)));

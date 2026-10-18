@@ -10,13 +10,17 @@ import './index.css';
 import './online/account'; // resolve the session + account, listen for login
 import { initWakeLock } from './responsive/wakeLock';
 import { initFullscreen } from './responsive/fullscreen';
+import { initFrameLimiter } from './responsive/frameLimiter';
 import { SETTINGS } from './db/settings';
+import { desktop } from '@osu-idle/shared/desktop';
 import { bootAddons } from './addons/runtime';
 import App from './App.tsx';
 
 initWakeLock(); // keep mobile screens awake while playing
 initFullscreen(); // keep the fullscreen setting in sync with Esc/F11
+initFrameLimiter(); // cap every rAF loop to the frame limiter setting
 void bootAddons(); // mount enabled installed add-ons
+SETTINGS.uiScale.forceSync(scale => desktop()?.setZoomFactor?.(scale));
 
 // dev-only handle the end-to-end suite drives the app through; the static
 // condition drops the whole module from a production build.

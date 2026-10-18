@@ -58,6 +58,9 @@ export interface OsuIdleDesktop {
 	/** Native window fullscreen - unlike the browser Fullscreen API it needs no
 	 *  user gesture, so the persisted setting can be applied on boot. */
 	setFullscreen(on: boolean): void;
+	/** Chromium page zoom, which scales the whole UI the way browser zoom does.
+	 *  Absent on desktop builds older than the UI scaling option. */
+	setZoomFactor?(factor: number): void;
 	/** Subscribe to window fullscreen changes (F11 / OS), so the setting stays
 	 *  truthful; returns an unsubscribe fn. */
 	onFullscreenChanged(cb: (fullscreen: boolean) => void): () => void;
@@ -67,6 +70,13 @@ export interface OsuIdleDesktop {
 	/** Quit the desktop app immediately. The browser `window.close()` lingers in
 	 *  Electron, so the renderer calls this for a snappy exit. No-op in a browser. */
 	quit(): void;
+	/** Chromium's vsync cap, which only a launch switch can lift. */
+	readonly frameRate: {
+		/** Whether this run was launched uncapped. */
+		readonly uncapped: boolean;
+		/** Persist whether the next launch is uncapped. */
+		setUncapped(on: boolean): void;
+	};
 	/** Steam integration - inert until wired up, exposed so callers can feature-detect. */
 	readonly steam: { readonly available: boolean };
 }

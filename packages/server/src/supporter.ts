@@ -64,7 +64,7 @@ type Payment = {
 };
 
 const tagStart = sql`GREATEST(COALESCE(${users.supporterUntil}, NOW()), NOW())`;
-const epoch = (date: SQL) => sql<number>`UNIX_TIMESTAMP(${date})`.mapWith(Number);
+const asDate = (date: SQL) => sql<Date>`${date}`.mapWith(users.supporterUntil);
 
 /** A payment for an account deleted since (a renewing gift, a late bank transfer) goes back,
  *  and its renewals stop. */
@@ -96,15 +96,14 @@ const grant = async (meta: OrderMeta, payment: Payment, subscription?: string): 
 	const landed = await db.transaction(async tx => {
 		const [window] = await tx
 			.select({
-				startsAt: epoch(tagStart),
-				endsAt: epoch(sql`DATE_ADD(${tagStart}, INTERVAL ${months} MONTH)`),
+				startsAt: asDate(tagStart),
+				endsAt: asDate(sql`DATE_ADD(${tagStart}, INTERVAL ${months} MONTH)`),
 			})
 			.from(users)
 			.where(eq(users.id, recipientId))
 			.for('update');
 		if (!window) return false;
-		const startsAt = new Date(window.startsAt * 1000);
-		const endsAt = new Date(window.endsAt * 1000);
+		const { startsAt, endsAt } = window;
 		const [{ affectedRows }] = await tx.insert(supporterOrders).ignore().values({
 			...payment, buyerId, recipientId, months, startsAt, endsAt,
 		});

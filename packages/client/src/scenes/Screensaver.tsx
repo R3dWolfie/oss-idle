@@ -27,7 +27,7 @@ export default function Screensaver() {
 	// the track follows the play, at the play's position
 	useEffect(() => {
 		if (!live) return;
-		if (music.beatmap.get()?.is(live.beatmap) && music.playing.get()) return;
+		if (music.beatmap.get()?.is(live.beatmap.metadata.id) && music.playing.get()) return;
 		void music.beatmap.set(live.beatmap)
 			// the play's time is real time; the track runs at the play's rate
 			.then(() => music.play((Date.now() - live.startedAt - LEAD_IN_MS) * live.rate));

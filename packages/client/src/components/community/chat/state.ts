@@ -1,9 +1,12 @@
 import Synced from '@osu-idle/shared/helpers/synced';
-import { DEFAULT_CHANNEL } from '@osu-idle/shared/community/wire';
+import {
+	ANNOUNCE_CHANNEL,
+	DEFAULT_CHANNEL,
+} from '@osu-idle/shared/community/wire';
 import { LOGS_CHANNEL } from '../../../logs';
 
 /** The open chat tabs: channels, plus one `pm:<userId>` tab per conversation. */
-export const chatTabs = new Synced<string[]>([DEFAULT_CHANNEL, LOGS_CHANNEL]);
+export const chatTabs = new Synced<string[]>([DEFAULT_CHANNEL, ANNOUNCE_CHANNEL, LOGS_CHANNEL]);
 export const activeChatTab = new Synced<string | undefined>(DEFAULT_CHANNEL);
 
 const PM_PREFIX = 'pm:';

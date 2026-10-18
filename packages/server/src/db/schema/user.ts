@@ -1,5 +1,6 @@
 import {
 	boolean,
+	datetime,
 	int,
 	mysqlTable,
 	timestamp,
@@ -22,7 +23,7 @@ export const users = mysqlTable('user', {
 	// linked from the options; the Discord bot gives this account's level role to it
 	discordId: varchar({ length: 32 }).unique(),
 	// the supporter tag shows while this is in the future
-	supporterUntil: timestamp(),
+	supporterUntil: datetime(),
 	// every month of supporter ever received: the profile's hearts
 	supporterMonths: int().notNull().default(0),
 	// the buyer's Stripe customer, for the subscription portal

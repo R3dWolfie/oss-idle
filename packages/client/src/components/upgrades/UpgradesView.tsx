@@ -28,8 +28,8 @@ export default function UpgradesView({ character }: { character: Character }) {
 			<p className="ladder__hint">
 				<Trans>
 					An upgrade costs {UPGRADE_LEVELS} raw levels of the skill and
-					permanently boosts its XP gains by {bonus}%. Buying above the required
-					level spends more XP and feeds Overdrive, which multiplies the boost.
+					boosts its XP gains by {bonus}%. Buying above the required level spends
+					more XP and feeds Overdrive, which multiplies the gains further.
 				</Trans>
 			</p>
 		</div>

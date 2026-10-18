@@ -4,6 +4,6 @@ import { SETTINGS } from '../../db/settings';
 
 export default function OsuMusicTheme() {
 	return <Checkbox value={SETTINGS.osuMusicTheme} label={
-		<Trans>osu! music theme</Trans>
+		<Trans>osu! music at startup</Trans>
 	} />;
 }

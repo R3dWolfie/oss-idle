@@ -73,8 +73,8 @@ export default function ModSelect({ onClose }: { onClose: () => void }) {
 			<div className="mod-select__panel" onClick={e => e.stopPropagation()}>
 				<p className="mod-select__intro">
 					<Trans>
-						Mods change how a map plays. A faster rate is harder for your character,
-						a slower one easier, but its score is cut.
+						Mods change how a map plays. A faster rate usually makes the map harder,
+						and a slower one easier.
 					</Trans>
 				</p>
 				<div className="mod-select__multiplier">

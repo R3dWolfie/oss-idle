@@ -1090,7 +1090,7 @@ function GameplayInner({
 						<Trans>Next up:</Trans> {nextUp
 							? <>
 								{nextUp.set.metadata.artist} - {nextUp.set.metadata.title}
-								<RatedVersion version={nextUp.metadata.version} />
+								<RatedVersion version={nextUp.metadata.version} rate={nextUp.lockedRate} />
 							</>
 							: '-'}
 					</div>
@@ -1278,7 +1278,7 @@ export default function Gameplay({
 			// not be mis-scored. During server downtime this waits rather than guessing.
 			await Account.ready();
 			const character = Entities.character.get();
-			let session = await startPlaySession(character, live.metadata.beatmapId);
+			let session = await startPlaySession(character, live.metadata.beatmapId, beatmapInfo.lockedRate);
 
 			// start-or-join can hand back a play on a *different* map (quit without
 			// abort, then launched another) - its replay wouldn't match this chart.
@@ -1306,7 +1306,7 @@ export default function Gameplay({
 					return;
 				}
 				await abortPlaySession(session.token);
-				session = await startPlaySession(character, live.metadata.beatmapId);
+				session = await startPlaySession(character, live.metadata.beatmapId, beatmapInfo.lockedRate);
 				if (session.mode === 'ranked' && session.beatmapId !== live.metadata.beatmapId) {
 					await fail(t`Couldn't take over the running play.`);
 					return;

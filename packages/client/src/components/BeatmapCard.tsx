@@ -26,19 +26,24 @@ import useSynced from '@osu-idle/shared/hooks/useSynced';
 import { SETTINGS } from '../db/settings';
 import BeatmapCardXP from './BeatmapCardXP';
 import type { BeatmapXPInsight } from '../xpInsights';
+import {
+	canPlayAt,
+	liveSpeedUpgrades,
+} from '../gameplay/playRate';
 
 /** max gap between two clicks on the same card to count as a double-click */
 const DOUBLE_CLICK_MS = 300;
 
-/** Build the card's state classes (active / sibling / download status). */
+/** Build the card's state classes (active / sibling / download status / reach). */
 function cardClassName(
 	active: boolean, 
 	sibling: boolean,
 	downloaded: boolean,
+	reachable: boolean,
 ): string {
 	return `bm-card ${active ? 'is-active' : ''} ${
 		sibling ? 'is-sibling' : ''
-	} ${downloaded ? 'is-downloaded' : 'is-remote'}`;
+	} ${downloaded ? 'is-downloaded' : 'is-remote'} ${reachable ? '' : 'is-unreachable'}`;
 }
 
 type Props = {
@@ -47,7 +52,6 @@ type Props = {
 
 	onCardClick: (beatmap: LightBeatmap, set: LightBeatmapSet) => void
 	onCardDoubleClick: (beatmap: LightBeatmap, set: LightBeatmapSet) => void
-	hasDownloaded: boolean
 
 	downloads: Record<number, DownloadState>
 	/** XP gained on the last play of this difficulty, when the feature is unlocked */
@@ -56,7 +60,7 @@ type Props = {
 
 export default function BeatmapCard({
 	beatmap, set,
-	onCardClick, onCardDoubleClick, hasDownloaded,
+	onCardClick, onCardDoubleClick,
 	downloads, xpInsight,
 }: Props) {
 	const [skin] = useSynced(currentSkin);
@@ -86,7 +90,9 @@ export default function BeatmapCard({
 		(await Score.best(character.id, beatmap.metadata.id))?.grade
 	, [beatmap, character.id, scoresV]);
 
-	const version = useRatedVersion(beatmap.metadata.version);
+	const version = useRatedVersion(beatmap.metadata.version, beatmap.lockedRate);
+	useSynced(liveSpeedUpgrades);
+	const reachable = canPlayAt(beatmap.lockedRate);
 	const artist = set.metadata.artist;
 	const title = set.metadata.title;
 	const creator = set.metadata.creator;
@@ -98,6 +104,7 @@ export default function BeatmapCard({
 	// id), so two clicks only count as a double-click on the *same* card.
 	const lastClickRef = useRef(0);
 	const handleClick = () => {
+		if (!reachable) return;
 		const now = Date.now();
 		if (now - lastClickRef.current <= DOUBLE_CLICK_MS) {
 			lastClickRef.current = 0;
@@ -119,8 +126,9 @@ export default function BeatmapCard({
 	const color = difficultyColor(stars);
 	return (
 		<div
-			className={cardClassName(active, sibling, downloaded)}
+			className={cardClassName(active, sibling, downloaded, reachable)}
 			data-id={beatmap.metadata.id}
+			data-rate={beatmap.lockedRate}
 			onClick={handleClick}
 			style={bg ? { backgroundImage: showThumbnails ? `url("${bg}")` : '' } : undefined}
 		>
@@ -129,9 +137,11 @@ export default function BeatmapCard({
 				{grade && skin.grade(grade)}
 				<div className="bm-card__body">
 					<div className="bm-card__title">
-						{title}{!hasDownloaded && (<div className='bm-card__dl'>
+						<span className="bm-card__title-text">{title}</span>
+						{!downloaded && !downloading && (<div className='bm-card__dl'>
 							- <Trans>Double click to download</Trans>
-						</div>)}</div>
+						</div>)}
+					</div>
 					<div className="bm-card__artist">{artist}</div>
 					<div className="bm-card__meta">
 						<span className="bm-card__stars" style={{ color }}>

@@ -5,6 +5,7 @@ import {
 	useState,
 } from 'react';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
+import { ANNOUNCE_CHANNEL } from '@osu-idle/shared/community/wire';
 import Socket from '../../../online/socket';
 import { music } from '../../../audio/MusicPlayer';
 import {
@@ -21,6 +22,10 @@ import {
 } from '../../../online/privateMessages';
 import { blocked } from '../../../online/blocks';
 import ChatText from './ChatText';
+import {
+	type MenuTarget,
+	menuFor,
+} from '../state';
 
 /** A line as the log renders it; no `name` = a system line, coloured whole. */
 type LogLine = {
@@ -30,6 +35,7 @@ type LogLine = {
 	color?: string,
 	name?: string,
 	link?: { label: string, path: string },
+	sender?: MenuTarget,
 };
 
 export default function ChatTabContents({ channel, inputRef } : {
@@ -54,6 +60,9 @@ export default function ChatTabContents({ channel, inputRef } : {
 			};
 			return {
 				id: l.id, at: l.at, text: l.text, color: l.from.color, name: l.from.name,
+				sender: {
+					...l.from, line: l,
+				},
 			};
 		})
 		: (pms.get(contact) ?? []);
@@ -95,19 +104,26 @@ export default function ChatTabContents({ channel, inputRef } : {
 					);
 				}
 
+				const { sender } = line;
 				return (
 					<div key={i} className="chat__line">
-						<span
-							className="chat__from"
-							style={{ color: line.color }}
-						>{`${time} ${line.name}:`}</span>
+						<span className="chat__from" style={{ color: line.color }}>
+							{`${time} `}
+							<span
+								className={sender ? 'chat__name' : undefined}
+								onClick={sender && (e => {
+									e.stopPropagation();
+									void menuFor.set({ ...sender });
+								})}
+							>{line.name}</span>:
+						</span>
 						<ChatText text={line.text} link={line.link} />
 					</div>
 				);
 			})}
 		</div>
 
-		{channel !== LOGS_CHANNEL && (
+		{channel !== LOGS_CHANNEL && channel !== ANNOUNCE_CHANNEL && (
 			<form className="chat__compose" onSubmit={submit}>
 				<span>
 					{'>'}

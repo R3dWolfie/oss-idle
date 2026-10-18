@@ -251,6 +251,26 @@ export const update = async (
 	});
 };
 
+/** Rebuild a connected player's card from their current row - a play moves its
+ *  pp, accuracy, play count, level and rank - and announce it. No-op offline. */
+export const refresh = async (character: CharacterRow, user: UserRow): Promise<void> => {
+	const previous = await readEntry(character.id);
+	if (!previous) return;
+	const entry = await buildEntry({
+		character,
+		user,
+		geo: {
+			loc: previous.loc, tz: previous.tz,
+		},
+		status: previous.status,
+	});
+	if (previous.nowPlaying) entry.nowPlaying = previous.nowPlaying;
+	await redis.hset(PRESENCE_KEY, String(character.id), JSON.stringify(entry));
+	hub.broadcast({
+		type: 'presence:update', entry,
+	});
+};
+
 /** Prune entries whose last-seen has expired (a worker died without a clean
  *  close). Runs periodically on every worker; the deletes are idempotent. */
 export const sweepPresence = async (): Promise<void> => {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
 import ContextMenu from '../ContextMenu';
 import { type CarouselItem } from '../BeatmapCarousel';
+import { canPlayAt } from '../../gameplay/playRate';
 
 /** The card's osu!-style right-click menu. `deleteArmed` lives here (not in the
  *  parent) so it resets to unarmed every time the menu reopens - the menu only
@@ -30,8 +31,8 @@ export default function CardContextMenu({
 	const { t } = useLingui();
 	// delete needs a second click to confirm (osu!-style)
 	const [deleteArmed, setDeleteArmed] = useState(false);
-	// only a downloaded map can be played, so only a downloaded map can be queued
-	const queueOptions = item.beatmap.metadata.runtime
+	// only a playable map can be queued: downloaded, at a rate within reach
+	const queueOptions = item.beatmap.metadata.runtime && canPlayAt(item.beatmap.lockedRate)
 		? [
 			{
 				label: t`Add to queue`,

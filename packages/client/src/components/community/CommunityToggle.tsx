@@ -3,13 +3,14 @@ import type Synced from '@osu-idle/shared/helpers/synced';
 
 /** A bottom-right toggle button backed by a boolean Synced (a persisted Setting). */
 export default function CommunityToggle({
-	value, label, onClick,
-}: { value: Synced<boolean>; label: string; onClick?: () => void }) {
+	value, label, onClick, unread,
+}: { value: Synced<boolean>; label: string; onClick?: () => void; unread?: boolean }) {
 	const [on] = useSynced(value);
 	return (
 		<button
 			className="community-controls__btn"
 			data-on={on}
+			data-unread={unread}
 			tabIndex={-1}
 			onMouseDown={e => e.preventDefault()}
 			onClick={() => {

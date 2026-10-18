@@ -35,7 +35,7 @@ export default function MatchBeatmap({ match, noMap }: { match: Match, noMap: bo
 	// the host's pick plays for everyone, as song select would
 	useEffect(() => {
 		const beatmap = card?.beatmap;
-		if (!beatmap || beatmap.is(music.beatmap.get())) return;
+		if (!beatmap || beatmap.metadata.id === music.beatmap.get()?.metadata.id) return;
 		void music.beatmap.set(beatmap)
 			.then(() => music.play(beatmap.metadata.runtime ? beatmap.metadata.previewTime : 0));
 	}, [card?.beatmap]);
@@ -68,7 +68,6 @@ export default function MatchBeatmap({ match, noMap }: { match: Match, noMap: bo
 				set={card.set}
 				onCardClick={() => void fetch()}
 				onCardDoubleClick={() => void fetch()}
-				hasDownloaded={!noMap}
 				downloads={{
 					[map.setId]: download ?? {
 						status: noMap ? 'idle' : 'done', progress: noMap ? 0 : 1,

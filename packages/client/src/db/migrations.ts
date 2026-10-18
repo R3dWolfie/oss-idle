@@ -23,13 +23,14 @@ type Migration = (db: Database) => void;
 /** `ALTER TABLE ... ADD COLUMN`, skipped when the column is already there. A
  *  fresh database is created from the live schema and then replays every
  *  migration, so an unguarded add fails on the columns it means to add. */
+const hasColumn = (db: Database, table: string, column: string): boolean => !!db.exec(`
+	SELECT EXISTS (
+		SELECT 1 FROM pragma_table_info('${table}') WHERE name = '${column}'
+	);
+`)[0].values[0][0];
+
 const addColumn = (db: Database, table: string, column: string, ddl: string) => {
-	const exists = db.exec(`
-		SELECT EXISTS (
-			SELECT 1 FROM pragma_table_info('${table}') WHERE name = '${column}'
-		);
-	`)[0].values[0][0] as number;
-	if (exists) return false;
+	if (hasColumn(db, table, column)) return false;
 
 	db.run(`ALTER TABLE ${table} ADD COLUMN ${column} ${ddl};`);
 	return true;
@@ -317,6 +318,24 @@ const addScoreRate: Migration = db => {
 	addColumn(db, 'score', 'rate', 'REAL DEFAULT 1');
 };
 
+/** A playlist holds a difficulty once per rate it is locked at, and once
+ *  unlocked (rate 0, following the mod): the rate joins the key. */
+const playlistEntryRate: Migration = db => {
+	if (hasColumn(db, 'playlist_entry', 'rate')) return;
+	db.run('ALTER TABLE playlist_entry RENAME TO playlist_entry_old;');
+	db.run('DROP INDEX IF EXISTS idx_playlist_entry_beatmap;');
+	db.run(`CREATE TABLE playlist_entry (
+		playlistId INTEGER NOT NULL,
+		beatmapId  INTEGER NOT NULL,
+		rate       REAL NOT NULL DEFAULT 0,
+		PRIMARY KEY (playlistId, beatmapId, rate)
+	);`);
+	db.run('CREATE INDEX idx_playlist_entry_beatmap ON playlist_entry(beatmapId);');
+	db.run(`INSERT INTO playlist_entry (playlistId, beatmapId)
+		SELECT playlistId, beatmapId FROM playlist_entry_old;`);
+	db.run('DROP TABLE playlist_entry_old;');
+};
+
 const migrations: Migration[] = [
 	recomputeBests,
 	addOnlineId,
@@ -333,6 +352,7 @@ const migrations: Migration[] = [
 	addLifetimeXp,
 	addMemoryReset,
 	addScoreRate,
+	playlistEntryRate,
 ];
 
 /**

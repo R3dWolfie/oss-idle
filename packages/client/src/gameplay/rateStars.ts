@@ -1,4 +1,5 @@
 import Synced from '@osu-idle/shared/helpers/synced';
+import useAsync from '@osu-idle/shared/hooks/useAsync';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import { versionLabel } from '@osu-idle/shared/rate';
 import { rpc } from '../online/client';
@@ -20,8 +21,12 @@ const load = async (rate: number): Promise<ReadonlyMap<number, number>> => {
 	return stars;
 };
 
+/** Every difficulty's stars at a rate, by id; empty at x1. */
+export const starsAtRate = async (rate: number): Promise<ReadonlyMap<number, number>> =>
+	rate === 1 ? new Map() : await load(rate).catch(() => new Map());
+
 void selectedRate.sync(async rate => {
-	const stars = rate === 1 ? new Map<number, number>() : await load(rate).catch(() => new Map());
+	const stars = await starsAtRate(rate);
 	if (selectedRate.get() === rate) void rateStars.set(stars);
 });
 
@@ -30,14 +35,22 @@ void selectedRate.sync(async rate => {
 export const starsOf = (beatmap: LightBeatmap): number =>
 	rateStars.get().get(beatmap.metadata.id) ?? beatmap.metadata.difficulty;
 
-/** A difficulty's stars at the picked rate, re-rendering when it changes. */
+/** A difficulty's stars at the picked rate, or at its locked one, re-rendering
+ *  when it changes. */
 export const useStarsOf = (beatmap: LightBeatmap): number => {
 	useSynced(rateStars);
-	return starsOf(beatmap);
+	const locked = beatmap.lockedRate;
+	const atLock = useAsync(
+		async () => locked === undefined ? undefined : await starsAtRate(locked),
+		[locked],
+	);
+	if (locked === undefined) return starsOf(beatmap);
+	return atLock?.get(beatmap.metadata.id) ?? beatmap.metadata.difficulty;
 };
 
-/** A difficulty's name as shown at the picked rate: Beginner x1.3. */
-export const useRatedVersion = (version: string): string => {
+/** A difficulty's name as shown at the picked rate, or at its locked one:
+ *  Beginner x1.3. */
+export const useRatedVersion = (version: string, lockedRate?: number): string => {
 	const [rate] = useSynced(selectedRate);
-	return versionLabel(version, rate ?? 1);
+	return versionLabel(version, lockedRate ?? rate ?? 1);
 };

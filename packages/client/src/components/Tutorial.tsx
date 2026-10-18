@@ -14,7 +14,6 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import { DISCORD_URL } from '@osu-idle/shared/links';
 
 const APPEAR_DELAY_MS = 1200;
 
@@ -81,17 +80,6 @@ export default function Tutorial() {
 			</Trans> : <Trans>
 				Your character can play <b>on-repeat</b>, automatically, on playlists you crafted.
 				<b> Right-click</b> a beatmap to add it and <b>group by playlist</b>, then start a beatmap to enter playlist mode.
-			</Trans>,
-		},
-		{
-			title: t`In Beta`,
-			body: <Trans>
-				osu!idle is in <b>beta</b> and under active development - if you hit a bug,
-				report it on <a 
-					href={DISCORD_URL}
-					target="_blank"
-					rel="noreferrer"
-				>discord</a>. Have fun!
 			</Trans>,
 		},
 	];

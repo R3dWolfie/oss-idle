@@ -46,7 +46,7 @@ export default function DockWatchButton() {
 			type="button"
 			className="dock__btn"
 			title={live
-				? t`Watch it, from the list so the queue fills`
+				? t`Watch, keeping the playlist`
 				: t`Find the map playing next`}
 			onClick={press}
 		>

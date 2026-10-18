@@ -1,0 +1,72 @@
+.report-message {
+	position: fixed;
+	inset: 0;
+	z-index: 3000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.72);
+	backdrop-filter: blur(3px);
+}
+
+.report-message__box {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	width: min(430px, calc(100vw - 30px));
+	padding: 20px 15px;
+	border-radius: 10px;
+	background: #2a2226;
+	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+}
+
+.report-message__title {
+	font-size: 26px;
+	text-align: center;
+}
+
+.report-message__quote {
+	align-self: stretch;
+	padding-left: 10px;
+	border-left: 3px solid #d64045;
+	font-style: italic;
+	word-break: break-word;
+}
+
+.report-message select,
+.report-message textarea {
+	width: 100%;
+	padding: 10px;
+	border: none;
+	border-radius: 6px;
+	background: #3d3338;
+	color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+}
+
+.report-message textarea {
+	height: 130px;
+	resize: vertical;
+}
+
+.report-message__btn {
+	width: 200px;
+	padding: 12px;
+	border: none;
+	border-radius: 999px;
+	background: #54474d;
+	color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 700;
+	cursor: pointer;
+}
+.report-message__btn--send {
+	background: hsl(0, 70%, 45%);
+}
+.report-message__btn:disabled {
+	opacity: 0.45;
+	cursor: default;
+}

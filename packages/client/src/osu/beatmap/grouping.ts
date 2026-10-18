@@ -20,9 +20,10 @@ export const EMPTY_HISTORY: PlayHistory = {
 	lastPlayed: new Map(), 
 };
 
-/** beatmapId -> the local playlists containing that difficulty. Backs the
- *  "By Playlist" group mode; a light shape so this module stays DB-free. */
-export type PlaylistsByBeatmap = Map<number, { id: number, name: string }[]>;
+/** beatmapId -> the local playlists containing that difficulty, once per rate
+ *  it is locked at there. Backs the "By Playlist" group mode; a light shape so
+ *  this module stays DB-free. */
+export type PlaylistsByBeatmap = Map<number, { id: number, name: string, rate?: number }[]>;
 
 export const EMPTY_PLAYLISTS: PlaylistsByBeatmap = new Map();
 
@@ -32,6 +33,8 @@ export interface Group {
 	key: string;
 	label: string;
 	order: number;
+	/** By Playlist: the rate the difficulty is locked at in this playlist */
+	rate?: number;
 }
 
 const MINUTE = 60_000;
@@ -101,8 +104,8 @@ function recencyGroup(last: number | undefined, now: number): Group {
 /**
  * Every group a carousel item falls into for the given group mode. Most modes
  * bucket an item exactly once, but "By Playlist" mirrors osu! collections: a
- * difficulty appears under *each* playlist holding it, and one in no playlist
- * is hidden from the view entirely (empty result).
+ * difficulty appears under *each* playlist holding it, once per locked rate,
+ * and one in no playlist is hidden from the view entirely (empty result).
  */
 export function groupsOf(
 	item: CarouselItem, mode: string, history: PlayHistory, now: number,
@@ -112,7 +115,7 @@ export function groupsOf(
 		// all order 0: playlists render alphabetically via the label tiebreak
 		return (playlists.get(item.beatmap.metadata.id) ?? [])
 			.map((p) => ({
-				key: `p${p.id}`, label: p.name, order: 0, 
+				key: `p${p.id}`, label: p.name, order: 0, rate: p.rate,
 			}));
 	}
 	const g = groupOf(item, mode, history, now, downloaded);

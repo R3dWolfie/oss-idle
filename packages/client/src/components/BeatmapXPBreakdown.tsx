@@ -49,7 +49,7 @@ export default function BeatmapXPBreakdown({ insight, anchor, onClose }: {
 
 	return createPortal(
 		<div ref={ref} className="xp-breakdown" style={style}>
-			<div className="xp-breakdown__title"><Trans>XP gained last play</Trans></div>
+			<div className="xp-breakdown__title"><Trans>XP gained</Trans></div>
 			{rows.map(([skill, gained]) => (
 				<div key={skill} className="xp-breakdown__row">
 					<span>{skillName(skill as SkillName)}</span>

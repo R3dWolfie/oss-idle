@@ -115,13 +115,17 @@ export const inMatchMessage = () => t`Leave the match to play on your own.`;
 export async function startPlaySession(
 	character: Character,
 	beatmapId: number,
+	lockedRate?: number,
 ): Promise<PlaySession> {
 	if (character.isGuest()) return { mode: 'guest' };
 	try {
 		const sentAt = Date.now();
 		const res = await Socket.request(
 			{
-				type: 'play:start', beatmapId, xpMultiplier: debugXpMultiplier.get(), rate: rateFor(character),
+				type: 'play:start',
+				beatmapId,
+				xpMultiplier: debugXpMultiplier.get(),
+				rate: rateFor(character, lockedRate),
 			},
 			'play:start',
 			START_TIMEOUT_MS,

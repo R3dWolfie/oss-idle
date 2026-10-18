@@ -1,5 +1,6 @@
 import {
 	boolean,
+	datetime,
 	int,
 	mysqlTable,
 	timestamp,
@@ -23,8 +24,8 @@ export const supporterOrders = mysqlTable('supporter_order', {
 	// the payment a refund points back to
 	paymentIntent: varchar({ length: 255 }).unique(),
 	// the stretch of tag this order bought; a refund cuts it from the end
-	startsAt: timestamp(),
-	endsAt: timestamp(),
+	startsAt: datetime(),
+	endsAt: datetime(),
 	// euro cents refunded so far
 	refunded: int().notNull().default(0),
 	createdAt: timestamp().notNull().defaultNow(),

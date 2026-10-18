@@ -9,6 +9,12 @@ import {
 } from '../db/schema/playlist';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import useAsync from '@osu-idle/shared/hooks/useAsync';
+import { rateLabel } from '@osu-idle/shared/rate';
+import {
+	canPlayAt,
+	liveSpeedUpgrades,
+	selectedRate,
+} from '../gameplay/playRate';
 import {
 	Trans,
 	useLingui,
@@ -30,6 +36,8 @@ export default function PlaylistOverlay({ beatmap, onClose }: Props) {
 	const { t } = useLingui();
 	const [version] = useSynced(playlistsVersion);
 	const index = useAsync(() => getPlaylistIndex(), [version]);
+	const [rate] = useSynced(selectedRate);
+	useSynced(liveSpeedUpgrades);
 
 	const [name, setName] = useState('');
 	const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -96,9 +104,13 @@ export default function PlaylistOverlay({ beatmap, onClose }: Props) {
 						</div>
 					)}
 					{index?.playlists.map((p) => {
-						const contains = index.byBeatmap
+						const entries = index.byBeatmap
 							.get(beatmapId)
-							?.some((x) => x.id === p.id) ?? false;
+							?.filter((x) => x.id === p.id) ?? [];
+						const contains = entries.some((x) => x.rate === undefined);
+						const locked = entries
+							.flatMap((x) => x.rate === undefined ? [] : [x.rate])
+							.sort((a, b) => a - b);
 						const nbMaps = index.counts.get(p.id) ?? 0;
 						return (
 							<div
@@ -126,6 +138,17 @@ export default function PlaylistOverlay({ beatmap, onClose }: Props) {
 									</span>
 								)}
 								<span className="plmgr__actions">
+									{locked.map((r) => (
+										<button
+											key={r}
+											type="button"
+											className={`plmgr__btn plmgr__btn--remove ${canPlayAt(r) ? '' : 'plmgr__btn--unreachable'}`}
+											title={t`Remove this difficulty at ${ph({ rate: rateLabel(r) })}`}
+											onClick={(e) => { e.stopPropagation(); void p.removeBeatmap(beatmapId, r); }}
+										>
+											{rateLabel(r)}
+										</button>
+									))}
 									<button
 										type="button"
 										className="plmgr__btn"
@@ -146,6 +169,15 @@ export default function PlaylistOverlay({ beatmap, onClose }: Props) {
 										onClick={(e) => { e.stopPropagation(); void p.addBeatmap(beatmapId); }}
 									>
 										+
+									</button>
+									<button
+										type="button"
+										className="plmgr__btn plmgr__btn--add"
+										title={t`Add this difficulty locked at ${ph({ rate: rateLabel(rate) })}`}
+										disabled={locked.includes(rate)}
+										onClick={(e) => { e.stopPropagation(); void p.addBeatmap(beatmapId, rate); }}
+									>
+										+ {rateLabel(rate)}
 									</button>
 									<button
 										type="button"

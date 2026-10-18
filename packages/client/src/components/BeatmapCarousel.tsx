@@ -54,7 +54,6 @@ interface Props {
 	onCardDoubleClick: (beatmap: LightBeatmap) => void
 	/** right click (without dragging) - open the card's contextual menu */
 	onCardRightClick: (item: CarouselItem) => void
-	hasDownloaded: boolean
 	/** toggle a group header's collapsed state, by its key */
 	onToggleGroup: (key: string) => void
 	/** still loading the library */
@@ -140,7 +139,6 @@ export default function BeatmapCarousel({
 	onCardDoubleClick,
 	onCardRightClick,
 	onToggleGroup,
-	hasDownloaded,
 	loading,
 	downloads,
 	xpInsights,
@@ -380,8 +378,9 @@ export default function BeatmapCarousel({
 
 			if (card) {
 				const id = Number(card.dataset.id);
-				const row = rowsRef.current
-					.find((r) => r.type === 'card' && r.item.beatmap.is(id));
+				const rate = card.dataset.rate ? Number(card.dataset.rate) : undefined;
+				const row = rowsRef.current.find((r) => r.type === 'card'
+					&& r.item.beatmap.is(id) && r.item.beatmap.lockedRate === rate);
 
 				if (row?.type === 'card') onCardRightClick(row.item);
 				return;
@@ -462,12 +461,11 @@ export default function BeatmapCarousel({
 							onToggle={() => onToggleGroup(row.key)}
 						/>
 						: <BeatmapCard
-							key={`c:${row.item.beatmap.metadata.id}`}
+							key={`c:${row.item.beatmap.metadata.id}:${row.item.beatmap.lockedRate ?? ''}`}
 							beatmap={row.item.beatmap}
 							set={row.item.set}
 							onCardClick={onCardClick}
 							onCardDoubleClick={onCardDoubleClick}
-							hasDownloaded={hasDownloaded}
 							downloads={downloads}
 							xpInsight={xpInsights?.get(row.item.beatmap.metadata.id)}
 						/>,

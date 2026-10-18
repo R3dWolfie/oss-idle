@@ -27,6 +27,7 @@ import {
 } from '@osu-idle/shared/social';
 import { requireAdmin } from '../auth/admin';
 import { requireActive } from '../auth/active';
+import { chatLine } from '../ws/chat';
 
 const idParam = z.coerce.number().int().positive();
 
@@ -71,7 +72,14 @@ export const socialRoutes = new Hono()
 		const targetId = idParam.parse(c.req.param('userId'));
 		if (targetId === userId) throw new HTTPException(400, { message: 'You cannot report yourself' });
 		if (!await getUserById(targetId)) throw new HTTPException(404, { message: 'User not found' });
-		await report(userId, targetId, c.req.valid('json'));
+		const { message, ...body } = c.req.valid('json');
+		const line = message && await chatLine(message.channel, message.id);
+		if (message && (line?.kind !== 'player' || line.from.userId !== targetId)) {
+			throw new HTTPException(404, { message: 'Message not found' });
+		}
+		await report(userId, targetId, {
+			...body, message: line?.text,
+		});
 		return c.json({ ok: true });
 	})
 

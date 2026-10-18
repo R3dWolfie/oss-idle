@@ -21,6 +21,9 @@ import {
 /** The default channel every signed-in player joins. */
 export const DEFAULT_CHANNEL = '#osu!idle';
 
+/** Server announcements (#1 ranks, milestones); read-only for players. */
+export const ANNOUNCE_CHANNEL = '#announce';
+
 /** Server-enforced cap on a chat line. */
 export const MAX_CHAT_LENGTH = 2000;
 

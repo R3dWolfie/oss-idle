@@ -18,7 +18,7 @@ export default function OrderHistory() {
 	const mine = (id: number | undefined) => id !== undefined && id === me?.id;
 
 	if (!orders) return <div className='page-contents'><Trans>Loading…</Trans></div>;
-	if (!orders.length) return <div className='store__empty'><Trans>No orders yet.</Trans></div>;
+	if (!orders.length) return <div className='store__empty'><Trans>No orders.</Trans></div>;
 
 	return <table className='store__orders'>
 		<thead>

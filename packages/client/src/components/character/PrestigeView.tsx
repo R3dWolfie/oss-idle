@@ -24,7 +24,7 @@ export default function PrestigeView({ character }: { character: Character }) {
 			<p className="ladder__hint">
 				<Trans>
 					Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You
-					lose its upgrades and Overdrive, and gain a permanent bonus level, an
+					lose its upgrades and Overdrive, and gain a bonus level, an
 					extra gear slot and a multiplicative XP bonus. Each prestige asks for
 					one more level than the last.
 				</Trans>

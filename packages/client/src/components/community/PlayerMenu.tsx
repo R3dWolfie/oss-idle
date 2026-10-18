@@ -1,10 +1,14 @@
 import './PlayerMenu.css';
+import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import Log from '@osu-idle/shared/helpers/log';
 import ContextMenu, { type ContextMenuOption } from '../ContextMenu';
 import PlayerCard from './PlayerCard';
-import { menuFor } from './state';
+import {
+	type MenuTarget,
+	menuFor,
+} from './state';
 import Auth from '../../online/auth';
 import {
 	addFriend,
@@ -17,6 +21,8 @@ import {
 } from '../../globals';
 import { openConversation } from '../../online/privateMessages';
 import Multiplayer from '../../online/multiplayer';
+import Socket from '../../online/socket';
+import ReportMessageDialog from './chat/ReportMessageDialog';
 
 /** What the host of our match can do to another player in it. */
 const hostActions = (
@@ -51,15 +57,24 @@ const hostActions = (
 	];
 };
 
-/** osu!'s interaction menu for a clicked roster card. */
+/** osu!'s interaction menu for a clicked roster card or chat name. */
 export default function PlayerMenu() {
 	const { t } = useLingui();
 	const [player] = useSynced(menuFor);
 	const [user] = useSynced(Auth.user);
 	const [friendIds = new Set<number>()] = useSynced(friends);
+	const [roster = []] = useSynced(Socket.presence);
+	// keyed to the menu it came from: Esc can clear the menu without close()
+	const [reporting, setReporting] = useState<MenuTarget>();
 	if (!player) return null;
 
 	const close = () => void menuFor.set(undefined);
+	if (reporting === player && player.line) {
+		return <ReportMessageDialog line={player.line} onClose={close} />;
+	}
+
+	// a chat sender may have gone offline since: no card then, just their name
+	const card = roster.find(p => p.characterId === player.characterId);
 	const isSelf = user?.id === player.userId;
 	const isFriend = friendIds.has(player.userId);
 
@@ -97,6 +112,11 @@ export default function PlayerMenu() {
 				color: '#e6a6b6',
 				onClick: () => void toggleFriend(),
 			},
+			...player.line ? [{
+				label: t`Report`,
+				color: '#d64045',
+				onClick: () => setReporting(player),
+			}] : [],
 		],
 		...hostActions(player.characterId, close, {
 			give: t`Give Host`, kick: t`Kick`,
@@ -110,7 +130,8 @@ export default function PlayerMenu() {
 
 	return (
 		<ContextMenu
-			header={<PlayerCard character={player} className="player-menu__card" />}
+			title={player.name}
+			header={card && <PlayerCard character={card} className="player-menu__card" />}
 			onClose={close}
 			options={options}
 			numbered

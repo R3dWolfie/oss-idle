@@ -116,9 +116,9 @@ export class MusicPlayer {
 		if (!map || !map.metadata.runtime) return;
 		try {
 			const beatmap = await map.load();
-			if (!this.beatmap.get()?.is(map)) return; // a newer track was selected
+			if (!this.beatmap.get()?.is(map.metadata.id)) return; // a newer track was selected
 			const assets = await loadStoryboardAssets(map, beatmap);
-			if (!this.beatmap.get()?.is(map)) return;
+			if (!this.beatmap.get()?.is(map.metadata.id)) return;
 			// a virtual (no-audio) map's song is its keysounds + storyboard samples, so
 			// play both in the menu. A normal map's keysounds are gameplay-only.
 			const menu = this.audioSource.get()

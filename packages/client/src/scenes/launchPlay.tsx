@@ -29,7 +29,7 @@ export function launchPlay(beatmap: LightBeatmap, debug = false): boolean {
 	const transition = Transition.begin(
 		<LoadingPanel 
 			title={`${beatmap.set.metadata.artist} - ${beatmap.set.metadata.title}`} 
-			sub={versionLabel(beatmap.metadata.version, selectedRate.get())} 
+			sub={versionLabel(beatmap.metadata.version, beatmap.lockedRate ?? selectedRate.get())} 
 		/>,
 	);
 	// swap to gameplay only once the cover is fully opaque - otherwise the scene

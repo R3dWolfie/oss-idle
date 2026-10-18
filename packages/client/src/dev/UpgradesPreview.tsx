@@ -22,7 +22,7 @@ export default function UpgradesPreview({
 					{
 						id: 'upgrades',
 						label: <Trans>Upgrades</Trans>,
-						subtitle: <Trans>Trade skill levels for permanent XP boosts</Trans>,
+						subtitle: <Trans>Trade skill levels for XP boosts</Trans>,
 						render: () => tab === 'upgrades' && children,
 					},
 					{

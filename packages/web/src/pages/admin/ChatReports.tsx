@@ -54,6 +54,7 @@ export default function ChatReports({ onCount }: { onCount: (open: number) => vo
 							Resolve
 						</button>}
 					</div>
+					{r.message && <div className='chat-reports__message'>{r.message}</div>}
 					<div className='chat-reports__comment'>{r.comment}</div>
 				</div>
 			))}

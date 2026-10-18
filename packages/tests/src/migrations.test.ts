@@ -59,6 +59,12 @@ const database = (live = false): Database => {
 			characterId INTEGER NOT NULL, beatmapId INTEGER NOT NULL, scoreId INTEGER NOT NULL,
 			PRIMARY KEY (characterId, beatmapId)
 		);`);
+	db.run(`CREATE TABLE playlist_entry (
+		playlistId INTEGER NOT NULL, beatmapId INTEGER NOT NULL,
+		${live ? 'rate REAL NOT NULL DEFAULT 0,' : ''}
+		PRIMARY KEY (playlistId, beatmapId${live ? ', rate' : ''})
+	);`);
+	db.run('CREATE INDEX idx_playlist_entry_beatmap ON playlist_entry(beatmapId);');
 	// a fresh database has run nothing yet and replays every migration
 	db.run(`PRAGMA user_version = ${live ? 0 : APPLIED}`);
 	return db;
@@ -149,5 +155,20 @@ describe('client database migrations', () => {
 		// after a reset the earlier plays stop counting, but the scores remain
 		expect(since(1000)).toBe(1);
 		expect(one(db, 'SELECT COUNT(*) FROM score')).toBe(3);
+	});
+
+	it('keeps every playlist entry unlocked and lets a locked one sit beside it', () => {
+		const db = oldDatabase();
+		db.run('INSERT INTO playlist_entry (playlistId, beatmapId) VALUES (1, 10), (1, 11), (2, 10);');
+
+		migrate(db);
+
+		expect(rows(db, `SELECT playlistId, beatmapId, rate FROM playlist_entry
+			ORDER BY playlistId, beatmapId`)).toEqual([[1, 10, 0], [1, 11, 0], [2, 10, 0]]);
+		db.run('INSERT INTO playlist_entry (playlistId, beatmapId, rate) VALUES (1, 10, 1.3);');
+		expect(one(db, `SELECT COUNT(*) FROM playlist_entry
+			WHERE playlistId = 1 AND beatmapId = 10`)).toBe(2);
+		expect(one(db, `SELECT COUNT(*) FROM sqlite_master
+			WHERE type = 'index' AND name = 'idx_playlist_entry_beatmap'`)).toBe(1);
 	});
 });

@@ -27,7 +27,7 @@ export default function DockNowPlaying() {
 					? <Trans>Next:</Trans>
 					: <Trans>Next in {countdown}s:</Trans>}
 			{' '}{next.set.metadata.artist} - {next.set.metadata.title}
-			<RatedVersion version={next.metadata.version} />
+			<RatedVersion version={next.metadata.version} rate={next.lockedRate} />
 		</div>
 	);
 

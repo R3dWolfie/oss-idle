@@ -10,6 +10,7 @@ import { selectedRate } from '../../gameplay/playRate';
 import { starsAt } from '../../osu/difficulty';
 import {
 	rateStars,
+	starsAtRate,
 	starsOf,
 	useRatedVersion,
 } from '../../gameplay/rateStars';
@@ -26,15 +27,18 @@ export default function BeatmapInfo({
 	scoreView: boolean;
 	setScoreView: (v: boolean) => void;
 }) {
-	const [rate] = useSynced(selectedRate);
+	const [picked] = useSynced(selectedRate);
+	const rate = version.lockedRate ?? picked;
 	const [rated] = useSynced(rateStars);
 	// a map the server doesn't rank has no stars there: work them out from its file
-	const local = useAsync(async () => rate === 1 || rated.has(version.metadata.id)
-		? undefined
-		: await starsAt(version.set.metadata.id, version.metadata.id, rate),
-	[version, rate, rated]);
+	const local = useAsync(async () => {
+		if (rate === 1) return undefined;
+		const server = version.lockedRate === undefined ? rated : await starsAtRate(rate);
+		return server.get(version.metadata.id)
+			?? await starsAt(version.set.metadata.id, version.metadata.id, rate);
+	}, [version, rate, rated]);
 	const stars = local ?? starsOf(version);
-	const shownVersion = useRatedVersion(version.metadata.version);
+	const shownVersion = useRatedVersion(version.metadata.version, version.lockedRate);
 	// pre-formatted so the <Trans> placeholders read by name (e.g. {totalLength})
 	// in the catalog instead of positional {0}. A rate changes all three.
 	const totalLength = length(version.metadata.total_length / 1000 / rate);

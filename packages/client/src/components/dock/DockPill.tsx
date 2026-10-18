@@ -34,7 +34,7 @@ export default function DockPill({ onExpand, aboveBar = false }: Props) {
 						? <>
 							<span className="dock__next"><Trans>next</Trans> </span>
 							{next.set.metadata.artist} - {next.set.metadata.title}
-							<RatedVersion version={next.metadata.version} />
+							<RatedVersion version={next.metadata.version} rate={next.lockedRate} />
 						</>
 						: countdown !== undefined
 							? <Trans>Next map in {countdown}s</Trans>

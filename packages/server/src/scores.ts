@@ -21,7 +21,7 @@ import {
 	getBeatmapById,
 } from './db/schema/beatmap';
 import { announce } from './ws/chat';
-import { DEFAULT_CHANNEL } from '@osu-idle/shared/community/wire';
+import { ANNOUNCE_CHANNEL } from '@osu-idle/shared/community/wire';
 import {
 	billionsMessage,
 	firstPlaceMessage,
@@ -241,7 +241,7 @@ const announceFirstPlace = async (score: ScoreRow) => {
 
 	const perfect = score.score >= 1_000_000;
 	announce(
-		DEFAULT_CHANNEL, 
+		ANNOUNCE_CHANNEL, 
 		firstPlaceMessage(character.name, beatmap, perfect), 
 		perfect ? '#c794ff' : '#fa81c6',
 	);
@@ -254,7 +254,7 @@ const announceBillions = async (score: ScoreRow, rankedScore: number) => {
 
 	const billions = Math.floor(rankedScore / 1_000_000_000) * 1_000_000_000;
 	announce(
-		DEFAULT_CHANNEL, 
+		ANNOUNCE_CHANNEL, 
 		billionsMessage(character.name, billions), 
 		'#81e2fa',
 	);
@@ -264,7 +264,7 @@ const announceBillions = async (score: ScoreRow, rankedScore: number) => {
 const announcePps = async (character: CharacterRow) => {
 	const pps = Math.floor(Number(character.pp) / 1_000) * 1_000;
 	announce(
-		DEFAULT_CHANNEL, 
+		ANNOUNCE_CHANNEL, 
 		ppsMessage(character.name, pps), 
 		'#fa9981',
 	);
@@ -297,7 +297,7 @@ const announceSkillLevels = async (
 		if (level <= (announced.get(skill) ?? 0)) continue;
 		await setSkillMilestone(character.id, skill, level);
 		announce(
-			DEFAULT_CHANNEL,
+			ANNOUNCE_CHANNEL,
 			skillLevelMessage(character.name, skillName(skill), level),
 			'#81fa9b',
 		);

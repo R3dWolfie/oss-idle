@@ -81,6 +81,18 @@
 	min-width: 200px;
 }
 
+/* thirteen columns: long names give way so the table fits */
+.player__lb_listing_skill .main {
+	min-width: 0;
+}
+
+.player__lb_listing_skill .player__lb_listing_main a {
+	display: block;
+	max-width: 160px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .player__lb_listing_main {
 	align-items: center;
 	display: grid;

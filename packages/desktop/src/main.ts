@@ -5,6 +5,7 @@ import {
 	Menu,
 	shell,
 } from 'electron';
+import fs from 'node:fs';
 import path from 'node:path';
 import {
 	DESKTOP_SCHEME,
@@ -39,6 +40,15 @@ import type { DesktopPresence } from '@osu-idle/shared/desktop' with { 'resoluti
 
 // Privileges must be declared before the app is ready.
 registerAppSchemePrivileges();
+
+// The frame limiter's caps above the refresh rate (and Unlimited) need Chromium's
+// vsync lifted, which only works as a launch switch: the renderer persists it here.
+const UNCAPPED_FLAG = path.join(app.getPath('userData'), 'uncapped-fps');
+const uncapped = fs.existsSync(UNCAPPED_FLAG);
+if (uncapped) {
+	app.commandLine.appendSwitch('disable-frame-rate-limit');
+	app.commandLine.appendSwitch('disable-gpu-vsync');
+}
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -137,13 +147,17 @@ if (!app.requestSingleInstanceLock()) {
 		// before the renderer's first API call (no signed-out flash on launch).
 		ipcMain.on('osu-idle:bootstrap', event => {
 			event.returnValue = {
-				token: getToken(), version: app.getVersion(), 
+				token: getToken(), version: app.getVersion(), uncapped,
 			};
 		});
 		ipcMain.handle('osu-idle:login', () => startLogin());
 		ipcMain.handle('osu-idle:logout', () => { logout(); });
 		ipcMain.on('osu-idle:set-fullscreen', (_event, on: boolean) => mainWindow?.setFullScreen(!!on));
 		ipcMain.on('osu-idle:quit', () => app.quit());
+		ipcMain.on('osu-idle:set-uncapped', (_event, on: boolean) => {
+			if (on) fs.writeFileSync(UNCAPPED_FLAG, '');
+			else fs.rmSync(UNCAPPED_FLAG, { force: true });
+		});
 
 		// Self-update IPC. install ends the app, so it's fire-and-forget (send).
 		initUpdater();

@@ -606,6 +606,10 @@ msgstr "Global Rank"
 msgid "Global Ranking"
 msgstr "Global Ranking"
 
+#: src/pages/store/SupporterPerks.tsx
+msgid "Golden name"
+msgstr "Golden name"
+
 #: src/pages/rankings/RankingsNav.tsx
 msgid "grades"
 msgstr "grades"
@@ -917,8 +921,8 @@ msgid "No one has set a score on this difficulty yet."
 msgstr "No one has set a score on this difficulty yet."
 
 #: src/pages/store/OrderHistory.tsx
-msgid "No orders yet."
-msgstr "No orders yet."
+msgid "No orders."
+msgstr "No orders."
 
 #: src/pages/store/RecipientPicker.tsx
 msgid "No player goes by that name."
@@ -1017,8 +1021,8 @@ msgid "osu! page"
 msgstr "osu! page"
 
 #: src/pages/store/SupporterTag.tsx
-msgid "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it: a heart on your profile and a yellow name in chat. It changes nothing in the game, and every feature stays free for everyone."
-msgstr "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it: a heart on your profile and a yellow name in chat. It changes nothing in the game, and every feature stays free for everyone."
+msgid "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
+msgstr "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
 
 #: src/pages/help/FAQ.tsx
 msgid "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
@@ -1751,10 +1755,6 @@ msgstr "Why does my game stop in the background?"
 msgid "Withdraw"
 msgstr "Withdraw"
 
-#: src/pages/store/SupporterPerks.tsx
-msgid "Yellow name"
-msgstr "Yellow name"
-
 #: src/pages/help/FAQ.tsx
 msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
 msgstr "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
@@ -1796,8 +1796,8 @@ msgid "Your level role will show up on the osu!idle Discord server. You can clos
 msgstr "Your level role will show up on the osu!idle Discord server. You can close this tab."
 
 #: src/pages/store/SupporterPerks.tsx
-msgid "Your name shows in bright yellow in chat, for everyone to see."
-msgstr "Your name shows in bright yellow in chat, for everyone to see."
+msgid "Your name shows in gold in chat, for everyone to see."
+msgstr "Your name shows in gold in chat, for everyone to see."
 
 #: src/pages/store/SupporterStatus.tsx
 msgid "Your supporter tag is valid until <0>{until}</0>."

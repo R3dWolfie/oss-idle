@@ -17,8 +17,8 @@ export default function SupporterPerks() {
 			</div>
 			<div className='store__perk'>
 				<div className='store__perk-icon'><FontAwesomeIcon icon={faComment} /></div>
-				<h3><Trans>Yellow name</Trans></h3>
-				<p><Trans>Your name shows in bright yellow in chat, for everyone to see.</Trans></p>
+				<h3><Trans>Golden name</Trans></h3>
+				<p><Trans>Your name shows in gold in chat, for everyone to see.</Trans></p>
 			</div>
 			<div className='store__perk'>
 				<div className='store__perk-icon'><FontAwesomeIcon icon={faHeartPulse} /></div>

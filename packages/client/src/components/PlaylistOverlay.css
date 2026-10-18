@@ -150,6 +150,10 @@
 	border-color: rgba(255, 110, 110, 0.5);
 	color: #ff9d9d;
 }
+/* locked at a rate the character can't play */
+.plmgr__btn--unreachable {
+	opacity: 0.3;
+}
 
 .plmgr__footer {
 	display: flex;

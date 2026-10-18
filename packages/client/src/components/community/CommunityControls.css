@@ -40,6 +40,12 @@
 	opacity: 1;
 }
 
+/* osu!: the chat button turns light blue while there are unread messages */
+.community-controls__btn[data-unread="true"] {
+	opacity: 1;
+	background: linear-gradient(180deg, #3d7fd6, #8fc2ff);
+}
+
 @media (max-width: 850px) {
 	.community-controls__btn {
 		padding: 3px 8px;

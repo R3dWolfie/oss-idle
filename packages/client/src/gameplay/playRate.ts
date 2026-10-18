@@ -16,15 +16,26 @@ const speedOf = (character: Character): Skill | undefined =>
 export const speedUpgrades = (character: Character): number =>
 	speedOf(character)?.upgrades.get() ?? 0;
 
-/** The rate a play of this character starts at: the one picked, held to what its
- *  Speed upgrades unlock. */
-export const rateFor = (character: Character): number =>
-	allowedRate(SETTINGS.rate.get(), speedUpgrades(character));
+/** The rate a play of this character starts at: the playlist's locked one, else
+ *  the one picked, held to what its Speed upgrades unlock. */
+export const rateFor = (character: Character, lockedRate?: number): number =>
+	allowedRate(lockedRate ?? SETTINGS.rate.get(), speedUpgrades(character));
 
 /** The live character's rate: song select's music and the next play follow it. */
 export const selectedRate = new Synced(1);
 
-const update = () => void selectedRate.set(rateFor(Entities.character.get()));
+/** The live character's Speed upgrades: what decides which rates it can play. */
+export const liveSpeedUpgrades = new Synced(0);
+
+/** Whether the live character can play at a locked rate (no lock: always). */
+export const canPlayAt = (lockedRate?: number): boolean =>
+	lockedRate === undefined || allowedRate(lockedRate, liveSpeedUpgrades.get()) === lockedRate;
+
+const update = () => {
+	const character = Entities.character.get();
+	void liveSpeedUpgrades.set(speedUpgrades(character));
+	void selectedRate.set(rateFor(character));
+};
 let watched: Skill | undefined;
 void Entities.character.sync(character => {
 	watched?.upgrades.desync(update);

@@ -29,7 +29,7 @@ export default function RestrictedNotice() {
 			<div className='restricted__text'>
 				<Trans>
 					Your account has been <b>restricted</b>: you can't play or chat. If you think
-					it's a mistake, write to <a href={`mailto:${CONTACT_EMAIL}`}>{ph({ email: CONTACT_EMAIL })}</a>
+					it's a mistake: <a href={`mailto:${CONTACT_EMAIL}`}>{ph({ email: CONTACT_EMAIL })}</a>
 				</Trans>
 			</div>
 		</div>

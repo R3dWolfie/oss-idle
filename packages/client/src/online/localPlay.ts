@@ -190,7 +190,7 @@ const simulate = async (
 	);
 
 	const divine = hasUnlock(character.generation, 'DIVINE');
-	const rate = rateFor(character);
+	const rate = rateFor(character, beatmap.lockedRate);
 	const bot = new CharacterBot(
 		snapshotSkills(character, timesPlayed),
 		chart.difficulty.overallDifficulty,

@@ -1,4 +1,5 @@
 import {
+	ANNOUNCE_CHANNEL,
 	DEFAULT_CHANNEL,
 	MAX_CHAT_LENGTH,
 	type ChatLine,
@@ -27,7 +28,7 @@ import { pushMedals } from '../medals';
  */
 
 // Channels a client may post to / the console may browse. Extend as more land.
-const CHANNELS = new Set([DEFAULT_CHANNEL, LOBBY_CHANNEL]);
+const CHANNELS = new Set([DEFAULT_CHANNEL, ANNOUNCE_CHANNEL, LOBBY_CHANNEL]);
 
 /** The browsable channel list (for the admin console). */
 export const chatChannels = (): string[] => [...CHANNELS];
@@ -95,6 +96,12 @@ const store = async (channel: string, line: ChatLine): Promise<void> => {
 		.zadd(idxKey(channel), line.at, line.id);
 	if (stale.length) tx.hdel(logKey(channel), ...stale).zrem(idxKey(channel), ...stale);
 	await tx.exec();
+};
+
+/** One retained line, if it's still in the window. */
+export const chatLine = async (channel: string, id: string): Promise<ChatLine | undefined> => {
+	const v = await redis.hget(logKey(channel), id);
+	return v ? JSON.parse(v) as ChatLine : undefined;
 };
 
 /** Every retained line in a channel, oldest first. */
@@ -166,7 +173,7 @@ export const handleChat = async (
 		return;
 	}
 
-	if (await isMuted(userId)) {
+	if ((channel === ANNOUNCE_CHANNEL && !isAdmin(userId)) || await isMuted(userId)) {
 		hub.sendTo(from.characterId, {
 			type: 'error', message: 'You cannot post to chat right now.',
 		});

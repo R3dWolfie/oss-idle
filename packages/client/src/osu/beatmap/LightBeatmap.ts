@@ -10,7 +10,14 @@ export default class LightBeatmap {
 	constructor(
 		public set: LightBeatmapSet,
 		public metadata: RuntimeVersionMetadata | VersionMetadata,
+		/** the rate a playlist locked it at: it plays there, whatever the mod */
+		public lockedRate?: number,
 	) {
+	}
+
+	/** This difficulty locked at a rate, or following the mod without one. */
+	public at(rate: number | undefined): LightBeatmap {
+		return rate === this.lockedRate ? this : new LightBeatmap(this.set, this.metadata, rate);
 	}
 
 	public isPlayable(): boolean {
@@ -21,11 +28,11 @@ export default class LightBeatmap {
 		return this.is(music.beatmap.get());
 	}
 
+	/** The same entry: by id alone for a number, and at the same locked rate
+	 *  for a beatmap, since a playlist's locked copy is an entry of its own. */
 	public is(beatmap?: LightBeatmap | number): boolean {
-		return this.metadata.id === (typeof beatmap === 'number' ? 
-			beatmap : 
-			beatmap?.metadata.id
-		);
+		if (typeof beatmap === 'number') return this.metadata.id === beatmap;
+		return this.metadata.id === beatmap?.metadata.id && this.lockedRate === beatmap.lockedRate;
 	}
 
 	public async load(): Promise<Beatmap> {

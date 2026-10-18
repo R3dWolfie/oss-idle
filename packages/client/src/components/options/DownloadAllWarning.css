@@ -1,0 +1,6 @@
+.download-all-warning {
+	position: fixed;
+	inset: 0;
+	z-index: 10001;
+	pointer-events: none;
+}

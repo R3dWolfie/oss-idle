@@ -46,14 +46,14 @@ export default function DockQueue({ hint = false }: Props) {
 				>
 					<span className="dock__entry-name">
 						{beatmap.set.metadata.artist} - {beatmap.set.metadata.title}
-						<RatedVersion version={beatmap.metadata.version} />
+						<RatedVersion version={beatmap.metadata.version} rate={beatmap.lockedRate} />
 					</span>
 					{index === 0 && <span className="dock__next"><Trans>next</Trans></span>}
 					<span className="dock__entry-actions">
 						<button
 							type="button"
 							disabled={index === 0}
-							title={t`Move it up - the top of the queue plays next`}
+							title={t`Move up`}
 							onClick={() => PlayQueue.move(index, index - 1)}
 						>
 							↑

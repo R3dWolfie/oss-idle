@@ -22,6 +22,8 @@ import {
 	INTRO_SET_ID,
 } from '@osu-idle/shared/beatmap';
 import { existsSync } from 'node:fs';
+import { env } from '../env';
+import { throttled } from '../beatmaps/throttle';
 import {
 	readFile,
 	readdir,
@@ -153,6 +155,7 @@ export const beatmapsRoutes = new Hono()
 
 	// Stream a live set's .osz (404 until it's ranked + due). Returns a raw
 	// Response: the client fetches this URL directly, not via the typed RPC.
+	// `?bulk` (download every ranked map) is rate-capped, a double-click isn't.
 	.get('/osz/:setId', async c => {
 		const id = idParam.parse(c.req.param('setId'));
 		if (!await isSetLive(id)) throw new HTTPException(404, { message: 'Beatmap not available' });
@@ -161,7 +164,8 @@ export const beatmapsRoutes = new Hono()
 		if (!existsSync(path)) throw new HTTPException(404, { message: 'Beatmap file missing' });
 
 		const buf = await readFile(path);
-		return new Response(buf, {
+		const bulk = c.req.query('bulk') !== undefined;
+		return new Response(bulk ? throttled(buf, env.BULK_DOWNLOAD_RATE) : buf, {
 			headers: {
 				'Content-Type': 'application/octet-stream',
 				'Content-Length': String(buf.length),

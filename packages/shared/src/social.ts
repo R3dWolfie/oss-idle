@@ -14,5 +14,9 @@ export type ReportReason = typeof REPORT_REASON[number];
 export const reportBody = z.object({
 	reason: z.enum(REPORT_REASON),
 	comment: z.string().trim().max(2000),
+	/** a chat line being reported, quoted from the server's history */
+	message: z.object({
+		channel: z.string(), id: z.string(),
+	}).optional(),
 });
 export type ReportBody = z.infer<typeof reportBody>;

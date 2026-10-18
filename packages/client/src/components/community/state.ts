@@ -4,6 +4,7 @@ import {
 	type ValueIn,
 } from '@osu-idle/shared/helpers/mapped';
 import type { PresenceEntry } from '@osu-idle/shared/community/presence';
+import type { ChatLine } from '@osu-idle/shared/community/wire';
 import { Setting } from '../../db/settings';
 import { isCommunityOpen } from '../../globals';
 import {
@@ -24,7 +25,12 @@ export type Filter = ValueIn<typeof FILTER>;
 export const activeTab = new Synced<Tab | undefined>(TAB.name);
 export const activeFilter = new Synced<Filter>(FILTER.all);
 export const searchQuery = new Synced('');
-/** The player whose card was clicked: their interaction menu is open. */
-export const menuFor = new Synced<PresenceEntry | undefined>(undefined);
+export type PlayerChatLine = Extract<ChatLine, { kind: 'player' }>;
+/** A player whose card or chat name was clicked: their interaction menu is
+ *  open. `line` is the chat message clicked, which the menu can report. */
+export type MenuTarget = Pick<PresenceEntry, 'characterId' | 'userId' | 'name'> & {
+	line?: PlayerChatLine;
+};
+export const menuFor = new Synced<MenuTarget | undefined>(undefined);
 void isCommunityOpen.sync(open => { if (!open) void menuFor.set(undefined); });
 

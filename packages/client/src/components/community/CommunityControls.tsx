@@ -10,6 +10,7 @@ import {
 	showUsers,
 } from './state';
 import Controls from '../../input/Controls';
+import { chatUnread } from './chat/unread';
 
 /**
  * The bottom-right control strip, present open or closed. Mirrors osu!stable's
@@ -19,6 +20,7 @@ export default function CommunityControls() {
 	const { t } = useLingui();
 	const [open] = useSynced(isCommunityOpen);
 	const [chat] = useSynced(showChat);
+	const [unread] = useSynced(chatUnread);
 
 	const toggleCommunity = () => {
 		const current = showUsers.get();
@@ -68,6 +70,7 @@ export default function CommunityControls() {
 				value={showChat}
 				label={chat ? t`Hide chat` : t`Show chat`}
 				onClick={toggleChat}
+				unread={unread}
 			/>
 		</div>
 	);

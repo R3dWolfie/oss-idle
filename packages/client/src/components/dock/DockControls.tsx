@@ -89,7 +89,7 @@ export default function DockControls({ left, onCollapse }: Props) {
 			<button
 				type="button"
 				className="dock__btn"
-				title={t`Pick maps to queue`}
+				title={t`Pick maps to add`}
 				onClick={() => openPage.set(left ? undefined : { page: 'queue' })}
 			>
 				{left ? <Trans>close</Trans> : <Trans>queue</Trans>}

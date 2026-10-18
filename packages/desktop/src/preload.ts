@@ -1,6 +1,7 @@
 import {
 	contextBridge,
 	ipcRenderer,
+	webFrame,
 } from 'electron';
 // shared is ESM and this preload compiles to CommonJS; the resolution-mode hint
 // lets the type-only import resolve without making the whole package ESM (an
@@ -21,7 +22,8 @@ import type {
 
 const boot = ipcRenderer.sendSync('osu-idle:bootstrap') as { 
 	token: string | null; 
-	version: string
+	version: string;
+	uncapped: boolean;
 };
 
 let token: string | null = boot.token;
@@ -59,6 +61,7 @@ const bridge: OsuIdleDesktop = {
 		return () => { listeners.delete(cb); };
 	},
 	setFullscreen: on => ipcRenderer.send('osu-idle:set-fullscreen', on),
+	setZoomFactor: factor => webFrame.setZoomFactor(factor),
 	setPresence: (presence: DesktopPresence | null) => ipcRenderer.send('osu-idle:presence', presence),
 	quit: () => ipcRenderer.send('osu-idle:quit'),
 	onFullscreenChanged: cb => {
@@ -73,6 +76,10 @@ const bridge: OsuIdleDesktop = {
 			updateListeners.add(cb);
 			return () => { updateListeners.delete(cb); };
 		},
+	},
+	frameRate: {
+		uncapped: boot.uncapped,
+		setUncapped: on => ipcRenderer.send('osu-idle:set-uncapped', on),
 	},
 	steam: { available: false },
 };

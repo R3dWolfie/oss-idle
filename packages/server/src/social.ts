@@ -160,7 +160,11 @@ const blocks = async (userId: number, targetId: number): Promise<boolean> => {
 	return !!row;
 };
 
-export const report = async (userId: number, targetId: number, body: ReportBody): Promise<void> => {
+export const report = async (
+	userId: number,
+	targetId: number,
+	body: Omit<ReportBody, 'message'> & { message?: string },
+): Promise<void> => {
 	await db.insert(userReports).values({
 		userId, targetId, ...body,
 	});
@@ -175,6 +179,7 @@ export const reports = async () => db
 		id: userReports.id,
 		reason: userReports.reason,
 		comment: userReports.comment,
+		message: userReports.message,
 		createdAt: userReports.createdAt,
 		resolvedAt: userReports.resolvedAt,
 		from: {

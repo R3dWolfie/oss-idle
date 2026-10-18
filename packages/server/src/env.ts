@@ -66,6 +66,10 @@ const schema = z.object({
 	DISCORD_CLIENT_ID: z.string().min(1).default('1517803750968918037'),
 	DISCORD_CLIENT_SECRET: z.string().optional(),
 
+	// Bytes/s a supporter's "download every ranked beatmap" gets, so one bulk
+	// download can't take the uplink from players. Tune to the host's upload.
+	BULK_DOWNLOAD_RATE: z.coerce.number().int().positive().default(100_000_000 / 8), // 100 Mbps
+
 	// MaxMind GeoLite2-City database, used to place online players on the world
 	// map (anonymous, coarse) and derive their timezone. Optional: without it the
 	// map/timezone features degrade to country-level. The file is provisioned out

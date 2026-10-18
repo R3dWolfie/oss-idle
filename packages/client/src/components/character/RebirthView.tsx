@@ -104,7 +104,7 @@ export default function RebirthView() {
 					onClick={confirm}
 				>
 					{reborn
-						? <Trans>Already reborn</Trans>
+						? <Trans>Already reborn with this character</Trans>
 						: canRebirth(character.overallLevel)
 							? <Trans>Rebirth</Trans>
 							: <Trans>Requires overall Lv{REBIRTH_MIN_OVERALL_LEVEL}</Trans>}

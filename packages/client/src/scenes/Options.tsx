@@ -20,7 +20,9 @@ import {
 } from '@lingui/react/macro';
 import Language from '../components/options/Language';
 import ShowFPS from '../components/options/ShowFPS';
+import FrameLimiter from '../components/options/FrameLimiter';
 import Fullscreen from '../components/options/Fullscreen';
+import UIScaling from '../components/options/UIScaling';
 import ParallaxMode from '../components/options/ParallaxMode';
 import OsuMusicTheme from '../components/options/OsuMusicTheme';
 import ShowThumbnails from '../components/options/ShowThumbnails';
@@ -29,6 +31,7 @@ import MasterVolume from '../components/options/MasterVolume';
 import MusicVolume from '../components/options/MusicVolume';
 import EffectVolume from '../components/options/EffectVolume';
 import DeleteAllBeatmaps from '../components/options/DeleteAllBeatmaps';
+import DownloadAllBeatmaps from '../components/options/DownloadAllBeatmaps';
 import AutopilotDelay from '../components/options/AutopilotDelay';
 import AutopilotMode from '../components/options/AutopilotMode';
 import RightClickHold from '../components/options/RightClickHold';
@@ -122,6 +125,10 @@ export default function Options() {
 					title: t`Renderer`,
 					components: [
 						{
+							search: t`fps|frame|rate|refresh|hz|limit|vsync`,
+							component: () => FrameLimiter,
+						},
+						{
 							search: t`fps|frame|rate|refresh|hz`,
 							component: () => ShowFPS,
 						},
@@ -133,6 +140,10 @@ export default function Options() {
 						{
 							search: t`fullscreen`,
 							component: () => Fullscreen,
+						},
+						{
+							search: t`ui|scale|scaling|zoom|size`,
+							component: () => UIScaling,
 						},
 					],
 				},
@@ -259,6 +270,10 @@ export default function Options() {
 				{
 					title: t`General`,
 					components: [
+						{
+							search: t`download|beatmap|beatmaps|ranked|supporter`,
+							component: () => DownloadAllBeatmaps,
+						},
 						{
 							search: t`delete|beatmap|beatmaps`,
 							component: () => DeleteAllBeatmaps,

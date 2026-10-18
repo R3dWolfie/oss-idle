@@ -1,5 +1,6 @@
 import Synced from '@osu-idle/shared/helpers/synced';
 import {
+	Column,
 	DAO,
 	DB,
 	integer,
@@ -13,13 +14,16 @@ const playlist = table('playlist', {
 	createdAt: integer(),
 });
 
-// membership is keyed on (playlist, difficulty): re-adding the same difficulty
-// is an idempotent overwrite (the DAO inserts with OR REPLACE), never a dupe
+// membership is keyed on (playlist, difficulty, rate): re-adding the same one
+// is an idempotent overwrite (the DAO inserts with OR REPLACE), never a dupe.
+// No rate follows the mod; it is stored as 0, since NULL can't sit in a key.
 const playlistEntry = table('playlist_entry', {
 	playlistId: integer(),
 	beatmapId:  integer(),
+	rate:       new Column<number | undefined>('REAL', v => v ?? 0, v => (v as number) || undefined)
+		.default(undefined),
 }, {
-	primaryKey: ['playlistId', 'beatmapId'],
+	primaryKey: ['playlistId', 'beatmapId', 'rate'],
 	indexes: { idx_playlist_entry_beatmap: 'beatmapId' },
 });
 
@@ -55,20 +59,27 @@ export class Playlist extends DAO(playlist) {
 		touch();
 	}
 
-	async addBeatmap(beatmapId: number): Promise<void> {
+	/** `rate` locks the entry at it; without one it follows the mod. */
+	async addBeatmap(beatmapId: number, rate?: number): Promise<void> {
 		await new PlaylistEntry({
-			playlistId: this.id, beatmapId, 
+			playlistId: this.id, beatmapId, rate,
 		}).add();
 		touch();
 	}
 
-	async removeBeatmap(beatmapId: number): Promise<void> {
-		await DB.run(
-			'DELETE FROM playlist_entry WHERE playlistId = ? AND beatmapId = ?'
-			, [this.id, beatmapId],
-		);
+	async removeBeatmap(beatmapId: number, rate?: number): Promise<void> {
+		await new PlaylistEntry({
+			playlistId: this.id, beatmapId, rate,
+		}).delete();
 		touch();
 	}
+}
+
+/** A difficulty's place in a playlist, at the rate it is locked at if any. */
+export interface PlaylistMembership {
+	id: number;
+	name: string;
+	rate?: number;
 }
 
 /** Everything the playlist views need in one read: the playlists (A→Z), each
@@ -76,7 +87,7 @@ export class Playlist extends DAO(playlist) {
 export interface PlaylistIndex {
 	playlists: Playlist[];
 	counts: Map<number, number>;
-	byBeatmap: Map<number, Playlist[]>;
+	byBeatmap: Map<number, PlaylistMembership[]>;
 }
 
 export async function getPlaylistIndex(): Promise<PlaylistIndex> {
@@ -85,14 +96,16 @@ export async function getPlaylistIndex(): Promise<PlaylistIndex> {
 	const entries = await PlaylistEntry.getAll();
 	const byId = new Map(playlists.map(p => [p.id, p]));
 	const counts = new Map<number, number>();
-	const byBeatmap = new Map<number, Playlist[]>();
+	const byBeatmap = new Map<number, PlaylistMembership[]>();
 	for (const e of entries) {
 		const p = byId.get(e.playlistId);
 		if (!p) continue;
 		counts.set(p.id, (counts.get(p.id) ?? 0) + 1);
 		let list = byBeatmap.get(e.beatmapId);
 		if (!list) byBeatmap.set(e.beatmapId, list = []);
-		list.push(p);
+		list.push({
+			id: p.id, name: p.name, rate: e.rate,
+		});
 	}
 	return {
 		playlists, counts, byBeatmap, 

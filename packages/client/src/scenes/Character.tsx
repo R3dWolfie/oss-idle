@@ -25,7 +25,7 @@ export default function Character() {
 				{
 					id: 'upgrades',
 					label: <Trans>Upgrades</Trans>,
-					subtitle: t`Trade skill levels for permanent XP boosts`,
+					subtitle: t`Trade skill levels for XP boosts`,
 					render: () => <UpgradesView character={character} />,
 				},
 				{
