@@ -71,6 +71,11 @@ const schema = z.object({
 	// map/timezone features degrade to country-level. The file is provisioned out
 	// of band (download + periodic refresh from MaxMind).
 	GEOIP_DB: z.string().optional(),
+
+	// Stripe, for supporter tags (test keys on dev). The webhook secret comes
+	// from the dashboard endpoint on prod, from `stripe listen` on dev.
+	STRIPE_SECRET_KEY: z.string().optional(),
+	STRIPE_WEBHOOK_SECRET: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -2,14 +2,17 @@ import {
 	Hono,
 	type Context,
 } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import type { SkillName } from '@osu-idle/shared/skills';
 import {
+	and,
 	desc,
 	eq,
 	gt,
 	inArray,
+	isNull,
 	sql,
 } from 'drizzle-orm';
 import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core';
@@ -49,8 +52,8 @@ const idParam = z.coerce.number().int().positive();
 
 const isValidSkill = (str: string): str is ('overall' | SkillName) => `${str}Level` in characters;
 
-const skillRanking = (skill: string, page: number, country?: string, among?: number[]) => {
-	if (!isValidSkill(skill)) throw new Error('Invalid parameters');
+export const skillRanking = (skill: string, page: number, country?: string, among?: number[]) => {
+	if (!isValidSkill(skill)) throw new HTTPException(400, { message: 'Invalid parameters' });
 	return skillPage(skill, page, country, among);
 };
 
@@ -58,20 +61,20 @@ const isValidGrade = (str: string): str is ('all' | GoodGrade) =>
 	str === 'all' || str in GOOD_GRADE;
 
 const gradesRanking = (grade: string, page: number, country?: string, among?: number[]) => {
-	if (!isValidGrade(grade)) throw new Error('Invalid parameters');
+	if (!isValidGrade(grade)) throw new HTTPException(400, { message: 'Invalid parameters' });
 	return gradesPage(grade, page, country, among);
 };
 
 /** The same skills, ranked on what they have ever earned rather than what they
  *  hold: `overall` is the summed column. */
 const lifetimeRanking = (skill: string, page: number, country?: string, among?: number[]) => {
-	if (!isValidSkill(skill)) throw new Error('Invalid parameters');
+	if (!isValidSkill(skill)) throw new HTTPException(400, { message: 'Invalid parameters' });
 	return skillPage(`lifetime:${skill}`, page, country, among);
 };
 
 /** How many times each skill has been prestiged; `overall` is the total. */
 const prestigeRanking = (skill: string, page: number, country?: string, among?: number[]) => {
-	if (!isValidSkill(skill)) throw new Error('Invalid parameters');
+	if (!isValidSkill(skill)) throw new HTTPException(400, { message: 'Invalid parameters' });
 	return skillPage(
 		skill === 'overall' ? 'prestige:total' : `prestige:${skill}`, page, country, among,
 	);
@@ -80,7 +83,7 @@ const prestigeRanking = (skill: string, page: number, country?: string, among?: 
 const total = (column: AnyMySqlColumn) => sql<number>`sum(${column})`.mapWith(Number);
 
 /** Countries ranked on the summed pp of their players who have played ranked. */
-const countryPage = (page: number) => db
+export const countryPage = (page: number) => db
 	.select({
 		country: users.country,
 		players: sql<number>`count(*)`.mapWith(Number),
@@ -93,7 +96,7 @@ const countryPage = (page: number) => db
 	.from(characters)
 	.innerJoin(character_totals, eq(character_totals.id, characters.id))
 	.innerJoin(users, eq(users.id, characters.userId))
-	.where(gt(character_totals.playCount, 0))
+	.where(and(gt(character_totals.playCount, 0), isNull(users.restrictedAt)))
 	.groupBy(users.country)
 	.orderBy(desc(total(characters.pp)))
 	.limit(PAGE_SIZE)
@@ -113,7 +116,10 @@ const topPlaysPage = (page: number, among?: number[]) => db
 	.innerJoin(beatmaps, eq(beatmaps.id, bestPP.beatmapId))
 	.innerJoin(characters, eq(characters.id, bestPP.characterId))
 	.innerJoin(users, eq(users.id, characters.userId))
-	.where(among && inArray(bestPP.characterId, among.length ? among : [0]))
+	.where(and(
+		isNull(users.restrictedAt),
+		among && inArray(bestPP.characterId, among.length ? among : [0]),
+	))
 	.orderBy(desc(bestPP.pp), desc(bestPP.id))
 	.limit(PAGE_SIZE)
 	.offset((page - 1) * PAGE_SIZE);

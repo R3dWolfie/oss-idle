@@ -1,3 +1,7 @@
+import {
+	rateStars,
+	starsOf,
+} from '../gameplay/rateStars';
 import { ph } from '@lingui/core/macro';
 import {
 	useCallback,
@@ -32,6 +36,9 @@ import {
 	SelectionContext,
 } from '../components/songselect/selection';
 import UserCard from '../components/songselect/UserCard';
+import SongSelectFooter from '../components/songselect/SongSelectFooter';
+import { modSelectOpen } from '../components/mods/modSelectOpen';
+import useTypeToSearch from '../components/songselect/useTypeToSearch';
 import CardOverlays from '../components/songselect/CardOverlays';
 import { playFromList } from '../components/songselect/listPlay';
 import { matchesSearch } from '../osu/beatmap/beatmapSearch';
@@ -123,8 +130,7 @@ const SORT_COMPARATORS: Record<SortOption, (
 		a.beatmap.metadata.bpm - b.beatmap.metadata.bpm,
 	'By Creator': (a, b) => 
 		a.set.metadata.creator.localeCompare(b.set.metadata.creator),
-	'By Difficulty': (a, b) => 
-		a.beatmap.metadata.difficulty - b.beatmap.metadata.difficulty,
+	'By Difficulty': (a, b) => starsOf(a.beatmap) - starsOf(b.beatmap),
 	'By Length': (a, b) => 
 		a.beatmap.metadata.total_length - b.beatmap.metadata.total_length,
 	'By Title': (a, b) => 
@@ -243,8 +249,8 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 	// the right-click contextual menu's target, and the playlist manager's target
 	const [menuItem, setMenuItem] = useState<CarouselItem | null>(null);
 	const [playlistItem, setPlaylistItem] = useState<CarouselItem | null>(null);
-
 	const onBack = () => {
+		if (modSelectOpen.get()) { void modSelectOpen.set(false); return; }
 		if (playlistItem) { setPlaylistItem(null); return; }
 		if (menuItem) { setMenuItem(null); return; }
 		// Escape never reaches here while a page is open: Controls closes the page
@@ -327,30 +333,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 	// the carousel reflects deletions without a full reload.
 	useEffect(() => { void loadLibrary(); }, [loadLibrary, library]);
 
-	// osu!-style "type anywhere to search": a printable key focuses the box (and
-	// flows into it), Escape clears it
-	useEffect(() => {
-		const onKey = (e: KeyboardEvent) => {
-			const el = searchRef.current;
-			if (!el) return;
-			// an open overlay (context menu / playlist manager) owns the keyboard:
-			// Escape closes it via onBack, and typing must not steal focus from it
-			if (menuItem || playlistItem) return;
-			if (e.key === 'Escape') {
-				if (document.activeElement === el || search) {
-					SETTINGS.search.set('');
-					el.blur();
-					e.preventDefault();
-				}
-				return;
-			}
-			const tag = (document.activeElement as HTMLElement | null)?.tagName;
-			if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-			if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) el.focus();
-		};
-		window.addEventListener('keydown', onKey);
-		return () => window.removeEventListener('keydown', onKey);
-	}, [search, menuItem, playlistItem]);
+	useTypeToSearch(searchRef, search, [menuItem, playlistItem]);
 
 	const [sort] = useSynced(SETTINGS.sortby);
 	const [group] = useSynced(SETTINGS.groupby);
@@ -381,6 +364,8 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 
 	// the carousel shows the search-filtered, sort-ordered subset; selection logic
 	// keeps using the full `items` so a search never loses the current selection
+	// at a rate, stars change: the sort, the star groups and a star search follow
+	const [ratedStars] = useSynced(rateStars);
 	const filteredItems = useMemo(() => {
 		if (!history) return [];
 		const filtered = search.trim() ? 
@@ -389,7 +374,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 		return comparator ? 
 			[...filtered].sort((a, b) => comparator(a, b, history)) 
 			: filtered;
-	}, [items, search, history, comparator]);
+	}, [items, search, history, comparator, ratedStars]);
 
 	// accordion: at most one group open at a time (null = all collapsed). A fresh
 	// group mode resets it; the active group then re-opens via the effect below.
@@ -437,7 +422,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 			downloadSnapshot,
 		)
 			.map((g) => g.key).join('\n');
-	}, [group, version, items, history, playlistsByBeatmap, downloadSnapshot]);
+	}, [group, version, items, history, playlistsByBeatmap, downloadSnapshot, ratedStars]);
 
 	// the selection's group opens automatically when the selection moves into it
 	// (closing any other) - but stays collapsible by hand, since we only re-open on
@@ -497,6 +482,19 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 			: Math.min(Math.max(current + step, 0), orderedItems.length - 1);
 		void selectItem(orderedItems[next].beatmap);
 	}, [orderedItems, selectItem]);
+
+	// osu!'s F2: a random map of the list, never the one already selected
+	const random = useCallback(() => {
+		const others = orderedItems.filter(i => !i.beatmap.is(selection.get()));
+		const pick = others[Math.floor(Math.random() * others.length)];
+		if (pick) void selectItem(pick.beatmap);
+	}, [orderedItems, selectItem, selection]);
+
+	// osu!'s F3: the selected card's menu
+	const beatmapOptions = useCallback(() => {
+		const item = orderedItems.find(i => i.beatmap.is(selection.get()));
+		if (item) setMenuItem(item);
+	}, [orderedItems, selection]);
 
 	Controls.next.usePress(() => { if (!openPage.get()) move(1); });
 	Controls.previous.usePress(() => { if (!openPage.get()) move(-1); });
@@ -745,9 +743,12 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 
 				{!overlay && (
 					<div className="game__botbar">
-						<button className="game__exit" onClick={onBack}>
-							<Trans>BACK</Trans>
-						</button>
+						<div className="game__botbar-left">
+							<button className="game__exit" onClick={onBack}>
+								<Trans>BACK</Trans>
+							</button>
+							<SongSelectFooter onRandom={random} onOptions={beatmapOptions} />
+						</div>
 						<UserCard
 							character={character}
 							online_character={online_character}

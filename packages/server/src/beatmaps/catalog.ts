@@ -2,6 +2,7 @@ import {
 	and,
 	eq,
 	lte,
+	ne,
 	sql,
 } from 'drizzle-orm';
 import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
@@ -21,6 +22,10 @@ export const liveCondition = and(
 /** Per-difficulty gate on top of `liveCondition`: a diff is live only when its
  *  set is live AND the diff itself is ranked. For queries joining `beatmaps`. */
 export const liveDiffCondition = and(liveCondition, eq(beatmaps.ranked, true));
+
+// Public listings show live sets (ranked diffs only) but never the intro (it's
+// not a ranked map). Every listing joins `beatmaps`, so the diff gate applies.
+export const listedCondition = and(liveDiffCondition, ne(beatmapset.id, INTRO_SET_ID));
 
 const previewUrl = (setId: number, file: string | null) =>
 	file ? `/v1/beatmap/preview/${setId}/${file}` : undefined;

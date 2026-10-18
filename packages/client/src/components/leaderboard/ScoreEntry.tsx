@@ -1,3 +1,4 @@
+import ScoreMods from './ScoreMods';
 import './ScoreEntry.css';
 import { useState } from 'react';
 import { Score } from '../../db/schema/score';
@@ -13,14 +14,17 @@ import Entities from '../../entity/entities';
 import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
 import ScoreTooltip from './ScoreTooltip';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
+import type { BoardPlayer } from '../../online/services/scores';
 
 interface Props {
 	score: Score | ScoreDTO,
 	previous?: { score: number },
+	/** Who set it, when the leaderboard already says. */
+	player?: BoardPlayer,
 	rank?: number,
 }
 
-type EntryCharacter = Character | Awaited<ReturnType<typeof getCharacter>>;
+type EntryCharacter = Character | Awaited<ReturnType<typeof getCharacter>> | BoardPlayer;
 
 /** Server characters carry a resolved avatar (custom upload or osu! fallback);
  *  the local Guest has none, so fall back to the user avatar then the default.
@@ -34,16 +38,20 @@ function entryAvatar(
 	return userAvatarUrl || GUEST_AVATAR_URL;
 }
 
-export default function ScoreEntry({ score, previous, rank }: Props) {
+export default function ScoreEntry({
+	score, previous, rank, player,
+}: Props) {
 	const [skin] = useSynced(currentSkin);
 
-	const character = useAsync(async () =>
-		score.characterId <= 1 ? 
-			await Character.get({ id: score.characterId }) 
-			: await getCharacter(score.characterId)
-	, [score]);
+	const fetched = useAsync(async () => {
+		if (player) return undefined;
+		return score.characterId <= 1
+			? await Character.get({ id: score.characterId })
+			: await getCharacter(score.characterId);
+	}, [score, player]);
+	const character = player ?? fetched;
 
-	const user = useAsync(async () => character && ('userId' in character) ? 
+	const user = useAsync(async () => player ? undefined : character && ('userId' in character) ? 
 		getUser(character.userId) 
 		: null,
 	[character]);
@@ -91,9 +99,7 @@ export default function ScoreEntry({ score, previous, rank }: Props) {
 				</span>
 			</span>
 			<span className="score_entry__stats">
-				<span className="score_entry__mods">
-					‎ 
-				</span>
+				<ScoreMods rate={score.rate} />
 				<span className="score_entry__acc">
 					{(score.accuracy * 100).toFixed(2)}%
 				</span>

@@ -12,6 +12,7 @@ import {
 	activateLocale,
 } from './i18n';
 import { routeTree } from './routeTree.gen';
+import PageError from './components/PageError';
 import '@osu-idle/shared/shared.css';
 import './font.css';
 import './styles.css';
@@ -24,6 +25,8 @@ const router = createRouter({
 	routeTree,
 	basepath: '/web',
 	defaultPreload: 'intent',
+	defaultNotFoundComponent: () => <PageError />,
+	defaultErrorComponent: ({ error }) => <PageError error={error} />,
 });
 
 declare module '@tanstack/react-router' {

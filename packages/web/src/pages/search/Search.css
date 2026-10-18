@@ -1,0 +1,29 @@
+.search__box {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 0 12px;
+	border-radius: 6px;
+	background-color: hsl(var(--hsl-b4));
+	color: hsl(var(--hsl-f1));
+}
+
+.search__box input {
+	flex: 1;
+	background: none;
+	border: none;
+	outline: none;
+	padding: 12px 0;
+	font-size: 16px;
+	font-family: inherit;
+	color: hsl(var(--hsl-c1));
+}
+
+.search h2 {
+	margin: 24px 0 10px;
+	font-size: 18px;
+}
+
+.search h2 b {
+	color: hsl(var(--hsl-c2));
+}

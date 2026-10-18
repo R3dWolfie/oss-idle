@@ -4,6 +4,15 @@ import { bpm } from '@osu-idle/shared/display/num';
 import { length } from '@osu-idle/shared/display/length';
 import LightBeatmap from '../../osu/beatmap/LightBeatmap';
 import Leaderboard from '../leaderboard/Leaderboard';
+import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useAsync from '@osu-idle/shared/hooks/useAsync';
+import { selectedRate } from '../../gameplay/playRate';
+import { starsAt } from '../../osu/difficulty';
+import {
+	rateStars,
+	starsOf,
+	useRatedVersion,
+} from '../../gameplay/rateStars';
 
 /** The selected difficulty's details and its scores - the top bar's left and
  *  right halves. Drawn only by the scene: over a running play, neither belongs
@@ -17,11 +26,20 @@ export default function BeatmapInfo({
 	scoreView: boolean;
 	setScoreView: (v: boolean) => void;
 }) {
+	const [rate] = useSynced(selectedRate);
+	const [rated] = useSynced(rateStars);
+	// a map the server doesn't rank has no stars there: work them out from its file
+	const local = useAsync(async () => rate === 1 || rated.has(version.metadata.id)
+		? undefined
+		: await starsAt(version.set.metadata.id, version.metadata.id, rate),
+	[version, rate, rated]);
+	const stars = local ?? starsOf(version);
+	const shownVersion = useRatedVersion(version.metadata.version);
 	// pre-formatted so the <Trans> placeholders read by name (e.g. {totalLength})
-	// in the catalog instead of positional {0}.
-	const totalLength = length(version.metadata.total_length / 1000);
-	const bpmText = bpm(version.metadata.bpm);
-	const title = `${version.set.metadata.artist} - ${version.set.metadata.title} [${version.metadata.version}]`;
+	// in the catalog instead of positional {0}. A rate changes all three.
+	const totalLength = length(version.metadata.total_length / 1000 / rate);
+	const bpmText = bpm(version.metadata.bpm * rate);
+	const title = `${version.set.metadata.artist} - ${version.set.metadata.title} [${shownVersion}]`;
 	const icon = `url('${version.metadata.runtime ? '/ranked.png' : '/unknown.png'}')`;
 
 	return (
@@ -48,7 +66,7 @@ export default function BeatmapInfo({
 						<Trans>Rice: {ph({ rice: version.metadata.rice })} LN: {ph({ ln: version.metadata.ln })}</Trans>
 					</div>
 					<div className="game__top_diff">
-						<Trans>Star Rating: {ph({ stars: version.metadata.difficulty })}★</Trans>
+						<Trans>Star Rating: {ph({ stars: Math.round(stars * 100) / 100 })}★</Trans>
 					</div>
 				</div>
 			</div>

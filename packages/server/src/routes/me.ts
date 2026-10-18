@@ -17,6 +17,7 @@ import {
 	type CharacterRow,
 } from '../db/schema/character';
 import { requireAuth } from '../auth/middleware';
+import { requireActive } from '../auth/active';
 import { users } from '../db/schema/user';
 import { saveUploadedImage } from '../uploads';
 import { env } from '../env';
@@ -32,6 +33,7 @@ import { rebirthBody } from '@osu-idle/shared/rebirth';
 import { isPlaying } from '../play';
 import {
 	assertActionAvailable,
+	assertNewestGeneration,
 	performPrestige,
 	performRebirth,
 	performUpgrade,
@@ -127,7 +129,7 @@ export const meRoutes = new Hono()
 
 	// Rename the account's current character (same rules as creation). The old
 	// name is kept permanently in the character's name history.
-	.post('/username', requireAuth, jsonBody(characterRenameBody), async c => {
+	.post('/username', requireActive, jsonBody(characterRenameBody), async c => {
 		const userId = c.get('userId');
 		const {
 			name, characterId,
@@ -160,7 +162,7 @@ export const meRoutes = new Hono()
 
 	// Upload a custom profile picture for the account's current character,
 	// overriding its osu! avatar. Returns the updated character.
-	.post('/avatar', requireAuth, async c => {
+	.post('/avatar', requireActive, async c => {
 		const body = await c.req.parseBody();
 		const url = await saveUploadedImage(body['file']);
 		return c.json(await setCurrentCharacterImages(c.get('userId'), { avatarUrl: url }));
@@ -172,7 +174,7 @@ export const meRoutes = new Hono()
 	})
 
 	// Upload a profile banner for the account's current character.
-	.post('/banner', requireAuth, async c => {
+	.post('/banner', requireActive, async c => {
 		const body = await c.req.parseBody();
 		const url = await saveUploadedImage(body['file']);
 		return c.json(await setCurrentCharacterImages(c.get('userId'), { bannerUrl: url }));
@@ -184,7 +186,7 @@ export const meRoutes = new Hono()
 	})
 
 	// Show a held medal's name as the current character's title, or none.
-	.put('/title', requireAuth, jsonBody(titleBody), async c => {
+	.put('/title', requireActive, jsonBody(titleBody), async c => {
 		const { medalId } = c.req.valid('json');
 		const [user] = await db.select().from(users).where(eq(users.id, c.get('userId'))).limit(1);
 		const id = user?.currentCharacter;
@@ -293,6 +295,7 @@ export const meRoutes = new Hono()
 		// a log - after the player was told the rebirth would happen. Keeping your
 		// own name displaces the old character instead, so it needs no check.
 		if (name !== row.name) await assertNameAvailable(user.id, name, user.username);
+		await assertNewestGeneration(row);
 
 		const deferred = await queueWhilePlaying(row, {
 			type: 'rebirth', name, requestedAt: Date.now(),

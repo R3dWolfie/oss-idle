@@ -97,6 +97,15 @@ const defaults = [
 	option<number>()('longpress', 400),
 	option<number>()('scrollspeed', 16),
 	/**
+	 * Playback rate picked in song select (held to what Speed upgrades unlock), and
+	 * whether the music's pitch follows it.
+	 */
+	option<number>()('rate', 1),
+	option<boolean>()('pitchFollowsRate', true),
+	/** the last rate picked on each side, which turning that mod back on brings back */
+	option<number>()('fasterRate', 1.05),
+	option<number>()('slowerRate', 0.95),
+	/**
 	 * Active UI language. Defaults to the browser's preferred locale on first
 	 * run, then sticks to the player's explicit choice. Read at boot (main.tsx)
 	 * and re-activated whenever the picker changes it.

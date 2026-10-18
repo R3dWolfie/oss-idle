@@ -7,7 +7,8 @@ import { Score } from '../../db/schema/score';
 const endpoint = rpc.v1.scores;
 
 type ScoreResponse = InferResponseType<typeof endpoint[':id']['$get'], 200>;
-type BeatmapScoresResponse = InferResponseType<typeof endpoint['beatmap'][':beatmap']['$get'], 200>;
+type BeatmapBoardResponse = InferResponseType<typeof endpoint['beatmap'][':beatmap']['board']['$get'], 200>;
+export type BoardPlayer = BeatmapBoardResponse[number]['player'];
 type MyBeatmapScoreResponse = InferResponseType<typeof endpoint['beatmap'][':beatmap']['me']['$get'], 200>;
 
 export const getScore = async (id: number): Promise<ScoreResponse> => {
@@ -38,10 +39,10 @@ export const getMyBeatmapScore = async (
 };
 
 export const flushBeatmapScores = async (beatmap: number) => 
-	MemCache.get<BeatmapScoresResponse>('API.getBeatmapScores')
+	MemCache.get<BeatmapBoardResponse>('API.getBeatmapScores')
 		.delete(beatmap);
 
-const importScores = (scores: BeatmapScoresResponse) => {
+const importScores = (scores: BeatmapBoardResponse[number]['score'][]) => {
 	void (async () => {
 		for (const score of scores) {
 			const char = await Character.get(score.characterId);
@@ -53,38 +54,24 @@ const importScores = (scores: BeatmapScoresResponse) => {
 	})();
 };
 
+/** A map's leaderboard, global or within a country, each best with who set it. */
 export const getBeatmapScores = async (
 	beatmap: number,
-): Promise<BeatmapScoresResponse> => {
-	return MemCache.get<BeatmapScoresResponse>('API.getBeatmapScores')
-		.process(beatmap, async () => {
-			const res = await endpoint['beatmap'][':beatmap']
-				.$get({ param: { beatmap: String(beatmap) } });
-			if (!res.ok) throw new Error(`getBeatmapScores(${beatmap}) failed: ${res.status}`);
-			const scores: BeatmapScoresResponse = await res.json();
-			importScores(scores);
-			return scores;
+	country?: string,
+): Promise<BeatmapBoardResponse> => {
+	return MemCache.get<BeatmapBoardResponse>('API.getBeatmapScores')
+		.process(country ? `${beatmap}:${country}` : beatmap, async () => {
+			const res = await endpoint['beatmap'][':beatmap']['board'].$get({
+				param: { beatmap: String(beatmap) },
+				query: { country },
+			});
+			if (!res.ok) throw new Error(`getBeatmapScores(${beatmap}, ${country}) failed: ${res.status}`);
+			const rows: BeatmapBoardResponse = await res.json();
+			importScores(rows.map(r => r.score));
+			return rows;
 		}, 1000 * 60);
 };
 
-export const getCountryBeatmapScores = async (
-	beatmap: number, 
-	country: string,
-): Promise<BeatmapScoresResponse> => {
-	return MemCache.get<BeatmapScoresResponse>('API.getCountryBeatmapScores')
-		.process(`${beatmap}:${country}`, async () => {
-			const res = await endpoint['beatmap'][':beatmap']['country'][':country']
-				.$get({
-					param: {
-						beatmap: String(beatmap), country, 
-					}, 
-				});
-			if (!res.ok) throw new Error(`getCountryBeatmapScores(${beatmap}, ${country}) failed: ${res.status}`);
-			const scores: BeatmapScoresResponse = await res.json();
-			importScores(scores);
-			return scores;
-		}, 1000 * 60);
-};
 /** A character's latest score on a beatmap, if any. */
 export const getLatestScore = async (characterId: number, beatmapId: number) => {
 	const res = await endpoint.character[':character'].beatmap[':beatmap'].latest.$get({

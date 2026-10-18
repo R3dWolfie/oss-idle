@@ -9,6 +9,7 @@ import {
 	type RoundScore,
 } from '@osu-idle/shared/multiplayer';
 import Socket from './socket';
+import { restrictedMessage } from './play';
 import Log from '@osu-idle/shared/helpers/log';
 import { t } from '@lingui/core/macro';
 import { music } from '../audio/MusicPlayer';
@@ -18,12 +19,13 @@ import PlayQueue from '../gameplay/playQueue';
 import { beatmapsVersion } from '../osu/beatmap/beatmap_store';
 import SceneManager, { SCENE } from '../scenes/SceneManager';
 import { launchPlay } from '../scenes/launchPlay';
+import { selectedRate } from '../gameplay/playRate';
 import {
 	activeChatTab,
 	chatTabs,
 } from '../components/community/chat/state';
 
-type JoinReason = 'full' | 'password' | 'gone' | 'playing';
+type JoinReason = 'full' | 'password' | 'gone' | 'playing' | 'restricted';
 
 /** Survives a dev hot reload: this module sits under SceneManager, which
  *  reloads it with every scene edit, and a fresh copy would forget the room. */
@@ -74,6 +76,36 @@ export default class Multiplayer {
 		this.followChannel();
 		this.followRounds();
 		void Synced.all([this.current, beatmapsVersion], () => void this.reportMap());
+		void Synced.all([this.current, selectedRate], () => this.reportRate());
+	}
+
+	/** Everyone plays at their own rate: the server starts our round play at ours. */
+	private static reportRate(): void {
+		const match = this.current.get();
+		const mine = match && this.mySlot(match);
+		const rate = selectedRate.get();
+		if (!mine || match.playing || (mine.rate ?? 1) === rate) return;
+		this.send({
+			type: 'mp:rate', rate,
+		});
+	}
+
+	/** Our play of the running round is over, others' maybe not. */
+	public static waitingOnRound(): boolean {
+		const match = this.current.get();
+		return !!match?.playing && !!this.mySlot(match)?.playing;
+	}
+
+	/** Resolves once the running round is over (or we left the match). */
+	public static roundOver(): Promise<void> {
+		return new Promise(resolve => {
+			const check = (match: Match | undefined) => {
+				if (match?.playing) return;
+				this.current.desync(check);
+				resolve();
+			};
+			void this.current.sync(check);
+		});
 	}
 
 	/** osu!'s notice when the host's crown passes to us. */
@@ -140,6 +172,7 @@ export default class Multiplayer {
 			type: 'mp:create', name, password, size, isPublic, beatmapId: music.beatmap.get()?.metadata.id,
 		}, 'mp:joined');
 		if (reason === 'playing') Log.popup(t`Abort your running play to join a game.`);
+		if (reason === 'restricted') Log.errorPopup(restrictedMessage());
 		return reason;
 	}
 
@@ -150,6 +183,7 @@ export default class Multiplayer {
 			type: 'mp:join', id, password,
 		}, 'mp:joined');
 		if (reason === 'playing') Log.popup(t`Abort your running play to join a game.`);
+		if (reason === 'restricted') Log.errorPopup(restrictedMessage());
 		return reason;
 	}
 

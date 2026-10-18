@@ -1,0 +1,49 @@
+.authorize {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	max-width: 520px;
+	margin: 0 auto;
+	font-size: 14px;
+	text-align: center;
+}
+
+.authorize__owner {
+	opacity: 0.7;
+}
+
+.authorize__scopes {
+	margin: 0;
+	padding-left: 18px;
+	text-align: left;
+}
+
+.authorize__buttons {
+	display: flex;
+	gap: 10px;
+	margin-top: 15px;
+}
+
+.authorize__button {
+	min-width: 140px;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 999px;
+	background: hsl(var(--hsl-b5));
+	color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.authorize__button--primary {
+	background: hsl(var(--hsl-h1));
+	color: hsl(var(--hsl-b6));
+}
+
+.authorize__button:disabled {
+	opacity: 0.45;
+	cursor: default;
+}

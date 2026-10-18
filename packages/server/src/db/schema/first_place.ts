@@ -38,18 +38,20 @@ export const getNbFirstPlaces = async (characterId: number) => (await db
 	.limit(1))[0]?.count ?? 0
 ;
 
+export const firstPlaceRows = (characterId: number, offset: number, limit: number) => db
+	.select({
+		first_place: firstPlace, beatmap: beatmapListColumns, beatmapset,
+	})
+	.from(firstPlace)
+	.innerJoin(beatmaps, eq(beatmaps.id, firstPlace.beatmapId))
+	.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
+	.where(eq(firstPlace.characterId, characterId))
+	.orderBy(desc(firstPlace.playedAt))
+	.offset(offset)
+	.limit(limit);
+
 export const getFirstPlaces = (characterId: number, page: number = 1) =>
-	profilePage(page, (offset, limit) => db
-		.select({
-			first_place: firstPlace, beatmap: beatmapListColumns, beatmapset,
-		})
-		.from(firstPlace)
-		.innerJoin(beatmaps, eq(beatmaps.id, firstPlace.beatmapId))
-		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
-		.where(eq(firstPlace.characterId, characterId))
-		.orderBy(desc(firstPlace.playedAt))
-		.offset(offset)
-		.limit(limit));
+	profilePage(page, (offset, limit) => firstPlaceRows(characterId, offset, limit));
 
 export const getFirstPlace = async (beatmapId: number) => {
 	return (await db

@@ -1,7 +1,7 @@
 {
   "name": "osu-idle",
   "private": true,
-  "version": "0.21.0.0",
+  "version": "1.0.0.0",
   "type": "module",
   "description": "osu! idle - a replica of the osu! startup experience (React client + Hono backend)",
   "workspaces": [
@@ -22,6 +22,7 @@
     "dev:web": "npm -w @osu-idle/web run dev",
     "dev:client": "npm -w @osu-idle/client run dev",
     "dev:graph": "graphify watch .",
+    "playfields": "tsx scripts/header-playfields.mts",
     "build": "npm run i18n:extract && npm run i18n:compile && npm -w @osu-idle/shared run build && npm -w @osu-idle/server run build:types && npm -w @osu-idle/client run build && npm -w @osu-idle/web run build",
     "build:deploy": "npm -w @osu-idle/server run build:types && npm -w @osu-idle/client run build && npm -w @osu-idle/web run build",
     "build:nodeploy": "npm run build:shared && npm run build:types",

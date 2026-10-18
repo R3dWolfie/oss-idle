@@ -29,11 +29,19 @@ const deliverable = async (fromUserId: number, to: number): Promise<number | und
 	return online && !blocked && accepted ? characterId : undefined;
 };
 
+/** Whether this message goes out at all: the sender isn't muted or over the rate
+ *  limit, and the recipient takes it. */
+const recipientOf = async (
+	from: PrivateMessage['from'], to: number,
+): Promise<number | undefined> => {
+	if (await isMuted(from.userId) || await rateLimited(from.characterId, 'pm')) return undefined;
+	return deliverable(from.userId, to);
+};
+
 /**
  * Relay one private message. Nothing is stored. The sender always gets it back
- * as if delivered - an offline recipient, one who doesn't take their messages,
- * or a block all look the same from their side. Mute and the rate limit still
- * answer with an error, as public chat does.
+ * as if delivered, whatever stopped it: mute, the rate limit, an offline
+ * recipient, one who doesn't take their messages, or a block.
  */
 export const handlePm = async (
 	from: PrivateMessage['from'],
@@ -42,19 +50,6 @@ export const handlePm = async (
 ): Promise<void> => {
 	const trimmed = text.trim();
 	if (!trimmed || to === from.userId) return;
-
-	if (await isMuted(from.userId)) {
-		hub.sendTo(from.characterId, {
-			type: 'error', message: 'You cannot post to chat right now.',
-		});
-		return;
-	}
-	if (await rateLimited(from.characterId)) {
-		hub.sendTo(from.characterId, {
-			type: 'error', message: 'You are sending messages too fast.',
-		});
-		return;
-	}
 
 	const message: PrivateMessage = {
 		id: randomUUID(),
@@ -66,7 +61,7 @@ export const handlePm = async (
 	hub.sendTo(from.characterId, {
 		type: 'pm', message,
 	});
-	const recipient = await deliverable(from.userId, to);
+	const recipient = await recipientOf(from, to);
 	if (recipient !== undefined) hub.sendTo(recipient, {
 		type: 'pm', message,
 	});

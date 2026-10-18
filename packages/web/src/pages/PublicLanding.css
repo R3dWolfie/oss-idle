@@ -1,8 +1,7 @@
-html,
-body,
-#root {
+html {
 	background:
-		radial-gradient(1200px 600px at 50% -10%, #2f2d35 0%, transparent 60%),
+		radial-gradient(1200px 600px at 50% -10%, #2f2d35 0%, transparent 60%)
+			no-repeat,
 		hsl(var(--hsl-b6));
 }
 
@@ -93,6 +92,29 @@ body,
 	width: 34px;
 	height: 34px;
 	background: var(--nav-logo) center / contain no-repeat;
+}
+
+.landing__sections {
+	display: flex;
+	gap: 20px;
+	margin-right: auto;
+	margin-left: 40px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.landing__sections a {
+	color: var(--text);
+}
+
+.landing__sections a:hover {
+	color: #fff;
+}
+
+@media (max-width: 760px) {
+	.landing__sections {
+		display: none;
+	}
 }
 
 .landing__topnav {

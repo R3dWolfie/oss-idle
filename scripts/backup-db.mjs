@@ -3,8 +3,9 @@
  *
  * The nightly backup keeps one day and rotates at 23:42, so whether a release
  * has a snapshot in front of it is down to what time it went out. This one is
- * taken by the deploy itself and never rotated - the point is to still have it
- * weeks later, when a bug turns up that only a pre-release row can settle.
+ * taken by the deploy itself and kept 6 months - the point is to still have it
+ * weeks later, when a bug turns up that only a pre-release row can settle. The
+ * privacy policy promises that limit: older snapshots are deleted here.
  *
  * It runs before the version bump, so the version in package.json is still the
  * one currently live: the snapshot is named for the build the data belongs to,
@@ -20,7 +21,9 @@ import {
 import {
 	existsSync,
 	mkdirSync,
+	readdirSync,
 	statSync,
+	unlinkSync,
 } from 'node:fs';
 import {
 	dirname,
@@ -87,3 +90,13 @@ try {
 }
 
 console.log(`backup: ${(size / 1024 / 1024).toFixed(1)} MB written`);
+
+// 6 months, the privacy policy's limit
+const KEEP_MS = 183 * 86_400_000;
+for (const name of readdirSync(dir)) {
+	if (!name.startsWith(`${db}-`) || !name.endsWith('.sql.gz')) continue;
+	const path = join(dir, name);
+	if (Date.now() - statSync(path).mtimeMs < KEEP_MS) continue;
+	unlinkSync(path);
+	console.log(`backup: deleted ${name}, older than 6 months`);
+}

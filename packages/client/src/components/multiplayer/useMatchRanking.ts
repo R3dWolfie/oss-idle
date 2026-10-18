@@ -5,7 +5,6 @@ import type {
 	RoundScore,
 } from '@osu-idle/shared/multiplayer';
 import Multiplayer from '../../online/multiplayer';
-import { getLatestScore } from '../../online/services/scores';
 import SceneManager, { SCENE } from '../../scenes/SceneManager';
 import useLiveScores from './useLiveScores';
 
@@ -17,7 +16,7 @@ export type Ranking = {
 	final: boolean,
 	/** the score being shown */
 	viewed: number,
-	/** open a player's score, once the round is over */
+	/** open a player's result, once the round is over - failed ones too */
 	view: (characterId: number) => void,
 };
 
@@ -36,15 +35,16 @@ export default function useMatchRanking(score: Played): Ranking | undefined {
 	const final = !live && ofRound(score, round);
 	if (!live && !final) return undefined;
 
-	const view = async (characterId: number) => {
-		if (!final) return;
-		const theirs = await getLatestScore(characterId, round.beatmapId);
-		if (theirs && theirs.playedAt >= round.startedAt) SceneManager.set(SCENE.RESULT, theirs);
+	const view = (characterId: number) => {
+		const theirs = final ? round.results.find(r => r.characterId === characterId) : undefined;
+		if (theirs?.result) SceneManager.set(SCENE.RESULT, {
+			id: 0, ...theirs.result,
+		}, undefined, undefined, theirs.failed);
 	};
 	return {
 		results: final ? round.results : liveScores,
 		final,
 		viewed: score.characterId,
-		view: id => void view(id),
+		view,
 	};
 }

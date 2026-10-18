@@ -19,7 +19,6 @@ const publish = async () => {
 			'embeds': [
 				{
 					'title': '${artist} - $(title)',
-					// eslint-disable-next-line @stylistic/max-len
 					'description': '`${difficulty}☆` `${version}`\n`${difficulty}☆` `${version}`\n`${difficulty}☆` `${version}`\n`${difficulty}☆` `${version}`',
 					'color': 5814783,
 					'author': { 'name': 'New ranked map by {creator}' },

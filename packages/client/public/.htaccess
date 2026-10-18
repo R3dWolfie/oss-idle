@@ -1,0 +1,9 @@
+# osu.idle.rhythmgamers.net/discord: the one place the invite lives
+Redirect 302 /discord https://discord.gg/Yd5GEaX8AJ
+
+# security headers (no X-Frame-Options: /web/preview is embedded elsewhere)
+<IfModule mod_headers.c>
+	Header always set Strict-Transport-Security "max-age=15552000" "expr=%{HTTPS} == 'on'"
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

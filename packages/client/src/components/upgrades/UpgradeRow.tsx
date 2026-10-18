@@ -72,6 +72,7 @@ export default function UpgradeRow({
 				onBuy={() => void u.buy()}
 				onConfirm={u.confirm}
 				tip={<UpgradeTooltip
+					skill={skill.name}
 					level={u.level}
 					xp={u.xp}
 					upgrades={u.upgrades}

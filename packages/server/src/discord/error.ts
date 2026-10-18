@@ -14,8 +14,17 @@ const trim = (text: string, max = 1000) =>
  * publish itself swallows failures, and we never report in dev (no live webhook
  * worth spamming) - the console.error in onError still fires there.
  */
+const REPEAT_MS = 60_000;
+const lastSent = new Map<string, number>();
+
 export const reportError = (err: Error, c: Context) => {
 	if (!isProd || !env.ERROR_FEED_WEBHOOK) return;
+	// the same error once a minute at most
+	const key = err.message;
+	const now = Date.now();
+	if (now - (lastSent.get(key) ?? 0) < REPEAT_MS) return;
+	if (lastSent.size > 500) lastSent.clear();
+	lastSent.set(key, now);
 
 	void publish(env.ERROR_FEED_WEBHOOK, {
 		embeds: [{

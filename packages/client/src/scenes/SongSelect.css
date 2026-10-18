@@ -234,7 +234,9 @@
 	z-index: 100;
 
 	display: grid;
+	/* the user card centred, kept clear of the song select buttons */
 	grid-template-columns: 1fr auto 1fr;
+	column-gap: 4rem;
 }
 
 .game__back {
@@ -820,4 +822,80 @@
 .game__xp-btn.is-boosted {
 	color: #ffd24a;
 	border-color: rgba(255, 210, 74, 0.5);
+}
+
+.game__botbar-left {
+	grid-column: 1;
+	grid-row: 1;
+	display: flex;
+	align-items: stretch;
+	justify-self: start;
+	height: 110px;
+}
+
+.game__botbar-left .game__exit {
+	grid-column: auto;
+}
+
+.select-footer {
+	display: flex;
+	align-items: stretch;
+	gap: 4px;
+	margin-left: 1.5rem;
+}
+
+.select-footer__btn {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 105px;
+	padding: 0 8px;
+	border: none;
+	border-top: 4px solid var(--strip);
+	background: linear-gradient(180deg, #2a2a33, #16161c);
+	color: #fff;
+	font-family: inherit;
+	font-size: 1.35rem;
+	line-height: 1.1;
+	cursor: pointer;
+	transition: filter 0.12s ease;
+}
+
+.select-footer__btn:hover {
+	filter: brightness(1.35);
+}
+
+.select-footer__btn.is-mods {
+	--strip: #e85fa8;
+}
+
+.select-footer__btn.is-random {
+	--strip: #6fc23c;
+}
+
+.select-footer__btn.is-options {
+	--strip: #3d8de0;
+}
+
+.select-footer__active {
+	margin-top: 4px;
+	font-size: 1rem;
+	font-weight: 700;
+	color: #ffcc22;
+}
+
+.select-footer__key {
+	position: absolute;
+	right: 6px;
+	bottom: 4px;
+	font-size: 0.85rem;
+	opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+	.select-footer {
+		display: none;
+	}
 }

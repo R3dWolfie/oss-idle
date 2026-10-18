@@ -9,25 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StoreRouteImport } from './routes/store'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as PreviewRouteImport } from './routes/preview'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FriendsRouteImport } from './routes/friends'
 import { Route as DownloadRouteImport } from './routes/download'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
 import { Route as MapsIndexRouteImport } from './routes/maps/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as ScoresIdRouteImport } from './routes/scores/$id'
 import { Route as RankingsScoreRouteImport } from './routes/rankings/score'
 import { Route as RankingsPlaysRouteImport } from './routes/rankings/plays'
 import { Route as RankingsGlobalRouteImport } from './routes/rankings/global'
 import { Route as RankingsCountryRouteImport } from './routes/rankings/country'
+import { Route as OauthAuthorizeRouteImport } from './routes/oauth/authorize'
 import { Route as NewsAdminRouteImport } from './routes/news/admin'
 import { Route as NewsSlugRouteImport } from './routes/news/$slug'
 import { Route as MatchesIdRouteImport } from './routes/matches/$id'
 import { Route as MapsRequestsRouteImport } from './routes/maps/requests'
 import { Route as MapsClaimRouteImport } from './routes/maps/claim'
+import { Route as MapsIdRouteImport } from './routes/maps/$id'
+import { Route as LegalTermsRouteImport } from './routes/legal/terms'
+import { Route as LegalRulesRouteImport } from './routes/legal/rules'
+import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
+import { Route as LegalNoticeRouteImport } from './routes/legal/notice'
+import { Route as LegalCopyrightRouteImport } from './routes/legal/copyright'
+import { Route as LegalApiRouteImport } from './routes/legal/api'
 import { Route as HelpFaqRouteImport } from './routes/help/faq'
 import { Route as CIdRouteImport } from './routes/c/$id'
 import { Route as AuthErrorRouteImport } from './routes/auth/error'
@@ -35,6 +48,8 @@ import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
 import { Route as AuthDesktopRouteImport } from './routes/auth/desktop'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AdminSkinsRouteImport } from './routes/admin/skins'
+import { Route as AdminRestrictionsRouteImport } from './routes/admin/restrictions'
+import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminNominationRouteImport } from './routes/admin/nomination'
 import { Route as AdminMedalsRouteImport } from './routes/admin/medals'
 import { Route as AdminClaimsRouteImport } from './routes/admin/claims'
@@ -49,9 +64,19 @@ import { Route as RankingsGradesGradeRouteImport } from './routes/rankings/grade
 import { Route as RankingsMedalsProgressIndexRouteImport } from './routes/rankings/medals/progress/index'
 import { Route as RankingsMedalsProgressLineRouteImport } from './routes/rankings/medals/progress/$line'
 
+const StoreRoute = StoreRouteImport.update({
+  id: '/store',
+  path: '/store',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PreviewRoute = PreviewRouteImport.update({
@@ -79,6 +104,16 @@ const DownloadRoute = DownloadRouteImport.update({
   path: '/download',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -95,8 +130,13 @@ const MapsIndexRoute = MapsIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const ScoresIdRoute = ScoresIdRouteImport.update({
+  id: '/scores/$id',
+  path: '/scores/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingsScoreRoute = RankingsScoreRouteImport.update({
@@ -117,6 +157,11 @@ const RankingsGlobalRoute = RankingsGlobalRouteImport.update({
 const RankingsCountryRoute = RankingsCountryRouteImport.update({
   id: '/rankings/country',
   path: '/rankings/country',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
+  id: '/oauth/authorize',
+  path: '/oauth/authorize',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsAdminRoute = NewsAdminRouteImport.update({
@@ -142,6 +187,41 @@ const MapsRequestsRoute = MapsRequestsRouteImport.update({
 const MapsClaimRoute = MapsClaimRouteImport.update({
   id: '/maps/claim',
   path: '/maps/claim',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapsIdRoute = MapsIdRouteImport.update({
+  id: '/maps/$id',
+  path: '/maps/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRulesRoute = LegalRulesRouteImport.update({
+  id: '/legal/rules',
+  path: '/legal/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalNoticeRoute = LegalNoticeRouteImport.update({
+  id: '/legal/notice',
+  path: '/legal/notice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCopyrightRoute = LegalCopyrightRouteImport.update({
+  id: '/legal/copyright',
+  path: '/legal/copyright',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalApiRoute = LegalApiRouteImport.update({
+  id: '/legal/api',
+  path: '/legal/api',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HelpFaqRoute = HelpFaqRouteImport.update({
@@ -175,39 +255,49 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSkinsRoute = AdminSkinsRouteImport.update({
-  id: '/admin/skins',
-  path: '/admin/skins',
-  getParentRoute: () => rootRouteImport,
+  id: '/skins',
+  path: '/skins',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminRestrictionsRoute = AdminRestrictionsRouteImport.update({
+  id: '/restrictions',
+  path: '/restrictions',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminNominationRoute = AdminNominationRouteImport.update({
-  id: '/admin/nomination',
-  path: '/admin/nomination',
-  getParentRoute: () => rootRouteImport,
+  id: '/nomination',
+  path: '/nomination',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminMedalsRoute = AdminMedalsRouteImport.update({
-  id: '/admin/medals',
-  path: '/admin/medals',
-  getParentRoute: () => rootRouteImport,
+  id: '/medals',
+  path: '/medals',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminClaimsRoute = AdminClaimsRouteImport.update({
-  id: '/admin/claims',
-  path: '/admin/claims',
-  getParentRoute: () => rootRouteImport,
+  id: '/claims',
+  path: '/claims',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminChatRoute = AdminChatRouteImport.update({
-  id: '/admin/chat',
-  path: '/admin/chat',
-  getParentRoute: () => rootRouteImport,
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminBalancingRoute = AdminBalancingRouteImport.update({
-  id: '/admin/balancing',
-  path: '/admin/balancing',
-  getParentRoute: () => rootRouteImport,
+  id: '/balancing',
+  path: '/balancing',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminAddonsRoute = AdminAddonsRouteImport.update({
-  id: '/admin/addons',
-  path: '/admin/addons',
-  getParentRoute: () => rootRouteImport,
+  id: '/addons',
+  path: '/addons',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const RankingsMedalsIndexRoute = RankingsMedalsIndexRouteImport.update({
   id: '/rankings/medals/',
@@ -249,18 +339,24 @@ const RankingsMedalsProgressLineRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/docs': typeof DocsRoute
   '/download': typeof DownloadRoute
   '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/preview': typeof PreviewRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/store': typeof StoreRoute
   '/admin/addons': typeof AdminAddonsRoute
   '/admin/balancing': typeof AdminBalancingRoute
   '/admin/chat': typeof AdminChatRoute
   '/admin/claims': typeof AdminClaimsRoute
   '/admin/medals': typeof AdminMedalsRoute
   '/admin/nomination': typeof AdminNominationRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
@@ -268,15 +364,24 @@ export interface FileRoutesByFullPath {
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
+  '/legal/api': typeof LegalApiRoute
+  '/legal/copyright': typeof LegalCopyrightRoute
+  '/legal/notice': typeof LegalNoticeRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/rules': typeof LegalRulesRoute
+  '/legal/terms': typeof LegalTermsRoute
+  '/maps/$id': typeof MapsIdRoute
   '/maps/claim': typeof MapsClaimRoute
   '/maps/requests': typeof MapsRequestsRoute
   '/matches/$id': typeof MatchesIdRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/admin': typeof NewsAdminRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/rankings/country': typeof RankingsCountryRoute
   '/rankings/global': typeof RankingsGlobalRoute
   '/rankings/plays': typeof RankingsPlaysRoute
   '/rankings/score': typeof RankingsScoreRoute
+  '/scores/$id': typeof ScoresIdRoute
   '/admin/': typeof AdminIndexRoute
   '/maps/': typeof MapsIndexRoute
   '/news/': typeof NewsIndexRoute
@@ -290,18 +395,23 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/docs': typeof DocsRoute
   '/download': typeof DownloadRoute
   '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/preview': typeof PreviewRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/store': typeof StoreRoute
   '/admin/addons': typeof AdminAddonsRoute
   '/admin/balancing': typeof AdminBalancingRoute
   '/admin/chat': typeof AdminChatRoute
   '/admin/claims': typeof AdminClaimsRoute
   '/admin/medals': typeof AdminMedalsRoute
   '/admin/nomination': typeof AdminNominationRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
@@ -309,15 +419,24 @@ export interface FileRoutesByTo {
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
+  '/legal/api': typeof LegalApiRoute
+  '/legal/copyright': typeof LegalCopyrightRoute
+  '/legal/notice': typeof LegalNoticeRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/rules': typeof LegalRulesRoute
+  '/legal/terms': typeof LegalTermsRoute
+  '/maps/$id': typeof MapsIdRoute
   '/maps/claim': typeof MapsClaimRoute
   '/maps/requests': typeof MapsRequestsRoute
   '/matches/$id': typeof MatchesIdRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/admin': typeof NewsAdminRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/rankings/country': typeof RankingsCountryRoute
   '/rankings/global': typeof RankingsGlobalRoute
   '/rankings/plays': typeof RankingsPlaysRoute
   '/rankings/score': typeof RankingsScoreRoute
+  '/scores/$id': typeof ScoresIdRoute
   '/admin': typeof AdminIndexRoute
   '/maps': typeof MapsIndexRoute
   '/news': typeof NewsIndexRoute
@@ -332,18 +451,24 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/docs': typeof DocsRoute
   '/download': typeof DownloadRoute
   '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/preview': typeof PreviewRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/store': typeof StoreRoute
   '/admin/addons': typeof AdminAddonsRoute
   '/admin/balancing': typeof AdminBalancingRoute
   '/admin/chat': typeof AdminChatRoute
   '/admin/claims': typeof AdminClaimsRoute
   '/admin/medals': typeof AdminMedalsRoute
   '/admin/nomination': typeof AdminNominationRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
@@ -351,15 +476,24 @@ export interface FileRoutesById {
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
   '/help/faq': typeof HelpFaqRoute
+  '/legal/api': typeof LegalApiRoute
+  '/legal/copyright': typeof LegalCopyrightRoute
+  '/legal/notice': typeof LegalNoticeRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
+  '/legal/rules': typeof LegalRulesRoute
+  '/legal/terms': typeof LegalTermsRoute
+  '/maps/$id': typeof MapsIdRoute
   '/maps/claim': typeof MapsClaimRoute
   '/maps/requests': typeof MapsRequestsRoute
   '/matches/$id': typeof MatchesIdRoute
   '/news/$slug': typeof NewsSlugRoute
   '/news/admin': typeof NewsAdminRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/rankings/country': typeof RankingsCountryRoute
   '/rankings/global': typeof RankingsGlobalRoute
   '/rankings/plays': typeof RankingsPlaysRoute
   '/rankings/score': typeof RankingsScoreRoute
+  '/scores/$id': typeof ScoresIdRoute
   '/admin/': typeof AdminIndexRoute
   '/maps/': typeof MapsIndexRoute
   '/news/': typeof NewsIndexRoute
@@ -375,18 +509,24 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/docs'
     | '/download'
     | '/friends'
     | '/login'
     | '/logout'
     | '/preview'
+    | '/search'
     | '/settings'
+    | '/store'
     | '/admin/addons'
     | '/admin/balancing'
     | '/admin/chat'
     | '/admin/claims'
     | '/admin/medals'
     | '/admin/nomination'
+    | '/admin/orders'
+    | '/admin/restrictions'
     | '/admin/skins'
     | '/auth/callback'
     | '/auth/desktop'
@@ -394,15 +534,24 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/c/$id'
     | '/help/faq'
+    | '/legal/api'
+    | '/legal/copyright'
+    | '/legal/notice'
+    | '/legal/privacy'
+    | '/legal/rules'
+    | '/legal/terms'
+    | '/maps/$id'
     | '/maps/claim'
     | '/maps/requests'
     | '/matches/$id'
     | '/news/$slug'
     | '/news/admin'
+    | '/oauth/authorize'
     | '/rankings/country'
     | '/rankings/global'
     | '/rankings/plays'
     | '/rankings/score'
+    | '/scores/$id'
     | '/admin/'
     | '/maps/'
     | '/news/'
@@ -416,18 +565,23 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/docs'
     | '/download'
     | '/friends'
     | '/login'
     | '/logout'
     | '/preview'
+    | '/search'
     | '/settings'
+    | '/store'
     | '/admin/addons'
     | '/admin/balancing'
     | '/admin/chat'
     | '/admin/claims'
     | '/admin/medals'
     | '/admin/nomination'
+    | '/admin/orders'
+    | '/admin/restrictions'
     | '/admin/skins'
     | '/auth/callback'
     | '/auth/desktop'
@@ -435,15 +589,24 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/c/$id'
     | '/help/faq'
+    | '/legal/api'
+    | '/legal/copyright'
+    | '/legal/notice'
+    | '/legal/privacy'
+    | '/legal/rules'
+    | '/legal/terms'
+    | '/maps/$id'
     | '/maps/claim'
     | '/maps/requests'
     | '/matches/$id'
     | '/news/$slug'
     | '/news/admin'
+    | '/oauth/authorize'
     | '/rankings/country'
     | '/rankings/global'
     | '/rankings/plays'
     | '/rankings/score'
+    | '/scores/$id'
     | '/admin'
     | '/maps'
     | '/news'
@@ -457,18 +620,24 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/docs'
     | '/download'
     | '/friends'
     | '/login'
     | '/logout'
     | '/preview'
+    | '/search'
     | '/settings'
+    | '/store'
     | '/admin/addons'
     | '/admin/balancing'
     | '/admin/chat'
     | '/admin/claims'
     | '/admin/medals'
     | '/admin/nomination'
+    | '/admin/orders'
+    | '/admin/restrictions'
     | '/admin/skins'
     | '/auth/callback'
     | '/auth/desktop'
@@ -476,15 +645,24 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/c/$id'
     | '/help/faq'
+    | '/legal/api'
+    | '/legal/copyright'
+    | '/legal/notice'
+    | '/legal/privacy'
+    | '/legal/rules'
+    | '/legal/terms'
+    | '/maps/$id'
     | '/maps/claim'
     | '/maps/requests'
     | '/matches/$id'
     | '/news/$slug'
     | '/news/admin'
+    | '/oauth/authorize'
     | '/rankings/country'
     | '/rankings/global'
     | '/rankings/plays'
     | '/rankings/score'
+    | '/scores/$id'
     | '/admin/'
     | '/maps/'
     | '/news/'
@@ -499,35 +677,40 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  DocsRoute: typeof DocsRoute
   DownloadRoute: typeof DownloadRoute
   FriendsRoute: typeof FriendsRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   PreviewRoute: typeof PreviewRoute
+  SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
-  AdminAddonsRoute: typeof AdminAddonsRoute
-  AdminBalancingRoute: typeof AdminBalancingRoute
-  AdminChatRoute: typeof AdminChatRoute
-  AdminClaimsRoute: typeof AdminClaimsRoute
-  AdminMedalsRoute: typeof AdminMedalsRoute
-  AdminNominationRoute: typeof AdminNominationRoute
-  AdminSkinsRoute: typeof AdminSkinsRoute
+  StoreRoute: typeof StoreRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthDesktopRoute: typeof AuthDesktopRoute
   AuthDiscordRoute: typeof AuthDiscordRoute
   AuthErrorRoute: typeof AuthErrorRoute
   CIdRoute: typeof CIdRoute
   HelpFaqRoute: typeof HelpFaqRoute
+  LegalApiRoute: typeof LegalApiRoute
+  LegalCopyrightRoute: typeof LegalCopyrightRoute
+  LegalNoticeRoute: typeof LegalNoticeRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
+  LegalRulesRoute: typeof LegalRulesRoute
+  LegalTermsRoute: typeof LegalTermsRoute
+  MapsIdRoute: typeof MapsIdRoute
   MapsClaimRoute: typeof MapsClaimRoute
   MapsRequestsRoute: typeof MapsRequestsRoute
   MatchesIdRoute: typeof MatchesIdRoute
   NewsSlugRoute: typeof NewsSlugRoute
   NewsAdminRoute: typeof NewsAdminRoute
+  OauthAuthorizeRoute: typeof OauthAuthorizeRoute
   RankingsCountryRoute: typeof RankingsCountryRoute
   RankingsGlobalRoute: typeof RankingsGlobalRoute
   RankingsPlaysRoute: typeof RankingsPlaysRoute
   RankingsScoreRoute: typeof RankingsScoreRoute
-  AdminIndexRoute: typeof AdminIndexRoute
+  ScoresIdRoute: typeof ScoresIdRoute
   MapsIndexRoute: typeof MapsIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   RankingsGradesGradeRoute: typeof RankingsGradesGradeRoute
@@ -541,11 +724,25 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/store': {
+      id: '/store'
+      path: '/store'
+      fullPath: '/store'
+      preLoaderRoute: typeof StoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/preview': {
@@ -583,6 +780,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DownloadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -606,9 +817,16 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/scores/$id': {
+      id: '/scores/$id'
+      path: '/scores/$id'
+      fullPath: '/scores/$id'
+      preLoaderRoute: typeof ScoresIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings/score': {
@@ -637,6 +855,13 @@ declare module '@tanstack/react-router' {
       path: '/rankings/country'
       fullPath: '/rankings/country'
       preLoaderRoute: typeof RankingsCountryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oauth/authorize': {
+      id: '/oauth/authorize'
+      path: '/oauth/authorize'
+      fullPath: '/oauth/authorize'
+      preLoaderRoute: typeof OauthAuthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news/admin': {
@@ -672,6 +897,55 @@ declare module '@tanstack/react-router' {
       path: '/maps/claim'
       fullPath: '/maps/claim'
       preLoaderRoute: typeof MapsClaimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/maps/$id': {
+      id: '/maps/$id'
+      path: '/maps/$id'
+      fullPath: '/maps/$id'
+      preLoaderRoute: typeof MapsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/rules': {
+      id: '/legal/rules'
+      path: '/legal/rules'
+      fullPath: '/legal/rules'
+      preLoaderRoute: typeof LegalRulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/notice': {
+      id: '/legal/notice'
+      path: '/legal/notice'
+      fullPath: '/legal/notice'
+      preLoaderRoute: typeof LegalNoticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/copyright': {
+      id: '/legal/copyright'
+      path: '/legal/copyright'
+      fullPath: '/legal/copyright'
+      preLoaderRoute: typeof LegalCopyrightRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/api': {
+      id: '/legal/api'
+      path: '/legal/api'
+      fullPath: '/legal/api'
+      preLoaderRoute: typeof LegalApiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/help/faq': {
@@ -718,52 +992,66 @@ declare module '@tanstack/react-router' {
     }
     '/admin/skins': {
       id: '/admin/skins'
-      path: '/admin/skins'
+      path: '/skins'
       fullPath: '/admin/skins'
       preLoaderRoute: typeof AdminSkinsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/restrictions': {
+      id: '/admin/restrictions'
+      path: '/restrictions'
+      fullPath: '/admin/restrictions'
+      preLoaderRoute: typeof AdminRestrictionsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/nomination': {
       id: '/admin/nomination'
-      path: '/admin/nomination'
+      path: '/nomination'
       fullPath: '/admin/nomination'
       preLoaderRoute: typeof AdminNominationRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/medals': {
       id: '/admin/medals'
-      path: '/admin/medals'
+      path: '/medals'
       fullPath: '/admin/medals'
       preLoaderRoute: typeof AdminMedalsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/claims': {
       id: '/admin/claims'
-      path: '/admin/claims'
+      path: '/claims'
       fullPath: '/admin/claims'
       preLoaderRoute: typeof AdminClaimsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/chat': {
       id: '/admin/chat'
-      path: '/admin/chat'
+      path: '/chat'
       fullPath: '/admin/chat'
       preLoaderRoute: typeof AdminChatRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/balancing': {
       id: '/admin/balancing'
-      path: '/admin/balancing'
+      path: '/balancing'
       fullPath: '/admin/balancing'
       preLoaderRoute: typeof AdminBalancingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/addons': {
       id: '/admin/addons'
-      path: '/admin/addons'
+      path: '/addons'
       fullPath: '/admin/addons'
       preLoaderRoute: typeof AdminAddonsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/rankings/medals/': {
       id: '/rankings/medals/'
@@ -817,37 +1105,72 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DownloadRoute: DownloadRoute,
-  FriendsRoute: FriendsRoute,
-  LoginRoute: LoginRoute,
-  LogoutRoute: LogoutRoute,
-  PreviewRoute: PreviewRoute,
-  SettingsRoute: SettingsRoute,
+interface AdminRouteRouteChildren {
+  AdminAddonsRoute: typeof AdminAddonsRoute
+  AdminBalancingRoute: typeof AdminBalancingRoute
+  AdminChatRoute: typeof AdminChatRoute
+  AdminClaimsRoute: typeof AdminClaimsRoute
+  AdminMedalsRoute: typeof AdminMedalsRoute
+  AdminNominationRoute: typeof AdminNominationRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminRestrictionsRoute: typeof AdminRestrictionsRoute
+  AdminSkinsRoute: typeof AdminSkinsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAddonsRoute: AdminAddonsRoute,
   AdminBalancingRoute: AdminBalancingRoute,
   AdminChatRoute: AdminChatRoute,
   AdminClaimsRoute: AdminClaimsRoute,
   AdminMedalsRoute: AdminMedalsRoute,
   AdminNominationRoute: AdminNominationRoute,
+  AdminOrdersRoute: AdminOrdersRoute,
+  AdminRestrictionsRoute: AdminRestrictionsRoute,
   AdminSkinsRoute: AdminSkinsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  DocsRoute: DocsRoute,
+  DownloadRoute: DownloadRoute,
+  FriendsRoute: FriendsRoute,
+  LoginRoute: LoginRoute,
+  LogoutRoute: LogoutRoute,
+  PreviewRoute: PreviewRoute,
+  SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
+  StoreRoute: StoreRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthDesktopRoute: AuthDesktopRoute,
   AuthDiscordRoute: AuthDiscordRoute,
   AuthErrorRoute: AuthErrorRoute,
   CIdRoute: CIdRoute,
   HelpFaqRoute: HelpFaqRoute,
+  LegalApiRoute: LegalApiRoute,
+  LegalCopyrightRoute: LegalCopyrightRoute,
+  LegalNoticeRoute: LegalNoticeRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
+  LegalRulesRoute: LegalRulesRoute,
+  LegalTermsRoute: LegalTermsRoute,
+  MapsIdRoute: MapsIdRoute,
   MapsClaimRoute: MapsClaimRoute,
   MapsRequestsRoute: MapsRequestsRoute,
   MatchesIdRoute: MatchesIdRoute,
   NewsSlugRoute: NewsSlugRoute,
   NewsAdminRoute: NewsAdminRoute,
+  OauthAuthorizeRoute: OauthAuthorizeRoute,
   RankingsCountryRoute: RankingsCountryRoute,
   RankingsGlobalRoute: RankingsGlobalRoute,
   RankingsPlaysRoute: RankingsPlaysRoute,
   RankingsScoreRoute: RankingsScoreRoute,
-  AdminIndexRoute: AdminIndexRoute,
+  ScoresIdRoute: ScoresIdRoute,
   MapsIndexRoute: MapsIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   RankingsGradesGradeRoute: RankingsGradesGradeRoute,

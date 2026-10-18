@@ -7,6 +7,7 @@ import { ScoreState } from '@osu-idle/shared/sim/scoring';
 const calculatePP = async (
 	score: ScoreState,
 	beatmap: Beatmap,
+	rate = 1,
 ): Promise<number> => {
 	const osu = await BeatmapStore
 		.getOsu(beatmap.metadata.beatmapSetId, beatmap.metadata.beatmapId);
@@ -15,6 +16,7 @@ const calculatePP = async (
 	await rosuReady();
 	return(new ppjs.Performance({
 		lazer: false,
+		clockRate: rate,
 
 		legacyTotalScore: Math.floor(score.score),
 		// a pure divine play reads above 1, which is outside rosu-pp's domain

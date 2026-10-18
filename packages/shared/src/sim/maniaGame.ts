@@ -3,6 +3,7 @@ import {
 	buildBarlines,
 	type Barline,
 } from './scroll.js';
+import { scoreMultiplier } from '../rate.js';
 import {
 	type Bot,
 	type BotContext,
@@ -43,6 +44,8 @@ export type ManiaGameOptions = {
 	noFail?: boolean
 	/** the character has the divine judgement unlocked (a rebirth grants it) */
 	divine?: boolean
+	/** playback rate: every time in the map runs this much faster (x1 by default) */
+	rate?: number
 };
 
 /** One entry on the resolution timeline: a bot input judged at `time`, or - when
@@ -134,6 +137,11 @@ export class ManiaGame {
 		this.notes = beatmap.hitObjects
 			.filter(o => 'column' in o)
 			.map(o => RuntimeNote.fromHitObject(o, beatSnap(o.startTime, beatmap.controlPoints.timingPoints)));
+		const rate = options.rate ?? 1;
+		if (rate !== 1) for (const n of this.notes) {
+			n.time /= rate;
+			n.endTime /= rate;
+		}
 
 		this.totalNotes = this.notes.length;
 		// one judgement per note (a long note scores once, at its tail - the head's
@@ -158,14 +166,15 @@ export class ManiaGame {
 			options.noFail,
 			hpMultiplier,
 			options.divine,
+			scoreMultiplier(rate),
 		);
 		this.songEndMs =
 			this.notes.reduce((m, n) => Math.max(m, n.hold ? n.endTime : n.time), 0) + 2000;
 		this.songStartMs =
 			this.notes.reduce((m, n) => Math.min(m, n.time), Infinity) - 2000;
 
-		this.scroll = new ScrollModel(beatmap);
-		this.barlines = buildBarlines(beatmap, this.songEndMs);
+		this.scroll = new ScrollModel(beatmap, rate);
+		this.barlines = buildBarlines(beatmap, this.songEndMs, rate);
 		this.windows = maniaWindows(beatmap.difficulty.overallDifficulty, options.divine);
 
 		// visibility window (scroll units): everything between just past the

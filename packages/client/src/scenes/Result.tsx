@@ -1,3 +1,4 @@
+import ResultMods from '../components/result/ResultMods';
 import DevianceGraph from '../gameplay/DevianceGraph';
 import { Score } from '../db/schema/score';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
@@ -123,7 +124,7 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 	return (<>
 		<Background beatmap={beatmap} />
 		<div className="resultscreen">
-			<ResultMeta playerName={playerName} playedAt={playedAt} beatmap={beatmap} />
+			<ResultMeta playerName={playerName} playedAt={playedAt} beatmap={beatmap} rate={score.rate} />
 			{ranking && <MatchRanking ranking={ranking} />}
 			<button className="result__exit" onClick={onBack}>
 				<Trans>BACK</Trans>
@@ -198,6 +199,7 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 				</div>
 
 				<div className="result__right">
+					<ResultMods rate={score.rate} />
 					{skin.grade(score.grade, 'result__grade')}
 				</div>
 

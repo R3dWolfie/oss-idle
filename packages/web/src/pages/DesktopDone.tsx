@@ -3,11 +3,11 @@ import './DesktopDone.css';
 import { Trans } from '@lingui/react/macro';
 
 /**
- * Shown in the system browser after the desktop OAuth round-trip. The app polls
- * the server for the session itself, so there's nothing to redeem here - the
- * "Return" button is an `osu-idle://` deep link whose click (a user gesture) the
- * OS honours to bring the app forward (an automatic redirect to a custom scheme
- * is blocked by some browsers).
+ * Shown in the system browser after the desktop OAuth round-trip: the app's
+ * loopback sends it here once it has the code. The "Return" button is an
+ * `osu-idle://` deep link whose click (a user gesture) the OS honours to bring
+ * the app forward (an automatic redirect to a custom scheme is blocked by some
+ * browsers).
  */
 export default function DesktopDone() {
 

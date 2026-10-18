@@ -112,6 +112,8 @@ export const join = async (params: {
 	const entry = await buildEntry({
 		...params, status: STATUS.idle,
 	});
+	// a restricted account never shows as online
+	if (params.user.restrictedAt) return entry;
 	await store(entry);
 	hub.broadcast({
 		type: 'presence:add', entry,
@@ -135,7 +137,7 @@ export const rekey = async (params: {
 	user: UserRow;
 }): Promise<void> => {
 	const previous = await readEntry(params.fromId);
-	if (!previous) return;
+	if (!previous || params.user.restrictedAt) return;
 
 	await redis.multi()
 		.hdel(PRESENCE_KEY, String(params.fromId))

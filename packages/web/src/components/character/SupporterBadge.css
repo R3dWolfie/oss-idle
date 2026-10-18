@@ -1,0 +1,12 @@
+.supporter-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	margin-left: 8px;
+	padding: 2px 8px;
+	border-radius: 10px;
+	background-color: var(--pink);
+	color: hsl(var(--hsl-c1));
+	font-size: 12px;
+	vertical-align: middle;
+}

@@ -1,3 +1,4 @@
+import RatedVersion from '../RatedVersion';
 import { Trans } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import PlayManager from '../../online/playManager';
@@ -33,7 +34,7 @@ export default function DockPill({ onExpand, aboveBar = false }: Props) {
 						? <>
 							<span className="dock__next"><Trans>next</Trans> </span>
 							{next.set.metadata.artist} - {next.set.metadata.title}
-							<span> [{next.metadata.version}]</span>
+							<RatedVersion version={next.metadata.version} />
 						</>
 						: countdown !== undefined
 							? <Trans>Next map in {countdown}s</Trans>

@@ -99,10 +99,15 @@ const xpFor = async (row: DumpedScore) => {
 	const skills = await loadCharacterSkills(character, beatmapId);
 	const chart = decoder.decodeFromString(beatmap.chart);
 	const bot = new CharacterBot(skills, chart.difficulty.overallDifficulty);
-	const game = new ManiaGame(chart, bot, { divine: hasUnlock(character.generation, 'DIVINE') });
+	const rate = Number(row.rate ?? 1);
+	const game = new ManiaGame(chart, bot, {
+		divine: hasUnlock(character.generation, 'DIVINE'), rate,
+	});
 	game.update(game.songEndMs + 1000); // straight to the end: only the blame matters
 
-	return getServerXP(character, bot, beatmap, chart, asScoreLike(row) as never);
+	return getServerXP(
+		character, bot, beatmap, chart, asScoreLike(row) as never, rate, Number(row.sr ?? beatmap.sr),
+	);
 };
 
 const main = async () => {

@@ -5,6 +5,7 @@ import {
 } from '@osu-idle/shared/addon';
 import {
 	addonIconUrl,
+	type AddonVerdict,
 	type AdminAddon,
 } from '../../api/addons';
 import AddonRowCode from './AddonRowCode';
@@ -17,12 +18,12 @@ const fmt = (iso: string | null): string =>
 export default function AddonRow({ row, busy, onModerate }: {
 	row: AdminAddon;
 	busy: boolean;
-	onModerate: (id: number, body: { status: AddonStatus; feedback?: string | null }) => void;
+	onModerate: (id: number, body: AddonVerdict) => void;
 }) {
 	const [feedback, setFeedback] = useState(row.feedback ?? '');
 
 	const moderate = (status: AddonStatus) => onModerate(row.id, {
-		status, feedback: feedback.trim() || null, 
+		status, feedback: feedback.trim() || null, source: row.source,
 	});
 	// Feedback without a verdict parks a reviewed add-on on hold; a published one
 	// stays published (the admin is just leaving a note).

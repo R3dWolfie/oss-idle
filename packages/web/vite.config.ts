@@ -44,7 +44,7 @@ export default defineConfig({
 		plotlyAsset(),
 	],
 	server: {
-		port: 5174,
+		port: Number(process.env.DEV_WEB_PORT ?? 5174),
 		strictPort: true,
 		host: true,
 		allowedHosts: ['.lan'],
@@ -53,7 +53,7 @@ export default defineConfig({
 		// proxy hop.
 		hmr: {
 			protocol: 'ws',
-			port: 5174,
+			port: Number(process.env.DEV_WEB_PORT ?? 5174),
 		},
 	},
 	build: {

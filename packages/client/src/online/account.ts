@@ -249,6 +249,21 @@ window.addEventListener('storage', e => {
 	if (e.key === AUTH_PING_KEY) void syncSession(true);
 });
 
+const RECHECK_MS = 60_000;
+let lastRecheck = Date.now();
+
+/** Back to the game: picks up what changed on the account meanwhile (a supporter tag bought
+ *  in the browser, or run out). A failed check changes nothing. */
+const recheckAccount = async (): Promise<void> => {
+	if (!Auth.user.get() || Date.now() - lastRecheck < RECHECK_MS) return;
+	lastRecheck = Date.now();
+	const res = await rpc.v1.auth.me.$get().catch(() => undefined);
+	if (!res?.ok) return;
+	const user = await res.json();
+	if (JSON.stringify(user) !== JSON.stringify(Auth.user.get())) Auth.user.set(user);
+};
+window.addEventListener('focus', () => void recheckAccount());
+
 // Desktop holds the session as a Bearer token (no cookie / no storage ping), so
 // re-resolve whenever the app reports the token changed (sign-in or sign-out).
 desktop()?.onAuthChanged(() => void syncSession(true));

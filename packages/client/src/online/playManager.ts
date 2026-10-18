@@ -3,8 +3,11 @@ import {
 	abortPlaySession,
 	fetchPlayResult,
 	playState,
+	restrictedMessage,
+	inMatchMessage,
 	startPlaySession,
 } from './play';
+import Log from '@osu-idle/shared/helpers/log';
 import Socket from './socket';
 import SceneManager, { SCENE } from '../scenes/SceneManager';
 import { launchPlay } from '../scenes/launchPlay';
@@ -46,6 +49,7 @@ const MAX_START_FAILURES = 3;
 export type LivePlay = {
 	token: string;
 	beatmap: LightBeatmap;
+	rate: number;
 	startedAt: number;
 	endsAt: number;
 	accuracy?: number;
@@ -111,7 +115,7 @@ export default class PlayManager {
 	 *  Whoever starts a play already has the map; it says so here. */
 	private static known = new Map<string, LightBeatmap>();
 	public static attach(
-		play: { token: string, startedAt: number, endsAt: number },
+		play: { token: string, rate: number, startedAt: number, endsAt: number },
 		beatmap: LightBeatmap,
 	): void {
 		this.known.set(play.token, beatmap);
@@ -126,6 +130,7 @@ export default class PlayManager {
 		void this.live.set({
 			token: play.token,
 			beatmap,
+			rate: play.rate,
 			startedAt: play.startedAt,
 			endsAt: play.endsAt,
 		});
@@ -261,6 +266,7 @@ export default class PlayManager {
 				void this.live.set({
 					token: state.token,
 					beatmap: run.beatmap,
+					rate: run.rate,
 					startedAt: state.startedAt,
 					endsAt: state.endsAt,
 					accuracy: state.accuracy,
@@ -408,6 +414,14 @@ export default class PlayManager {
 		// rather than pulling the player onto the playfield for a dialog they
 		// never asked for.
 		if (session.mode === 'refused') return 'failed';
+		if (session.mode === 'restricted') {
+			Log.errorPopup(restrictedMessage());
+			return 'failed';
+		}
+		if (session.mode === 'inMatch') {
+			Log.popup(inMatchMessage());
+			return 'failed';
+		}
 
 		const chart = await beatmap.load().catch(() => undefined);
 		if (!chart) return 'failed';
@@ -498,6 +512,7 @@ export default class PlayManager {
 		void this.live.set({
 			token: state.token,
 			beatmap,
+			rate: state.rate,
 			startedAt: state.startedAt + skew,
 			endsAt: state.endsAt + skew,
 			accuracy: state.accuracy,

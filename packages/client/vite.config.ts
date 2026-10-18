@@ -53,6 +53,20 @@ function serveEncodedAssets(): Plugin {
 }
 
 // https://vite.dev/config/
+/** The dev server follows public/.htaccess's /discord redirect too (prod is Apache). */
+const discordRedirect = (): Plugin => ({
+	name: 'discord-redirect',
+	configureServer(server) {
+		const htaccess = fs.readFileSync(new URL('./public/.htaccess', import.meta.url), 'utf8');
+		const target = htaccess.match(/Redirect \d+ \/discord (\S+)/)?.[1];
+		server.middlewares.use('/discord', (_req, res) => {
+			res.statusCode = 302;
+			res.setHeader('Location', target ?? '/');
+			res.end();
+		});
+	},
+});
+
 export default defineConfig({
 	// `@vitejs/plugin-react` already runs Babel, so Lingui's macros transform
 	// through its babel plugin here - no separate SWC/Babel toolchain. The lingui
@@ -61,6 +75,7 @@ export default defineConfig({
 		react({ babel: { plugins: ['@lingui/babel-plugin-lingui-macro'] } }),
 		lingui(),
 		serveEncodedAssets(),
+		discordRedirect(),
 	],
 	// `@osu-idle/shared` is a linked workspace package, so Vite doesn't pre-bundle
 	// it and won't see the deps its sim pulls (osu-classes, osu-mania-stable) until
@@ -76,6 +91,9 @@ export default defineConfig({
 		],
 	},
 	server: {
+		// DEV_*_PORT: a second stack (a worktree) runs beside this one on other ports
+		port: Number(process.env.DEV_CLIENT_PORT ?? 5173),
+		strictPort: true,
 		host: true,
 		// the LAN staging is reached by name (a hosts entry for e.g. osu.idle.lan)
 		allowedHosts: ['.lan'],
@@ -86,16 +104,19 @@ export default defineConfig({
 		// and talks to it on the game's origin (no CORS, one cookie host).
 		proxy: {
 			'/web': {
-				target: 'http://localhost:5174',
+				target: `http://localhost:${process.env.DEV_WEB_PORT ?? 5174}`,
 				changeOrigin: false,
 				ws: true,
 			},
 			'/v1': {
-				target: 'http://localhost:3873',
+				target: `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,
 				changeOrigin: false,
 				ws: true,
 			},
-			'/uploads': 'http://localhost:3873',
+			'/uploads': `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,
+			// the public API
+			'/api': `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,
+			'/oauth': `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,
 		},
 	},
 	build: { target: 'esnext' },

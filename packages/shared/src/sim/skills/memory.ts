@@ -34,6 +34,9 @@ export default class Memory extends Skill {
 	public static readonly MIN_PLAYS_HIGH = 1;
 	public static readonly MAX_PLAYS_LOW = 60;
 	public static readonly MAX_PLAYS_HIGH = 18;
+	// Where the prestige band (level 100 → 200) takes the plays needed and the ceiling.
+	public static readonly MAX_PLAYS_BONUS = 8;
+	public static readonly IMPROVE_BONUS = 0.98;
 
 	// Ceiling on the fraction of SpeedJam error a fully-memorized map removes,
 	// by skill: a novice shaves little even off a map they know by heart.
@@ -78,6 +81,10 @@ export default class Memory extends Skill {
 				p,
 			);
 			this.boost = lerp(1, Memory.BOOST_MAX, Memory.BOOST_CB(p));
+
+			const bonus = Memory.SKILL_CB(normalize(level, [100, 200]));
+			this.maxPlays = lerp(this.maxPlays, Memory.MAX_PLAYS_BONUS, bonus);
+			this.maxImprove = lerp(this.maxImprove, Memory.IMPROVE_BONUS, bonus);
 		});
 	}
 

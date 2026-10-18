@@ -57,6 +57,11 @@
 	font-size: 24px;
 }
 
+.character__meta-name-row {
+	display: flex;
+	align-items: center;
+}
+
 .character__meta-title {
 	display: block;
 	color: #fff;

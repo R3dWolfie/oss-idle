@@ -1,3 +1,4 @@
+import { stretchBuffer } from './stretchBuffer';
 import { Beatmap } from 'osu-classes';
 import BeatmapStore from '../osu/beatmap/beatmap_store';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
@@ -93,6 +94,7 @@ export class MusicPlayer {
 	// <audio> element is a slave - started when the position enters its range,
 	// left to end on its own - while the position keeps advancing on the shared
 	// AudioContext clock. Storyboard samples are scheduled on the effects channel.
+	private speed = 1; // how fast the streaming track plays (the picked rate)
 	private anchorPos = 0; // song position (ms) at anchorCtx
 	private anchorCtx = 0; // AudioContext time (s) the anchor was taken
 	private pausePos?: number; // frozen position while paused
@@ -178,7 +180,7 @@ export class MusicPlayer {
 			if (!this.beatmap.get()) return;
 			const pos = this.time();
 			this.syncAudio(pos);
-			this.samples?.queue(pos, SAMPLE_LOOKAHEAD_MS);
+			this.samples?.queue(pos, SAMPLE_LOOKAHEAD_MS, this.speed);
 			if (this.atEnd(pos) && !this.advancing) {
 				this.advancing = true;
 				this.handleEnded();
@@ -354,7 +356,20 @@ export class MusicPlayer {
 			this.anchorCtx = this.context.currentTime;
 			return this.anchorPos;
 		}
-		return this.anchorPos + (this.context.currentTime - this.anchorCtx) * 1000;
+		return this.anchorPos + (this.context.currentTime - this.anchorCtx) * 1000 * this.speed;
+	}
+
+	/** Play the streaming track (menus, song select, screensaver) this much faster;
+	 *  `keepPitch` holds its pitch. Takes effect at once. */
+	setSpeed(speed: number, keepPitch: boolean): void {
+		if (speed === this.speed && this.audio.preservesPitch === keepPitch) return;
+		this.anchorPos = this.time();
+		this.anchorCtx = this.context.currentTime;
+		this.speed = speed;
+		// a new track resets playbackRate to the default one, so set both
+		this.audio.defaultPlaybackRate = speed;
+		this.audio.playbackRate = speed;
+		this.audio.preservesPitch = keepPitch;
 	}
 
 	/** true once the underlying audio element has played past its end */
@@ -389,18 +404,54 @@ export class MusicPlayer {
 	/** true while a finished play's track is allowed to keep playing to its
 	 *  natural end (see endGameplay) instead of being cut at the result screen */
 	private gameRiding = false;
+	/** how fast the gameplay buffer plays: the rate, or 1 when the buffer was
+	 *  stretched to it beforehand to keep its pitch */
+	private gameSpeed = 1;
+	/** the last stretched track, so a retry of the same map doesn't stretch again */
+	private stretched?: { url: string, rate: number, buffer: AudioBuffer };
+	/** bumped by every stop, so a track still decoding for a play that ended is dropped */
+	private prepares = 0;
 
 	/**
 	 * Decode the gameplay track up front (during the silent lead-in) so it can be
 	 * started sample-accurately. Resolves to false for keysound maps (no track).
+	 * At a rate the track speeds up; unless its pitch follows, it is stretched to
+	 * that speed first, on the same clock as everything else.
 	 */
-	async prepareGameplay(map: LightBeatmap): Promise<boolean> {
+	async prepareGameplay(map: LightBeatmap, rate = 1, pitchFollows = true): Promise<boolean> {
 		this.stopGameplay();
+		const call = this.prepares;
+		try {
+			const prepared = await this.decodeGameplay(map, rate, pitchFollows);
+			if (!prepared || call !== this.prepares) return false;
+			this.gameBuffer = prepared.buffer;
+			this.gameSpeed = prepared.speed;
+			return true;
+		} catch (e) {
+			// the play goes on without its track rather than stay behind the loading screen
+			console.warn('[music] gameplay track failed', e);
+			return false;
+		}
+	}
+
+	private async decodeGameplay(map: LightBeatmap, rate: number, pitchFollows: boolean) {
 		const url = await this.getAudioSource(map);
-		if (!url) return false;
+		if (!url) return undefined;
+		if (rate !== 1 && !pitchFollows) {
+			if (this.stretched?.url !== url || this.stretched.rate !== rate) {
+				const decoded = await this.context.decodeAudioData(await (await fetch(url)).arrayBuffer());
+				this.stretched = {
+					url, rate, buffer: await stretchBuffer(this.context, decoded, rate),
+				};
+			}
+			return {
+				buffer: this.stretched.buffer, speed: 1,
+			};
+		}
 		const bytes = await (await fetch(url)).arrayBuffer();
-		this.gameBuffer = await this.context.decodeAudioData(bytes);
-		return true;
+		return {
+			buffer: await this.context.decodeAudioData(bytes), speed: rate,
+		};
 	}
 
 	/** Start the prepared track so song position `atMs` is heard now. Restarting
@@ -411,15 +462,17 @@ export class MusicPlayer {
 		if (this.context.state === 'suspended') void this.context.resume();
 		this.disposeGameSource();
 
-		const offset = Math.max(0, atMs / 1000);
 		const when = this.context.currentTime;
-		this.gameStartCtx = when - offset;
+		this.gameStartCtx = when - Math.max(0, atMs / 1000);
+		// song position is real time; the track runs `gameSpeed` times faster
+		const offset = Math.max(0, atMs / 1000) * this.gameSpeed;
 		this._playing = true;
 		this.playing.set(true);
 
 		if (offset >= this.gameBuffer.duration) return; // past the end: clock only
 		const src = this.context.createBufferSource();
 		src.buffer = this.gameBuffer;
+		src.playbackRate.value = this.gameSpeed;
 
 		// → music gain → destination (volume + visualiser)
 		src.connect(this._analyser!);
@@ -454,7 +507,7 @@ export class MusicPlayer {
 		const stillPlaying = this.gameSource 
 			&& this.gameBuffer
 			&& this.gameStartCtx != null
-			&& this.gameTime() < this.gameBuffer.duration * 1000;
+			&& this.gameTime() < this.gameBuffer.duration / this.gameSpeed * 1000;
 		if (!stillPlaying) {
 			this.stopGameplay();
 			this.pause();
@@ -471,6 +524,7 @@ export class MusicPlayer {
 
 	/** Tear down the gameplay buffer source and release the decoded track. */
 	stopGameplay(): void {
+		this.prepares++;
 		this.gameRiding = false;
 		this.disposeGameSource();
 		this.gameBuffer = undefined;

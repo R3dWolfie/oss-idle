@@ -16,6 +16,13 @@ import {
 
 type KeyCallback = (press: boolean, release: boolean) => void;
 
+const TEXT_KEYS = new Set([' ', 'enter', 'arrowleft', 'arrowright', 'arrowup', 'arrowdown']);
+
+/** A box being typed in keeps these keys. The song search still plays and moves the selection. */
+export const inTextBox = (target: EventTarget | null): boolean =>
+	(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement)
+	&& !target.classList.contains('songsearch__input');
+
 class KeyListener extends Listener<KeyCallback> {
 
 	public onPress(callback: () => void): () => void {
@@ -98,7 +105,9 @@ export default class Controls {
 		// eslint-disable-next-line complexity
 		const handle = async (e: KeyboardEvent, press: boolean, release: boolean) => {
 			syncModifiers(e);
-			switch(e.key.toLowerCase()) {
+			const key = e.key.toLowerCase();
+			if (TEXT_KEYS.has(key) && inTextBox(e.target)) return;
+			switch(key) {
 				case 'control':
 					this.control.trigger(press, release);
 					break;
@@ -148,6 +157,8 @@ export default class Controls {
 				case 'f3':
 					e.preventDefault();
 					e.stopPropagation();
+					// song select's Beatmap Options
+					if (SceneManager.current.get() === SCENE.SELECT) break;
 					await this.decreaseScrollSpeed.trigger(press, release);
 					break;
 				case 'o':

@@ -1,3 +1,4 @@
+import { starsAtRates } from '../pp';
 import { execFileSync } from 'node:child_process';
 import {
 	existsSync,
@@ -257,6 +258,7 @@ export const ingestOsz = async (
 			file: entry.entryName,
 			chart: text,
 			sr: String(Math.round(stats.sr * 1000) / 1000),
+			rateStars: starsAtRates(text),
 			artist: decoded.metadata.artist,
 			title: decoded.metadata.title,
 			version: decoded.metadata.version,

@@ -1,3 +1,4 @@
+import { starsOf } from '../../gameplay/rateStars';
 import LightBeatmap from './LightBeatmap';
 import LightBeatmapSet from './LightBeatmapSet';
 
@@ -24,7 +25,7 @@ export function matchesSearch(
 	const title = set.metadata.title.toLowerCase();
 	const creator = set.metadata.creator.toLowerCase();
 	const version = beatmap.metadata.version.toLowerCase();
-	const stars = beatmap.metadata.difficulty;
+	const stars = starsOf(beatmap);
 	const keys = beatmap.metadata.keys;
 	const length = Math.floor(beatmap.metadata.total_length / 1000);
 

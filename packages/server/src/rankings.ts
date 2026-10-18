@@ -5,6 +5,7 @@ import {
 	count,
 	desc,
 	eq,
+	isNull,
 	inArray,
 } from 'drizzle-orm';
 import {
@@ -102,9 +103,12 @@ const beatmapIds = (beatmapId: number) => `${PREFIX}bm:${beatmapId}:ids`;
 
 export const PAGE_SIZE = 50;
 
+/** What `index` writes through: a pipeline, or one that removes instead (`unindexCharacter`). */
+type Indexer = { zadd: (key: string, score: number, member: string) => unknown };
+
 /** Add/refresh every set entry for one character in a single pipeline. */
 function index(
-	pipeline: ReturnType<typeof redis.pipeline>, 
+	pipeline: Indexer,
 	data: Awaited<ReturnType<typeof getCharacterFields>>,
 	medals: string[],
 ) {
@@ -177,11 +181,14 @@ const getCharacterFields = async (id: number) => {
 	return row;
 };
 
+/** A restricted account is in no ranking and no leaderboard. */
+const visible = isNull(users.restrictedAt);
+
 /** Re-index one character after its metrics change. Called once per finalized
  *  play and on character creation. */
 export const reindexCharacter = async (id: number) => {
 	const character = await getCharacterFields(id);
-	if (!character) return;
+	if (!character || character.user.restrictedAt) return;
 	await recordProgress(id);
 	const pipeline = redis.pipeline();
 	index(pipeline, character, (await getMedals(id)).map(m => m.medalId));
@@ -267,7 +274,14 @@ const pageIds = async (key: string, page: number): Promise<number[]> => {
 async function hydrate(ids: number[]) {
 	if (ids.length === 0) return [];
 	const rows = await db
-		.select()
+		.select({
+			character: characters,
+			character_totals,
+			// the account row holds private ids (Discord, Stripe): only what the boards show
+			user: {
+				id: users.id, country: users.country, avatarUrl: users.avatarUrl,
+			},
+		})
 		.from(characters)
 		.innerJoin(character_totals, eq(character_totals.id, characters.id))
 		.innerJoin(users, eq(users.id, characters.userId))
@@ -408,7 +422,7 @@ export async function reindexBeatmap(characterId: number, beatmapId: number): Pr
 		.from(best)
 		.innerJoin(characters, eq(characters.id, best.characterId))
 		.innerJoin(users, eq(users.id, characters.userId))
-		.where(and(eq(best.beatmapId, beatmapId), eq(best.characterId, characterId)))
+		.where(and(eq(best.beatmapId, beatmapId), eq(best.characterId, characterId), visible))
 		.limit(1);
 	if (!row) return;
 	const member = beatmapMember(characterId, row.id);
@@ -426,6 +440,37 @@ export async function reindexBeatmap(characterId: number, beatmapId: number): Pr
 	await pipeline.exec();
 }
 
+/** Take a character off every ranking and every beatmap leaderboard (a restriction). */
+export const unindexCharacter = async (id: number): Promise<void> => {
+	const character = await getCharacterFields(id);
+	if (!character) return;
+	const pipeline = redis.pipeline();
+	index({ zadd: (key, _score, member) => pipeline.zrem(key, member) }, character, []);
+	const bests = await db
+		.select({
+			id: best.id, beatmapId: best.beatmapId,
+		})
+		.from(best)
+		.where(eq(best.characterId, id));
+	for (const b of bests) {
+		const member = beatmapMember(id, b.id);
+		pipeline.zrem(beatmapKey(b.beatmapId), member);
+		pipeline.zrem(beatmapKey(b.beatmapId, character.user.country), member);
+		pipeline.hdel(beatmapIds(b.beatmapId), String(id));
+	}
+	await pipeline.exec();
+};
+
+/** Put a character back on every board (a restriction lifted). */
+export const reindexCharacterEverywhere = async (id: number): Promise<void> => {
+	await reindexCharacter(id);
+	const bests = await db
+		.select({ beatmapId: best.beatmapId })
+		.from(best)
+		.where(eq(best.characterId, id));
+	for (const b of bests) await reindexBeatmap(id, b.beatmapId);
+};
+
 /** Drop a beatmap's leaderboard sets (global, per-country and the reverse
  *  index). For unranking: the map's scores are gone, so the index must go too. */
 export async function unindexBeatmap(beatmapId: number): Promise<void> {
@@ -442,6 +487,7 @@ export async function rebuildAll(): Promise<void> {
 		.from(characters)
 		.leftJoin(character_totals, eq(character_totals.id, characters.id))
 		.innerJoin(users, eq(users.id, characters.userId))
+		.where(visible)
 		.orderBy(desc(characters.pp));
 	const held = new Map<number, string[]>();
 	for (const m of await db.select().from(characterMedals)) {
@@ -467,7 +513,8 @@ export async function rebuildAll(): Promise<void> {
 		})
 		.from(best)
 		.innerJoin(characters, eq(characters.id, best.characterId))
-		.innerJoin(users, eq(users.id, characters.userId));
+		.innerJoin(users, eq(users.id, characters.userId))
+		.where(visible);
 
 	pipeline = redis.pipeline();
 	for (let i = 0; i < bests.length; i++) {
@@ -543,7 +590,8 @@ const indexMatchesDb = async () => {
 			id: characters.id, pp: characters.pp,
 		})
 		.from(characters)
-		.innerJoin(users, eq(users.id, characters.userId));
+		.innerJoin(users, eq(users.id, characters.userId))
+		.where(visible);
 	const scores = await redis.zrange(globalKey('pp'), 0, -1, 'WITHSCORES');
 	if (scores.length !== rows.length * 2) return false;
 	const indexed = new Map<string, number>();

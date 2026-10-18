@@ -79,7 +79,7 @@ const linkedLevels = async (filter = '', args: unknown[] = []) => {
 	const [rows] = await db.query<RowDataPacket[]>(
 		`SELECT u.discord_id AS discordId, c.overall_level AS level
 		FROM user u JOIN \`character\` c ON c.id = u.current_character
-		WHERE u.discord_id IS NOT NULL ${filter}`,
+		WHERE u.discord_id IS NOT NULL AND u.restricted_at IS NULL ${filter}`,
 		args,
 	);
 	return new Map(rows.map(row => [row.discordId as string, row.level as number]));

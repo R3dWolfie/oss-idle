@@ -51,14 +51,18 @@ export class ScrollModel {
 	/** every point at which the scroll speed changes (BPM section and/or SV) */
 	readonly speedChanges: SpeedChange[];
 
-	constructor(beatmap: Beatmap) {
+	/** `rate` speeds the map up: its times shrink, the scroll speed stays the same,
+	 *  so the notes come denser. */
+	constructor(beatmap: Beatmap, rate = 1) {
 		const reds = beatmap.controlPoints.timingPoints;
 		const greens = beatmap.controlPoints.effectPoints;
 		// The map's nominal BPM (most-common beat length) is the 1x reference, as
 		// stable uses. `beatmap.bpm` already folds in the active clock-rate; we
 		// keep raw beatmap time everywhere else, so divide it back out.
 		this.baseBpm = beatmap.bpm / beatmap.difficulty.clockRate;
-		this.segments = this.buildSegments(reds, greens);
+		this.segments = this.buildSegments(reds, greens).map(s => ({
+			time: s.time / rate, cumulative: s.cumulative / rate, speed: s.speed,
+		}));
 		this.speedChanges = this.segments.map((s) => ({
 			time: s.time, speed: s.speed, 
 		}));
@@ -143,18 +147,18 @@ export class ScrollModel {
  * Measure barlines across the whole map: within each timing section we step by
  * one measure (beatLength * meter) from the section start to the next section.
  */
-export function buildBarlines(beatmap: Beatmap, songEndMs: number): Barline[] {
+export function buildBarlines(beatmap: Beatmap, songEndMs: number, rate = 1): Barline[] {
 	const reds = beatmap.controlPoints.timingPoints;
 	if (reds.length === 0) return [];
 	const lines: Barline[] = [];
 	for (let i = 0; i < reds.length; i++) {
 		const tp = reds[i];
-		const end = i + 1 < reds.length ? reds[i + 1].startTime : songEndMs;
+		const end = i + 1 < reds.length ? reds[i + 1].startTime : songEndMs * rate;
 		// Clamped beatLength (6 to 60000ms): gimmick maps put red lines as short
 		// as 6e-96ms, a step that never advances `t` past the section start.
 		const measure = tp.beatLength * Math.max(1, tp.timeSignature);
 		for (let t = tp.startTime; t < end - 1; t += measure) {
-			lines.push({ time: t });
+			lines.push({ time: t / rate });
 		}
 	}
 	return lines;

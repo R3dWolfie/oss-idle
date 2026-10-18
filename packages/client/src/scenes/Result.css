@@ -493,3 +493,36 @@
 		width: 100%;
 	}
 }
+
+.result__mods {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 2rem;
+}
+
+.result__mod {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 84px;
+	padding: 8px 0;
+	border-radius: 4px;
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 600;
+	transform: rotate(-6deg);
+}
+
+.result__mod[data-side="double"] {
+	background: #8c4fd0;
+}
+
+.result__mod[data-side="half"] {
+	background: #5b5b66;
+}
+
+.result__mod-glyph {
+	width: 36px;
+	height: 36px;
+}

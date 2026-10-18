@@ -5,7 +5,7 @@
  * context. Keep the two in step.
  */
 
-export type Scene = 'INTRO' | 'MENU' | 'SELECT' | 'GAME' | 'RESULT' | 'SAVER';
+export type Scene = 'INTRO' | 'MENU' | 'SELECT' | 'GAME' | 'RESULT' | 'SAVER' | 'LOBBY' | 'MATCH';
 
 export type SkillView = {
 	name: string;
@@ -30,6 +30,7 @@ export type PlayView = {
 	token: string;
 	beatmapId: number;
 	mode?: string;
+	rate: number;
 	startedAt: number;
 	endsAt: number;
 	remainingMs: number;

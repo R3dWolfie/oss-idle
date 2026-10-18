@@ -1,6 +1,6 @@
 {
   "name": "@osu-idle/server",
-  "version": "0.21.0.0",
+  "version": "1.0.0.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -22,10 +22,6 @@
     "push:prod": "NODE_ENV=production drizzle-kit push",
     "studio": "drizzle-kit studio",
     "studio:prod": "NODE_ENV=production drizzle-kit studio",
-    "seed": "tsx src/db/seed.ts",
-    "seed:prod": "NODE_ENV=production tsx src/db/seed.ts",
-    "script": "tsx src/db/set_map_plays.ts",
-    "script:prod": "NODE_ENV=production tsx src/db/set_map_plays.ts",
     "migrate:beatmaps": "tsx src/db/migrate-beatmaps.ts",
     "migrate:beatmaps:prod": "NODE_ENV=production tsx src/db/migrate-beatmaps.ts",
     "reingest:beatmaps": "tsx src/db/reingest-beatmaps.ts",
@@ -61,6 +57,7 @@
     "osu-mania-stable": "^5.0.1",
     "osu-parsers": "^4.1.7",
     "rosu-pp-js": "^4.0.1",
+    "stripe": "^23.0.0",
     "tsx": "^4.19.2",
     "ws": "^8.21.0",
     "zod": "^4.4.3"

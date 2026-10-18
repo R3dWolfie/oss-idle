@@ -38,6 +38,7 @@
 
 .player__lb_listing {
 	width: 100%;
+	white-space: nowrap;
 	border-collapse: separate;
 	border-spacing: 0 3px;
 	font-size: 12px;
@@ -128,4 +129,16 @@
 		border-top-right-radius: 4px;
 		padding-right: 10px;
 	}
+}
+
+.player__lb_listing th:nth-child(2) {
+	width: 100%;
+}
+
+.player__lb_listing tbody tr.is-self {
+	background-color: hsl(var(--hsl-d2));
+}
+
+.player__lb_listing tbody tr.is-self td:first-child {
+	box-shadow: inset 3px 0 hsl(var(--hsl-h1));
 }

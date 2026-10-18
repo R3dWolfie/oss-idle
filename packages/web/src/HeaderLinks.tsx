@@ -3,7 +3,6 @@ import OutLink from './components/OutLink';
 import { useAdmin } from './hooks/useAdmin';
 import { SKILL_SORT } from './components/leaderboard/PlayerSkillLeaderboard';
 import { useLingui } from '@lingui/react/macro';
-import { GOOD_GRADE } from '@osu-idle/shared/judgement';
 
 type Props = {
 	open: boolean;
@@ -56,21 +55,14 @@ export default function HeaderLinks({ open, onNavigate, showSub }: Props) {
 					>
 						<span>{t`skills`}</span>
 					</Link>
-					<Link
-						to='/rankings/grades/$grade'
-						params={{ grade: GOOD_GRADE.X }}
-						search={{ page: 1 }}
-						className="topbar__sublink"
-					>
-						<span>{t`grades`}</span>
-					</Link>
 					<Link to='/rankings/country' search={{ page: 1 }} className="topbar__sublink">
 						<span>{t`country`}</span>
 					</Link>
-					<Link to='/rankings/plays' search={{ page: 1 }} className="topbar__sublink">
-						<span>{t`top plays`}</span>
-					</Link>
 				</div>
+			</div>
+
+			<div className="topbar__link regular" {...showSub}>
+				<Link to='/store' className="topbar__link-anchor"><span>{t`store`}</span></Link>
 			</div>
 
 			<div className="topbar__link regular" {...showSub}>
@@ -81,16 +73,8 @@ export default function HeaderLinks({ open, onNavigate, showSub }: Props) {
 			</div>
 
 			{admin && (
-				<div className="topbar__link regular" {...showSub}>
+				<div className="topbar__link regular">
 					<Link to='/admin' className="topbar__link-anchor"><span>{t`admin`}</span></Link>
-					<div className='topbar__sub'>
-						<Link to='/admin/chat' className="topbar__sublink"><span>{t`chat console`}</span></Link>
-						<Link to='/admin/balancing' className="topbar__sublink"><span>{t`balancing`}</span></Link>
-						<Link to='/admin/nomination' className="topbar__sublink"><span>{t`map nomination`}</span></Link>
-						<Link to='/admin/addons' className="topbar__sublink"><span>{t`add-ons`}</span></Link>
-						<Link to='/admin/skins' className="topbar__sublink"><span>{t`skins`}</span></Link>
-						<Link to='/admin/medals' className="topbar__sublink"><span>{t`medals`}</span></Link>
-					</div>
 				</div>
 			)}
 		</div>

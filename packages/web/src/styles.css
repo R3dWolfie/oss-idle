@@ -170,9 +170,14 @@ body,
 #root {
 	margin: 0;
 	height: 100%;
+}
+
+/* painted once on the page, not per viewport-tall box */
+html {
 	background:
-		radial-gradient(1200px 600px at 50% -10%, #3a2630 0%, transparent 60%),
-		var(--bg);
+		radial-gradient(1200px 600px at 50% -10%, #3a2630 0%, transparent 60%)
+			no-repeat,
+		hsl(var(--hsl-b6));
 }
 
 #root {
@@ -181,7 +186,6 @@ body,
 }
 
 body {
-	background-color: hsl(var(--hsl-b6));
 	color: var(--text);
 	font-family: Torus, "Segoe UI", "Exo 2", system-ui, sans-serif;
 	-webkit-font-smoothing: antialiased;
@@ -228,6 +232,13 @@ h1.page-title {
 	font-size: 20px;
 	margin: 0;
 	padding: 0 50px;
+}
+
+.page-title__icon {
+	width: 40px;
+	margin-right: 10px;
+	font-size: 24px;
+	color: hsl(var(--hsl-h1));
 }
 
 .page-header {
@@ -287,4 +298,17 @@ a:hover,
 a:link,
 a:visited {
 	outline-style: none;
+}
+
+/* a score card's link to its page, under the card's own links */
+.score-link {
+	position: absolute;
+	inset: 0;
+}
+
+.score__row a:not(.score-link),
+.mapset__row a:not(.score-link),
+.mapset__top a:not(.score-link) {
+	position: relative;
+	z-index: 1;
 }

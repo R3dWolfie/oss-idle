@@ -1,4 +1,8 @@
 import * as ppjs from 'rosu-pp-js';
+import {
+	RATES,
+	rateKey,
+} from '@osu-idle/shared/rate';
 import type { ScoreState } from '@osu-idle/shared/sim/scoring';
 
 /**
@@ -6,10 +10,11 @@ import type { ScoreState } from '@osu-idle/shared/sim/scoring';
  * the simulated `ScoreState`. Mirrors the client's `osu/pp.ts` but uses the node
  * `rosu-pp-js` build (synchronous, no wasm init) and the stored chart text.
  */
-export function calculatePP(score: ScoreState, chart: string): number {
+export function calculatePP(score: ScoreState, chart: string, rate = 1): number {
 	const map = new ppjs.Beatmap(chart);
 	return new ppjs.Performance({
 		lazer: false,
+		clockRate: rate,
 
 		legacyTotalScore: Math.floor(score.score),
 		// a pure divine play reads above 1, which is outside rosu-pp's domain
@@ -24,3 +29,15 @@ export function calculatePP(score: ScoreState, chart: string): number {
 		misses: score.counts.MISS,
 	}).calculate(map).pp;
 }
+
+/** The chart's star rating at a playback rate. */
+export const starsAt = (chart: string, rate = 1): number =>
+	new ppjs.Difficulty({
+		lazer: false, clockRate: rate,
+	}).calculate(new ppjs.Beatmap(chart)).stars;
+
+/** The chart's stars at every rate but x1, by `rateKey`. */
+export const starsAtRates = (chart: string): Record<string, number> =>
+	Object.fromEntries(RATES.map(rate => [
+		rateKey(rate), Math.round(starsAt(chart, rate) * 1000) / 1000,
+	]));

@@ -7,6 +7,7 @@ import type {
 import type RuntimeNote from '../runtimeNote.js';
 import cubic_bezier from '../../math/cubic_bezier.js';
 import lerp from '../../math/lerp.js';
+import normalize from '../../math/normalize.js';
 import Skill from './skill.js';
 import { hand } from './speed.js';
 
@@ -43,6 +44,9 @@ export default class Coordination extends Skill {
 	 *  elapsed song time, so silence between notes recovers too */
 	public static readonly DECAY_BASE = 0.16;
 	public static readonly DECAY_SKILLED = 1.1;
+	/** where gain and decay end up across the prestige band (level 100 → 200) */
+	public static readonly GAIN_BONUS = 0.015;
+	public static readonly DECAY_BONUS = 1.6;
 	/** gain multiplier indexed by how many LNs are held. Four held means both
 	 *  hands are fully busy (4K) - there is nothing left to press, so no strain */
 	public static readonly HELD_MULT = [0, 1, 1.25, 1.1, 0];
@@ -72,8 +76,13 @@ export default class Coordination extends Skill {
 		const fn = cubic_bezier(.15,1,1,.86);
 		this.syncSkillLevel(level => {
 			const p = fn(Math.min(1, level / 100));
-			this.fatigueRate = lerp(Coordination.GAIN_BASE, Coordination.GAIN_SKILLED, p);
-			this.decayRate = lerp(Coordination.DECAY_BASE, Coordination.DECAY_SKILLED, p);
+			const bonus = fn(normalize(level, [100, 200]));
+			this.fatigueRate = lerp(
+				lerp(Coordination.GAIN_BASE, Coordination.GAIN_SKILLED, p), Coordination.GAIN_BONUS, bonus,
+			);
+			this.decayRate = lerp(
+				lerp(Coordination.DECAY_BASE, Coordination.DECAY_SKILLED, p), Coordination.DECAY_BONUS, bonus,
+			);
 		});
 	}
 

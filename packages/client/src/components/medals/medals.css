@@ -544,13 +544,3 @@
 	font-size: 1.05rem;
 	color: rgba(255, 255, 255, 0.82);
 }
-
-@media (prefers-reduced-motion: reduce) {
-	.medal-overlay *,
-	.medal-overlay *::before,
-	.medal-overlay *::after {
-		animation-duration: 1ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 1ms !important;
-	}
-}

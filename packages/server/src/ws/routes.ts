@@ -20,6 +20,10 @@ import {
 	type UserRow,
 } from '../db/schema/user';
 import { SESSION_COOKIE } from '../auth/middleware';
+import {
+	clientUrl,
+	isProd,
+} from '../env';
 import { verifySession } from '../auth/jwt';
 import {
 	clientIp,
@@ -67,7 +71,10 @@ const TOUCH_MS = 30 * 1000;
 const wsToken = (c: Context): string | undefined => {
 	const auth = c.req.header('Authorization');
 	if (auth?.startsWith('Bearer ')) return auth.slice('Bearer '.length).trim();
-	return getCookie(c, SESSION_COOKIE) ?? c.req.query('token');
+	// the cookie also rides along from sibling sites on the same domain
+	const ownOrigin = !isProd || c.req.header('Origin') === clientUrl;
+	const cookie = ownOrigin ? getCookie(c, SESSION_COOKIE) : undefined;
+	return cookie ?? c.req.query('token');
 };
 
 const resolveCharacter = async (
@@ -100,8 +107,10 @@ const reportDiscarded = (userId: number, raw: unknown, error: ZodError): void =>
 
 export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> => {
 	const {
-		upgradeWebSocket, injectWebSocket,
+		upgradeWebSocket, injectWebSocket, wss,
 	} = createNodeWebSocket({ app });
+	// ws allows 100 MiB frames by default; no message of ours comes near 64 KiB
+	wss.options.maxPayload = 64 * 1024;
 
 	app.get('/v1/ws', upgradeWebSocket(async c => {
 		const token = wsToken(c);
@@ -189,6 +198,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 				try {
 					if (feed && await handlePlay(msg, {
 						character,
+						characterId: bound(ws),
 						ws,
 						feed,
 						// the row *is* the simulation's input: levels, upgrades and
@@ -212,7 +222,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 					await handleChat({
 						characterId: now.id,
 						name: now.name,
-						color: nameColor(user.id),
+						color: await nameColor(user.id),
 					}, user.id, msg.channel, msg.text);
 				} else if (msg.type === 'pm') {
 					const now = await currentRow();
@@ -220,7 +230,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 						userId: user.id,
 						characterId: now.id,
 						name: now.name,
-						color: nameColor(user.id),
+						color: await nameColor(user.id),
 					}, msg.to, msg.text);
 				} else if (msg.type === 'status') {
 					// The client reports idle/afk from input activity; ignore it while

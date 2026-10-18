@@ -5,6 +5,7 @@ import {
 	eq,
 	or,
 	sql,
+	isNull,
 } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { db } from './db/client';
@@ -54,7 +55,7 @@ export const friendsOf = async (userId: number) => {
 			eq(theirs.userId, userFollows.targetId),
 			eq(theirs.targetId, userFollows.userId),
 		))
-		.where(eq(userFollows.userId, userId));
+		.where(and(eq(userFollows.userId, userId), isNull(users.restrictedAt)));
 
 	const ids = rows.map(r => r.character.id);
 	const [online, ranks] = await Promise.all([areOnline(ids), globalRanks('pp', ids)]);

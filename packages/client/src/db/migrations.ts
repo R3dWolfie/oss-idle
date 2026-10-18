@@ -313,6 +313,10 @@ const addMemoryReset: Migration = db => {
 	addColumn(db, 'character', 'memoryResetAt', 'INTEGER DEFAULT 0');
 };
 
+const addScoreRate: Migration = db => {
+	addColumn(db, 'score', 'rate', 'REAL DEFAULT 1');
+};
+
 const migrations: Migration[] = [
 	recomputeBests,
 	addOnlineId,
@@ -328,6 +332,7 @@ const migrations: Migration[] = [
 	rebestOnAccuracy,
 	addLifetimeXp,
 	addMemoryReset,
+	addScoreRate,
 ];
 
 /**

@@ -20,6 +20,7 @@ import {
 	useLingui,
 } from '@lingui/react/macro';
 import Footer from '../Footer';
+import { DISCORD_URL } from '@osu-idle/shared/links';
 
 function formatCount(n: number): string {
 	return n.toLocaleString('en-US');
@@ -59,8 +60,14 @@ export default function PublicLanding() {
 					<span className="landing__brand-logo" />
 					<span className="landing__brand-name">osu!<b>idle</b></span>
 				</div>
+				<nav className="landing__sections">
+					<Link to='/maps'>{t`beatmaps`}</Link>
+					<Link to='/rankings/global' search={{ page: 1 }}>{t`rankings`}</Link>
+					<Link to='/news'>{t`news`}</Link>
+					<Link to='/help/faq'>{t`help`}</Link>
+				</nav>
 				<nav className="landing__topnav">
-					<a href="https://discord.gg/Yd5GEaX8AJ" target="_blank" rel="noopener noreferrer" className="landing__topnav-link">
+					<a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" className="landing__topnav-link">
 						<FontAwesomeIcon icon={faDiscord} />
 					</a>
 					<button type="button" className="landing__signin" onClick={loginWithOsu}>
@@ -94,7 +101,7 @@ export default function PublicLanding() {
 							<img src={Asset('/idle.png')} alt="" aria-hidden="true" />
 							<Trans>Sign in with osu!</Trans>
 						</button>
-						<a className="btn-ghost" href="https://discord.gg/Yd5GEaX8AJ" target="_blank" rel="noopener noreferrer">
+						<a className="btn-ghost" href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
 							<Trans>Join the community</Trans>
 						</a>
 					</div>

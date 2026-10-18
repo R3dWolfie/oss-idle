@@ -1,6 +1,11 @@
-import { eq } from 'drizzle-orm';
+import {
+	and,
+	eq,
+} from 'drizzle-orm';
 import { db } from './db/client';
 import { beatmaps } from './db/schema/beatmap';
+import { beatmapset } from './db/schema/beatmapset';
+import { liveDiffCondition } from './beatmaps/catalog';
 
 /**
  * The stored `.osu` chart text for a beatmap, or null when the server hasn't
@@ -23,4 +28,15 @@ export async function getBeatmap(beatmapId: number) {
 		.where(eq(beatmaps.id, beatmapId))
 		.limit(1);
 	return row;
+}
+
+/** A diff that plays ranked: ranked itself, in a live set. */
+export async function getLiveBeatmap(beatmapId: number) {
+	const [row] = await db
+		.select({ beatmap: beatmaps })
+		.from(beatmaps)
+		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
+		.where(and(eq(beatmaps.id, beatmapId), liveDiffCondition))
+		.limit(1);
+	return row?.beatmap;
 }

@@ -28,6 +28,8 @@
 .profile-medal {
 	position: relative;
 	flex: none;
+	cursor: default;
+	user-select: none;
 	width: 52px;
 	height: 52px;
 }

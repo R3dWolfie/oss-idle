@@ -1,0 +1,490 @@
+/* osu.ppy.sh/docs (Scribe): a dark contents column, the text, and a dark code column on the right half. */
+.docs {
+	min-height: 100vh;
+	color: #333;
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	-webkit-font-smoothing: antialiased;
+}
+
+.docs-toc {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 30;
+	width: 230px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: #393939;
+	font-size: 13px;
+	font-weight: 700;
+	transition: left 0.3s ease-in-out;
+}
+
+.docs-toc ul,
+.docs-toc li {
+	margin: 0;
+	padding: 0;
+	line-height: 28px;
+	list-style: none;
+}
+
+.docs-toc a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.docs-toc__logo {
+	display: block;
+	width: 50%;
+	margin: 20px auto 10px;
+}
+
+.docs-toc__languages {
+	display: none;
+}
+
+.docs-toc__search input {
+	box-sizing: border-box;
+	width: 200px;
+	margin: 10px 15px;
+	padding: 6px 0;
+	border-width: 0 0 1px;
+	border-color: #666;
+	border-radius: 0;
+	outline: none;
+	background: #393939;
+	color: #fff;
+	font-family: inherit;
+}
+
+.docs-toc__item > a {
+	display: block;
+	overflow-x: hidden;
+	padding: 0 15px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	transition: background 0.23s linear;
+}
+
+.docs-toc__item > a.docs-toc__focus {
+	background-color: #2467af;
+	box-shadow: 0 1px 0 #000;
+}
+
+.docs-toc__sub {
+	background:
+		linear-gradient(180deg, rgba(0, 0, 0, 0.2), transparent 8px),
+		linear-gradient(0deg, rgba(0, 0, 0, 0.2), transparent 8px),
+		linear-gradient(180deg, #000, transparent 1.5px),
+		linear-gradient(0deg, #939393, hsla(0, 0%, 58%, 0) 1.5px), #262626;
+}
+
+.docs-toc__sub .docs-toc__item > a {
+	padding-left: 25px;
+	font-size: 12px;
+}
+
+.docs-toc__results {
+	margin-bottom: 1em !important;
+	background: #262626;
+}
+
+.docs-toc__footer {
+	margin-top: 1em !important;
+	padding: 1em 0 !important;
+	border-top: 1px dashed #666;
+}
+
+.docs-toc__footer li {
+	padding: 0 15px;
+	font-size: 0.8em;
+	line-height: 1.7;
+}
+
+.docs-toc__footer a:hover {
+	text-decoration: underline;
+}
+
+.docs__menu {
+	display: none;
+}
+
+.docs__page {
+	position: relative;
+	z-index: 10;
+	min-height: 100vh;
+	margin-left: 230px;
+	padding-bottom: 1px;
+	background-color: #eaf2f6;
+}
+
+.docs__dark {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 50%;
+	background-color: #393939;
+}
+
+.docs__languages {
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 50;
+	width: calc((100% - 230px) / 2);
+	border-bottom: 5px solid #393939;
+	background-color: #222;
+	font-weight: 700;
+}
+
+.docs__languages button,
+.docs-toc__languages button {
+	padding: 0 10px;
+	border: none;
+	outline: 0;
+	background: transparent;
+	color: #fff;
+	font-family: inherit;
+	font-weight: 700;
+	line-height: 30px;
+	cursor: pointer;
+}
+
+.docs__languages button:hover {
+	background: #111;
+}
+
+.docs__languages .docs__language--active,
+.docs-toc__languages .docs__language--active {
+	background: #393939;
+}
+
+.docs__content {
+	position: relative;
+	z-index: 30;
+	padding-top: 35px;
+}
+
+.docs__content::after {
+	content: "";
+	display: block;
+	clear: both;
+}
+
+.docs__content h1,
+.docs__content h2,
+.docs__content h3,
+.docs__content h4,
+.docs__content p,
+.docs__content table,
+.docs__content ul,
+.docs__content ol,
+.docs__content .docs__param {
+	box-sizing: border-box;
+	margin-right: 50%;
+	padding: 0 28px;
+}
+
+.docs__content h1,
+.docs__content h2,
+.docs__content h3 {
+	font-weight: 700;
+}
+
+.docs__content h1,
+.docs__content h2 {
+	clear: both;
+}
+
+.docs__content h1 {
+	margin-top: 2em;
+	margin-bottom: 21px;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ccc;
+	background-image: linear-gradient(180deg, #fff, #f9f9f9);
+	font-size: 30px;
+}
+
+.docs__content > h1:first-child {
+	margin-top: 0;
+	border-top-width: 0;
+}
+
+.docs__content h2 {
+	margin-top: 4em;
+	margin-bottom: 0;
+	padding-top: 1.2em;
+	padding-bottom: 1.2em;
+	border-top: 1px solid #ccc;
+	background-image: linear-gradient(
+		180deg,
+		hsla(0, 0%, 100%, 0.4),
+		hsla(0, 0%, 100%, 0)
+	);
+	font-size: 20px;
+}
+
+.docs__content h1 + h2 {
+	margin-top: -21px;
+	border-top: none;
+}
+
+.docs__content h3 {
+	margin-top: 2.5em;
+	margin-bottom: 0.8em;
+	font-size: 15px;
+}
+
+.docs__content p,
+.docs__content li {
+	margin-top: 0;
+	line-height: 1.6;
+}
+
+.docs__content ul,
+.docs__content ol {
+	padding-left: 43px;
+}
+
+.docs__content a:not(.docs__badge) {
+	color: #00e;
+	text-decoration: underline;
+}
+
+.docs__content code {
+	padding: 3px;
+	border-radius: 3px;
+	background-color: rgba(0, 0, 0, 0.05);
+	font-family:
+		Consolas, Menlo, Monaco, "Lucida Console", "Liberation Mono",
+		"DejaVu Sans Mono", "Courier New", monospace;
+	font-size: 14px;
+	line-height: 1.5;
+	word-break: break-word;
+}
+
+.docs__content table {
+	display: block;
+	overflow: auto;
+	margin-bottom: 1em;
+	border-collapse: collapse;
+}
+
+.docs__content th,
+.docs__content td {
+	padding: 5px 10px;
+	text-align: left;
+	vertical-align: top;
+	line-height: 1.6;
+}
+
+.docs__content th {
+	border-bottom: 1px solid #ccc;
+	vertical-align: bottom;
+}
+
+.docs__content tr:last-child {
+	border-bottom: 1px solid #ccc;
+}
+
+.docs__content tr:nth-child(odd) > td {
+	background: rgba(0, 0, 0, 0.02);
+}
+
+/* the dark column */
+.docs__content pre,
+.docs__content blockquote {
+	float: right;
+	clear: right;
+	box-sizing: border-box;
+	width: 50%;
+	margin: 0;
+	padding: 1.5em 28px;
+	background-color: #292929;
+	color: #fff;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.docs__content pre {
+	overflow-x: auto;
+}
+
+.docs__content pre > code {
+	padding: 0;
+	background-color: transparent;
+	white-space: pre;
+	word-break: normal;
+}
+
+.docs__content .docs__response code {
+	display: block;
+	max-height: 300px;
+	overflow: auto;
+}
+
+.docs__content blockquote > p {
+	margin: 0;
+	padding: 13px;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #404040;
+	border-radius: 5px;
+	background-color: #1c1c1c;
+	color: #ccc;
+}
+
+.docs__content blockquote code {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* monokai, as osu!'s highlight.js theme */
+.docs__content pre .token.comment {
+	color: #75715e;
+}
+
+.docs__content pre .token.string,
+.docs__content pre .token.attr-value {
+	color: #e6db74;
+}
+
+.docs__content pre .token.number,
+.docs__content pre .token.boolean {
+	color: #ae81ff;
+}
+
+.docs__content pre .token.keyword,
+.docs__content pre .token.operator {
+	color: #f92672;
+}
+
+.docs__content pre .token.function,
+.docs__content pre .token.class-name,
+.docs__content pre .token.property {
+	color: #a6e22e;
+}
+
+.docs__content pre .token.builtin,
+.docs__content pre .token.parameter {
+	color: #66d9ef;
+}
+
+.docs__badge {
+	padding: 1px 9px 2px;
+	border-radius: 9px;
+	color: #fff !important;
+	font-size: 80%;
+	font-weight: 700;
+	text-decoration: none;
+	text-shadow: none;
+	white-space: nowrap;
+}
+
+.docs__badge--scope {
+	background: #87ad3a;
+}
+
+.docs__badge--oauth {
+	background: #3a87ad;
+}
+
+.docs__badge--user {
+	background: #ad2a66;
+}
+
+.docs__badge--get {
+	background: green;
+	font-size: 100%;
+}
+
+.docs__badge--post {
+	background: black;
+	font-size: 100%;
+}
+
+.docs__content h4.docs__panel {
+	width: calc(50% - 35px);
+	margin: 1.5em 10px 0.5em 25px;
+	padding: 5px;
+	border-radius: 5px;
+	background-color: #d3d3d3;
+	font-size: 14px;
+}
+
+.docs__content .docs__param {
+	padding-left: 28px;
+}
+
+.docs__content .docs__param p {
+	margin: 0 0 0.5em;
+	padding: 0;
+}
+
+.docs__content .docs__param b {
+	line-height: 2;
+}
+
+@media (max-width: 930px) {
+	.docs-toc {
+		left: -230px;
+	}
+
+	.docs-toc--open {
+		left: 0;
+	}
+
+	.docs-toc__languages {
+		display: block;
+		background-color: #222;
+	}
+
+	.docs__menu {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		display: block;
+		padding: 6px 10px;
+		border: none;
+		border-radius: 0 0 5px;
+		background-color: rgba(234, 242, 246, 0.9);
+		color: #000;
+		font-family: inherit;
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.docs__page {
+		margin-left: 0;
+	}
+
+	.docs__dark,
+	.docs__languages {
+		display: none;
+	}
+
+	.docs__content h1,
+	.docs__content h2,
+	.docs__content h3,
+	.docs__content h4,
+	.docs__content p,
+	.docs__content table,
+	.docs__content ul,
+	.docs__content ol,
+	.docs__content .docs__param {
+		margin-right: 0;
+	}
+
+	.docs__content h4.docs__panel {
+		width: auto;
+	}
+
+	.docs__content pre,
+	.docs__content blockquote {
+		float: none;
+		width: auto;
+	}
+}

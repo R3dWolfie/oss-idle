@@ -1,0 +1,37 @@
+import { Trans } from '@lingui/react/macro';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
+import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
+import { faHeartPulse } from '@fortawesome/free-solid-svg-icons/faHeartPulse';
+import { faImage } from '@fortawesome/free-solid-svg-icons/faImage';
+
+/** What a supporter tag gives. */
+export default function SupporterPerks() {
+	return <section className='store__perks'>
+		<h2 className='store__perks-title'><Trans>What do I get?</Trans></h2>
+		<div className='store__perks-grid'>
+			<div className='store__perk'>
+				<div className='store__perk-icon'><FontAwesomeIcon icon={faHeart} /></div>
+				<h3><Trans>Profile heart</Trans></h3>
+				<p><Trans>A pink heart next to your name on your profile. It grows more hearts the longer you support.</Trans></p>
+			</div>
+			<div className='store__perk'>
+				<div className='store__perk-icon'><FontAwesomeIcon icon={faComment} /></div>
+				<h3><Trans>Yellow name</Trans></h3>
+				<p><Trans>Your name shows in bright yellow in chat, for everyone to see.</Trans></p>
+			</div>
+			<div className='store__perk'>
+				<div className='store__perk-icon'><FontAwesomeIcon icon={faHeartPulse} /></div>
+				<h3><Trans>Main menu heart</Trans></h3>
+				<p><Trans>A heart in the corner of the main menu, to thank you every time you start the game.</Trans></p>
+			</div>
+			<div className='store__perk'>
+				<div className='store__perk-icon'><FontAwesomeIcon icon={faImage} /></div>
+				<h3><Trans>Menu background</Trans></h3>
+				<p>
+					<Trans>Pick your own main menu background: set <code>menu.background</code> to an image link in your skin.</Trans>
+				</p>
+			</div>
+		</div>
+	</section>;
+}

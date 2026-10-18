@@ -118,7 +118,7 @@ export const chatRoutes = new Hono()
 		const character = await adminCharacter(userId);
 		if (!character) throw new HTTPException(400, { message: 'No character to post as' });
 		await handleChat({
-			characterId: character.id, name: character.name, color: nameColor(userId),
+			characterId: character.id, name: character.name, color: await nameColor(userId),
 		}, userId, channel, text, { bypassRate: true });
 		return c.json({ ok: true });
 	})

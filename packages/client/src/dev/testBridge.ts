@@ -52,6 +52,7 @@ type PlayView = {
 	token: string;
 	beatmapId: number;
 	mode?: string;
+	rate: number;
 	startedAt: number;
 	endsAt: number;
 	remainingMs: number;
@@ -97,6 +98,7 @@ const play = (): PlayView | undefined => {
 		token: live.token,
 		beatmapId: live.beatmap.metadata.id,
 		mode: currentLocalPlay()?.mode,
+		rate: live.rate,
 		startedAt: live.startedAt,
 		endsAt: live.endsAt,
 		remainingMs: live.endsAt - Date.now(),

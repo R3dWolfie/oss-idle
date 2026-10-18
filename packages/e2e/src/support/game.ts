@@ -61,6 +61,12 @@ export default class Game {
 		await this.expectScene('SELECT');
 	}
 
+	/** Load the client and click through to the main menu. */
+	async openMenu(): Promise<void> {
+		await this.open();
+		await this.enterMenu();
+	}
+
 	/** Intro → menu → song select in one go. */
 	async start(): Promise<void> {
 		await this.open();
@@ -136,6 +142,20 @@ export default class Game {
 
 	async installedSets(): Promise<number[]> {
 		return this.page.evaluate(() => window.__idle!.sets());
+	}
+
+	/** Send a line in the open chat tab. */
+	async say(text: string): Promise<void> {
+		const input = this.page.locator('.chat__compose input');
+		await input.fill(text);
+		await input.press('Enter');
+	}
+
+	/** Open the roster, click a player's card, pick an entry of its menu. */
+	async fromRoster(name: string, option: string): Promise<void> {
+		await this.page.keyboard.press('F9');
+		await this.page.locator('.player-card', { hasText: name }).first().click();
+		await this.page.locator('.ctxmenu__option', { hasText: option }).first().click();
 	}
 
 	/** Type into song select's search box and let the list settle. */

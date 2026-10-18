@@ -48,15 +48,17 @@ export const setNewBestPPPlay = async (score: ScoreRow) => db
 	.onDuplicateKeyUpdate({ set: score });
 
 
+export const bestPPRows = (characterId: number, offset: number, limit: number) => db
+	.select({
+		best_pp: bestPP, beatmap: beatmapListColumns, beatmapset,
+	})
+	.from(bestPP)
+	.innerJoin(beatmaps, eq(beatmaps.id, bestPP.beatmapId))
+	.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
+	.where(eq(bestPP.characterId, characterId))
+	.orderBy(desc(bestPP.pp))
+	.offset(offset)
+	.limit(limit);
+
 export const getBestPP = (characterId: number, page: number = 1) =>
-	profilePage(page, (offset, limit) => db
-		.select({
-			best_pp: bestPP, beatmap: beatmapListColumns, beatmapset,
-		})
-		.from(bestPP)
-		.innerJoin(beatmaps, eq(beatmaps.id, bestPP.beatmapId))
-		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
-		.where(eq(bestPP.characterId, characterId))
-		.orderBy(desc(bestPP.pp))
-		.offset(offset)
-		.limit(limit));
+	profilePage(page, (offset, limit) => bestPPRows(characterId, offset, limit));

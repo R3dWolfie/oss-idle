@@ -274,6 +274,8 @@ export class ScoreState {
 		/** the character has divine unlocked, so an untouched play already sits at
 		 *  Z and drops to X on the first marvelous. Availability, not a landed hit. */
 		private readonly divineUnlocked = false,
+		/** what a slowed-down play keeps of its score (`scoreMultiplier` in rate.ts) */
+		private readonly scoreMultiplier = 1,
 	) {
 		this.od = this.od; // prevent unused var warning
 	}
@@ -307,7 +309,7 @@ export class ScoreState {
 		const max = MAX_SCORE * 0.5 / this.maxObjects;
 		const base_score = max * (HIT_VALUE[j] / HIT_VALUE[JUDGEMENT.MARVELOUS]);
 		const bonus_score = max * (BONUS_VALUE[j] * Math.sqrt(this.bonus) / HIT_VALUE[JUDGEMENT.MARVELOUS]);
-		this.score += base_score + bonus_score;
+		this.score += (base_score + bonus_score) * this.scoreMultiplier;
 
 		if (j === JUDGEMENT.MISS) {
 			this.combo = 0;

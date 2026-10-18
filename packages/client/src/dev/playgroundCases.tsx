@@ -90,6 +90,7 @@ const fakeQueue = () => {
 	void PlayManager.live.set({
 		token: 'playground',
 		beatmap: entries[0],
+		rate: 1,
 		startedAt: Date.now() - 70_000,
 		endsAt: Date.now() + 110_000,
 		accuracy: 0.9842,
@@ -363,6 +364,7 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 				ur: 90,
 				pfc: false,
 				playedAt: Date.now(),
+				rate: 1,
 			}}
 			progression={spread(4, 12)}
 		/>,

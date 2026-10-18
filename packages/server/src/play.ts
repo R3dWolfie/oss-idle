@@ -32,14 +32,23 @@ import {
 	getCharacterById,
 	type CharacterRow,
 } from './db/schema/character';
+import { isRestricted } from './db/schema/user';
 import { getCharacterTotals } from './db/schema/character_totals';
-import type {
-	NewScoreRow,
-	ScoreRow,
+import {
+	bestGradeOn,
+	type NewScoreRow,
+	type ScoreRow,
 } from './db/schema/score';
 import Memory from '@osu-idle/shared/sim/skills/memory';
-import { calculatePP } from './pp';
-import { getBeatmap } from './beatmaps';
+import {
+	calculatePP,
+	starsAt,
+} from './pp';
+import { allowedRate } from '@osu-idle/shared/rate';
+import {
+	getBeatmap,
+	getLiveBeatmap,
+} from './beatmaps';
 import { update as updatePresence } from './ws/presence';
 import { hub } from './ws/hub';
 import {
@@ -65,7 +74,6 @@ import {
 	redisKeyPrefix,
 } from './env';
 import { redis } from './redis';
-import { getBestPlay } from './db/schema/best';
 import { applyPendingAction } from './character/pending';
 import { pushCharacter } from './character/push';
 import {
@@ -89,7 +97,7 @@ const STREAM_BUFFER_MS = 5000;
 
 /** Song-time gap between the checkpoints kept for the live poll and the
  *  multiplayer scoreboard. */
-const SAMPLE_STEP_MS = 1000;
+const SAMPLE_STEP_MS = 250;
 
 /** [song time, accuracy, grade, score, combo, failed] - a failed play's score
  *  and combo stay where they were when it failed. */
@@ -104,8 +112,11 @@ type Pending = {
 	offsets: ReplayOffset[],
 	reveals: number[],
 	startedAt: number,
+	/** when the play really ends: a failed one, at its fail. Never sent out */
 	endsAt: number,
 	songStartMs: number,
+	/** the map's last note, where every viewer is told the play ends */
+	songEndMs?: number,
 	draft: NewScoreRow,
 	skillXp: Record<SkillName, number>,
 	samples?: PlaySample[],
@@ -114,6 +125,10 @@ type Pending = {
 	/** how far into the map a failed play got, 0-1 (a medal checks it) */
 	failProgress?: number,
 };
+
+/** The end a client is told: the map's, so a fail can't be read off it before it streams in. */
+const shownEnd = (p: Pending): number =>
+	p.songEndMs === undefined ? p.endsAt : p.startedAt + LEAD_IN_MS + p.songEndMs;
 
 /** Per-skill XP progression returned to the result screen. */
 type Gains = Awaited<ReturnType<typeof applySkillXp>>;
@@ -264,6 +279,7 @@ type RankedStartPlayResult = {
 	token: string,
 	/** what is actually being played - a join can differ from the requested map */
 	beatmapId: number,
+	rate: number,
 	startedAt: number,
 	endsAt: number,
 	serverNow: number,
@@ -282,7 +298,8 @@ function chunkFrom(p: Pending, from: number): OffsetChunk {
 
 type StartPlayResult = RankedStartPlayResult
 	| { status: 'unranked' }
-	| { status: 'refused' };
+	| { status: 'refused' }
+	| { status: 'restricted' };
 
 /** Build the character's skills, loaded with their level/XP (and play count for
  *  Memory) so the simulation runs at the character's current state. */
@@ -346,13 +363,16 @@ export const livePlayPresence = async (
 	};
 };
 
+const rateOf = (p: Pending): number => Number(p.draft.rate ?? 1);
+
 const joinResult = (p: Pending): StartPlayResult => ({
 	status: 'ranked',
 	joined: true,
 	token: p.token,
 	beatmapId: p.beatmapId,
+	rate: rateOf(p),
 	startedAt: p.startedAt,
-	endsAt: p.endsAt,
+	endsAt: shownEnd(p),
 	serverNow: Date.now(),
 	...chunkFrom(p, 0),
 });
@@ -381,7 +401,10 @@ export async function startPlay(
 	beatmapId: number,
 	/** debug xp scaling; the ws handler pins it to 1 in production */
 	xpMultiplier: number = 1,
+	/** the playback rate asked for, held to what the character's Speed upgrades unlock */
+	requestedRate: number = 1,
 ): Promise<StartPlayResult> {
+	if (await isRestricted(character.userId)) return { status: 'restricted' };
 	await markOnline(character.id);
 
 	// Already playing? Join it (spectate) rather than starting a second.
@@ -412,13 +435,14 @@ export async function startPlay(
 		);
 		return { status: 'refused' };
 	}
-	const beatmap = await getBeatmap(beatmapId);
-	// An unranked diff plays like an unknown map: local play, no submit.
-	if (!beatmap || !beatmap.ranked) {
+	const beatmap = await getLiveBeatmap(beatmapId);
+	// An unranked diff, or one whose set isn't live, plays like an unknown map: local play, no submit.
+	if (!beatmap) {
 		await redis.zrem(PLAYING_KEY, String(character.id));
 		return { status: 'unranked' };
 	}
-	return simulateAndStore(character, beatmapId, beatmap, xpMultiplier);
+	const rate = allowedRate(requestedRate, character.speedUpgrades);
+	return simulateAndStore(character, beatmapId, beatmap, xpMultiplier, rate);
 }
 
 /** The xp a finished play is worth: mindblock and the bonus for a first X.
@@ -430,10 +454,14 @@ export const getServerXP = async (
 	beatmap: Awaited<ReturnType<typeof getBeatmap>>,
 	chart: Beatmap,
 	score: ScoreState,
+	rate = 1,
+	/** the map's stars at that rate */
+	stars = Number(beatmap.sr),
 ) => {
-	const currentBest = await getBestPlay(character.id, beatmap.id);
+	const topGrade = await bestGradeOn(character.id, beatmap.id);
 
-	const skillXp = bot.getSkillsXP(chart.totalLength, score);
+	// the play's real duration: a rate shortens or stretches it
+	const skillXp = bot.getSkillsXP(chart.totalLength / rate, score);
 
 	// Mindblock: grinding the same map recently dulls its technique XP (stamina /
 	// memory exempt). Read from the persisted history, before this play is stored.
@@ -449,8 +477,8 @@ export const getServerXP = async (
 	}
 
 	if (compareGradeGTE(score.grade, GRADE.X) 
-		&& (!currentBest || compareGradeGT(score.grade, currentBest.grade))) {
-		skillXp.accuracy += Math.floor(1000 * Number(beatmap.sr));
+		&& (!topGrade || compareGradeGT(score.grade, topGrade))) {
+		skillXp.accuracy += Math.floor(1000 * stars);
 	}
 
 	return skillXp;
@@ -463,12 +491,15 @@ async function simulateAndStore(
 	beatmapId: number,
 	beatmap: Awaited<ReturnType<typeof getBeatmap>>,
 	xpMultiplier: number = 1,
+	rate: number = 1,
 ): Promise<StartPlayResult> {
 	const skills = await loadCharacterSkills(character, beatmapId);
 
 	const chart = decoder.decodeFromString(beatmap.chart);
 	const bot = new CharacterBot(skills, chart.difficulty.overallDifficulty);
-	const game = new ManiaGame(chart, bot, { divine: hasUnlock(character.generation, 'DIVINE') });
+	const game = new ManiaGame(chart, bot, {
+		divine: hasUnlock(character.generation, 'DIVINE'), rate,
+	});
 	// advance to the end in steps, checkpointing accuracy/grade along the way
 	// (update judges incrementally, so stepping does no extra work) - the live
 	// state poll reads these back for the resume banner
@@ -490,7 +521,8 @@ async function simulateAndStore(
 
 	const score = game.score;
 
-	const pp = calculatePP(score, beatmap.chart);
+	const pp = calculatePP(score, beatmap.chart, rate);
+	const stars = rate === 1 ? Number(beatmap.sr) : starsAt(beatmap.chart, rate);
 	const c = score.counts;
 
 	const draft: NewScoreRow = {
@@ -505,6 +537,8 @@ async function simulateAndStore(
 		ur: String(unstableRate(game.hits)),
 		pfc: c.MISS === 0 && c.BAD === 0 && c.GOOD === 0,
 		playedAt: new Date(),
+		rate: String(rate),
+		sr: String(stars),
 	};
 
 	const failedAt = score.failed ? score.failedIndex : undefined;
@@ -536,6 +570,7 @@ async function simulateAndStore(
 		startedAt,
 		endsAt,
 		songStartMs: game.songStartMs,
+		songEndMs: lastNoteEnd,
 		draft,
 		samples,
 		skillXp: scaleXp(await getServerXP(
@@ -544,6 +579,8 @@ async function simulateAndStore(
 			beatmap,
 			chart,
 			score,
+			rate,
+			stars,
 		), xpMultiplier),
 	};
 	if (failedAt) {
@@ -571,8 +608,9 @@ async function simulateAndStore(
 		joined: false,
 		token,
 		beatmapId,
+		rate,
 		startedAt,
-		endsAt,
+		endsAt: shownEnd(entry),
 		serverNow: Date.now(),
 		...chunkFrom(entry, 0),
 	};
@@ -606,8 +644,8 @@ const parsePlayResult = async (play: Pending, notify: boolean): Promise<StoredRe
 
 	// Unranked mid-play (admin toggle): drop the result instead of resurrecting
 	// a score for a map whose progression was just purged.
-	const beatmap = await getBeatmap(play.draft.beatmapId);
-	if (!beatmap?.ranked) {
+	const beatmap = await getLiveBeatmap(play.draft.beatmapId);
+	if (!beatmap) {
 		return {
 			token: play.token,
 			failed: true,
@@ -858,8 +896,9 @@ const activeState = (play: Pending): Extract<PlayState, { phase: 'active' }> => 
 		phase: 'active',
 		token: play.token,
 		beatmapId: play.beatmapId,
+		rate: rateOf(play),
 		startedAt: play.startedAt,
-		endsAt: play.endsAt,
+		endsAt: shownEnd(play),
 		serverNow: Date.now(),
 		accuracy,
 		grade,
@@ -911,6 +950,7 @@ function scoreRowToDTO(row: ScoreRow): ScoreDTO {
 		pp: Number(row.pp),
 		ur: Number(row.ur),
 		pfc: row.pfc,
+		rate: Number(row.rate),
 		playedAt: (row.playedAt ?? new Date()).getTime(),
 	};
 }

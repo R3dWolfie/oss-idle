@@ -1,3 +1,4 @@
+import RatedVersion from '../RatedVersion';
 import { Trans } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
 import accuracy from '@osu-idle/shared/display/accuracy';
@@ -26,7 +27,7 @@ export default function DockNowPlaying() {
 					? <Trans>Next:</Trans>
 					: <Trans>Next in {countdown}s:</Trans>}
 			{' '}{next.set.metadata.artist} - {next.set.metadata.title}
-			<span> [{next.metadata.version}]</span>
+			<RatedVersion version={next.metadata.version} />
 		</div>
 	);
 
@@ -42,7 +43,7 @@ export default function DockNowPlaying() {
 			<div>
 				<div className="dock__map">
 					{live.beatmap.set.metadata.artist} - {live.beatmap.set.metadata.title}
-					<span> [{live.beatmap.metadata.version}]</span>
+					<RatedVersion version={live.beatmap.metadata.version} rate={live.rate} />
 				</div>
 				<div className="dock__sub">
 					{live.accuracy !== undefined && `${accuracy(live.accuracy)} · `}

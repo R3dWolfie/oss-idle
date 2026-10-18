@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { rateSchema } from './rate.js';
 import { Grades } from './judgement.js';
 import { Skills } from './skills.js';
 import { scoreDTO } from './score.js';
@@ -40,6 +41,8 @@ export const playStartResultDTO = z.discriminatedUnion('status', [
 		token: z.string(),
 		/** what is actually being played - a join can differ from the request */
 		beatmapId: z.number().int(),
+		/** and at which rate - the client replays the map sped up the same way */
+		rate: rateSchema,
 		startedAt: z.number(),
 		endsAt: z.number(),
 		serverNow: z.number(),
@@ -47,6 +50,10 @@ export const playStartResultDTO = z.discriminatedUnion('status', [
 	}),
 	z.object({ status: z.literal('unranked') }),
 	z.object({ status: z.literal('refused') }),
+	// the account is restricted: no play at all, not even unranked
+	z.object({ status: z.literal('restricted') }),
+	// seated in a match: only the match's rounds can be played
+	z.object({ status: z.literal('inMatch') }),
 ]);
 export type PlayStartResult = z.infer<typeof playStartResultDTO>;
 
@@ -58,6 +65,7 @@ export const playStateDTO = z.discriminatedUnion('phase', [
 		phase: z.literal('active'),
 		token: z.string(),
 		beatmapId: z.number().int(),
+		rate: rateSchema,
 		startedAt: z.number(),
 		endsAt: z.number(),
 		serverNow: z.number(),
@@ -136,6 +144,8 @@ export const playClientMessages = [
 		 *  unbounded - a ceiling here rejects the whole start message, so a debug
 		 *  knob could stop a song from starting at all. */
 		xpMultiplier: z.number().int().positive().optional(),
+		/** held to what the character has unlocked; x1 when left out */
+		rate: rateSchema.optional(),
 	}),
 	// arm this socket's play feed: with `next`, stream replay offsets from that
 	// cursor; without it, push live state checkpoints (the resume banner)

@@ -2,6 +2,7 @@ import {
 	boolean,
 	decimal,
 	int,
+	json,
 	longtext,
 	mysqlTable,
 	text,
@@ -22,6 +23,8 @@ export const beatmaps = mysqlTable('beatmap', {
 	sr: decimal({
 		precision: 10, scale: 3, 
 	}).notNull(),
+	// the stars at every other rate, by rateKey; filled at ingest, backfilled at boot
+	rateStars: json().$type<Record<string, number>>(),
 	artist: text().notNull(),
 	title: text().notNull(),
 	version: text().notNull(),

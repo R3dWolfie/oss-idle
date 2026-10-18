@@ -66,3 +66,25 @@ export const setDiffRanked = (setId: number, beatmapId: number, ranked: boolean)
 /** Admin: drop a set (rows + files) from the queue. */
 export const deleteNomination = (setId: number) =>
 	unwrap(rpc.v1.beatmap.nomination[':setId'].$delete({ param: { setId: String(setId) } }));
+
+/** Public: a set and its live difficulties, easiest first. */
+export const getMapset = (id: number | string) =>
+	unwrap(rpc.v1.beatmap.set[':id'].$get({ param: { id: String(id) } }));
+
+export type Mapset = Awaited<ReturnType<typeof getMapset>>;
+export type MapDiff = Mapset['diffs'][number];
+
+/** Public: a difficulty's leaderboard, worldwide, in one country, or among the viewer's friends. */
+export const getMapBoard = (beatmapId: number, filter: { country?: string; friends?: boolean }) =>
+	unwrap(rpc.v1.scores.beatmap[':beatmap'].board.$get({
+		param: { beatmap: String(beatmapId) },
+		query: {
+			country: filter.country, friends: filter.friends ? '1' : undefined,
+		},
+	}));
+
+export type BoardRow = Awaited<ReturnType<typeof getMapBoard>>[number];
+
+/** A set's audio preview. */
+export const previewUrl = (setId: number, file: string) =>
+	apiUrl(`/v1/beatmap/preview/${setId}/${encodeURIComponent(file)}`);

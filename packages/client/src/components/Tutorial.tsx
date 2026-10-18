@@ -14,6 +14,7 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
+import { DISCORD_URL } from '@osu-idle/shared/links';
 
 const APPEAR_DELAY_MS = 1200;
 
@@ -87,7 +88,7 @@ export default function Tutorial() {
 			body: <Trans>
 				osu!idle is in <b>beta</b> and under active development - if you hit a bug,
 				report it on <a 
-					href="https://discord.gg/Yd5GEaX8AJ"
+					href={DISCORD_URL}
 					target="_blank"
 					rel="noreferrer"
 				>discord</a>. Have fun!

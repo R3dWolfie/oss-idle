@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-15 12:41\n"
+"PO-Revision-Date: 2026-10-18 13:24\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -22,9 +22,13 @@ msgstr ""
 msgid "(match in progress)"
 msgstr "(partie en cours)"
 
+#: src/components/character/RestrictedProfileNotice.tsx
+msgid "(only admins can see this)"
+msgstr ""
+
 #: src/components/character/ProfileMedal.tsx
 msgid "{category} ({tier})"
-msgstr ""
+msgstr "{category} ({tier})"
 
 #: src/pages/beatmaps/RequestBulkBar.tsx
 msgid "{count} selected"
@@ -40,11 +44,15 @@ msgstr "{diffs} × 4K"
 
 #: src/components/character/ProfileMedal.tsx
 msgid "{holders} players ({share})"
+msgstr "{holders} joueurs ({share})"
+
+#: src/pages/store/SupportDuration.tsx
+msgid "{months, plural, one {# month} other {# months}}"
 msgstr ""
 
 #: src/components/character/MedalProgressBar.tsx
 msgid "{now} / {goal} (best {best})"
-msgstr ""
+msgstr "{now} / {goal} (meilleur {best})"
 
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
@@ -82,8 +90,21 @@ msgstr "{who} a rejoint la partie"
 msgid "{who} left the match"
 msgstr "{who} a quitté la partie"
 
+#: src/pages/store/SupportDuration.tsx
+msgid "{years, plural, one {# year} other {# years}}"
+msgstr ""
+
 #: src/components/leaderboard/medalLine.ts
 msgid "#1 ranks"
+msgstr "top #1"
+
+#. placeholder {0}: request.client.name
+#: src/pages/oauth/Authorize.tsx
+msgid "<0>{0}</0> is requesting permission to access your account."
+msgstr ""
+
+#: src/pages/store/SupporterStatus.tsx
+msgid "<0>{amount}</0> of it went to <1>{players, plural, one {# other player} other {# other players}}</1>, covering <2><3/></2>."
 msgstr ""
 
 #: src/pages/help/FAQ.tsx
@@ -96,19 +117,31 @@ msgstr "<0>Classé :</0> connecté, sur une difficulté classée. Le serveur dé
 
 #: src/pages/beatmaps/MapClaims.tsx
 msgid "<0>Sign in</0> to claim your maps."
-msgstr ""
+msgstr "<0>Connectez-vous</0> pour réclamer vos maps."
 
 #: src/pages/beatmaps/MapRequests.tsx
 msgid "<0>Sign in</0> to propose a map or support someone else's."
 msgstr "<0>Connectez-vous</0> pour proposer une map ou supporter celle de quelqu'un d'autre."
 
+#: src/pages/store/Store.tsx
+msgid "<0>Sign in</0> to support osu!idle."
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 msgid "<0>Unranked:</0> signed in, on a map or difficulty that isn't ranked. Saved in your browser only, with no experience."
 msgstr "<0>Non classé :</0> connecté, sur une map ou une difficulté non classée. Sauvegardé uniquement dans votre navigateur, sans expérience."
 
+#: src/pages/store/SupporterPerks.tsx
+msgid "A heart in the corner of the main menu, to thank you every time you start the game."
+msgstr ""
+
 #: src/components/character/ProfileMedal.tsx
 msgid "A hidden medal"
 msgstr "Une médaille cachée"
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "A pink heart next to your name on your profile. It grows more hearts the longer you support."
+msgstr ""
 
 #: src/pages/matches/MatchEventLine.tsx
 msgid "a player"
@@ -133,13 +166,20 @@ msgstr "précision"
 
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
+#: src/pages/beatmaps/MapScoreboard.tsx
+#: src/pages/beatmaps/TopScoreCard.tsx
 #: src/pages/rankings/Country.tsx
+#: src/pages/scores/ScorePage.tsx
 msgid "Accuracy"
 msgstr "Précision"
 
+#: src/pages/beatmaps/TopScoreCard.tsx
+msgid "achieved {when}"
+msgstr ""
+
 #: src/components/character/ProfileMedal.tsx
 msgid "Achieved on {date}"
-msgstr ""
+msgstr "Atteint le {date}"
 
 #: src/pages/help/FAQ.tsx
 msgid "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
@@ -153,7 +193,7 @@ msgstr "Joueurs actifs"
 msgid "add friend"
 msgstr "ajouter en ami"
 
-#: src/HeaderLinks.tsx
+#: src/pages/admin/AdminNav.tsx
 #: src/routes/admin/addons.tsx
 msgid "add-ons"
 msgstr "add-ons"
@@ -176,6 +216,10 @@ msgstr "tout"
 msgid "All"
 msgstr "Tout"
 
+#: src/pages/store/OrderHistory.tsx
+msgid "Amount"
+msgstr ""
+
 #: src/pages/AuthError.tsx
 msgid "An error occurred when communicating with osu! ... if your osu! account is valid, please try again"
 msgstr "Une erreur est survenue lors de la communication avec osu!... Si votre compte osu! est valide, veuillez réessayer"
@@ -188,9 +232,44 @@ msgstr "Un jeu idle basé sur osu!mania 4K. Vous n'appuyez pas sur les touches :
 msgid "Anyone can propose a map for ranking in osu!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
 msgstr "N'importe qui peut proposer une map à classer dans osu!idle. Supportez les maps que vous voulez jouer, celles qui sont acceptées entreront dans la file de nomination."
 
+#: src/pages/settings/OAuthSettings.tsx
+#: src/routes/docs.tsx
+msgid "API documentation"
+msgstr ""
+
+#: src/routes/legal/api.tsx
+msgid "API terms of use"
+msgstr ""
+
+#: src/pages/settings/OAuthClientDialog.tsx
+#: src/pages/settings/OAuthNewClientDialog.tsx
+msgid "Application Callback URLs"
+msgstr ""
+
+#: src/pages/settings/OAuthNewClientDialog.tsx
+msgid "Application Name"
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 msgid "At overall level {REBIRTH_MIN_OVERALL_LEVEL}, you can start a brand new character one generation up. Each generation unlocks something new; the first is the Divine judgement. Your old character is not deleted: it stays playable, ranked and keeps all its progress. If the new one takes its name, the old one is renamed with _old, like on osu!."
 msgstr "Au niveau global {REBIRTH_MIN_OVERALL_LEVEL}, vous pouvez lancer un tout nouveau personnage de la génération suivante. Chaque génération débloque quelque chose de nouveau ; la première, le jugement Divine. Votre ancien personnage n'est pas supprimé : il reste jouable, classé et garde toute sa progression. Si le nouveau prend son nom, l'ancien est renommé avec _old, comme sur osu!."
+
+#: src/routes/oauth/authorize.tsx
+msgid "authorization request"
+msgstr ""
+
+#: src/pages/oauth/Authorize.tsx
+#: src/pages/oauth/Authorize.tsx
+msgid "Authorization Request"
+msgstr ""
+
+#: src/pages/oauth/Authorize.tsx
+msgid "Authorize"
+msgstr ""
+
+#: src/pages/settings/OAuthSettings.tsx
+msgid "Authorized Clients"
+msgstr ""
 
 #: src/pages/rankings/Country.tsx
 msgid "Avg. Performance"
@@ -200,10 +279,14 @@ msgstr "Performance Moy."
 msgid "Back in osu!idle already? You can close this tab."
 msgstr "Déjà de retour sur osu!idle ? Vous pouvez fermer cet onglet."
 
-#: src/HeaderLinks.tsx
+#: src/pages/admin/AdminNav.tsx
 #: src/routes/admin/balancing.tsx
 msgid "balancing"
 msgstr "équilibrage"
+
+#: src/routes/maps/$id.tsx
+msgid "beatmap info"
+msgstr ""
 
 #: src/HeaderLinks.tsx
 #: src/pages/beatmaps/MapsNav.tsx
@@ -216,8 +299,14 @@ msgid "beatmap nomination"
 msgstr "nomination de map"
 
 #: src/HeaderLinks.tsx
+#: src/pages/PublicLanding.tsx
 msgid "beatmaps"
 msgstr "maps"
+
+#: src/components/character/CharacterBeatmaps.tsx
+#: src/pages/search/Search.tsx
+msgid "Beatmaps"
+msgstr ""
 
 #: src/pages/PlayOsuIdle.tsx
 msgid "Best for performance and idling."
@@ -231,11 +320,20 @@ msgstr "Meilleure performance"
 msgid "Block"
 msgstr "Bloquer"
 
+#: src/pages/beatmaps/BeatmapsetStats.tsx
+msgid "BPM"
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 msgid "Browsers slow down tabs you aren't looking at, which can stall autopilot. The <0>desktop app</0> doesn't have this problem: it keeps playing while minimised and updates itself."
 msgstr "Les navigateurs ralentissent les onglets que vous ne regardez pas, ce qui peut bloquer le pilote automatique. L'<0>application de bureau</0> n'a pas ce problème : elle continue de jouer lorsqu'elle est réduite et se met à jour toute seule."
 
-#: src/pages/beatmaps/RankedMaps.tsx
+#: src/pages/store/SupporterTag.tsx
+msgid "Buying one while your tag is active adds to the time you have left."
+msgstr ""
+
+#: src/components/MapsetCard.tsx
+#: src/pages/scores/ScorePage.tsx
 msgid "by {artist}"
 msgstr "par {artist}"
 
@@ -259,8 +357,13 @@ msgstr "Puis-je changer l'apparence du jeu ?"
 msgid "Can I talk to other players?"
 msgstr "Puis-je parler aux autres joueurs ?"
 
+#: src/components/character/DeleteAccountDialog.tsx
 #: src/components/character/ReportDialog.tsx
+#: src/components/character/RestrictDialog.tsx
 #: src/components/EditableCharacterName.tsx
+#: src/pages/oauth/Authorize.tsx
+#: src/pages/settings/OAuthClientDialog.tsx
+#: src/pages/settings/OAuthNewClientDialog.tsx
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -281,7 +384,7 @@ msgstr "infos du personnnage"
 msgid "characters"
 msgstr "personnages"
 
-#: src/HeaderLinks.tsx
+#: src/pages/admin/AdminNav.tsx
 #: src/routes/admin/chat.tsx
 msgid "chat console"
 msgstr "console de chat"
@@ -290,13 +393,25 @@ msgstr "console de chat"
 msgid "Cheating"
 msgstr "Triche"
 
+#: src/pages/store/SupporterTag.tsx
+msgid "Checkout"
+msgstr ""
+
 #: src/routes/maps/claim.tsx
 msgid "claim your proposals"
-msgstr ""
+msgstr "réclamez vos propositions"
 
 #: src/pages/beatmaps/RequestBulkBar.tsx
 msgid "Clear"
 msgstr "Désélectionner"
+
+#: src/pages/settings/OAuthClientSecret.tsx
+msgid "Client ID"
+msgstr ""
+
+#: src/pages/settings/OAuthClientSecret.tsx
+msgid "Client Secret"
+msgstr ""
 
 #: src/pages/matches/MatchGameScore.tsx
 msgid "combo"
@@ -306,9 +421,13 @@ msgstr "combo"
 msgid "Connect your osu! account to appear in the leaderboards."
 msgstr "Connectez votre compte osu! pour apparaître dans les classements."
 
+#: src/routes/legal/copyright.tsx
+msgid "copyright"
+msgstr ""
+
 #: src/Footer.tsx
-msgid "Contact"
-msgstr "Contact"
+msgid "Copyright"
+msgstr ""
 
 #: src/components/leaderboard/CountryFilter.tsx
 #: src/HeaderLinks.tsx
@@ -317,6 +436,7 @@ msgid "country"
 msgstr "pays"
 
 #: src/components/character/CharacterRanks.tsx
+#: src/pages/beatmaps/MapScoreboard.tsx
 msgid "Country Ranking"
 msgstr "Rang pays"
 
@@ -329,12 +449,35 @@ msgid "Customisation"
 msgstr "Personnalisation"
 
 #: src/hooks/useRouteTitle.ts
+#: src/pages/admin/AdminNav.tsx
 msgid "dashboard"
 msgstr "tableau de bord"
 
+#: src/pages/store/OrderHistory.tsx
+msgid "Date"
+msgstr ""
+
 #: src/pages/beatmaps/RequestActions.tsx
+#: src/pages/settings/OAuthClientDialog.tsx
 msgid "Delete"
 msgstr "Supprimer"
+
+#. placeholder {0}: client.name
+#: src/pages/settings/OAuthClientDialog.tsx
+msgid "Delete {0}? This cannot be undone."
+msgstr ""
+
+#: src/components/character/DeleteAccountDialog.tsx
+msgid "Delete {username}'s account?"
+msgstr ""
+
+#: src/components/character/ProfileMenu.tsx
+msgid "Delete account"
+msgstr ""
+
+#: src/components/character/DeleteAccountDialog.tsx
+msgid "Delete for good"
+msgstr ""
 
 #: src/pages/beatmaps/RequestBulkBar.tsx
 msgid "Delete selected"
@@ -342,7 +485,7 @@ msgstr "Supprimer la sélection"
 
 #: src/routes/auth/discord.tsx
 msgid "Discord linked"
-msgstr ""
+msgstr "Discord relié"
 
 #: src/pages/help/FAQ.tsx
 msgid "Do I have to watch my plays?"
@@ -355,6 +498,10 @@ msgstr "Ai-je besoin d'un compte osu! ?"
 #: src/pages/PlayOsuIdle.tsx
 msgid "Download for {platform} (v{version})"
 msgstr "Télécharger pour {platform} (v{version})"
+
+#: src/pages/Home.tsx
+msgid "download osu!idle"
+msgstr ""
 
 #: src/pages/beatmaps/RequestActions.tsx
 msgid "Download the .osz and push it into the nomination queue"
@@ -380,9 +527,17 @@ msgstr "Chaque score classé vaut un certain nombre de pp. Votre total additionn
 msgid "Each skill has a gear ladder of {BASE_MAX_UPGRADES} upgrades. Each one costs {UPGRADE_LEVELS} levels of that skill and permanently adds {upgradeBonus}% experience gain to it. The more levels you have above the price, the more overdrive the purchase builds, which multiplies that bonus."
 msgstr "Chaque compétence a une échelle de {BASE_MAX_UPGRADES} améliorations. Chacune coûte {UPGRADE_LEVELS} niveaux de cette compétence et lui ajoute définitivement {upgradeBonus}% de gain d'expérience. Plus vous avez de niveaux au-dessus du prix, plus l'achat génère d'overdrive, ce qui multiplie ce bonus."
 
+#: src/pages/settings/OAuthSettings.tsx
+msgid "Edit"
+msgstr ""
+
 #: src/pages/AuthError.tsx
 msgid "Error"
 msgstr "Erreur"
+
+#: src/components/character/DeleteAccountDialog.tsx
+msgid "Every character, score and upload goes, for good. Payment records stay, without the account."
+msgstr ""
 
 #: src/HeaderLinks.tsx
 msgid "faq"
@@ -394,36 +549,68 @@ msgstr "FAQ"
 
 #: src/pages/beatmaps/MapClaims.tsx
 msgid "Filter by artist, title or mapper"
+msgstr "Filtrer par artiste, titre ou mappeur"
+
+#: src/pages/store/RecipientPicker.tsx
+msgid "find"
 msgstr ""
 
 #: src/pages/characters/CharacterPage.tsx
 msgid "First Place Ranks"
 msgstr "Premières places"
 
+#: src/pages/store/OrderHistory.tsx
+msgid "For"
+msgstr ""
+
+#: src/pages/store/RecipientPicker.tsx
+msgid "for yourself instead"
+msgstr ""
+
 #: src/components/FormerNames.tsx
 msgid "formerly known as {names}"
 msgstr "anciennement appelé {names}"
+
+#: src/pages/beatmaps/MapScoreboard.tsx
+msgid "Friend Ranking"
+msgstr ""
 
 #: src/routes/friends.tsx
 msgid "friends"
 msgstr "amis"
 
 #: src/components/leaderboard/useFriendsFilter.ts
-#: src/Header.tsx
+#: src/UserMenu.tsx
 msgid "Friends"
 msgstr "Amis"
+
+#: src/pages/store/RecipientPicker.tsx
+msgid "gift"
+msgstr ""
+
+#: src/pages/store/OrderHistory.tsx
+msgid "gift from {name}"
+msgstr ""
+
+#: src/pages/store/RecipientPicker.tsx
+msgid "gift to player"
+msgstr ""
 
 #: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "global"
 msgstr "global"
 
+#: src/pages/scores/ScorePage.tsx
+msgid "Global Rank"
+msgstr ""
+
 #: src/components/character/CharacterRanks.tsx
 #: src/components/character/RankGraph.tsx
+#: src/pages/beatmaps/MapScoreboard.tsx
 msgid "Global Ranking"
 msgstr "Rang global"
 
-#: src/HeaderLinks.tsx
 #: src/pages/rankings/RankingsNav.tsx
 msgid "grades"
 msgstr "rangs"
@@ -433,6 +620,7 @@ msgid "Hello {username}!"
 msgstr "Bonjour {username} !"
 
 #: src/HeaderLinks.tsx
+#: src/pages/PublicLanding.tsx
 msgid "help"
 msgstr "aide"
 
@@ -442,7 +630,7 @@ msgstr "salut !"
 
 #: src/components/leaderboard/medalLine.ts
 msgid "Highest overdrive"
-msgstr ""
+msgstr "Plus haut overdrive"
 
 #: src/pages/matches/MatchGame.tsx
 msgid "Highest Score"
@@ -463,7 +651,7 @@ msgstr "accueil"
 
 #: src/components/leaderboard/medalLine.ts
 msgid "Hours played"
-msgstr ""
+msgstr "Heures jouées"
 
 #: src/pages/help/FAQ.tsx
 msgid "How do I earn experience?"
@@ -480,6 +668,18 @@ msgstr "Comment souhaitez-vous jouer ?"
 #: src/pages/help/FAQ.tsx
 msgid "How is pp calculated?"
 msgstr "Comment les pp sont-ils calculés ?"
+
+#: src/pages/store/SupporterTag.tsx
+msgid "I accept the <0>terms of sale</0>, I want the supporter tag to start right away, and I give up my 14-day withdrawal right."
+msgstr ""
+
+#: src/pages/settings/OAuthNewClientDialog.tsx
+msgid "I agree to the <0>API Terms of Use</0>"
+msgstr ""
+
+#: src/pages/oauth/scopes.ts
+msgid "Identify you and read your public profile."
+msgstr ""
 
 #: src/pages/beatmaps/requestPhase.ts
 msgid "in nomination"
@@ -501,6 +701,10 @@ msgstr "Ajouter"
 msgid "Ingest selected"
 msgstr "Importer la sélection"
 
+#: src/pages/oauth/Authorize.tsx
+msgid "Invalid authorization request."
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 msgid "Its scores, pp and ranking progress are removed. The experience your skills earned on it stays."
 msgstr "Ses scores, ses pp et la progression de classement associée sont retirés. L'expérience gagnée dessus par vos compétences est conservée."
@@ -509,18 +713,46 @@ msgstr "Ses scores, ses pp et la progression de classement associée sont retir�
 msgid "Join the community"
 msgstr "Rejoindre la communauté"
 
+#: src/pages/beatmaps/BeatmapsetStats.tsx
+msgid "Keys"
+msgstr ""
+
 #: src/pages/PublicLanding.tsx
 msgid "Latest news"
 msgstr "Derniers articles"
+
+#: src/routes/legal/notice.tsx
+msgid "legal notice"
+msgstr ""
+
+#: src/Footer.tsx
+msgid "Legal notice"
+msgstr ""
+
+#: src/pages/beatmaps/BeatmapsetStats.tsx
+msgid "Length"
+msgstr ""
+
+#: src/components/DashboardCharacter.tsx
+msgid "level"
+msgstr ""
 
 #: src/pages/rankings/RankingsNav.tsx
 msgid "lifetime"
 msgstr "cumulé"
 
+#: src/components/character/ProfileMenu.tsx
+msgid "Lift restriction"
+msgstr ""
+
 #: src/pages/beatmaps/MapRequests.tsx
+#: src/pages/beatmaps/MapScoreboard.tsx
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/friends/Friends.tsx
+#: src/pages/oauth/Authorize.tsx
+#: src/pages/settings/OAuthSettings.tsx
 #: src/pages/settings/TitleSettings.tsx
+#: src/pages/store/OrderHistory.tsx
 msgid "Loading…"
 msgstr "Chargement…"
 
@@ -528,19 +760,33 @@ msgstr "Chargement…"
 msgid "logging out..."
 msgstr "déconnexion..."
 
+#: src/pages/AuthCallback.tsx
 #: src/routes/login.tsx
 msgid "login"
 msgstr "connexion"
+
+#: src/pages/beatmaps/BeatmapsetStats.tsx
+msgid "Long notes"
+msgstr ""
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Main menu heart"
+msgstr ""
 
 #: src/routes/news/admin.tsx
 msgid "manage news"
 msgstr "gérer les articles"
 
-#: src/routes/admin/claims.tsx
-msgid "map claims"
+#: src/pages/store/SupporterTag.tsx
+msgid "Manage subscriptions"
 msgstr ""
 
-#: src/HeaderLinks.tsx
+#: src/pages/admin/AdminNav.tsx
+#: src/routes/admin/claims.tsx
+msgid "map claims"
+msgstr "réclamations de map"
+
+#: src/pages/admin/AdminNav.tsx
 msgid "map nomination"
 msgstr "nomination de maps"
 
@@ -550,13 +796,15 @@ msgstr "nomination de maps"
 msgid "map requests"
 msgstr "propositions"
 
-#: src/pages/beatmaps/RankedMaps.tsx
+#: src/components/MapsetCard.tsx
 #: src/pages/beatmaps/RequestRow.tsx
 #: src/pages/beatmaps/RequestSearchHit.tsx
 msgid "mapped by {creator}"
 msgstr "mappé par {creator}"
 
+#: src/pages/beatmaps/BeatmapsetHeader.tsx
 #: src/pages/characters/CharacterPage.tsx
+#: src/pages/scores/ScorePage.tsx
 msgid "mapped by <0>{creator}</0>"
 msgstr "créée par <0>{creator}</0>"
 
@@ -572,11 +820,20 @@ msgstr "historique de partie"
 msgid "match in progress"
 msgstr "partie en cours"
 
-#: src/components/leaderboard/PlayerMedalLeaderboard.tsx
-msgid "Medal Score"
+#: src/pages/beatmaps/TopScoreCard.tsx
+msgid "Max combo"
 msgstr ""
 
-#: src/HeaderLinks.tsx
+#: src/pages/beatmaps/MapScoreboard.tsx
+#: src/pages/scores/ScorePage.tsx
+msgid "Max Combo"
+msgstr ""
+
+#: src/components/leaderboard/PlayerMedalLeaderboard.tsx
+msgid "Medal Score"
+msgstr "Score de médailles"
+
+#: src/pages/admin/AdminNav.tsx
 #: src/pages/rankings/RankingsNav.tsx
 #: src/routes/admin/medals.tsx
 msgid "medals"
@@ -592,6 +849,18 @@ msgstr "Médailles"
 msgid "menu"
 msgstr "menu"
 
+#: src/pages/store/SupporterPerks.tsx
+msgid "Menu background"
+msgstr ""
+
+#: src/pages/beatmaps/MapScoreboard.tsx
+msgid "Mods"
+msgstr ""
+
+#: src/pages/store/SupportSlider.tsx
+msgid "months"
+msgstr ""
+
 #: src/components/character/ProfileMenu.tsx
 msgid "more"
 msgstr "plus d'options"
@@ -604,9 +873,13 @@ msgstr "Maps les plus jouées"
 msgid "most wanted"
 msgstr "les plus demandées"
 
-#: src/Header.tsx
+#: src/UserMenu.tsx
 msgid "My Profile"
 msgstr "Mon Profil"
+
+#: src/pages/settings/OAuthSettings.tsx
+msgid "New OAuth Application"
+msgstr ""
 
 #: src/pages/Home.tsx
 msgid "New Ranked Beatmaps"
@@ -617,6 +890,7 @@ msgid "newest"
 msgstr "nouvelles"
 
 #: src/HeaderLinks.tsx
+#: src/pages/PublicLanding.tsx
 #: src/routes/news/$slug.tsx
 #: src/routes/news/index.tsx
 msgid "news"
@@ -632,6 +906,10 @@ msgstr "suivant"
 
 #: src/pages/rankings/MedalProgressLine.tsx
 msgid "Next medal"
+msgstr "Prochaine médaille"
+
+#: src/pages/settings/OAuthSettings.tsx
+msgid "No authorized clients."
 msgstr ""
 
 #: src/pages/news/News.tsx
@@ -639,10 +917,22 @@ msgstr ""
 msgid "No news yet. Check back soon!"
 msgstr "Pas encore d'articles. Revenez bientôt !"
 
+#: src/pages/beatmaps/MapScoreboard.tsx
+msgid "No one has set a score on this difficulty yet."
+msgstr ""
+
+#: src/pages/store/OrderHistory.tsx
+msgid "No orders yet."
+msgstr ""
+
+#: src/pages/store/RecipientPicker.tsx
+msgid "No player goes by that name."
+msgstr ""
+
 #: src/components/character/CharacterTitle.tsx
 #: src/pages/settings/TitleSettings.tsx
 msgid "no title"
-msgstr ""
+msgstr "sans titre"
 
 #: src/pages/help/FAQ.tsx
 msgid "No. A play keeps running when you leave the gameplay screen, and a ranked one even when you close the game. You can come back to it from any device and watch the rest."
@@ -654,15 +944,19 @@ msgstr "Non. Sans connexion, vous jouez en invité : tout est sauvegardé unique
 
 #: src/components/leaderboard/MedalProgressCard.tsx
 msgid "Nobody yet"
-msgstr ""
+msgstr "Personne"
 
 #: src/pages/PlayOsuIdle.tsx
 msgid "Not yet available for {platform}"
 msgstr "Pas encore disponible pour {platform}"
 
+#: src/pages/beatmaps/BeatmapsetStats.tsx
+msgid "Notes"
+msgstr ""
+
 #: src/components/leaderboard/medalLine.ts
 msgid "Notes hit"
-msgstr ""
+msgstr "Notes jouées"
 
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "Nothing found. If the map isn't listed, paste its beatmapset link instead."
@@ -675,6 +969,10 @@ msgstr "Rien ici pour le moment."
 #: src/components/leaderboard/MedalProgressCard.tsx
 #: src/pages/rankings/MedalProgressLine.tsx
 msgid "now {now}"
+msgstr "maintenant {now}"
+
+#: src/pages/settings/Settings.tsx
+msgid "OAuth"
 msgstr ""
 
 #: src/pages/friends/Friends.tsx
@@ -688,6 +986,15 @@ msgstr "oh non!"
 #: src/pages/help/FAQ.tsx
 msgid "Once a skill reaches level {PRESTIGE_MIN_LEVEL}, you can prestige it. Its level, experience, upgrades and overdrive reset to zero. In exchange it keeps a bonus level, one more upgrade slot and a permanent {prestigeBonus}% experience multiplier that stacks with each prestige. Each prestige needs one more level than the last."
 msgstr "Quand une compétence atteint le niveau {PRESTIGE_MIN_LEVEL}, vous pouvez lui faire un prestige. Son niveau, son expérience, ses améliorations et son overdrive repartent à zéro. En échange, elle garde un niveau bonus, un emplacement d'amélioration en plus et un multiplicateur d'expérience permanent de {prestigeBonus}% qui se cumule à chaque prestige. Chaque prestige demande un niveau de plus que le précédent."
+
+#: src/pages/AuthCallback.tsx
+msgid "one moment..."
+msgstr ""
+
+#: src/pages/settings/OAuthClientDialog.tsx
+#: src/pages/settings/OAuthNewClientDialog.tsx
+msgid "One URL per line."
+msgstr ""
 
 #: src/pages/friends/Friends.tsx
 msgid "Online"
@@ -706,6 +1013,18 @@ msgstr "Joueurs en ligne"
 msgid "open"
 msgstr "proposé"
 
+#: src/pages/store/Store.tsx
+msgid "order history"
+msgstr ""
+
+#: src/pages/beatmaps/BeatmapsetHeader.tsx
+msgid "osu! page"
+msgstr ""
+
+#: src/pages/store/SupporterTag.tsx
+msgid "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it: a heart on your profile and a yellow name in chat. It changes nothing in the game, and every feature stays free for everyone."
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 msgid "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
 msgstr "Uniquement les difficultés osu!mania 4K. Le classement se décide par difficulté : un set peut avoir certaines difficultés classées et d'autres non."
@@ -718,9 +1037,24 @@ msgstr "Autre (précisez ci-dessous)"
 msgid "Other platforms:"
 msgstr "Autres plateformes :"
 
+#: src/pages/settings/OAuthSettings.tsx
+msgid "Own Clients"
+msgstr ""
+
+#. placeholder {0}: client.owner.name
+#. placeholder {0}: request.owner.name
+#: src/pages/oauth/Authorize.tsx
+#: src/pages/settings/OAuthSettings.tsx
+msgid "owned by {0}"
+msgstr ""
+
 #: src/components/leaderboard/Pager.tsx
 msgid "page {page}"
 msgstr "page {page}"
+
+#: src/pages/store/SupporterStatus.tsx
+msgid "Payment received, thank you! Your tag shows up as soon as Stripe confirms it."
+msgstr ""
 
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
@@ -729,9 +1063,13 @@ msgstr "page {page}"
 msgid "Performance"
 msgstr "Performance"
 
+#: src/pages/store/SupporterPerks.tsx
+msgid "Pick your own main menu background: set <0>menu.background</0> to an image link in your skin."
+msgstr ""
+
 #: src/components/leaderboard/medalLine.ts
 msgid "Play count"
-msgstr ""
+msgstr "Parties"
 
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
@@ -759,6 +1097,22 @@ msgstr "jouer à osu!"
 msgid "play osu!idle"
 msgstr "jouer à osu!idle"
 
+#: src/pages/scores/ScorePage.tsx
+msgid "Played by"
+msgstr ""
+
+#: src/pages/beatmaps/MapScoreboard.tsx
+msgid "Player"
+msgstr ""
+
+#: src/pages/store/RecipientPicker.tsx
+msgid "player name"
+msgstr ""
+
+#: src/pages/search/Search.tsx
+msgid "Players"
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 #: src/pages/Home.tsx
 msgid "Playing"
@@ -767,6 +1121,10 @@ msgstr "En jeu"
 #: src/pages/PublicLanding.tsx
 msgid "playing now"
 msgstr "en jeu"
+
+#: src/pages/beatmaps/BeatmapsetHeader.tsx
+msgid "plays"
+msgstr ""
 
 #: src/pages/beatmaps/RankedMaps.tsx
 msgid "Plays"
@@ -780,17 +1138,33 @@ msgstr "Appuyez sur F9 en jeu pour ouvrir l'overlay communautaire : qui est en l
 msgid "prestige"
 msgstr "prestige"
 
+#: src/pages/beatmaps/PreviewButton.tsx
+msgid "preview"
+msgstr ""
+
 #: src/components/leaderboard/Pager.tsx
 msgid "previous"
 msgstr "précédent"
+
+#: src/routes/legal/privacy.tsx
+msgid "privacy"
+msgstr ""
 
 #: src/Footer.tsx
 msgid "Privacy"
 msgstr "Vie privée"
 
+#: src/pages/store/Store.tsx
+msgid "products"
+msgstr ""
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Profile heart"
+msgstr ""
+
 #: src/components/leaderboard/MedalBoardTabs.tsx
 msgid "Progress"
-msgstr ""
+msgstr "Progression"
 
 #: src/pages/help/FAQ.tsx
 msgid "Progression"
@@ -802,24 +1176,30 @@ msgstr "Proposez-la sur la page des <0>propositions de maps</0>. N'importe quell
 
 #: src/pages/beatmaps/MapClaims.tsx
 msgid "Proposed maps for ranking on Discord? Tick the ones you proposed and save, and they will count for your curator medals once an admin confirms."
-msgstr ""
+msgstr "Vous aviez proposé des maps classées sur Discord ? Cochez-les et sauvegardez, et elles vous seront attribuées une fois qu'un administrateur l'aura confirmé."
 
 #: src/components/leaderboard/medalLine.ts
 msgid "Proposed maps ranked"
-msgstr ""
+msgstr "Maps classées proposées"
 
+#: src/pages/beatmaps/MapScoreboard.tsx
 #: src/pages/friends/Friends.tsx
 msgid "Rank"
 msgstr "Rang"
 
+#: src/pages/beatmaps/BeatmapsetHeader.tsx
 #: src/pages/beatmaps/requestPhase.ts
 msgid "ranked"
 msgstr "classé"
 
-#: src/pages/beatmaps/RankedMaps.tsx
+#: src/components/MapsetCard.tsx
 #: src/pages/beatmaps/RankedMaps.tsx
 msgid "Ranked"
 msgstr "Classé"
+
+#: src/components/character/CharacterBeatmaps.tsx
+msgid "Ranked Beatmaps"
+msgstr ""
 
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
@@ -831,6 +1211,7 @@ msgid "Ranked Score"
 msgstr "Score classé"
 
 #: src/HeaderLinks.tsx
+#: src/pages/PublicLanding.tsx
 #: src/routes/rankings/country.tsx
 #: src/routes/rankings/global.tsx
 #: src/routes/rankings/grades/$grade.tsx
@@ -849,7 +1230,12 @@ msgstr "classements"
 msgid "Ranks"
 msgstr "Rangs"
 
+#: src/pages/oauth/scopes.ts
+msgid "Read public data on your behalf."
+msgstr ""
+
 #: src/components/character/ReportDialog.tsx
+#: src/components/character/RestrictDialog.tsx
 msgid "Reason"
 msgstr "Raison"
 
@@ -864,6 +1250,18 @@ msgstr "Scores récents"
 #: src/pages/friends/Friends.tsx
 msgid "Recently active"
 msgstr "Actifs récemment"
+
+#: src/pages/store/OrderHistory.tsx
+msgid "refunded {amount}"
+msgstr ""
+
+#: src/pages/settings/OAuthNewClientDialog.tsx
+msgid "Register a new OAuth application"
+msgstr ""
+
+#: src/pages/settings/OAuthNewClientDialog.tsx
+msgid "Register application"
+msgstr ""
 
 #: src/pages/beatmaps/RequestActions.tsx
 msgid "Reject"
@@ -890,6 +1288,14 @@ msgstr "retirer des amis"
 msgid "Remove your support"
 msgstr "Enlever votre support"
 
+#: src/pages/store/SupporterTag.tsx
+msgid "Renew automatically"
+msgstr ""
+
+#: src/pages/store/SupporterTag.tsx
+msgid "Renewing automatically charges the same amount again at the end of each period. Cancel it any time."
+msgstr ""
+
 #: src/components/character/ProfileMenu.tsx
 msgid "Report"
 msgstr "Signaler"
@@ -902,13 +1308,48 @@ msgstr "Signaler {name} ?"
 msgid "Request"
 msgstr "Proposer"
 
+#: src/pages/settings/OAuthClientSecret.tsx
+msgid "Reset client secret"
+msgstr ""
+
+#: src/pages/settings/OAuthClientSecret.tsx
+msgid "Reset the client secret? Applications using the old one will stop working."
+msgstr ""
+
 #: src/components/EditableProfilePicture.tsx
 msgid "Reset to osu! avatar"
 msgstr "Remettre votre avatar osu!"
 
+#: src/components/character/ProfileMenu.tsx
+#: src/components/character/RestrictDialog.tsx
+msgid "Restrict"
+msgstr ""
+
+#: src/components/character/RestrictDialog.tsx
+msgid "Restrict {name}?"
+msgstr ""
+
+#: src/pages/admin/AdminNav.tsx
+#: src/routes/admin/restrictions.tsx
+msgid "restricted accounts"
+msgstr ""
+
 #: src/pages/DesktopDone.tsx
 msgid "Return to osu!idle"
 msgstr "Retourner sur osu!idle"
+
+#: src/pages/settings/OAuthSettings.tsx
+msgid "Revoke Access"
+msgstr ""
+
+#. placeholder {0}: client.name
+#: src/pages/settings/OAuthSettings.tsx
+msgid "Revoke access for {0}?"
+msgstr ""
+
+#: src/routes/legal/rules.tsx
+msgid "rules"
+msgstr ""
 
 #: src/Footer.tsx
 msgid "Rules"
@@ -921,11 +1362,15 @@ msgstr "Sauvegarder"
 #. placeholder {0}: picked.size
 #: src/pages/beatmaps/MapClaims.tsx
 msgid "Save ({0})"
+msgstr "Sauvegarder ({0})"
+
+#: src/pages/store/SupportSlider.tsx
+msgid "save {saving}%"
 msgstr ""
 
 #: src/pages/beatmaps/MapClaims.tsx
 msgid "Saved. An admin will check your claims."
-msgstr ""
+msgstr "Sauvegardé. Un administrateur va examiner vos réclamations."
 
 #: src/pages/beatmaps/requestPhase.ts
 msgid "scheduled"
@@ -935,6 +1380,14 @@ msgstr "planifiée"
 msgid "score"
 msgstr "score"
 
+#: src/pages/beatmaps/MapScoreboard.tsx
+msgid "Score"
+msgstr ""
+
+#: src/routes/scores/$id.tsx
+msgid "score info"
+msgstr ""
+
 #: src/components/character/CharacterRanks.tsx
 msgid "Score Ranking"
 msgstr "Rang Score"
@@ -943,9 +1396,27 @@ msgstr "Rang Score"
 msgid "scores set"
 msgstr "scores"
 
+#: src/Header.tsx
+#: src/routes/search.tsx
+msgid "search"
+msgstr ""
+
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "Search a 4K map, or paste its beatmapset link"
 msgstr "Cherchez une map 4K, ou collez son lien"
+
+#: src/pages/search/Search.tsx
+msgid "Search players and beatmaps"
+msgstr ""
+
+#: src/pages/Home.tsx
+#: src/pages/Home.tsx
+msgid "See more"
+msgstr ""
+
+#: src/pages/oauth/scopes.ts
+msgid "See who you are friends with."
+msgstr ""
 
 #: src/pages/Logout.tsx
 msgid "See you later!"
@@ -959,34 +1430,42 @@ msgstr "Sélectionner la page"
 msgid "Send Report"
 msgstr "Envoyer le signalement"
 
-#: src/Footer.tsx
-msgid "Server Status"
-msgstr "Statut du serveur"
-
 #: src/routes/settings.tsx
 msgid "settings"
-msgstr ""
+msgstr "paramètres"
 
-#: src/Header.tsx
+#: src/UserMenu.tsx
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 #: src/components/leaderboard/useFriendsFilter.ts
 msgid "show"
 msgstr "afficher"
 
-#: src/components/ShowMoreLink.tsx
-msgid "Show more"
+#: src/pages/settings/OAuthClientSecret.tsx
+msgid "Show client secret"
 msgstr ""
 
-#: src/Header.tsx
+#: src/components/ShowMoreLink.tsx
+msgid "Show more"
+msgstr "Montrer plus"
+
 #: src/pages/Login.tsx
 #: src/pages/PublicLanding.tsx
+#: src/UserMenu.tsx
 msgid "Sign in"
 msgstr "Se connecter"
 
 #: src/pages/settings/Settings.tsx
 msgid "Sign in to change your settings."
+msgstr "Connectez-vous pour modifier for paramètres."
+
+#: src/pages/oauth/Authorize.tsx
+msgid "Sign in to continue."
+msgstr ""
+
+#: src/pages/beatmaps/MapScoreboard.tsx
+msgid "Sign in to see this ranking."
 msgstr ""
 
 #: src/pages/friends/Friends.tsx
@@ -994,11 +1473,12 @@ msgid "Sign in to see your friends."
 msgstr "Connectez-vous pour voir vos amis."
 
 #: src/pages/Login.tsx
+#: src/pages/oauth/Authorize.tsx
 #: src/pages/PublicLanding.tsx
 msgid "Sign in with osu!"
 msgstr "Se connecter avec osu!"
 
-#: src/Header.tsx
+#: src/UserMenu.tsx
 msgid "Sign out"
 msgstr "Déconnexion"
 
@@ -1026,9 +1506,9 @@ msgstr "Compétences"
 
 #: src/components/leaderboard/medalLine.ts
 msgid "Skills fully upgraded"
-msgstr ""
+msgstr "Compétences améliorées au maximum"
 
-#: src/HeaderLinks.tsx
+#: src/pages/admin/AdminNav.tsx
 #: src/routes/admin/skins.tsx
 msgid "skins"
 msgstr "skins"
@@ -1036,6 +1516,10 @@ msgstr "skins"
 #: src/pages/help/FAQ.tsx
 msgid "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
 msgstr "De petits scripts créés par les joueurs qui ajoutent des fonctionnalités au jeu. Les add-ons partagés sont vérifiés par l'équipe avant d'être publiés, mais ils s'exécutent dans votre jeu : n'installez que ceux en qui vous avez confiance."
+
+#: src/pages/store/SupporterStatus.tsx
+msgid "So far you gave <0>{amount}</0>, and held a supporter tag for <1><2/></1>."
+msgstr ""
 
 #: src/components/leaderboard/MedalBoardTabs.tsx
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
@@ -1055,9 +1539,52 @@ msgstr "Code source"
 msgid "Spending levels lowers your skill and overall levels, so it can drop you in the rankings. That is the trade: a lower level now for faster progress later."
 msgstr "Dépenser des niveaux baisse vos niveaux de compétence et votre niveau global, ce qui peut vous faire descendre dans les classements. C'est le compromis : un niveau plus bas maintenant pour progresser plus vite ensuite."
 
+#: src/pages/beatmaps/BeatmapsetStats.tsx
+msgid "Star rating"
+msgstr ""
+
+#: src/HeaderLinks.tsx
+#: src/routes/store.tsx
+msgid "store"
+msgstr ""
+
+#: src/pages/scores/ScorePage.tsx
+msgid "Submitted on"
+msgstr ""
+
+#: src/pages/store/OrderHistory.tsx
+msgid "subscription"
+msgstr ""
+
+#: src/Header.tsx
+#: src/pages/Home.tsx
+msgid "support the game"
+msgstr ""
+
 #: src/pages/beatmaps/RequestRow.tsx
 msgid "Support this request"
 msgstr "Supporter"
+
+#: src/components/character/SupporterBadge.tsx
+msgid "supporter"
+msgstr ""
+
+#: src/pages/admin/AdminNav.tsx
+#: src/routes/admin/orders.tsx
+msgid "supporter orders"
+msgstr ""
+
+#: src/pages/store/SupporterTag.tsx
+msgid "supporter tag"
+msgstr ""
+
+#: src/pages/store/OrderHistory.tsx
+msgid "Supporter tag"
+msgstr ""
+
+#: src/routes/legal/terms.tsx
+msgid "terms"
+msgstr ""
 
 #: src/Footer.tsx
 msgid "Terms"
@@ -1079,15 +1606,34 @@ msgstr "La liste est la file de maps que votre personnage joue l'une après l'au
 msgid "The ultimate<0/>osu!mania idle game"
 msgstr "L'ultime<0/>jeu idle osu!mania"
 
+#: src/components/character/RestrictDialog.tsx
+msgid "They can't play, chat or buy, and disappear from rankings until you lift it."
+msgstr ""
+
+#: src/pages/oauth/Authorize.tsx
+msgid "This application will be able to:"
+msgstr ""
+
+#: src/components/PageError.tsx
+msgid "This page doesn't exist."
+msgstr ""
+
+#: src/components/character/RestrictedProfileNotice.tsx
+msgid "This player is currently restricted."
+msgstr ""
+
 #: src/pages/beatmaps/RequestRow.tsx
 msgid "This request has been answered"
 msgstr "Cette proposition a été traitée"
 
-#: src/pages/settings/Settings.tsx
-msgid "Title"
+#: src/pages/beatmaps/MapScoreboard.tsx
+msgid "Time"
 msgstr ""
 
-#: src/HeaderLinks.tsx
+#: src/pages/settings/Settings.tsx
+msgid "Title"
+msgstr "Titre"
+
 #: src/pages/rankings/RankingsNav.tsx
 msgid "top plays"
 msgstr "meilleurs plays"
@@ -1101,18 +1647,30 @@ msgstr "Total"
 msgid "Total Hits"
 msgstr "Notes totales"
 
+#: src/pages/beatmaps/TopScoreCard.tsx
+msgid "Total score"
+msgstr ""
+
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/characters/CharacterPreview.tsx
 msgid "Total Score"
 msgstr "Score total"
 
+#: src/components/character/DeleteAccountDialog.tsx
+msgid "Type the osu! username to confirm."
+msgstr ""
+
 #: src/components/character/ProfileMenu.tsx
 msgid "Unblock"
 msgstr "Débloquer"
 
+#: src/pages/settings/OAuthClientDialog.tsx
+msgid "Update"
+msgstr ""
+
 #: src/components/leaderboard/medalLine.ts
 msgid "Upgrades held"
-msgstr ""
+msgstr "Améliorations achetées"
 
 #: src/components/EditableProfilePicture.tsx
 msgid "Upload a profile picture"
@@ -1136,7 +1694,7 @@ msgstr "Tout voir"
 
 #: src/pages/settings/TitleSettings.tsx
 msgid "Wear the name of a medal you hold under your name on your profile."
-msgstr ""
+msgstr "Portez le nom d'une de vos médailles sous votre pseudo sur votre profil."
 
 #: src/pages/help/FAQ.tsx
 msgid "What are add-ons?"
@@ -1157,6 +1715,10 @@ msgstr "Qu'est-ce que la liste et le pilote automatique ?"
 #: src/pages/help/FAQ.tsx
 msgid "What are upgrades?"
 msgstr "Que sont les améliorations ?"
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "What do I get?"
+msgstr ""
 
 #: src/pages/help/FAQ.tsx
 msgid "What happens to my scores if a map is unranked?"
@@ -1182,6 +1744,10 @@ msgstr "Quelle différence entre les parties classées, non classées et en invi
 msgid "Which maps can be ranked?"
 msgstr "Quelles maps peuvent être classées ?"
 
+#: src/components/RestrictedBanner.tsx
+msgid "While restricted, you can't play, chat or buy anything, and your profile and scores are only visible to you. If you think it's a mistake, write to <0>{email}</0>."
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 msgid "Why does my game stop in the background?"
 msgstr "Pourquoi mon jeu s'arrête-t-il en arrière-plan ?"
@@ -1189,6 +1755,10 @@ msgstr "Pourquoi mon jeu s'arrête-t-il en arrière-plan ?"
 #: src/pages/beatmaps/RequestActions.tsx
 msgid "Withdraw"
 msgstr "Retirer"
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Yellow name"
+msgstr ""
 
 #: src/pages/help/FAQ.tsx
 msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
@@ -1202,9 +1772,21 @@ msgstr "Oui. Les skins changent le terrain de jeu, les notes et l'interface de j
 msgid "You already have {MAX_PENDING_REQUESTS} requests waiting. Wait for one to be answered before proposing another."
 msgstr "Vous avez déjà {MAX_PENDING_REQUESTS} propositions en attente. Attendez que l'une d'entre-elles soit traitée avant d'en envoyer une autre."
 
+#: src/pages/store/SupporterStatus.tsx
+msgid "You don't have a supporter tag right now."
+msgstr ""
+
 #: src/pages/DesktopDone.tsx
 msgid "You're signed in!"
 msgstr "Vous êtes connecté !"
+
+#: src/components/RestrictedBanner.tsx
+msgid "Your account has been restricted!"
+msgstr ""
+
+#: src/pages/store/SupporterTag.tsx
+msgid "Your account is restricted, so it can't buy anything."
+msgstr ""
 
 #: src/pages/help/FAQ.tsx
 msgid "Your character has eleven skills: accuracy, speed, stamina, jack speed, coordination, release, reading, consistency, concentration, speed jam and memory. Each one levels up on its own, from the parts of a map that test it. A jack-heavy map trains jack speed, a long map trains stamina, and so on. Your overall level grows with all of them."
@@ -1212,9 +1794,21 @@ msgstr "Votre personnage a onze compétences : précision, vitesse, endurance, j
 
 #: src/pages/DiscordLinked.tsx
 msgid "Your Discord account is linked!"
-msgstr ""
+msgstr "Votre compte Discord est lié !"
 
 #: src/pages/DiscordLinked.tsx
 msgid "Your level role will show up on the osu!idle Discord server. You can close this tab."
+msgstr "Vous aurez accès à un rôle sur le serveur Discord osu!idle selon votre niveau. Vous pouvez fermer cet onglet. "
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Your name shows in bright yellow in chat, for everyone to see."
+msgstr ""
+
+#: src/pages/store/SupporterStatus.tsx
+msgid "Your supporter tag is valid until <0>{until}</0>."
+msgstr ""
+
+#: src/pages/store/OrderHistory.tsx
+msgid "yourself"
 msgstr ""
 

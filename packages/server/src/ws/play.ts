@@ -4,6 +4,7 @@ import type { CharacterRow } from '../db/schema/character';
 import {
 	abortPlay,
 	fetchResult,
+	isPlaying,
 	playState,
 	finishPlayNow,
 	skipPlay,
@@ -11,8 +12,12 @@ import {
 	streamOffsets,
 } from '../play';
 import { hub } from './hub';
+import { ownMatch } from './multiplayer';
 import { isProd } from '../env';
-import type { PlayResult } from '@osu-idle/shared/play';
+import type {
+	PlayResult,
+	PlayStartResult,
+} from '@osu-idle/shared/play';
 
 /**
  * The play consumer of the community socket. Commands (start/skip/abort/result)
@@ -106,6 +111,8 @@ export class PlayFeed {
 
 type PlaySession = {
 	character: CharacterRow,
+	/** the socket's character now: a rebirth or a switch moves it off `character` */
+	characterId: number,
 	ws: WSContext,
 	feed: PlayFeed,
 	/** re-reads the character row - its skills level up between plays, and the
@@ -139,10 +146,17 @@ const answerResult = async (
 	});
 };
 
+/** A seated player's only play is the round's, which already exists when they join it. */
+const startUnlessSeated = async (
+	character: CharacterRow, beatmapId: number, xpMultiplier: number, rate: number,
+): Promise<PlayStartResult> => await ownMatch(character.id) && !await isPlaying(character.id)
+	? { status: 'inMatch' }
+	: startPlay(character, beatmapId, xpMultiplier, rate);
+
 export const handlePlay = async (
 	msg: ClientMessage,
 	{
-		character, ws, feed, freshCharacter,
+		character, characterId, ws, feed, freshCharacter,
 	}: PlaySession,
 ): Promise<boolean> => {
 	switch (msg.type) {
@@ -151,7 +165,9 @@ export const handlePlay = async (
 			try {
 				const fresh = await freshCharacter() ?? character;
 				console.log(fresh.name, 'wants to play', msg.beatmapId);
-				const result = await startPlay(fresh, msg.beatmapId, isProd ? 1 : msg.xpMultiplier ?? 1);
+				const result = await startUnlessSeated(
+					fresh, msg.beatmapId, isProd ? 1 : msg.xpMultiplier ?? 1, msg.rate ?? 1,
+				);
 				console.log(fresh.name, 'play status', result.status);
 				hub.sendLocal(ws, {
 					type: 'play:start', result,
@@ -171,7 +187,7 @@ export const handlePlay = async (
 			feed.stop();
 			return true;
 		case 'play:skip':
-			await skipPlay(character.id, msg.token);
+			await skipPlay(characterId, msg.token);
 			return true;
 		case 'play:finish': {
 			// a debug affordance: on prod it would hand out a play's xp without
@@ -180,10 +196,10 @@ export const handlePlay = async (
 			// ending the play opens the whole remainder to the horizon gate, so the
 			// rest of the replay can be answered right here - the client must not be
 			// left waiting on the periodic feed to notice
-			await finishPlayNow(character.id, msg.token);
+			await finishPlayNow(characterId, msg.token);
 			// read the rest of the replay out before finalising - finalising
 			// consumes the play record
-			const rest = await streamOffsets(character.id, msg.token, msg.next);
+			const rest = await streamOffsets(characterId, msg.token, msg.next);
 			// `done` from the horizon gate answers "is the map fully revealed", which
 			// a failed play never satisfies: its timeline stops where the bot died, so
 			// the offsets past that point are never released. The play is over either
@@ -198,10 +214,10 @@ export const handlePlay = async (
 			return true;
 		}
 		case 'play:abort':
-			await abortPlay(character.id, msg.token);
+			await abortPlay(characterId, msg.token);
 			return true;
 		case 'play:result':
-			await answerResult(ws, character.id, msg);
+			await answerResult(ws, characterId, msg);
 			return true;
 		default:
 			return false;

@@ -5,6 +5,7 @@ import {
 	useLingui,
 } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useAsync from '@osu-idle/shared/hooks/useAsync';
 import {
 	REBIRTH_MIN_OVERALL_LEVEL,
 	canRebirth,
@@ -16,6 +17,7 @@ import {
 import ConfirmMenu, { type Confirm } from '../ConfirmMenu';
 import Entities from '../../entity/entities';
 import { rebirth } from '../../online/services/prestige';
+import { listCharacters } from '../../online/services/lineage';
 import LineageList from './LineageList';
 
 export default function RebirthView() {
@@ -28,7 +30,10 @@ export default function RebirthView() {
 	const generation = character.generation;
 	const owned = unlocksForGeneration(generation);
 	const next = REBIRTH_UNLOCKS[owned.length];
-	const ready = character.id !== 0 && canRebirth(character.overallLevel) && !!name.trim();
+	const lineage = useAsync(listCharacters, [character.id]);
+	// only the newest generation goes on: the ones behind it stay as they are
+	const reborn = lineage?.some(c => c.generation > generation) ?? false;
+	const ready = character.id !== 0 && !reborn && canRebirth(character.overallLevel) && !!name.trim();
 
 	const run = async () => {
 		if (busy) return;
@@ -98,9 +103,11 @@ export default function RebirthView() {
 					disabled={!ready || busy}
 					onClick={confirm}
 				>
-					{canRebirth(character.overallLevel)
-						? <Trans>Rebirth</Trans>
-						: <Trans>Requires overall Lv{REBIRTH_MIN_OVERALL_LEVEL}</Trans>}
+					{reborn
+						? <Trans>Already reborn</Trans>
+						: canRebirth(character.overallLevel)
+							? <Trans>Rebirth</Trans>
+							: <Trans>Requires overall Lv{REBIRTH_MIN_OVERALL_LEVEL}</Trans>}
 				</button>
 			</div>
 

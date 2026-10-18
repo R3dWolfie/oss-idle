@@ -1,0 +1,63 @@
+.btn-home {
+	--colour-s: var(--c-saturation-3);
+	--colour-l: var(--c-lightness-3);
+	--bg-l-adjust: 0%;
+	--bg-move: 0px;
+	--border-size: 3px;
+	--move: 0px;
+
+	position: relative;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	margin-bottom: var(--border-size);
+	padding: 10px 20px;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 14px;
+	font-weight: 700;
+	background-color: hsl(
+		var(--colour-h),
+		var(--colour-s),
+		calc(var(--colour-l) + var(--bg-l-adjust))
+	);
+	box-shadow:
+		0 calc(var(--border-size) - var(--move))
+			hsl(var(--colour-h), var(--colour-s), calc(var(--colour-l) - 10%)),
+		0 calc(var(--border-size) + 1px - var(--move)) 3px rgba(0, 0, 0, 0.25);
+	transform: translate(0, var(--move));
+	transition: all 120ms ease-in-out;
+}
+
+.btn-home::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: #fff;
+	mask: url(/img/header-lanes.svg) calc(50% + var(--bg-move)) 30% / 160px
+		160px;
+	opacity: 0.12;
+	transition: inherit;
+}
+
+.btn-home:hover,
+.btn-home:focus {
+	color: #fff;
+	text-decoration: none;
+	--bg-move: -20px;
+	--bg-l-adjust: 10%;
+}
+
+.btn-home:active {
+	--move: 2px;
+}
+
+.btn-home__text {
+	position: relative;
+	flex: 1;
+}
+
+.btn-home__icon {
+	position: relative;
+	font-size: 150%;
+}

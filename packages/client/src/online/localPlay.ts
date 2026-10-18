@@ -16,6 +16,7 @@ import { Score } from '../db/schema/score';
 import { ScoreXP } from '../db/schema/score_xp';
 import { logPlayFinished } from '../logs';
 import calculatePP from '../osu/pp';
+import { rateFor } from '../gameplay/playRate';
 import { debugXpMultiplier } from '../globals';
 
 /** Song-time gap between the accuracy/grade checkpoints the dock reads. */
@@ -36,6 +37,8 @@ type LocalRun = {
 	 *  the live one, and the play belongs to the one that earned it. */
 	character: Character;
 	beatmap: LightBeatmap;
+	/** the playback rate it was simulated at */
+	rate: number;
 	beatmapId: number;
 	chart: Beatmap;
 	/** the resolved simulation - the play, in full, before a note is drawn */
@@ -187,11 +190,14 @@ const simulate = async (
 	);
 
 	const divine = hasUnlock(character.generation, 'DIVINE');
+	const rate = rateFor(character);
 	const bot = new CharacterBot(
 		snapshotSkills(character, timesPlayed),
 		chart.difficulty.overallDifficulty,
 	);
-	const game = new ManiaGame(chart, bot, { divine });
+	const game = new ManiaGame(chart, bot, {
+		divine, rate,
+	});
 
 	// walk to the end in steps, checkpointing accuracy and grade on the way -
 	// the dock reads these back while the play runs
@@ -215,6 +221,7 @@ const simulate = async (
 		character,
 		beatmap,
 		beatmapId,
+		rate,
 		chart,
 		game,
 		bot,
@@ -273,7 +280,7 @@ export const finalizeLocalPlay = async (token: string): Promise<void> => {
 	const game = run.game;
 	const failed = game.score.failed;
 
-	const pp = await calculatePP(game.score, run.chart).catch(() => 0);
+	const pp = await calculatePP(game.score, run.chart, run.rate).catch(() => 0);
 	const c = game.score.counts;
 	const score = new Score({
 		characterId: Number(character.id),
@@ -287,6 +294,7 @@ export const finalizeLocalPlay = async (token: string): Promise<void> => {
 		ur: game.unstableRate(),
 		pfc: c.MISS === 0 && c.BAD === 0 && c.GOOD === 0,
 		playedAt: Date.now(),
+		rate: run.rate,
 	});
 
 	let saved = score;
@@ -297,7 +305,7 @@ export const finalizeLocalPlay = async (token: string): Promise<void> => {
 		saved = await score.add().catch(() => score);
 		if (run.mode === 'guest') {
 			gains = run.bot.applyProgression(
-				run.beatmap.metadata.total_length,
+				run.beatmap.metadata.total_length / run.rate,
 				saved,
 				debugXpMultiplier.get(),
 			);

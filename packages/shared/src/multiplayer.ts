@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { rateSchema } from './rate.js';
+import { scoreDTO } from './score.js';
 
 /**
  * Multiplayer matches (osu!'s lobby + match setup). A match only gathers
@@ -31,6 +33,8 @@ export const matchSlotDTO = z.discriminatedUnion('state', [
 		noMap: z.boolean(),
 		/** in the round being played */
 		playing: z.boolean(),
+		/** the rate this player plays at: everyone picks their own */
+		rate: rateSchema.optional(),
 	}),
 ]);
 export type MatchSlot = z.infer<typeof matchSlotDTO>;
@@ -54,6 +58,8 @@ export const roundScoreDTO = z.object({
 	combo: z.number().int(),
 	failed: z.boolean(),
 	accuracy: z.number().optional(),
+	/** the full play, once the round is over: what its result screen shows, failed or not */
+	result: scoreDTO.omit({ id: true }).optional(),
 });
 export type RoundScore = z.infer<typeof roundScoreDTO>;
 
@@ -115,6 +121,10 @@ export const multiplayerClientMessages = [
 	z.object({
 		type: z.literal('mp:noMap'),
 		noMap: z.boolean(),
+	}),
+	z.object({
+		type: z.literal('mp:rate'),
+		rate: rateSchema,
 	}),
 	/** move to another open slot */
 	z.object({
@@ -180,6 +190,6 @@ export const multiplayerServerMessages = [
 		type: z.literal('mp:joined'),
 		match: matchDTO.optional(),
 		/** why a join was refused */
-		reason: z.enum(['full', 'password', 'gone', 'playing']).optional(),
+		reason: z.enum(['full', 'password', 'gone', 'playing', 'restricted']).optional(),
 	}),
 ] as const;

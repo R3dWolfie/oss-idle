@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build:shared
+      - run: npm run build:types
+      - name: Typecheck
+        run: |
+          npx tsc --noEmit -p packages/server
+          npx tsc --noEmit -p packages/client/tsconfig.app.json
+          npx tsc --noEmit -p packages/web/tsconfig.app.json
+          npx tsc --noEmit -p packages/e2e/tsconfig.json
+          npx tsc --noEmit -p packages/discord
+          npx tsc --noEmit -p packages/desktop
+      - run: npm run lint
+      - run: npm test
+      - name: Build
+        run: |
+          npm -w @osu-idle/client run build
+          npm -w @osu-idle/web run build

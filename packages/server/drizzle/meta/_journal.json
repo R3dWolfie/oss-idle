@@ -407,6 +407,62 @@
       "when": 1792368000000,
       "tag": "0057_beatmapset_deleted",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "5",
+      "when": 1792454400000,
+      "tag": "0058_supporter",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "5",
+      "when": 1792540800000,
+      "tag": "0059_supporter_refunds",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "5",
+      "when": 1792627200000,
+      "tag": "0060_user_restricted",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "5",
+      "when": 1792713600000,
+      "tag": "0061_supporter_order_keep",
+      "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "5",
+      "when": 1792800000000,
+      "tag": "0062_score_rate",
+      "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "5",
+      "when": 1792886400000,
+      "tag": "0063_beatmap_rate_stars",
+      "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "5",
+      "when": 1792972800000,
+      "tag": "0064_first_place_rate",
+      "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "5",
+      "when": 1793059200000,
+      "tag": "0065_oauth",
+      "breakpoints": true
     }
   ]
 }

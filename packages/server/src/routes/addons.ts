@@ -6,6 +6,7 @@ import {
 	desc,
 	asc,
 	eq,
+	isNull,
 	like,
 	or,
 	sql,
@@ -25,6 +26,7 @@ import {
 } from '../db/schema/addon';
 import { users } from '../db/schema/user';
 import { requireAuth } from '../auth/middleware';
+import { requireActive } from '../auth/active';
 import { requireAdmin } from '../auth/admin';
 import { saveUploadedImage } from '../uploads';
 
@@ -78,7 +80,7 @@ export const addonsRoutes = new Hono()
 			?? SORT_COLUMNS.created;
 		const dir = c.req.query('dir') === 'asc' ? asc : desc;
 
-		const where = [eq(addons.status, ADDON_STATUS.published)];
+		const where = [eq(addons.status, ADDON_STATUS.published), isNull(users.restrictedAt)];
 		if (q) where.push(
 			or(
 				like(addons.name, `%${q}%`), 
@@ -105,7 +107,7 @@ export const addonsRoutes = new Hono()
 	})
 
 	// Auth: create a draft add-on owned by the caller.
-	.post('/', requireAuth, jsonBody(addonCreateBody), async c => {
+	.post('/', requireActive, jsonBody(addonCreateBody), async c => {
 		const body = c.req.valid('json');
 		const [created] = await db.insert(addons).values({
 			name: body.name,
@@ -122,7 +124,7 @@ export const addonsRoutes = new Hono()
 	})
 
 	// Auth: upload an icon image; returns the public path to store as `icon`.
-	.post('/icon', requireAuth, async c => {
+	.post('/icon', requireActive, async c => {
 		const body = await c.req.parseBody();
 		return c.json({ url: await saveUploadedImage(body['file']) });
 	})
@@ -142,10 +144,15 @@ export const addonsRoutes = new Hono()
 	// Admin: moderate - approve (→ published, stamps publishedAt), deny, unpublish.
 	.patch('/admin/:id', requireAdmin, jsonBody(addonModerateBody), async c => {
 		const id = idParam.parse(c.req.param('id'));
-		const { status, feedback } = c.req.valid('json');
+		const {
+			status, feedback, source,
+		} = c.req.valid('json');
 
 		const [existing] = await db.select().from(addons).where(eq(addons.id, id)).limit(1);
 		if (!existing) throw new HTTPException(404, { message: 'Add-on not found' });
+		if (existing.source !== source) {
+			throw new HTTPException(409, { message: 'The add-on changed since you opened it: review it again' });
+		}
 
 		const publishedAt = status === ADDON_STATUS.published
 			? (existing.publishedAt ?? new Date())
@@ -163,7 +170,7 @@ export const addonsRoutes = new Hono()
 	// Auth+owner: edit. Updating an on-hold add-on answers the moderator's
 	// feedback, so it re-enters review (pending); changing the source of a
 	// published add-on likewise reverts to pending. Other edits keep the status.
-	.patch('/:id', requireAuth, jsonBody(addonUpdateBody), async c => {
+	.patch('/:id', requireActive, jsonBody(addonUpdateBody), async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const body = c.req.valid('json');
 		const existing = await ownedBy(id, c.get('userId'));
@@ -183,7 +190,7 @@ export const addonsRoutes = new Hono()
 	})
 
 	// Auth+owner: submit a draft / denied add-on for review.
-	.post('/:id/submit', requireAuth, async c => {
+	.post('/:id/submit', requireActive, async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const existing = await ownedBy(id, c.get('userId'));
 		if (existing.status === ADDON_STATUS.pending || existing.status === ADDON_STATUS.published) {

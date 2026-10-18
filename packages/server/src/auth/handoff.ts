@@ -4,16 +4,15 @@ import { redisKeyPrefix } from '../env';
 /**
  * One-time code handoff for desktop OAuth. The browser callback can't set a
  * cookie the desktop app would see, so it stashes the freshly minted session
- * token under the one-time `poll` code the app generated and put in the OAuth
- * state. The app polls {@link takeHandoff} (via /osu/desktop/exchange) until the
- * token appears, so the long-lived session JWT never travels back through the
- * browser at all. Single-use: the read deletes it.
+ * token under a one-time code it sends to the app's loopback. The app redeems it
+ * with {@link takeHandoff} (via /osu/desktop/exchange), so the long-lived session
+ * JWT never travels back through the browser at all. Single-use: the read deletes it.
  */
 const HANDOFF_TTL_MS = 60_000;
 
 const handoffKey = (code: string) => `${redisKeyPrefix}authhandoff:${code}`;
 
-/** Stash a session token under the app's one-time poll code, for it to redeem. */
+/** Stash a session token under a one-time code, for the app to redeem. */
 export async function storeHandoff(code: string, token: string): Promise<void> {
 	await redis.set(handoffKey(code), token, 'PX', HANDOFF_TTL_MS);
 }

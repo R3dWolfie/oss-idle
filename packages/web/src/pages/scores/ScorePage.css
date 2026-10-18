@@ -1,0 +1,299 @@
+/* osu!web's scores-show: score-beatmap, score-info, score-stats */
+.score-beatmap {
+	padding: 10px 50px;
+	background-color: hsl(var(--hsl-b4));
+}
+
+.score-beatmap__title {
+	margin: 0 0 10px;
+	font-size: 24px;
+}
+
+.score-beatmap__title a {
+	color: #fff;
+}
+
+.score-beatmap__artist {
+	font-size: 20px;
+	font-weight: 400;
+}
+
+.score-beatmap__detail {
+	display: flex;
+	gap: 10px;
+	align-items: baseline;
+	font-size: 16px;
+}
+
+.score-beatmap__stars {
+	padding: 2px 8px;
+	border-radius: 10000px;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.score-info {
+	position: relative;
+	display: flex;
+	align-items: center;
+	min-height: 240px;
+	padding: 10px 40px;
+	background-size: cover;
+	background-position: center;
+}
+
+.score-info::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-color: hsla(var(--hsl-b6), 0.75);
+}
+
+.score-info__item {
+	position: relative;
+	flex: none;
+	margin: 10px;
+}
+
+.score-info__item--dial {
+	display: flex;
+	margin: 0 15px;
+}
+
+.score-info__item--player {
+	flex: 1;
+}
+
+.score-tower {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.score-tower .grade__container {
+	width: 40px;
+	height: 20px;
+}
+
+.score-tower__item--missed {
+	filter: grayscale(1);
+	opacity: 0.1;
+}
+
+.score-tower__item--passed {
+	opacity: 0.4;
+}
+
+.score-dial {
+	position: relative;
+	width: 200px;
+	height: 200px;
+}
+
+.score-dial svg {
+	position: absolute;
+	inset: 0;
+}
+
+.score-dial__grade {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+}
+
+.score-dial__grade .grade__container {
+	width: 110px;
+	height: 56px;
+	filter: drop-shadow(0 0 10px hsla(var(--hsl-c1), 0.5));
+}
+
+.score-dial__inner--0 {
+	fill: #ff5a5a;
+}
+
+.score-dial__inner--1 {
+	fill: #ff8e5d;
+}
+
+.score-dial__inner--2 {
+	fill: #e3b130;
+}
+
+.score-dial__inner--3 {
+	fill: #88da20;
+}
+
+.score-dial__inner--4 {
+	fill: #02b5c3;
+}
+
+.score-dial__inner--5 {
+	fill: #de31ae;
+}
+
+.score-dial__outer--0 {
+	fill: url(#dial-outer);
+}
+
+.score-dial__outer--1 {
+	fill: hsl(var(--hsl-b6));
+}
+
+.score-dial__outer-start {
+	stop-color: hsl(var(--hsl-blue-1));
+}
+
+.score-dial__outer-end {
+	stop-color: hsl(var(--hsl-lime-1));
+}
+
+.score-player__mods {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.score-player__score {
+	font-size: 70px;
+	font-weight: 300;
+	line-height: 1;
+}
+
+.score-player__row--player {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 2px 10px;
+	margin: 15px 0;
+	font-size: 12px;
+	overflow-wrap: anywhere;
+}
+
+.score-player__row--rank {
+	display: grid;
+	grid-template-columns: max-content;
+}
+
+.score-player__rank {
+	padding: 0 10px;
+}
+
+.score-player__rank--label {
+	padding-right: 30px;
+	border-radius: 10000px;
+	background-color: hsl(var(--hsl-b6));
+	font-size: 12px;
+	text-transform: uppercase;
+}
+
+.score-player__rank--value {
+	font-size: 20px;
+}
+
+.score-stats {
+	display: flex;
+	gap: 10px;
+	padding: 20px 50px;
+}
+
+.score-stats__group {
+	display: grid;
+	gap: 10px;
+}
+
+.score-stats__group--user {
+	width: 360px;
+	align-content: start;
+}
+
+.score-stats__group--stats {
+	margin-left: auto;
+}
+
+.score-stats__row {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px 2px;
+}
+
+.score-stats__stat {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+}
+
+.score-stats__value {
+	padding: 0 10px;
+	font-size: 20px;
+}
+
+.score-stats__value--perfect {
+	color: hsl(var(--hsl-lime-1));
+}
+
+.score-stats__label {
+	padding: 0 10px;
+	border-radius: 10000px;
+	background-color: hsl(var(--hsl-b6));
+	font-size: 12px;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.score-user {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	background-color: hsl(var(--hsl-b4));
+	color: #fff;
+}
+
+.score-user:hover {
+	color: #fff;
+	text-decoration: none;
+	background-color: hsl(var(--hsl-b3));
+}
+
+.score-user__avatar {
+	width: 60px;
+	height: 60px;
+	border-radius: 10px;
+	object-fit: cover;
+}
+
+.score-user__name {
+	font-size: 18px;
+	font-weight: 700;
+}
+
+@media (max-width: 760px) {
+	.score-beatmap,
+	.score-stats {
+		padding: 10px;
+	}
+
+	.score-info,
+	.score-stats {
+		flex-direction: column;
+	}
+
+	.score-tower {
+		flex-direction: row-reverse;
+	}
+
+	.score-player__score {
+		font-size: 50px;
+	}
+
+	.score-stats__group--user {
+		width: auto;
+	}
+
+	.score-stats__group--stats {
+		margin-left: 0;
+	}
+}

@@ -1,3 +1,4 @@
+import { versionLabel } from '@osu-idle/shared/rate';
 import { useEffect } from 'react';
 import { Trans } from '@lingui/react/macro';
 import useSynced from '@osu-idle/shared/hooks/useSynced';
@@ -28,7 +29,8 @@ export default function Screensaver() {
 		if (!live) return;
 		if (music.beatmap.get()?.is(live.beatmap) && music.playing.get()) return;
 		void music.beatmap.set(live.beatmap)
-			.then(() => music.play(Date.now() - live.startedAt - LEAD_IN_MS));
+			// the play's time is real time; the track runs at the play's rate
+			.then(() => music.play((Date.now() - live.startedAt - LEAD_IN_MS) * live.rate));
 	}, [live?.token]);
 
 	if (!live) {
@@ -52,7 +54,9 @@ export default function Screensaver() {
 			<div className="screensaver__now">
 				<div className="screensaver__artist">{metadata.artist}</div>
 				<div className="screensaver__title">{metadata.title}</div>
-				<div className="screensaver__version">[{live.beatmap.metadata.version}]</div>
+				<div className="screensaver__version">
+					[{versionLabel(live.beatmap.metadata.version, live.rate)}]
+				</div>
 				<div className="screensaver__play">
 					{live.grade && skin.grade(live.grade, 'screensaver__grade')}
 					{live.accuracy !== undefined && <span>{accuracy(live.accuracy)}</span>}

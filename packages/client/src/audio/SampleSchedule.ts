@@ -14,15 +14,16 @@ export class SampleSchedule {
 
 	constructor(private readonly events: SampleEvent[]) {}
 
-	/** Schedule every sample due within `lookaheadMs` of song position `nowMs`. */
-	queue(nowMs: number, lookaheadMs: number): void {
+	/** Schedule every sample due within `lookaheadMs` of song position `nowMs`.
+	 *  `speed`: how fast the song plays, so song time maps onto real time. */
+	queue(nowMs: number, lookaheadMs: number, speed = 1): void {
 		const e = this.events;
-		while (this.ptr < e.length && e[this.ptr].time <= nowMs + lookaheadMs) {
+		while (this.ptr < e.length && e[this.ptr].time <= nowMs + lookaheadMs * speed) {
 			const ev = e[this.ptr++];
 			if (ev.time < nowMs) continue; // already past - skip but keep advancing
 			if (!effects.isLoaded(ev.key)) continue; // asset missing - stay silent
 			effects.play(ev.key, {
-				atMs: effects.now() + (ev.time - nowMs), 
+				atMs: effects.now() + (ev.time - nowMs) / speed, 
 				volume: ev.volume,
 			});
 		}

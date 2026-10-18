@@ -1,6 +1,13 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { eq } from 'drizzle-orm';
+import {
+	and,
+	asc,
+	eq,
+	isNull,
+	like,
+	sql,
+} from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/client';
 import {
@@ -9,7 +16,10 @@ import {
 	resolveAvatarUrl,
 	resolveBannerUrl,
 } from '../db/schema/character';
-import { getUserById } from '../db/schema/user';
+import {
+	getUserById,
+	users,
+} from '../db/schema/user';
 import { getCharacterTotals } from '../db/schema/character_totals';
 import {
 	bestSkillRank,
@@ -32,10 +42,54 @@ import {
 	medalHolders,
 	medalProgress,
 } from '../medals';
+import { supportLevel } from '@osu-idle/shared/supporter';
+import { isAdmin } from '@osu-idle/shared/admin';
+import { createMiddleware } from 'hono/factory';
+import { sessionUserId } from '../auth/middleware';
+import {
+	countCurated,
+	getCurated,
+} from '../beatmaps/curated';
 
 const numberParam = z.coerce.number().int().positive();
 
+/** A restricted account's characters exist only for their owner and admins. */
+const hideRestricted = createMiddleware(async (c, next) => {
+	const id = numberParam.safeParse(c.req.param('id'));
+	if (id.success) {
+		const character = await getCharacterById(id.data);
+		const owner = character && await getUserById(character.userId);
+		const viewer = await sessionUserId(c);
+		if (owner?.restrictedAt && viewer !== owner.id && !isAdmin(viewer)) {
+			throw new HTTPException(404, { message: 'Character not found' });
+		}
+	}
+	await next();
+});
+
+const likeEscape = (s: string) => s.replace(/[\\%_]/g, c => `\\${c}`);
+
 export const charactersRoutes = new Hono()
+	// Players by name: the accounts' current characters, exact match first.
+	.get('/search', async c => {
+		const q = z.string().trim().min(1).max(32).safeParse(c.req.query('q'));
+		if (!q.success) return c.json([]);
+		return c.json(await db
+			.select({
+				userId: users.id,
+				character: {
+					id: characters.id,
+					name: characters.name,
+				},
+			})
+			.from(users)
+			.innerJoin(characters, eq(characters.id, users.currentCharacter))
+			.where(and(isNull(users.restrictedAt), like(characters.name, `%${likeEscape(q.data)}%`)))
+			.orderBy(sql`${characters.name} = ${q.data} desc`, asc(characters.name))
+			.limit(50));
+	})
+	.use('/:id', hideRestricted)
+	.use('/:id/*', hideRestricted)
 	.get('/:id', async c => {
 		const id = numberParam.parse(c.req.param('id'));
 
@@ -52,6 +106,11 @@ export const charactersRoutes = new Hono()
 			avatarUrl: resolveAvatarUrl(row.avatarUrl, user?.avatarUrl),
 			bannerUrl: resolveBannerUrl(row.bannerUrl),
 			formerNames,
+			restricted: Boolean(user?.restrictedAt),
+			supportLevel: supportLevel(
+				Boolean(user?.supporterUntil && user.supporterUntil > new Date()),
+				user?.supporterMonths ?? 0,
+			),
 		});
 	})
 
@@ -157,5 +216,23 @@ export const charactersRoutes = new Hono()
 		if (!character) throw new HTTPException(404, { message: 'Character not found' });
 
 		return c.json(await getRecentCharacterScores(id, page));
+	})
+	// Ranked maps the character's account proposed.
+	.get('/:id/countrankedmaps', async c => {
+		const id = numberParam.parse(c.req.param('id'));
+
+		const character = await getCharacterById(id);
+		if (!character) throw new HTTPException(404, { message: 'Character not found' });
+
+		return c.json(await countCurated(character.userId));
+	})
+	.get('/:id/rankedmaps/:page', async c => {
+		const id = numberParam.parse(c.req.param('id'));
+		const page = numberParam.parse(c.req.param('page'));
+
+		const character = await getCharacterById(id);
+		if (!character) throw new HTTPException(404, { message: 'Character not found' });
+
+		return c.json(await getCurated(character.userId, page));
 	})
 ;

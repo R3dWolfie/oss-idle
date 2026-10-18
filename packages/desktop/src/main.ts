@@ -2,6 +2,7 @@ import {
 	app,
 	BrowserWindow,
 	ipcMain,
+	Menu,
 	shell,
 } from 'electron';
 import path from 'node:path';
@@ -156,6 +157,23 @@ if (!app.requestSingleInstanceLock()) {
 		ipcMain.on('osu-idle:presence', 
 			(_event, presence: DesktopPresence | null) => setPresence(presence),
 		);
+
+		// Electron's default menu without its zoom: the game's rate shortcuts are Ctrl
+		// with the two keys left of Backspace, which the menu takes for zoom
+		Menu.setApplicationMenu(Menu.buildFromTemplate([
+			{ role: 'fileMenu' },
+			{ role: 'editMenu' },
+			{
+				label: 'View',
+				submenu: [
+					{ role: 'reload' },
+					{ role: 'forceReload' },
+					{ role: 'toggleDevTools' },
+					{ role: 'togglefullscreen' },
+				],
+			},
+			{ role: 'windowMenu' },
+		]));
 
 		createWindow();
 

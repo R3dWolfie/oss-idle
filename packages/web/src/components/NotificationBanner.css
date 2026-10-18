@@ -1,0 +1,78 @@
+.notification-banner {
+	display: flex;
+	position: relative;
+	flex-direction: row;
+	margin: 10px 0;
+	padding: 5px;
+	border-radius: 40px;
+	background-color: #80202066;
+	color: #fff;
+	font-size: 14px;
+	text-align: left;
+}
+
+.notification-banner > div {
+	margin: 5px;
+}
+
+.notification-banner__icon {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	font-size: 18px;
+}
+
+.notification-banner__label {
+	display: flex;
+	position: relative;
+	flex: none;
+	flex-direction: column;
+	justify-content: center;
+	padding-right: 18px;
+}
+
+.notification-banner__label::after {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 3px;
+	border-radius: 10px;
+	background-color: #ff6666;
+	content: "";
+}
+
+.notification-banner__type {
+	font-weight: 700;
+	text-transform: capitalize;
+}
+
+.notification-banner__text a {
+	color: #ffcc22;
+}
+
+@media (max-width: 900px) {
+	.notification-banner {
+		flex-direction: column;
+		border-radius: 10px;
+		text-align: center;
+	}
+
+	.notification-banner__icon {
+		width: auto;
+	}
+
+	.notification-banner__label {
+		padding-right: 0;
+		padding-bottom: 13px;
+	}
+
+	.notification-banner__label::after {
+		top: auto;
+		left: 0;
+		width: auto;
+		height: 3px;
+	}
+}

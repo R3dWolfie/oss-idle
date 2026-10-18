@@ -4,12 +4,14 @@ import {
 	type ChatLine,
 } from '@osu-idle/shared/community/wire';
 import { isAdmin } from '@osu-idle/shared/admin';
+import { isSupporter } from '../supporter';
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { redis } from '../redis';
 import { redisKeyPrefix } from '../env';
 import { db } from '../db/client';
 import { characters } from '../db/schema/character';
+import { isRestricted } from '../db/schema/user';
 import { hub } from './hub';
 import { LOBBY_CHANNEL } from '@osu-idle/shared/multiplayer';
 import { channelMembers } from './multiplayer';
@@ -30,9 +32,12 @@ const CHANNELS = new Set([DEFAULT_CHANNEL, LOBBY_CHANNEL]);
 /** The browsable channel list (for the admin console). */
 export const chatChannels = (): string[] => [...CHANNELS];
 
-// Fixed-window rate limit: at most BURST messages per WINDOW per character.
+// Fixed-window rate limit: at most BURST messages per WINDOW per character, PMs
+// counted apart from public chat.
 const WINDOW_MS = 5 * 1000;
-const BURST = 5;
+const BURST = {
+	chat: 5, pm: 10,
+};
 
 // History is a rolling 1-day window, per channel.
 const HISTORY_MS = 24 * 60 * 60 * 1000;
@@ -45,8 +50,9 @@ const BAN_KEY = `${redisKeyPrefix}chat:banned`;
 const CHATTED_KEY = `${redisKeyPrefix}chat:chatted`;
 const timeoutKey = (userId: number): string => `${redisKeyPrefix}chat:timeout:${userId}`;
 
-/** Chat username colours: a soft yellow for players, purple for admins. */
-export const PLAYER_NAME_COLOR = '#fff09a';
+/** Chat username colours, osu!stable's: pale yellow for players, strong yellow for supporters. Admins purple. */
+export const PLAYER_NAME_COLOR = '#feefb0';
+export const SUPPORTER_NAME_COLOR = '#fddf43';
 export const ADMIN_NAME_COLOR = '#b06cff';
 /** MakiseBot, our BanchoBot, speaks in pink. */
 export const BOT_COLOR = '#ff66aa';
@@ -55,14 +61,18 @@ const ANNOUNCE_COLOR = '#ff6b6b';
 /** A deleted line's text is replaced with this, in history and live. */
 const DELETED_TEXT = '<deleted>';
 
-export const nameColor = (userId: number): string =>
-	isAdmin(userId) ? ADMIN_NAME_COLOR : PLAYER_NAME_COLOR;
+export const nameColor = async (userId: number): Promise<string> => {
+	if (isAdmin(userId)) return ADMIN_NAME_COLOR;
+	return await isSupporter(userId) ? SUPPORTER_NAME_COLOR : PLAYER_NAME_COLOR;
+};
 
-export const rateLimited = async (characterId: number): Promise<boolean> => {
-	const key = `${redisKeyPrefix}chat:rl:${characterId}`;
+export const rateLimited = async (
+	characterId: number, kind: keyof typeof BURST = 'chat',
+): Promise<boolean> => {
+	const key = `${redisKeyPrefix}${kind}:rl:${characterId}`;
 	const count = await redis.incr(key);
 	if (count === 1) await redis.pexpire(key, WINDOW_MS);
-	return count > BURST;
+	return count > BURST[kind];
 };
 
 /** The user that owns a character (to key moderation off a message's sender). */
@@ -103,9 +113,9 @@ export const isBanned = async (userId: number): Promise<boolean> =>
 const isTimedOut = async (userId: number): Promise<boolean> =>
 	(await redis.exists(timeoutKey(userId))) === 1;
 
-/** Banned or currently timed out - may not post. */
+/** Banned, timed out or restricted - may not post. */
 export const isMuted = async (userId: number): Promise<boolean> =>
-	(await isBanned(userId)) || (await isTimedOut(userId));
+	(await isBanned(userId)) || (await isTimedOut(userId)) || (await isRestricted(userId));
 
 export const setBanned = async (userId: number, banned: boolean): Promise<void> => {
 	if (banned) await redis.sadd(BAN_KEY, String(userId));
@@ -196,6 +206,13 @@ export const handleChat = async (
 			type: 'chat', line,
 		});
 	}
+};
+
+/** What chat moderation remembers about an account, for its deletion. */
+export const forgetChatUser = async (userId: number, characterIds: number[]): Promise<void> => {
+	const pipeline = redis.pipeline().srem(BAN_KEY, String(userId)).del(timeoutKey(userId));
+	for (const id of characterIds) pipeline.srem(CHATTED_KEY, String(id));
+	await pipeline.exec();
 };
 
 export const hasChatted = async (characterId: number): Promise<boolean> =>

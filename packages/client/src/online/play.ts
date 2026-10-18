@@ -4,7 +4,13 @@ import type { ReplayOffset } from '@osu-idle/shared/sim/maniaGame';
 import type Character from '../db/schema/character';
 import { showDeltas } from '../globals';
 import Socket from './socket';
+import { rateFor } from '../gameplay/playRate';
 import { debugXpMultiplier } from '../globals';
+import {
+	ph,
+	t,
+} from '@lingui/core/macro';
+import { CONTACT_EMAIL } from '@osu-idle/shared/contact';
 
 /** Generous: a start awaits the server-side simulation of the whole map. */
 const START_TIMEOUT_MS = 20_000;
@@ -15,6 +21,8 @@ export type RankedPlayContext = {
 	token: string;
 	/** what the server is actually playing - a join can differ from the request */
 	beatmapId: number;
+	/** the playback rate the server simulated it at */
+	rate: number;
 	/** the offsets revealed so far; the rest are pushed while `play:watch`ed */
 	offsets: ReplayOffset[];
 	/** resume cursor + whether every offset has already been delivered */
@@ -31,6 +39,7 @@ export type LocalPlayContext = {
 	mode: 'guest' | 'unranked';
 	token: string;
 	beatmapId: number;
+	rate: number;
 	offsets: ReplayOffset[];
 	startedAt: number;
 	endsAt: number;
@@ -66,6 +75,10 @@ export type PlaySession =
 	| { mode: 'guest' }
 	| { mode: 'unranked' }
 	| { mode: 'refused' }
+	// the account is restricted: no play at all
+	| { mode: 'restricted' }
+	// seated in a match: only its rounds
+	| { mode: 'inMatch' }
 	| RankedPlayContext;
 
 /**
@@ -90,6 +103,14 @@ const clearActivePlayState = (token: string) => {
 	}
 };
 
+/** What a restricted player is told when a play won't start. */
+export const restrictedMessage = () =>
+	t`Your account is restricted, so you can't play. Write to ${ph({ email: CONTACT_EMAIL })} if you think it's a mistake.`
+;
+
+/** What a player seated in a match is told when a solo play won't start. */
+export const inMatchMessage = () => t`Leave the match to play on your own.`;
+
 /** Decide (and, when ranked, start or join) how a play should be scored. */
 export async function startPlaySession(
 	character: Character,
@@ -100,7 +121,7 @@ export async function startPlaySession(
 		const sentAt = Date.now();
 		const res = await Socket.request(
 			{
-				type: 'play:start', beatmapId, xpMultiplier: debugXpMultiplier.get(),
+				type: 'play:start', beatmapId, xpMultiplier: debugXpMultiplier.get(), rate: rateFor(character),
 			},
 			'play:start',
 			START_TIMEOUT_MS,
@@ -115,6 +136,7 @@ export async function startPlaySession(
 				mode: 'ranked',
 				token: play.token,
 				beatmapId: play.beatmapId,
+				rate: play.rate,
 				offsets: play.offsets,
 				next: play.next,
 				done: play.done,
@@ -122,6 +144,8 @@ export async function startPlaySession(
 				endsAt: play.endsAt + skew,
 			};
 		}
+		if (play.status === 'restricted') return { mode: 'restricted' };
+		if (play.status === 'inMatch') return { mode: 'inMatch' };
 		return play.status === 'refused' ? { mode: 'refused' } : { mode: 'unranked' };
 	} catch {
 		// no connection / timeout: surface it so the player can retry instead of

@@ -13,16 +13,21 @@ import {
 } from '../../api/characters';
 import { getUser } from '../../api/users';
 import Flag from '../../components/Flag';
+import RestrictedProfileNotice from '../../components/character/RestrictedProfileNotice';
 import ProfilePicture from '../../components/ProfilePicture';
 import EditableProfilePicture from '../../components/EditableProfilePicture';
 import CharacterName from '../../components/character/CharacterName';
 import CharacterTitle from '../../components/character/CharacterTitle';
+import SupporterBadge from '../../components/character/SupporterBadge';
 import ProfileBanner from '../../components/character/ProfileBanner';
 import {
 	refreshCurrentUser,
 	useCurrentUser,
 } from '../../hooks/useCurrentUser';
-import { useState } from 'react';
+import {
+	useRef,
+	useState,
+} from 'react';
 import { useShowMore } from '../../hooks/useShowMore';
 import ShowMoreLink from '../../components/ShowMoreLink';
 import {
@@ -43,7 +48,9 @@ import { SkillBar } from '../../components/character/SkillBar';
 import { CharacterRanks } from '../../components/character/CharacterRanks';
 import RankGraph from '../../components/character/RankGraph';
 import CharacterMedals from '../../components/character/CharacterMedals';
+import CharacterBeatmaps from '../../components/character/CharacterBeatmaps';
 import ProfileSocialBar from '../../components/character/ProfileSocialBar';
+import ProfileTabs from '../../components/character/ProfileTabs';
 import { SkillName } from '@osu-idle/shared/skills';
 import { extractSkills } from '@osu-idle/shared/osu/level';
 import { Trans } from '@lingui/react/macro';
@@ -66,6 +73,7 @@ export default function CharacterPage({ id, character, stats }: {
 	const isSelf = !!me && me.id === character.userId;
 	// Once the player changes their own avatar, show the new one without a refetch.
 	const [avatarOverride, setAvatarOverride] = useState<string | null>();
+	const blocks = useRef<HTMLDivElement>(null);
 
 	const countplayed = useAsync(() => getCharacterCountPlayed(id), [id]);
 	const mostplayed = useShowMore(page => getCharacterMostPlayed(id, page), [id]);
@@ -81,6 +89,7 @@ export default function CharacterPage({ id, character, stats }: {
 
 	return (
 		<main>
+			<RestrictedProfileNotice restricted={character.restricted} isSelf={isSelf} />
 			<ProfileBanner key={id} bannerUrl={character.bannerUrl} editable={isSelf} />
 			<div className='character__info'>
 				{isSelf
@@ -92,12 +101,15 @@ export default function CharacterPage({ id, character, stats }: {
 					: <ProfilePicture avatarUrl={character.avatarUrl} className='character__avatar' />}
 				<div className='character__meta'>
 					<div className='character__meta-up'>
-						<CharacterName
-							key={id}
-							name={character.name}
-							formerNames={character.formerNames}
-							editable={isSelf}
-						/>
+						<div className='character__meta-name-row'>
+							<CharacterName
+								key={id}
+								name={character.name}
+								formerNames={character.formerNames}
+								editable={isSelf}
+							/>
+							<SupporterBadge level={character.supportLevel} />
+						</div>
 						<CharacterTitle title={character.title ?? undefined} editable={isSelf} />
 					</div>
 					<div className='character__meta-down'>
@@ -163,8 +175,13 @@ export default function CharacterPage({ id, character, stats }: {
 			</div>
 			<div className='character__submeta'>
 			</div>
-			<ProfileSocialBar userId={character.userId} name={character.name} />
-			<div className='character__blocks'>
+			<ProfileSocialBar
+				userId={character.userId}
+				name={character.name}
+				restricted={character.restricted}
+			/>
+			<ProfileTabs blocks={blocks} />
+			<div className='character__blocks' ref={blocks}>
 				<div className='character__block character__block-skills'>
 					<div className='character__block-title'><Trans>Skills</Trans></div>
 					<div className='main-skill'><SkillBar skill={'overall' as SkillName} progress={{
@@ -262,6 +279,7 @@ export default function CharacterPage({ id, character, stats }: {
 						<ShowMoreLink {...mostplayed} onClick={mostplayed.more} />
 					</div>
 				</div>
+				<CharacterBeatmaps id={id} />
 				<CharacterMedals id={id} />
 			</div>
 		</main>

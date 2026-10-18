@@ -1,3 +1,4 @@
+import { starsOf } from '../../gameplay/rateStars';
 import {
 	ph,
 	plural,
@@ -133,7 +134,7 @@ export function groupOf(
 		case 'By Title': return letterGroup(set.title);
 		case 'By Creator': return letterGroup(set.creator);
 		case 'By Difficulty': {
-			const n = Math.floor(bm.difficulty);
+			const n = Math.floor(starsOf(item.beatmap));
 			return {
 				key: `d${n}`, label: `${n} - ${n + 1}★`, order: n, 
 			};

@@ -1,0 +1,152 @@
+.mod-select {
+	position: fixed;
+	inset: 0;
+	z-index: 900;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.82);
+	animation: mod-select-in 0.15s ease-out;
+}
+
+@keyframes mod-select-in {
+	from {
+		opacity: 0;
+	}
+}
+
+.mod-select__panel {
+	display: flex;
+	flex-direction: column;
+	gap: 28px;
+	width: min(1400px, 92vw);
+	color: #fff;
+}
+
+.mod-select__intro {
+	margin: 0;
+	font-size: 2rem;
+	line-height: 1.25;
+}
+
+.mod-select__multiplier {
+	text-align: center;
+	font-size: 3.2rem;
+}
+
+.mod-select__row {
+	display: grid;
+	grid-template-columns: 30rem 1fr;
+	align-items: center;
+	min-height: 90px;
+	/* the rate stepper hangs under its tile */
+	padding-bottom: 40px;
+}
+
+.mod-select__heading {
+	font-size: 3rem;
+	white-space: nowrap;
+}
+
+.mod-select__heading.is-reduction {
+	color: #5ce65c;
+}
+
+.mod-select__heading.is-increase {
+	color: #ff5a33;
+}
+
+.mod-select__mods {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+}
+
+.mod-tile {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	width: 90px;
+	height: 86px;
+	border: none;
+	border-radius: 4px;
+	background: var(--tint);
+	color: #fff;
+	font-family: inherit;
+	opacity: 0.45;
+	cursor: pointer;
+	transition:
+		opacity 0.12s ease,
+		transform 0.12s ease;
+}
+
+.mod-tile:hover:not(:disabled) {
+	opacity: 0.8;
+}
+
+.mod-tile.is-on {
+	opacity: 1;
+	transform: rotate(-6deg) scale(1.08);
+	box-shadow: 0 0 16px var(--tint);
+}
+
+.mod-tile:disabled {
+	cursor: not-allowed;
+	opacity: 0.2;
+}
+
+.mod-tile__glyph {
+	width: 42px;
+	height: 42px;
+}
+
+.mod-tile__label {
+	font-size: 1.3rem;
+	font-weight: 600;
+}
+
+.mod-select__mod {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.rate-stepper {
+	position: absolute;
+	top: calc(100% + 8px);
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, 0.12);
+}
+
+.rate-stepper__value {
+	min-width: 3.4em;
+	text-align: center;
+	font-size: 1.15rem;
+	font-weight: 600;
+}
+
+.rate-stepper__arrow {
+	width: 1.6em;
+	border: none;
+	background: none;
+	color: #fff;
+	font-family: inherit;
+	font-size: 1.5rem;
+	line-height: 1.2;
+	cursor: pointer;
+}
+
+.rate-stepper__arrow:hover:not(:disabled) {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.rate-stepper__arrow:disabled {
+	cursor: not-allowed;
+	opacity: 0.25;
+}

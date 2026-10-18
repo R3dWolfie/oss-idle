@@ -11,10 +11,13 @@ export const listAddonsAdmin = () => unwrap(rpc.v1.addons.admin.$get());
 /** One moderation-queue row, inferred from the route. */
 export type AdminAddon = Awaited<ReturnType<typeof listAddonsAdmin>>[number];
 
+/** An admin's verdict on the source they read. */
+export type AddonVerdict = { status: AddonStatus; feedback?: string | null; source: string };
+
 /** Admin: set an add-on's status and optionally leave feedback. */
 export const moderateAddon = (
 	id: number,
-	body: { status: AddonStatus; feedback?: string | null },
+	body: AddonVerdict,
 ) =>
 	unwrap(rpc.v1.addons.admin[':id'].$patch({
 		param: { id: String(id) }, json: body, 

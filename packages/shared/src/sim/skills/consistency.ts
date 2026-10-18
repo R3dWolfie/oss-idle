@@ -6,6 +6,7 @@ import {
 import type RuntimeNote from '../runtimeNote.js';
 import cubic_bezier from '../../math/cubic_bezier.js';
 import lerp from '../../math/lerp.js';
+import normalize from '../../math/normalize.js';
 import Skill from './skill.js';
 import {
 	PRESSURE_SKILLS,
@@ -33,6 +34,8 @@ export default class Consistency extends Skill {
 	public static readonly BASE_CHOKE_CHANCE = 0.0015;
 	/** choke probability floor at max level */
 	public static readonly MIN_CHOKE_CHANCE = 0.00005;
+	/** choke chance at the end of the prestige band (level 110 → 200) */
+	public static readonly BONUS_CHOKE_CHANCE = 0.00001;
 	/** share of chokes that drop the input outright (miss chokes); the rest are
 	 *  accuracy chokes. Scales with the pressure the player is under at that
 	 *  moment: a choke on an unstraining map is almost always just a flubbed
@@ -55,7 +58,9 @@ export default class Consistency extends Skill {
 
 		this.syncSkillLevel(level => {
 			this.randomness = Consistency.BASE_CHOKE_CHANCE
-				- Consistency.fn(level / 110) * (Consistency.BASE_CHOKE_CHANCE - Consistency.MIN_CHOKE_CHANCE);
+				- Consistency.fn(level / 110) * (Consistency.BASE_CHOKE_CHANCE - Consistency.MIN_CHOKE_CHANCE)
+				- Consistency.fn(normalize(level, [110, 200]))
+					* (Consistency.MIN_CHOKE_CHANCE - Consistency.BONUS_CHOKE_CHANCE);
 
 			const chokeLevel = Consistency.fnMiss(level / 110);
 			this.chokeMin = lerp(

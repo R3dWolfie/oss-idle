@@ -6,6 +6,7 @@ import {
 	desc,
 	asc,
 	eq,
+	isNull,
 	like,
 	or,
 	sql,
@@ -14,6 +15,8 @@ import { z } from 'zod';
 import { db } from '../db/client';
 import { users } from '../db/schema/user';
 import { requireAuth } from '../auth/middleware';
+import { requireActive } from '../auth/active';
+import { dailyLimit } from '../rateLimit';
 import { requireAdmin } from '../auth/admin';
 import { saveUploadedImage } from '../uploads';
 import {
@@ -28,6 +31,9 @@ import {
 	skinUpdateBody,
 } from '@osu-idle/shared/skin';
 
+
+// skins publish without review: new ones and their icons are capped per account
+const SKINS_PER_DAY = 5;
 const idParam = z.coerce.number().int().positive();
 
 const jsonBody = <T extends z.ZodType>(schema: T) =>
@@ -68,7 +74,7 @@ export const skinsRoutes = new Hono()
 			?? SORT_COLUMNS.created;
 		const dir = c.req.query('dir') === 'asc' ? asc : desc;
 
-		const where = [eq(skins.status, SKIN_STATUS.PUBLISHED)];
+		const where = [eq(skins.status, SKIN_STATUS.PUBLISHED), isNull(users.restrictedAt)];
 		if (q) where.push(
 			or(
 				like(skins.name, `%${q}%`), 
@@ -93,7 +99,7 @@ export const skinsRoutes = new Hono()
 		return c.json(await Promise.all(rows.map(withAuthor)));
 	})
 
-	.post('/', requireAuth, jsonBody(skinCreateBody), async c => {
+	.post('/', requireActive, dailyLimit('skins', SKINS_PER_DAY), jsonBody(skinCreateBody), async c => {
 		const body = c.req.valid('json');
 		const [created] = await db.insert(skins).values({
 			name: body.name,
@@ -108,7 +114,7 @@ export const skinsRoutes = new Hono()
 		return c.json(await withAuthor(row!), 201);
 	})
 
-	.post('/icon', requireAuth, async c => {
+	.post('/icon', requireActive, dailyLimit('skin-icons', SKINS_PER_DAY), async c => {
 		const body = await c.req.parseBody();
 		return c.json({ url: await saveUploadedImage(body['file']) });
 	})
@@ -140,7 +146,7 @@ export const skinsRoutes = new Hono()
 		return c.json(await withAuthor(row!));
 	})
 
-	.post('/:id/submit', requireAuth, async c => {
+	.post('/:id/submit', requireActive, async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const existing = await ownedBy(id, c.get('userId'));
 		if (existing.status === SKIN_STATUS.PUBLISHED) {
@@ -174,7 +180,7 @@ export const skinsRoutes = new Hono()
 		return c.json({ downloads: row?.downloads ?? 0 });
 	})
 
-	.patch('/:id', requireAuth, jsonBody(skinUpdateBody), async c => {
+	.patch('/:id', requireActive, jsonBody(skinUpdateBody), async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const body = c.req.valid('json');
 		const existing = await ownedBy(id, c.get('userId'));

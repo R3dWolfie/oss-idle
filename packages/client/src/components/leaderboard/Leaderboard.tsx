@@ -12,7 +12,7 @@ import { ScoreDTO } from '@osu-idle/shared/score';
 import { countryName } from '@osu-idle/shared/display/country';
 import {
 	getBeatmapScores,
-	getCountryBeatmapScores,
+	type BoardPlayer,
 } from '../../online/services/scores';
 import {
 	SCORE_TAB,
@@ -33,7 +33,7 @@ export default function Leaderboard() {
 	const [beatmap] = useSynced(music.beatmap);
 	const [account] = useSynced(Account.character);
 	const [category] = useSynced(SETTINGS.leaderboard);
-	const [scores, setScores] = useState<(Score | ScoreDTO)[]>([]);
+	const [scores, setScores] = useState<{ score: Score | ScoreDTO, player?: BoardPlayer }[]>([]);
 	const [loading, setLoading] = useState(false);
 
 	const country = account?.country;
@@ -66,10 +66,9 @@ export default function Leaderboard() {
 		let cancelled = false;
 		setLoading(true);
 
-		const fetch =
-			effective === SCORE_TAB.LOCAL ? Score.forBeatmap(id)
-				: effective === SCORE_TAB.COUNTRY ? getCountryBeatmapScores(id, country!)
-					: getBeatmapScores(id);
+		const fetch = effective === SCORE_TAB.LOCAL
+			? Score.forBeatmap(id).then(local => local.map(score => ({ score })))
+			: getBeatmapScores(id, effective === SCORE_TAB.COUNTRY ? country : undefined);
 
 		fetch
 			.then((s) => !cancelled && setScores(s))
@@ -103,12 +102,13 @@ export default function Leaderboard() {
 					</p>
 				) : (
 					<ol className="lb__list">
-						{scores.map((score, i) => (
+						{scores.map(({ score, player }, i) => (
 							<ScoreEntry
-								key={score.id} 
-								score={score} 
-								rank={i + 1} 
-								previous={i < (scores.length - 1) ? scores[i+1] : undefined} 
+								key={score.id}
+								score={score}
+								player={player}
+								rank={i + 1}
+								previous={scores[i + 1]?.score}
 							/>
 						))}
 					</ol>

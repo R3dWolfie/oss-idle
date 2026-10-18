@@ -2,48 +2,39 @@ import './Header.css';
 
 import {
 	useEffect,
-	useRef,
 	useState,
 } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 
 import Link from './components/Link';
 import OutLink from './components/OutLink';
-import { Asset } from './router';
-import { useCurrentUser } from './hooks/useCurrentUser';
-import { useCurrentCharacter } from './hooks/useCurrentCharacter';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
-import {
-	Trans,
-	useLingui,
-} from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import HeaderLinks from './HeaderLinks';
+import HeaderPlayfields from './components/HeaderPlayfields';
+import UserMenu from './UserMenu';
+import { DISCORD_URL } from '@osu-idle/shared/links';
 
 export default function Header() {
 	const { t } = useLingui();
 
-	const user = useCurrentUser();
-	const character = useCurrentCharacter();
-	const userMenu = useRef<HTMLDivElement>(null);
 	const [menuVisible, setMenuVisible] = useState(false);
 	const [menuHeight, setMenuHeight] = useState<number>();
 	const [userMenuActive, setUserMenuActive] = useState(false);
 	const [shrunk, setShrunk] = useState(false);
 	const [navOpen, setNavOpen] = useState(false);
 
-	// Grow the hover backdrop to reach the bottom of whichever submenu is open,
-	// so it always fits the content (no more hardcoded pixel height).
+	// The hover backdrop reaches the bottom of the open submenu; links without one show none.
 	const showSub = {
 		onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
-			setMenuVisible(true);
 			const sub = e.currentTarget.querySelector('.topbar__sub');
 			const header = e.currentTarget.closest('header');
-			if (sub && header) {
-				const top = header.getBoundingClientRect().top;
-				setMenuHeight(sub.getBoundingClientRect().bottom - top + 12);
-			}
+			if (!sub || !header) return;
+			setMenuVisible(true);
+			setMenuHeight(sub.getBoundingClientRect().bottom - header.getBoundingClientRect().top + 12);
 		},
 		onMouseLeave: () => setMenuVisible(false),
 	};
@@ -54,23 +45,9 @@ export default function Header() {
 		return () => window.removeEventListener('scroll', handleScroll);
 	}, []);
 
-	useEffect(() => {
-		const handleClickOutside = (event: PointerEvent) => {
-			const target = event.target;
-			if (!userMenu.current || !(target instanceof Node)) return;
-			if (userMenu.current.contains(target)) return;
-			setUserMenuActive(false);
-		};
-
-		document.addEventListener('pointerdown', handleClickOutside, true);
-
-		return () => {
-			document.removeEventListener('pointerdown', handleClickOutside);
-		};
-	}, []);
 
 	return (<>
-		<div className='topbar__menu-backdrop'></div>
+		<div className='topbar__menu-backdrop'><HeaderPlayfields /></div>
 		<header>
 			<div
 				className='topbar__menu'
@@ -103,39 +80,22 @@ export default function Header() {
 						<FontAwesomeIcon icon={faBars} />
 					</button>
 					<div className='topbar__link'>
-						<OutLink href="https://discord.gg/Yd5GEaX8AJ" className='link-icon link-discord' target="_blank">
+						<OutLink href={DISCORD_URL} className='link-icon link-discord' target="_blank">
 							<FontAwesomeIcon icon={faDiscord} />
 						</OutLink>
 					</div>
+					<div className='topbar__link'>
+						<Link to='/search' search={{ q: '' }} className='link-icon' title={t`search`}>
+							<FontAwesomeIcon icon={faMagnifyingGlass} />
+						</Link>
+					</div>
+					<div className='topbar__link'>
+						<Link to='/store' className='link-icon' title={t`support the game`}>
+							<FontAwesomeIcon icon={faHeart} />
+						</Link>
+					</div>
 					<div className='topbar__link for-avatar'>
-						<div
-							ref={userMenu}
-							className={`topbar__avatar ${userMenuActive ? 'active' : ''}`}
-							style={{ backgroundImage: `url(${Asset(user?.avatarUrl ? user.avatarUrl : GUEST_AVATAR_URL)})` }}
-							onClick={(e) => {
-								setNavOpen(false);
-								setUserMenuActive(e.target === userMenu.current ? !userMenuActive : true);
-							}}
-						>
-							{userMenuActive && (
-								<div className='usermenu'>
-									<div className='usermenu_profile'>{user?.username ?? 'Guest'}</div>
-									<div className='usermenu_links'>
-										{user && (<>
-											{character && <Link to='/c/$id' params={{ id: String(character.id) }} className="usermenu__link">
-												<Trans>My Profile</Trans>
-											</Link>}
-											<Link to='/friends' className="usermenu__link"><Trans>Friends</Trans></Link>
-											<Link to='/settings' className="usermenu__link"><Trans>Settings</Trans></Link>
-											<Link to='/logout' className="usermenu__link"><Trans>Sign out</Trans></Link>
-										</>)}
-										{!user && (<>
-											<Link to='/login' className="usermenu__link"><Trans>Sign in</Trans></Link>
-										</>)}
-									</div>
-								</div>
-							)}
-						</div>
+						<UserMenu open={userMenuActive} onOpenChange={setUserMenuActive} onOpen={() => setNavOpen(false)} />
 					</div>
 				</div>
 			</div>

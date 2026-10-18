@@ -1,8 +1,10 @@
+import './audio/musicSpeed';
 import Popups from './components/Popups';
 import Cursor from './components/Cursor';
 import SceneManager from './scenes/SceneManager';
 import TransitionOverlay from './scenes/Transition';
 import VolumeOverlay from './components/VolumeOverlay';
+import RestrictedNotice from './components/RestrictedNotice';
 import WebBrowser from './components/WebBrowser';
 import Onboarding from './components/Onboarding';
 import Tutorial from './components/Tutorial';
@@ -41,6 +43,7 @@ export default function App() {
 
 	return (
 		<>
+			<RestrictedNotice />
 			{scene}
 			<PageOverlay />
 			<PlayDock />

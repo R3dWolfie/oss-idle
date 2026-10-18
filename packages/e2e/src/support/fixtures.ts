@@ -2,7 +2,15 @@ import {
 	test as base,
 	expect,
 } from '@playwright/test';
+import type {
+	BrowserContext,
+	Page,
+} from '@playwright/test';
 import Game from './game';
+import {
+	signIn,
+	type Account,
+} from './accounts';
 
 /**
  * Every spec gets a fresh browser context, so the local sql.js database, the
@@ -25,6 +33,8 @@ type Fixtures = {
 	game: Game;
 	/** Errors the page logged during the test, for specs that assert on them. */
 	errors: string[];
+	/** A page of its own browser context, signed in as `account`. */
+	playerAs: (account: Account) => Promise<Page>;
 };
 
 export const test = base.extend<Fixtures>({
@@ -41,6 +51,16 @@ export const test = base.extend<Fixtures>({
 	},
 	game: async ({ page }, use) => {
 		await use(new Game(page));
+	},
+	playerAs: async ({ browser, baseURL }, use) => {
+		const contexts: BrowserContext[] = [];
+		await use(async account => {
+			const context = await browser.newContext();
+			contexts.push(context);
+			await signIn(context, account, baseURL!);
+			return context.newPage();
+		});
+		await Promise.all(contexts.map(c => c.close()));
 	},
 });
 

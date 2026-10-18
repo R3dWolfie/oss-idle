@@ -4,6 +4,7 @@ import {
 	deleteCookie,
 } from 'hono/cookie';
 import { HTTPException } from 'hono/http-exception';
+import { z } from 'zod';
 import {
 	and,
 	eq,
@@ -25,6 +26,7 @@ import {
 	fetchOsuUser,
 } from '../auth/osu';
 import {
+	type DesktopReturn,
 	signLinkState,
 	signSession,
 	signState,
@@ -49,6 +51,11 @@ import {
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 days, seconds
 
+const desktopReturn = z.object({
+	port: z.coerce.number().int().min(1024).max(65535),
+	key: z.string().regex(/^[\w-]{16,64}$/),
+});
+
 /**
  * osu! OAuth (authorization-code) used only to verify/register the player. On
  * success we set our own HttpOnly session cookie; the client never touches the
@@ -59,11 +66,14 @@ export const authRoutes = new Hono()
 	// tags the round-trip so the callback hands the session to the desktop app
 	// instead of setting a browser cookie.
 	.get('/osu/login', async c => {
-		const client = c.req.query('client') === 'desktop' ? 'desktop' : 'web';
-		// Desktop generates a one-time poll code and polls for the callback's
-		// result; carry it (signed) through the round-trip.
-		const poll = client === 'desktop' ? c.req.query('poll') : undefined;
-		return c.redirect(authorizeUrl(await signState(client, poll)));
+		if (c.req.query('client') !== 'desktop') return c.redirect(authorizeUrl(await signState('web')));
+		// Desktop waits on its own loopback; carry where (signed) through the round-trip.
+		const desktop = desktopReturn.safeParse({
+			port: c.req.query('port'), key: c.req.query('key'),
+		});
+		// an app from before the loopback sign-in: its update banner is already up
+		if (!desktop.success) return c.redirect(`${clientUrl}/web/auth/error`);
+		return c.redirect(authorizeUrl(await signState('desktop', desktop.data)));
 	})
 
 	// osu! redirects back here with ?code&state.
@@ -74,9 +84,9 @@ export const authRoutes = new Hono()
 
 		let client: 'web' | 'desktop';
 		let nonce: string;
-		let poll: string | undefined;
+		let desktop: DesktopReturn | undefined;
 		try {
-			({ client, nonce, poll } = await verifyState(state));
+			({ client, nonce, desktop } = await verifyState(state));
 		} catch {
 			throw new HTTPException(400, { message: 'Invalid or expired state' });
 		}
@@ -105,12 +115,17 @@ export const authRoutes = new Hono()
 			id: osu.id, username: osu.username, 
 		});
 
-		// Desktop: a browser cookie wouldn't reach the app, so stash the session
-		// under the poll code the app generated; the app polls /osu/desktop/exchange
-		// for it. The browser lands on the web platform's "signed in" page.
+		// Desktop: a browser cookie wouldn't reach the app, so the session waits under
+		// a one-time code, sent to the app's loopback in this same browser. It can only
+		// reach the machine that signed in, whoever started the login.
 		if (client === 'desktop') {
-			if (poll) await storeHandoff(poll, session);
-			return c.redirect(`${clientUrl}/web/auth/desktop`);
+			if (!desktop) return c.redirect(`${clientUrl}/web/auth/error`);
+			const handoff = crypto.randomUUID();
+			await storeHandoff(handoff, session);
+			const back = new URL(`http://127.0.0.1:${desktop.port}/callback`);
+			back.searchParams.set('code', handoff);
+			back.searchParams.set('key', desktop.key);
+			return c.redirect(back.toString());
 		}
 
 		setCookie(c, SESSION_COOKIE, session, {

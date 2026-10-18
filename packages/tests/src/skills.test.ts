@@ -11,6 +11,10 @@ import {
 } from '@osu-idle/shared/sim/skills/xp';
 import { SKILL } from '@osu-idle/shared/skills';
 import Accuracy from '@osu-idle/shared/sim/skills/accuracy';
+import Coordination from '@osu-idle/shared/sim/skills/coordination';
+import Memory from '@osu-idle/shared/sim/skills/memory';
+import Consistency from '@osu-idle/shared/sim/skills/consistency';
+import type Skill from '@osu-idle/shared/sim/skills/skill';
 
 describe('xpForLevel curve', () => {
 	it('costs exactly 100 to leave level 0', () => {
@@ -68,5 +72,26 @@ describe('Skill.gainXP', () => {
 		expect(skill.gainXP(40)).toBe(0);
 		expect(skill.level.get()).toBe(0);
 		expect(skill.xp.get()).toBeCloseTo(80, 10);
+	});
+});
+
+describe('prestige band', () => {
+	const at = (skill: Skill, prestige: number) => {
+		void skill.prestige.set(prestige);
+		return skill as unknown as Record<string, number>;
+	};
+	const skillsAt = (prestige: number) => ({
+		coordination: at(new Coordination(100), prestige),
+		memory: at(new Memory(100), prestige),
+		consistency: at(new Consistency(100), prestige),
+	});
+
+	it('keeps coordination, memory and consistency improving past level 100', () => {
+		const [a, b] = [skillsAt(40), skillsAt(200)];
+		expect(b.coordination.fatigueRate).toBeLessThan(a.coordination.fatigueRate);
+		expect(b.coordination.decayRate).toBeGreaterThan(a.coordination.decayRate);
+		expect(b.memory.maxPlays).toBeLessThan(a.memory.maxPlays);
+		expect(b.memory.maxImprove).toBeGreaterThan(a.memory.maxImprove);
+		expect(b.consistency.randomness).toBeLessThan(a.consistency.randomness);
 	});
 });

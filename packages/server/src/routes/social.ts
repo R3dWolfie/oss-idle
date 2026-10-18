@@ -26,6 +26,7 @@ import {
 	socialSettingsBody,
 } from '@osu-idle/shared/social';
 import { requireAdmin } from '../auth/admin';
+import { requireActive } from '../auth/active';
 
 const idParam = z.coerce.number().int().positive();
 
@@ -63,7 +64,7 @@ export const socialRoutes = new Hono()
 		return c.json({ ok: true });
 	})
 
-	.post('/reports/:userId', requireAuth, zValidator('json', reportBody, r => {
+	.post('/reports/:userId', requireActive, zValidator('json', reportBody, r => {
 		if (!r.success) throw r.error;
 	}), async c => {
 		const userId = c.get('userId');

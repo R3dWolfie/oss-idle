@@ -11,12 +11,22 @@ import {
 	type getRecentMaps,
 } from '../api/maps';
 import NewsCard, { articleToCard } from '../components/NewsCard';
+import NewsRow from '../components/NewsRow';
+import HomeButton from '../components/HomeButton';
+import DashboardCharacter from '../components/DashboardCharacter';
+import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload';
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import FancyGraph from '../components/FancyGraph';
 import num from '@osu-idle/shared/display/num';
 import { dateAgo } from '@osu-idle/shared/display/ago';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { Trans } from '@lingui/react/macro';
+import Link from '../components/Link';
+
+// osu!web's NewsPost::LANDING_LIMIT and DASHBOARD_LIMIT
+const LARGE_NEWS = 4;
+const DASHBOARD_NEWS = 8;
 
 export default function Home({ articles, stats, recent, recentMaps }: {
 	articles: Awaited<ReturnType<typeof listNews>>,
@@ -28,7 +38,15 @@ export default function Home({ articles, stats, recent, recentMaps }: {
 		<main className="dashboard">
 			<section className="dashboard__left">
 				<h2 className="dashboard__title"><Trans>News</Trans></h2>
-				{articles.slice(0, 6).map(a => <NewsCard key={a.id} {...articleToCard(a)} className='home-news' />)}
+				{articles.slice(0, LARGE_NEWS).map(a => (
+					<NewsCard key={a.id} {...articleToCard(a)} className='home-news' />
+				))}
+				{articles.length > LARGE_NEWS && <div className='dashboard__news-group'>
+					{articles.slice(LARGE_NEWS, DASHBOARD_NEWS).map(a => <NewsRow key={a.id} article={a} />)}
+				</div>}
+				<Link to='/news' className='dashboard__news-group dashboard__news-more'>
+					<Trans>See more</Trans>
+				</Link>
 			</section>
 			<section className="dashboard__right">
 				<div className='dashboard__stats'>
@@ -47,14 +65,26 @@ export default function Home({ articles, stats, recent, recentMaps }: {
 						<FancyGraph data={recent.online_hist} />
 					)}
 				</div>
-				<div className='dashboard__cta'>
+				<div className='dashboard__buttons'>
+					<DashboardCharacter />
+					<HomeButton to='/download' icon={faDownload} hue={274}>
+						<Trans>download osu!idle</Trans>
+					</HomeButton>
+					<HomeButton to='/store' icon={faHeart} hue={340}>
+						<Trans>support the game</Trans>
+					</HomeButton>
 				</div>
 				<div className='dashboard__ranked'>
 					<div className='dashboard__ranked_title'>
 						<Trans>New Ranked Beatmaps</Trans>
 					</div>
 					<div className='dashboard__ranked_list'>
-						{recentMaps.map(map => (<a className='dashboard__ranked_list_map'>
+						{recentMaps.map(map => (<Link
+							key={map.id}
+							to='/maps/$id'
+							params={{ id: String(map.id) }}
+							className='dashboard__ranked_list_map'
+						>
 							<div
 								className='dashboard__ranked_list_map-bg'
 								style={{ backgroundImage: coverBackground(map, 'list') }}
@@ -72,7 +102,8 @@ export default function Home({ articles, stats, recent, recentMaps }: {
 							<div className='dashboard__ranked_list_map-c'>
 								<FontAwesomeIcon icon={faChevronRight} />
 							</div>
-						</a>))}
+						</Link>))}
+						<Link to='/maps'><Trans>See more</Trans></Link>
 					</div>
 				</div>
 			</section>

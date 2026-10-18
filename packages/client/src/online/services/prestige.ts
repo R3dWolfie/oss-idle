@@ -92,6 +92,8 @@ export const rebirth = async (name: string): Promise<boolean> => {
 
 	if (character.isGuest()) {
 		if (!canRebirth(character.overallLevel)) return false;
+		const locals = await Character.locals();
+		if (locals.some(c => c.generation > character.generation)) return false;
 
 		character.name = `${character.name}_old`;
 		await character.update();

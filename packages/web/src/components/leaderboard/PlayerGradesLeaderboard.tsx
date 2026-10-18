@@ -1,4 +1,5 @@
 import './PlayerLeaderboard.css';
+import { useCurrentCharacter } from '../../hooks/useCurrentCharacter';
 import Link from '../Link';
 import Pager from './Pager';
 import int from '@osu-idle/shared/math/int';
@@ -28,6 +29,7 @@ export default function PlayerGradesLeaderboard({ sort, country, page, players }
 	country?: string,
 	players: Players,
 }) {
+	const self = useCurrentCharacter();
 	const { t } = useLingui();
 
 	const sorts = [...GoodGrades, 'all'] as const;
@@ -101,7 +103,10 @@ export default function PlayerGradesLeaderboard({ sort, country, page, players }
 					</tr>
 				</thead>
 				<tbody>
-					{sortedPlayers.map((player, r) => <tr key={player.character.id}>
+					{sortedPlayers.map((player, r) => <tr
+						key={player.character.id}
+						className={player.character.id === self?.id ? 'is-self' : undefined}
+					>
 						<td>{rank(r+1+((page - 1) * 50))}</td>
 						<td className='main'><div className='player__lb_listing_main'>
 							<Flag country={player.user.country} />

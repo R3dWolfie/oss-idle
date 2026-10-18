@@ -24,6 +24,10 @@ export function signSession(user: { id: number; username: string }): Promise<str
 /** Verify the session JWT; throws if invalid or expired. */
 export async function verifySession(token: string): Promise<SessionPayload> {
 	const payload = await verify(token, env.JWT_SECRET, 'HS256');
+	// the OAuth and Discord link states are signed with the same secret
+	if (!Number.isInteger(payload.uid) || payload.link !== undefined) {
+		throw new Error('Not a session');
+	}
 	return {
 		uid: payload.uid as number, username: payload.username as string, 
 	};
@@ -33,25 +37,34 @@ export async function verifySession(token: string): Promise<SessionPayload> {
  *  set a browser cookie (web) or hand a token back to the desktop app. */
 export type OAuthClient = 'web' | 'desktop';
 
+/** Where the desktop app waits for its sign-in: a port on its own loopback, and a key it
+ *  checks the answer against (RFC 8252). */
+export type DesktopReturn = { port: number; key: string };
+
 /** Short-lived signed CSRF state for the OAuth round-trip, tagged with the client
- *  that started it. Desktop also carries its one-time `poll` code so the callback
- *  can stash the session under it for the app to poll for. */
-export function signState(client: OAuthClient, poll?: string): Promise<string> {
+ *  that started it. Desktop also carries where the app waits, so the callback can
+ *  send it the one-time code there. */
+export function signState(client: OAuthClient, desktop?: DesktopReturn): Promise<string> {
 	return sign({
-		nonce: crypto.randomUUID(), client, poll, iat: now(), exp: now() + STATE_TTL, 
+		nonce: crypto.randomUUID(), client, ...desktop, iat: now(), exp: now() + STATE_TTL, 
 	}, env.JWT_SECRET);
 }
 
-/** Verify the CSRF state and recover the client tag, nonce, and desktop poll
- *  code; throws if invalid/expired. */
+/** Verify the CSRF state and recover the client tag, nonce, and where the desktop
+ *  app waits; throws if invalid/expired. */
 export async function verifyState(
 	state: string,
-): Promise<{ client: OAuthClient; nonce: string; poll?: string }> {
+): Promise<{ client: OAuthClient; nonce: string; desktop?: DesktopReturn }> {
 	const payload = await verify(state, env.JWT_SECRET, 'HS256');
+	const desktop = typeof payload.port === 'number' && typeof payload.key === 'string'
+		? {
+			port: payload.port, key: payload.key,
+		}
+		: undefined;
 	return {
 		client: payload.client === 'desktop' ? 'desktop' : 'web',
 		nonce: payload.nonce as string,
-		poll: typeof payload.poll === 'string' ? payload.poll : undefined,
+		desktop,
 	};
 }
 

@@ -9,10 +9,14 @@ import {
 	getTableColumns,
 	isNull,
 	max,
-	ne,
 	sum,
+	isNotNull,
 } from 'drizzle-orm';
 import { z } from 'zod';
+import {
+	rateKey,
+	rateSchema,
+} from '@osu-idle/shared/rate';
 import {
 	BEATMAP_STATUS,
 	INTRO_SET_ID,
@@ -25,7 +29,10 @@ import {
 } from 'node:fs/promises';
 import { beatmapClaimRoutes } from './beatmapClaim';
 import { db } from '../db/client';
-import { beatmaps } from '../db/schema/beatmap';
+import {
+	beatmapListColumns,
+	beatmaps,
+} from '../db/schema/beatmap';
 import {
 	beatmapset,
 	getBeatmapsetById,
@@ -36,6 +43,7 @@ import { purgeBeatmapScores } from '../scores';
 import {
 	buildCatalog,
 	isSetLive,
+	listedCondition,
 	liveDiffCondition,
 } from '../beatmaps/catalog';
 import {
@@ -54,10 +62,6 @@ import {
 const invalidateCatalog = () => hub.broadcast({ type: 'catalog:invalidate' });
 
 const idParam = z.coerce.number().int().positive();
-
-// Public listings show live sets (ranked diffs only) but never the intro (it's
-// not a ranked map). Every listing joins `beatmaps`, so the diff gate applies.
-const listedCondition = and(liveDiffCondition, ne(beatmapset.id, INTRO_SET_ID));
 
 const PREVIEW_MIME: Record<string, string> = {
 	mp3: 'audio/mpeg',
@@ -78,6 +82,28 @@ const nominationPatch = z.object({
 export const beatmapsRoutes = new Hono()
 	// Public, live-only (status='ranked' AND rankedAt <= now()).
 	.get('/catalog', async c => c.json(await buildCatalog()))
+
+	// Every difficulty's stars at a rate, by id: song select's cards and sort follow it.
+	.get('/stars/:rate', async c => {
+		const rate = rateSchema.safeParse(Number(c.req.param('rate')));
+		if (!rate.success) throw new HTTPException(400, { message: 'Unknown rate' });
+		const key = rateKey(rate.data);
+		const rows = await db.select({
+			id: beatmaps.id, rateStars: beatmaps.rateStars,
+		})
+			.from(beatmaps)
+			.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
+			.where(and(liveDiffCondition, isNotNull(beatmaps.rateStars)));
+		// MariaDB keeps json as text: it comes back unparsed
+		const starsOf = (raw: unknown) =>
+			(typeof raw === 'string' ? JSON.parse(raw) : raw) as Record<string, number>;
+		const stars: Record<number, number> = {};
+		for (const row of rows) {
+			const at = starsOf(row.rateStars)[key];
+			if (at !== undefined) stars[row.id] = at;
+		}
+		return c.json(stars);
+	})
 
 	.get('/all/:dir', async c => {
 		const sort = c.req.param('dir') === 'asc' ? asc : desc;
@@ -317,6 +343,26 @@ export const beatmapsRoutes = new Hono()
 	// `/request` isn't swallowed by it.
 	.route('/request', beatmapRequestRoutes)
 	.route('/claim', beatmapClaimRoutes)
+
+	// A set's page: the set and its live difficulties, easiest first.
+	.get('/set/:id', async c => {
+		const id = idParam.parse(c.req.param('id'));
+		const rows = await db
+			.select({
+				set: beatmapset, beatmap: beatmapListColumns,
+			})
+			.from(beatmaps)
+			.innerJoin(beatmapset, eq(beatmaps.setId, beatmapset.id))
+			.where(and(eq(beatmapset.id, id), liveDiffCondition))
+			.orderBy(asc(beatmaps.sr));
+		if (!rows.length) throw new HTTPException(404, { message: 'Beatmap set not found' });
+		return c.json({
+			set: rows[0].set,
+			diffs: rows.map(r => ({
+				...r.beatmap, sr: Number(r.beatmap.sr),
+			})),
+		});
+	})
 
 	// Single beatmap (difficulty), live-only. Keep last: catch-all `:id`.
 	.get('/:id', async c => {

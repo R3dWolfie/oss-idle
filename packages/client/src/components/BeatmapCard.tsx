@@ -1,4 +1,8 @@
 import {
+	useRatedVersion,
+	useStarsOf,
+} from '../gameplay/rateStars';
+import {
 	useEffect,
 	useRef,
 	useState,
@@ -57,7 +61,7 @@ export default function BeatmapCard({
 }: Props) {
 	const [skin] = useSynced(currentSkin);
 
-	const stars = beatmap.metadata.difficulty;
+	const stars = useStarsOf(beatmap);
 
 	const [bg, setBg] = useState<string | undefined>(
 		beatmap.metadata.runtime ? undefined 
@@ -82,7 +86,7 @@ export default function BeatmapCard({
 		(await Score.best(character.id, beatmap.metadata.id))?.grade
 	, [beatmap, character.id, scoresV]);
 
-	const version = beatmap.metadata.version;
+	const version = useRatedVersion(beatmap.metadata.version);
 	const artist = set.metadata.artist;
 	const title = set.metadata.title;
 	const creator = set.metadata.creator;

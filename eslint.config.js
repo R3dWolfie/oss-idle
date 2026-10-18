@@ -3,13 +3,14 @@ import importNewlines from 'eslint-plugin-import-newlines';
 import tseslint from 'typescript-eslint';
 
 // Lines exempt from max-len: a lone <Trans>, a `t` i18n template, single string
-// declarations, and pure prose/JSX-text lines (the interior of a multiline
+// declarations, a line holding one string (long prose in a list), and pure prose/JSX-text lines (the interior of a multiline
 // <Trans> - matched by shape since max-len can't see across lines). All of it
 // untranslatable text we can't reflow anyway.
 const maxLenIgnore = [
 	'^\\t*<Trans>.*</Trans>$',
 	't`.*`,?$',
 	'`.*`,?$',
+	'^\\t*([\'"]).*\\1,?$',
 	'^\\t*(?:const|let|var) \\w+ = ([`\'"]).*\\1;?$',
 	'^\\t*[^{}();=]*[A-Za-z][^{}();=]*$',
 	'.*InferResponseType.*',

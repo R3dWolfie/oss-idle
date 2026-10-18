@@ -72,5 +72,7 @@ export type AddonUpdateBody = z.infer<typeof addonUpdateBody>;
 export const addonModerateBody = z.object({
 	status: z.enum(AddonStatuses),
 	feedback: z.string().max(2000).nullable().default(null),
+	// the code the admin read: an edit landing meanwhile is not what they approved
+	source: z.string(),
 });
 export type AddonModerateBody = z.infer<typeof addonModerateBody>;

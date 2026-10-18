@@ -1,3 +1,4 @@
+import RatedVersion from '../RatedVersion';
 import {
 	Trans,
 	useLingui,
@@ -45,7 +46,7 @@ export default function DockQueue({ hint = false }: Props) {
 				>
 					<span className="dock__entry-name">
 						{beatmap.set.metadata.artist} - {beatmap.set.metadata.title}
-						<span> [{beatmap.metadata.version}]</span>
+						<RatedVersion version={beatmap.metadata.version} />
 					</span>
 					{index === 0 && <span className="dock__next"><Trans>next</Trans></span>}
 					<span className="dock__entry-actions">

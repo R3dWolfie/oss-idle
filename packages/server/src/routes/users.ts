@@ -8,6 +8,9 @@ import {
 	toUserDTO,
 } from '../db/schema/user';
 
+import { isAdmin } from '@osu-idle/shared/admin';
+import { sessionUserId } from '../auth/middleware';
+
 const idParam = z.coerce.number().int().positive();
 
 /**
@@ -24,7 +27,10 @@ export const usersRoutes = new Hono()
 
 		const [row] = await db.select().from(users).where(eq(users.id, id)).limit(1);
 
-		if (!row) throw new HTTPException(404, { message: 'User not found' });
+		const viewer = await sessionUserId(c);
+		if (!row || (row.restrictedAt && viewer !== row.id && !isAdmin(viewer))) {
+			throw new HTTPException(404, { message: 'User not found' });
+		}
 
 		return c.json(toUserDTO(row));
 	});

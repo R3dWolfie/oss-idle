@@ -20,6 +20,7 @@ import {
 import { beatmapset } from '../db/schema/beatmapset';
 import { users } from '../db/schema/user';
 import { requireAuth } from '../auth/middleware';
+import { requireActive } from '../auth/active';
 import { requireAdmin } from '../auth/admin';
 import { liveCondition } from '../beatmaps/catalog';
 import { pushMedals } from '../medals';
@@ -64,7 +65,7 @@ export const beatmapClaimRoutes = new Hono()
 	})
 
 	// The player's whole selection, replacing what they claimed before.
-	.put('/', requireAuth, jsonBody(z.object({ setIds: z.array(idParam).max(1000) })), async c => {
+	.put('/', requireActive, jsonBody(z.object({ setIds: z.array(idParam).max(1000) })), async c => {
 		const userId = c.get('userId');
 		const open = new Set((await unclaimedSets()).map(set => set.setId));
 		const setIds = [...new Set(c.req.valid('json').setIds)].filter(id => open.has(id));
@@ -83,7 +84,9 @@ export const beatmapClaimRoutes = new Hono()
 			userId: beatmapClaims.userId,
 			username: users.username,
 			characterId: users.currentCharacter,
+			registeredAt: users.createdAt,
 			createdAt: beatmapClaims.createdAt,
+			rankedAt: beatmapset.rankedAt,
 			osuId: beatmapset.osuId,
 			artist: beatmapset.artist,
 			title: beatmapset.title,

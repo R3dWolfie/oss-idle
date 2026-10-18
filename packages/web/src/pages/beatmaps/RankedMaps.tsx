@@ -1,23 +1,19 @@
-import { ph } from '@lingui/core/macro';
 import './RankedMaps.css';
 import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import { dateAgo } from '@osu-idle/shared/display/ago';
 import Link from '../../components/Link';
+import MapsetCard from '../../components/MapsetCard';
 import MapsNav from './MapsNav';
 import {
-	coverBackground,
 	type getAllMaps,
 	type getPopularMaps,
 } from '../../api/maps';
-import { bignum } from '@osu-idle/shared/display/num';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faCaretDown,
 	faCaretUp,
-	faPlayCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 export type MapSort = 'date' | 'plays';
@@ -58,34 +54,7 @@ export default function RankedMaps({ sort, dir, mapsets }: {
 			</div>
 			<div className="page-contents">
 				<div className='list__beatmap-container'>
-					{mapsets.map(mapset => <div className='list__beatmap'>
-						<div
-							className='list__beatmap_background'
-							style={{ backgroundImage: coverBackground(mapset, 'list') }}
-						></div>
-						<div className='list__beatmap_safe'>
-							<div
-								className='list__beatmap_foreground'
-								style={{ backgroundImage: coverBackground(mapset, 'list') }}
-							>
-								<div className='list__beatmap_contents'>
-									<span className='list__beatmap_title'>{mapset.title}</span>
-									<span className='list__beatmap_artist'><Trans>by {ph({ artist: mapset.artist })}</Trans></span>
-									<span className='list__beatmap_creator'>
-										<Trans>mapped by {ph({ creator: mapset.creator })}</Trans>
-									</span>
-									<span className='list__beatmap_plays'>
-										<FontAwesomeIcon icon={faPlayCircle}/> {bignum(mapset.plays)}
-									</span>
-									<div className='list__beatmap_bottom'>
-										<span className='list__beatmap_capsule'><Trans>Ranked</Trans></span>
-										<span className='list__beatmap_ago'>{dateAgo(mapset.rankedAt)}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className='list__beatmap_right'></div>
-					</div>)}
+					{mapsets.map(mapset => <MapsetCard key={mapset.id} mapset={mapset} />)}
 				</div>
 			</div>
 		</main>

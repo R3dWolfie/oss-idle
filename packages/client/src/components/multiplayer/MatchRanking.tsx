@@ -21,7 +21,7 @@ export default function MatchRanking({ ranking }: { ranking: Ranking }) {
 					position={i + 1}
 					failed={r.failed}
 					self={r.characterId === viewed}
-					onClick={final && !r.failed ? () => view(r.characterId) : undefined}
+					onClick={final && r.result ? () => view(r.characterId) : undefined}
 				/>
 			))}
 			{final && (

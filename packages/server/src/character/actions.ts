@@ -1,5 +1,8 @@
 import { HTTPException } from 'hono/http-exception';
-import { eq } from 'drizzle-orm';
+import {
+	eq,
+	max,
+} from 'drizzle-orm';
 import { db } from '../db/client';
 import {
 	characters,
@@ -245,6 +248,21 @@ export const performPrestige = async (
 	await reindexCharacter(row.id);
 };
 
+/** Only the newest generation rebirths: the one it left behind stays playable and ranked, but
+ *  rebirthing it again would hand the account another fresh character each time. */
+export const assertNewestGeneration = async (
+	row: CharacterRow,
+	exec: Pick<typeof db, 'select'> = db,
+): Promise<void> => {
+	const [newest] = await exec
+		.select({ generation: max(characters.generation) })
+		.from(characters)
+		.where(eq(characters.userId, row.userId));
+	if ((newest?.generation ?? 0) > row.generation) {
+		throw new HTTPException(409, { message: 'This character was already reborn' });
+	}
+};
+
 /** Rebirth: the account starts a fresh character one generation up, which owns
  *  one more unlock. The previous one stays playable, ranked, and keeps its
  *  progress - it just gives up the name, osu!-style. Returns the new id. */
@@ -260,24 +278,27 @@ export const performRebirth = async (
 	// hands the name over and takes _old, osu!-style. Any other name leaves it
 	// exactly as it was.
 	const inherits = name === row.name;
-	if (inherits) {
-		const displaced = await displacedName(row.name);
-		await db.insert(characterNameHistory).values({
-			characterId: row.id, name: row.name,
+	const displaced = inherits ? await displacedName(row.name) : undefined;
+	if (!inherits) await assertNameAvailable(user.id, name, user.username);
+
+	// the account row is the lock: two rebirths at once would both pass the check
+	const characterId = await db.transaction(async tx => {
+		await tx.select({ id: users.id }).from(users).where(eq(users.id, user.id)).for('update');
+		await assertNewestGeneration(row, tx);
+		if (displaced) {
+			await tx.insert(characterNameHistory).values({
+				characterId: row.id, name: row.name,
+			});
+			await tx.update(characters).set({ name: displaced }).where(eq(characters.id, row.id));
+		}
+		const [created] = await tx.insert(characters).values({
+			userId: user.id, name, generation: row.generation + 1,
 		});
-		await db.update(characters).set({ name: displaced }).where(eq(characters.id, row.id));
-	} else {
-		await assertNameAvailable(user.id, name, user.username);
-	}
-
-	const [created] = await db.insert(characters).values({
-		userId: user.id, name, generation: row.generation + 1,
+		await tx.update(users)
+			.set({ currentCharacter: created.insertId })
+			.where(eq(users.id, user.id));
+		return created.insertId;
 	});
-	const characterId = created.insertId;
-
-	await db.update(users)
-		.set({ currentCharacter: characterId })
-		.where(eq(users.id, user.id));
 
 	await reindexCharacter(row.id);
 	await reindexCharacter(characterId);

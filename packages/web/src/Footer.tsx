@@ -1,17 +1,18 @@
 import './Footer.css';
 import { VERSION } from '@osu-idle/shared/version';
 import { Trans } from '@lingui/react/macro';
+import Link from './components/Link';
 
 export default function Footer() {
 	const years = `2026${(new Date().getFullYear() !== 2026) ? `-${new Date().getFullYear()}` : ''}`;
 	return (<footer>
 		<div className='footer__links'>
-			<a><Trans>Rules</Trans></a>
-			<a><Trans>Terms</Trans></a>
-			<a><Trans>Privacy</Trans></a>
-			<a><Trans>Server Status</Trans></a>
+			<Link to='/legal/rules'><Trans>Rules</Trans></Link>
+			<Link to='/legal/terms'><Trans>Terms</Trans></Link>
+			<Link to='/legal/privacy'><Trans>Privacy</Trans></Link>
+			<Link to='/legal/copyright'><Trans>Copyright</Trans></Link>
 			<a href="https://github.com/osu-idle/osu-idle"><Trans>Source code</Trans></a>
-			<a><Trans>Contact</Trans></a>
+			<Link to='/legal/notice'><Trans>Legal notice</Trans></Link>
 		</div>
 		<div className='footer__rg'>
 			<a href="https://rhythmgamers.net">rhythmgamers.net</a>

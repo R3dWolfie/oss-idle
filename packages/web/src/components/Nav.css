@@ -1,11 +1,15 @@
 .nav__container {
+	height: auto;
+	min-height: 48px;
 	background-color: hsl(var(--hsl-d4));
 }
 
+/* like osu!'s header-nav-v4: tabs wrap to a new row, their labels never do */
 .nav__list {
 	position: relative;
 	display: flex;
-	gap: 20px;
+	flex-wrap: wrap;
+	column-gap: 20px;
 	height: 100%;
 	align-items: stretch;
 }
@@ -23,19 +27,14 @@
 	position: relative;
 	display: flex;
 	align-items: center;
+	padding: 14px 0;
+	white-space: nowrap;
 	cursor: pointer;
 }
 
 @media (max-width: 760px) {
-	.nav__container {
-		height: auto;
-		min-height: 48px;
-	}
-
 	.nav__list {
-		flex-wrap: wrap;
 		column-gap: 15px;
-		row-gap: 0;
 	}
 
 	.nav__item {

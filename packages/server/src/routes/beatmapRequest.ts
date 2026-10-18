@@ -29,6 +29,7 @@ import {
 	sessionUserId,
 } from '../auth/middleware';
 import { requireAdmin } from '../auth/admin';
+import { requireActive } from '../auth/active';
 import {
 	getManiaSet,
 	searchManiaSets,
@@ -154,7 +155,7 @@ export const beatmapRequestRoutes = new Hono()
 		return c.json(await searchManiaSets(q));
 	})
 
-	.post('/', requireAuth, jsonBody(beatmapRequestBody), async c => {
+	.post('/', requireActive, jsonBody(beatmapRequestBody), async c => {
 		const userId = c.get('userId');
 		const setId = parseBeatmapsetId(c.req.valid('json').map);
 		if (!setId || setId === INTRO_SET_ID) {
@@ -214,7 +215,7 @@ export const beatmapRequestRoutes = new Hono()
 	})
 
 	// Back a request (or take the backing away). Only while it's still open.
-	.post('/:setId/support', requireAuth, async c => {
+	.post('/:setId/support', requireActive, async c => {
 		const setId = idParam.parse(c.req.param('setId'));
 		const userId = c.get('userId');
 

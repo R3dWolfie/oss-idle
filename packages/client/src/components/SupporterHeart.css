@@ -1,0 +1,31 @@
+.supporter-heart {
+	position: absolute;
+	right: 14px;
+	bottom: 34px;
+	/* over the chat buttons (CommunityControls) */
+	z-index: 9750;
+	color: #fff;
+	font-size: 2rem;
+	filter: drop-shadow(0 0 6px #ffffffb0);
+}
+
+.supporter-heart__tip {
+	position: absolute;
+	right: 70%;
+	bottom: -60%;
+	padding: 3px 6px;
+	border: 1px solid #ffffff60;
+	border-radius: 4px;
+	background: #000000c0;
+	color: #fff;
+	font-size: 0.85rem;
+	line-height: 1.3;
+	white-space: nowrap;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.1s;
+}
+
+.supporter-heart:hover .supporter-heart__tip {
+	opacity: 1;
+}

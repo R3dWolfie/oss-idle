@@ -14,9 +14,11 @@ import {
 	rejectMapClaim,
 	type MapClaim,
 } from '../../api/mapRequests';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 /** Temporary: who claims to have proposed which ranked map on Discord. Accepting attributes the map to them. */
 export default function Claims() {
+	const me = useCurrentUser();
 	const [claims, setClaims] = useState<MapClaim[]>();
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string>();
@@ -46,12 +48,13 @@ export default function Claims() {
 		<p className='admin-medals__meta'>
 			Players send their picks from <Link to='/maps/claim'>/maps/claim</Link>.
 			Accepting one attributes the map to that player and drops the other claims on it.
+			Mine attributes it to you instead.
 		</p>
 		{error && <p>{error}</p>}
 		{!claims && <p>Loading…</p>}
 		{claims && !claims.length && <p>No claims.</p>}
 		{!!claims?.length && <table>
-			<thead><tr><th>Map</th><th>Mapper</th><th>Claimed by</th><th>When</th><th></th></tr></thead>
+			<thead><tr><th>Map</th><th>Mapper</th><th>Claimed by</th><th>Ranked</th><th>Registered</th><th>When</th><th></th></tr></thead>
 			<tbody>
 				{claims.map(claim => <tr key={`${claim.setId}-${claim.userId}`}>
 					<td>
@@ -68,6 +71,12 @@ export default function Claims() {
 							</Link>
 							: claim.username ?? claim.userId}
 					</td>
+					<td>{dateAgo(claim.rankedAt)}</td>
+					<td>
+						{dateAgo(claim.registeredAt)}
+						{!!claim.rankedAt && !!claim.registeredAt
+							&& claim.registeredAt > claim.rankedAt && <b> (after ranking)</b>}
+					</td>
 					<td>{dateAgo(claim.createdAt)}</td>
 					<td>
 						<button disabled={busy} onClick={() => void run(() => acceptMapClaim(claim.setId, claim.userId))}>
@@ -77,6 +86,12 @@ export default function Claims() {
 						<button disabled={busy} onClick={() => void run(() => rejectMapClaim(claim.setId, claim.userId))}>
 							Reject
 						</button>
+						{me && <>
+							{' '}
+							<button disabled={busy} onClick={() => void run(() => acceptMapClaim(claim.setId, me.id))}>
+								Mine
+							</button>
+						</>}
 					</td>
 				</tr>)}
 			</tbody>

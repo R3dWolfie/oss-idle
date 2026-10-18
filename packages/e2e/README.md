@@ -24,9 +24,15 @@ is reused; when it is not, playwright starts it.
 
 Every test opens a fresh browser context, so the local sql.js database, the
 IndexedDB behind it and the settings all start empty - each test is a first-run
-player, signed out. Nothing here signs in: the account path goes through osu!
-OAuth, and the guest path is where the whole idle loop can be exercised without
-it.
+player, signed out.
+
+The social and multiplayer specs need players who are signed in, and two of them.
+They skip osu! OAuth: `src/support/accounts.ts` writes test accounts straight into
+the dev database (`DB_NAME_DEV` from `packages/server/.env`, ids at the top of
+the int range, one pair per spec file so two workers never share one), clears
+what an earlier run left between them, and signs a session cookie with the dev
+server's own `JWT_SECRET`. The `playerAs(account)` fixture hands back a page in
+its own signed-in context. The server has no test login route.
 
 ## How a test drives the game
 
@@ -58,6 +64,8 @@ page logged, so a spec can assert it stayed quiet).
 | `persistence.spec.ts` | scores, xp, library and settings across a reload - and the queue deliberately not surviving one |
 | `community.spec.ts` | F9 / F8 overlays, the world map, auto-hide around gameplay |
 | `options.spec.ts` | the options overlay, its search, a toggle that sticks |
+| `social.spec.ts` | friends (mutual once both add), a PM between two live clients, block (the sender cannot tell), report |
+| `multiplayer.spec.ts` | host a game, join it from the lobby, the match chat, Give Host, a round putting both players in a play |
 | `web.spec.ts` | the web platform under `/web`: landing, rankings, maps, news |
 | `playground.spec.ts` | every `?playground` case renders, with nothing logged |
 

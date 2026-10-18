@@ -21,6 +21,7 @@ import { redis } from '../redis';
 import { redisKeyPrefix } from '../env';
 import { db } from '../db/client';
 import { characters } from '../db/schema/character';
+import { isRestricted } from '../db/schema/user';
 import {
 	beatmapListColumns,
 	beatmaps,
@@ -39,6 +40,7 @@ import { hub } from './hub';
 import { areOnline } from './presence';
 import { BOT_COLOR } from './chat';
 import { Judgements } from '@osu-idle/shared/judgement';
+import type { NewScoreRow } from '../db/schema/score';
 import {
 	closeMatch,
 	endGame,
@@ -66,7 +68,7 @@ const ROUND_TTL_S = 60 * 60;
  *  connection keeps the seat for a while */
 const AWAY = `${redisKeyPrefix}mp:away`;
 const AWAY_GRACE_MS = 60 * 1000;
-const FEED_TICK_MS = 1000;
+const FEED_TICK_MS = 250;
 
 const LOCK_MS = 5000;
 const UNLOCK = `
@@ -133,6 +135,26 @@ const roundOver = async (m: Stored, round: Round | undefined): Promise<boolean> 
 };
 
 /** What a started play will end as. Known up front: the server simulated it whole. */
+const judgementsOf = (draft: NewScoreRow) =>
+	Object.fromEntries(Judgements.map(j => [j, draft[j] ?? 0])) as GameScoreDetail['judgements'];
+
+/** A round play as its result screen shows it. Failed ones are never saved, so
+ *  this is the only copy. */
+const roundResult = (characterId: number, draft: NewScoreRow): RoundScore['result'] => ({
+	characterId,
+	beatmapId: draft.beatmapId,
+	score: draft.score ?? 0,
+	accuracy: Number(draft.accuracy ?? 0),
+	maxCombo: draft.maxCombo ?? 0,
+	judgements: judgementsOf(draft),
+	grade: draft.grade,
+	pp: Number(draft.pp ?? 0),
+	ur: Number(draft.ur ?? 0),
+	pfc: draft.pfc ?? false,
+	rate: Number(draft.rate ?? 1),
+	playedAt: new Date(draft.playedAt ?? Date.now()).getTime(),
+});
+
 const roundPlayer = async (characterId: number): Promise<RoundPlayer | undefined> => {
 	const play = await playTimeline(characterId);
 	if (!play?.samples) return undefined;
@@ -147,11 +169,11 @@ const roundPlayer = async (characterId: number): Promise<RoundPlayer | undefined
 			combo: play.draft.maxCombo ?? 0,
 			failed: play.failedAt !== undefined,
 			accuracy: Number(play.draft.accuracy ?? 0),
+			result: roundResult(characterId, play.draft),
 		},
 		detail: {
 			grade: play.failedAt !== undefined ? 'F' : play.draft.grade,
-			judgements: Object.fromEntries(Judgements
-				.map(j => [j, play.draft[j] ?? 0])) as GameScoreDetail['judgements'],
+			judgements: judgementsOf(play.draft),
 		},
 	};
 };
@@ -304,13 +326,24 @@ const historyLine = (characterId: number, matchId: number): void => hub.sendTo(c
 type JoinAnswer = {
 	match?: Match,
 	/** a running play has to be aborted first: its round would start without it */
-	reason?: 'full' | 'password' | 'gone' | 'playing',
+	reason?: 'full' | 'password' | 'gone' | 'playing' | 'restricted',
+};
+
+/** Whether the character's account is restricted: it can't play, so it can't sit in a match. */
+const restrictedCharacter = async (characterId: number): Promise<boolean> => {
+	const [row] = await db
+		.select({ userId: characters.userId })
+		.from(characters)
+		.where(eq(characters.id, characterId))
+		.limit(1);
+	return Boolean(row && await isRestricted(row.userId));
 };
 
 const create = async (
 	characterId: number,
 	{ name, password, size, isPublic, beatmapId }: Extract<ClientMessage, { type: 'mp:create' }>,
 ): Promise<JoinAnswer> => {
+	if (await restrictedCharacter(characterId)) return { reason: 'restricted' };
 	if (await isPlaying(characterId)) return { reason: 'playing' };
 	const beatmap = beatmapId === undefined ? undefined : await findBeatmap(beatmapId);
 	await leaveMatch(characterId);
@@ -338,6 +371,7 @@ const join = async (
 	{ id, password }: Extract<ClientMessage, { type: 'mp:join' }>,
 ): Promise<JoinAnswer> => {
 	if (await memberOf(characterId) !== id) {
+		if (await restrictedCharacter(characterId)) return { reason: 'restricted' };
 		if (await isPlaying(characterId)) return { reason: 'playing' };
 		await leaveMatch(characterId);
 	}
@@ -411,12 +445,14 @@ const setBeatmap = async (characterId: number, beatmapId: number): Promise<void>
 const start = async (characterId: number): Promise<void> => {
 	let beatmapId: number | undefined;
 	let round: number[] = [];
+	let rates: number[] = [];
 	const startedAt = Date.now();
 	await asHost(characterId, m => {
 		const withMap = players(m).filter(s => !s.noMap);
 		if (!m.beatmap || m.changingBeatmap || !withMap.length) return false;
 		beatmapId = m.beatmap.id;
 		round = withMap.map(s => s.characterId);
+		rates = withMap.map(s => s.rate ?? 1);
 		m.playing = true;
 		m.roundStartedAt = startedAt;
 		m.lastRound = undefined;
@@ -426,9 +462,11 @@ const start = async (characterId: number): Promise<void> => {
 	});
 	if (beatmapId === undefined) return;
 
-	const started = await Promise.all(round.map(async id => {
+	const started = await Promise.all(round.map(async (id, i) => {
 		const [row] = await db.select().from(characters).where(eq(characters.id, id)).limit(1);
-		const result = row ? await startPlay(row, beatmapId!).catch(() => undefined) : undefined;
+		const result = row
+			? await startPlay(row, beatmapId!, 1, rates[i]).catch(() => undefined)
+			: undefined;
 		// joined a play of another map = they had a solo play running: they sit out
 		return result?.status === 'ranked' && result.beatmapId === beatmapId ? result.endsAt : undefined;
 	}));
@@ -598,6 +636,12 @@ export const handleMultiplayer = async (
 				s.ready = msg.ready;
 			});
 			return true;
+		case 'mp:rate':
+			await changeOwn(characterId, (m, s) => {
+				if (m.playing || s.rate === msg.rate) return false;
+				s.rate = msg.rate;
+			});
+			return true;
 		case 'mp:noMap':
 			await changeOwn(characterId, (_, s) => {
 				if (s.noMap === msg.noMap) return false;
@@ -619,6 +663,21 @@ export const handleMultiplayer = async (
 
 /** One socket's in-game scoreboard: the round's live scores, pushed each tick
  *  while its player watches a match play. */
+/** The feeds' last read of each round, shared by every watcher of the match on this worker:
+ *  each one ticks 4 times a second, and a round holds every player's samples. */
+const feedRounds = new Map<number, { at: number, round: Round | undefined }>();
+
+const feedRound = async (matchId: number): Promise<Round | undefined> => {
+	const hit = feedRounds.get(matchId);
+	if (hit && Date.now() - hit.at < FEED_TICK_MS - 50) return hit.round;
+	const round = await readRound(matchId);
+	if (feedRounds.size > 200) feedRounds.clear();
+	feedRounds.set(matchId, {
+		at: Date.now(), round,
+	});
+	return round;
+};
+
 export class MatchFeed {
 
 	private timer?: ReturnType<typeof setInterval>;
@@ -642,7 +701,7 @@ export class MatchFeed {
 
 	private async tick(): Promise<void> {
 		const id = await memberOf(this.characterId());
-		const round = id === undefined ? undefined : await readRound(id);
+		const round = id === undefined ? undefined : await feedRound(id);
 		if (!round) return this.stop();
 		hub.sendLocal(this.ws, {
 			type: 'mp:scores', scores: await liveScores(round),

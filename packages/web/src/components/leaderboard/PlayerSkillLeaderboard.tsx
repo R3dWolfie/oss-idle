@@ -1,4 +1,5 @@
 import './PlayerLeaderboard.css';
+import { useCurrentCharacter } from '../../hooks/useCurrentCharacter';
 import Link from '../Link';
 import Pager from './Pager';
 import type { getSkillRanking } from '../../api/rankings';
@@ -64,6 +65,7 @@ export default function PlayerSkillLeaderboard({
 	players: Players,
 	board?: Board,
 }) {
+	const self = useCurrentCharacter();
 	return (<div className='player__lb'>
 		<div className='player__lb_sort'>
 			<span><Trans>Sort by</Trans></span>
@@ -91,7 +93,10 @@ export default function PlayerSkillLeaderboard({
 					</tr>
 				</thead>
 				<tbody>
-					{players.map((player, r) => <tr key={player.character.id}>
+					{players.map((player, r) => <tr
+						key={player.character.id}
+						className={player.character.id === self?.id ? 'is-self' : undefined}
+					>
 						<td>{rank(r+1+((page - 1) * 50))}</td>
 						<td className='main'><div className='player__lb_listing_main'>
 							<Flag country={player.user.country} />

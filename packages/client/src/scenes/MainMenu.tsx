@@ -33,6 +33,8 @@ import Entities from '../entity/entities';
 import { SETTINGS } from '../db/settings';
 import { VERSION } from '@osu-idle/shared/version';
 import DesktopUpdate from '../components/DesktopUpdate';
+import SupporterHeart from '../components/SupporterHeart';
+import { currentSkin } from '../osu/skin/Skin';
 import Auth from '../online/auth';
 import ContextMenu from '../components/ContextMenu';
 import ConfirmMenu from '../components/ConfirmMenu';
@@ -40,6 +42,7 @@ import PlayManager from '../online/playManager';
 import { desktop } from '@osu-idle/shared/desktop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord';
+import { DISCORD_URL } from '@osu-idle/shared/links';
 
 interface Props {
 	/** play the white-flash "drop" entrance (true when arriving from the intro) */
@@ -81,6 +84,8 @@ export default function MainMenu({ flash = false }: Props) {
 	const [parallaxOn] = useSynced(SETTINGS.parallax);
 	const parallax = useParallax(0.08, parallaxOn);
 	const [character] = useSynced(Entities.character);
+	const [skin] = useSynced(currentSkin);
+	const [user] = useSynced(Auth.user);
 
 	const getLogoSize = () => Math.min(window.innerHeight * 0.5, window.innerWidth * 0.75);
 
@@ -213,7 +218,7 @@ export default function MainMenu({ flash = false }: Props) {
 
 	return (
 		<div className={`menu ${flash ? 'menu--flash' : ''}`}>
-			<Background />
+			<Background image={user?.supporter ? skin.data.menu.background : undefined} />
 			<div className="menu__vignette" />
 
 			<header className="menu__top">
@@ -224,7 +229,7 @@ export default function MainMenu({ flash = false }: Props) {
 				<span className="menu__brand-version">v{VERSION}</span>
 				<a
 					className="menu__discord"
-					href="https://discord.gg/Yd5GEaX8AJ"
+					href={DISCORD_URL}
 					target="_blank"
 					rel="noreferrer"
 					aria-label="Discord"
@@ -232,6 +237,8 @@ export default function MainMenu({ flash = false }: Props) {
 					<FontAwesomeIcon icon={faDiscord} />
 				</a>
 			</div>
+
+			<SupporterHeart />
 
 			<div className="menu__center" style={{ transform: `translate(${fgX}px, ${fgY}px)` }}>
 				<div className='menu__logo-options' style={{

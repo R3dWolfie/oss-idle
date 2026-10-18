@@ -30,6 +30,7 @@
 }
 
 .report-dialog select,
+.report-dialog input,
 .report-dialog textarea {
 	width: 100%;
 	padding: 10px;

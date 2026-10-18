@@ -1,4 +1,6 @@
 import {
+	compareGradeGT,
+	type Grade,
 	Grades,
 	type Judgement,
 	Judgements,
@@ -59,6 +61,13 @@ export const scoreTableDefinition = {
 	}).notNull(),
 	pfc: boolean().notNull(),
 	playedAt: timestamp().defaultNow(),
+	rate: decimal({
+		precision: 3, scale: 2,
+	}).notNull().default('1.00'),
+	// the stars at that rate; null on plays from before rates
+	sr: decimal({
+		precision: 10, scale: 3,
+	}),
 };
 
 type ScoreCols = { characterId: AnyMySqlColumn; beatmapId: AnyMySqlColumn };
@@ -109,9 +118,25 @@ export function toScoreDTO(row: ScoreRow): ScoreDTO {
 		accuracy: parseFloat(row.accuracy),
 		pp: parseFloat(row.pp),
 		ur: parseFloat(row.ur),
+		rate: parseFloat(row.rate),
 		playedAt: row.playedAt ? row.playedAt.getTime() : 0,
 	};
 }
+
+/** The best grade a character ever set on a map, at any rate: a slowed play's cut score
+ *  never makes it the best, so the best row's grade can sit below it. */
+export const bestGradeOn = async (
+	characterId: number,
+	beatmapId: number,
+): Promise<Grade | undefined> => {
+	const rows = await db
+		.selectDistinct({ grade: scores.grade })
+		.from(scores)
+		.where(and(eq(scores.characterId, characterId), eq(scores.beatmapId, beatmapId)));
+	return rows.reduce<Grade | undefined>(
+		(top, { grade }) => (!top || compareGradeGT(grade, top) ? grade : top), undefined,
+	);
+};
 
 export const getScoreById = async (id: number) => {
 	const [row] = await db
@@ -136,15 +161,17 @@ export const getAllCharacterScores = (characterId: number) => db
 	.from(scores)
 	.where(eq(scores.characterId, characterId));
 	
+export const recentScoreRows = (characterId: number, offset: number, limit: number) => db
+	.select({
+		score: scores, beatmap: beatmapListColumns, beatmapset,
+	})
+	.from(scores)
+	.innerJoin(beatmaps, eq(beatmaps.id, scores.beatmapId))
+	.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
+	.where(eq(scores.characterId, characterId))
+	.orderBy(desc(scores.playedAt))
+	.offset(offset)
+	.limit(limit);
+
 export const getRecentCharacterScores = (characterId: number, page: number = 1) =>
-	profilePage(page, (offset, limit) => db
-		.select({
-			score: scores, beatmap: beatmapListColumns, beatmapset,
-		})
-		.from(scores)
-		.innerJoin(beatmaps, eq(beatmaps.id, scores.beatmapId))
-		.innerJoin(beatmapset, eq(beatmapset.id, beatmaps.setId))
-		.where(eq(scores.characterId, characterId))
-		.orderBy(desc(scores.playedAt))
-		.offset(offset)
-		.limit(limit));
+	profilePage(page, (offset, limit) => recentScoreRows(characterId, offset, limit));

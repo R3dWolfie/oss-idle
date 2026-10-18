@@ -5,8 +5,8 @@ import {
 	useMemo,
 	useState,
 } from 'react';
-import type { AddonStatus } from '@osu-idle/shared/addon';
 import {
+	type AddonVerdict,
 	type AdminAddon,
 	listAddonsAdmin,
 	moderateAddon,
@@ -43,7 +43,7 @@ export default function AddonsAdmin() {
 		finally { setBusy(false); }
 	};
 
-	const onModerate = (id: number, body: { status: AddonStatus; feedback?: string | null }) =>
+	const onModerate = (id: number, body: AddonVerdict) =>
 		run(() => moderateAddon(id, body));
 
 	const sorted = useMemo(() => {

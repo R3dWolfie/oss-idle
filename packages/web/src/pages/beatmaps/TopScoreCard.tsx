@@ -1,0 +1,57 @@
+import { Trans } from '@lingui/react/macro';
+import { ph } from '@lingui/core/macro';
+import num from '@osu-idle/shared/display/num';
+import accuracy from '@osu-idle/shared/display/accuracy';
+import { dateAgo } from '@osu-idle/shared/display/ago';
+import Link from '../../components/Link';
+import Flag from '../../components/Flag';
+import ScoreLink from '../../components/score/ScoreLink';
+import Grade from '../../components/score/Grade';
+import ProfilePicture from '../../components/ProfilePicture';
+import type { BoardRow } from '../../api/maps';
+import { JUDGEMENT_COLUMNS } from './judgementColumns';
+
+/** osu!'s card for the map's #1, above the table. */
+export default function TopScoreCard({ row }: { row: BoardRow }) {
+	const { score, player } = row;
+	const stats = [
+		{
+			label: <Trans>Total score</Trans>, value: num(score.score),
+		},
+		{
+			label: <Trans>Accuracy</Trans>, value: accuracy(score.accuracy),
+		},
+		{
+			label: <Trans>Max combo</Trans>, value: `${num(score.maxCombo)}x`,
+		},
+		...JUDGEMENT_COLUMNS.map(j => ({
+			label: j.label, value: num(score.judgements[j.judgement]),
+		})),
+		{
+			label: 'pp', value: num(score.pp),
+		},
+	];
+	return <div className='mapset__top'>
+		<ScoreLink id={score.id} label='#1' />
+		<div className='mapset__top-player'>
+			<span className='mapset__top-rank'>#1</span>
+			<Grade grade={score.grade} />
+			<ProfilePicture avatarUrl={player.avatarUrl} className='mapset__top-avatar' />
+			<div>
+				<Link to='/c/$id' params={{ id: String(player.id) }} className='mapset__top-name'>
+					{player.name}
+				</Link>
+				<div className='mapset__top-when'>
+					<Trans>achieved {ph({ when: dateAgo(score.playedAt) })}</Trans>
+				</div>
+				<Flag country={player.country} />
+			</div>
+		</div>
+		<div className='mapset__top-stats'>
+			{stats.map((s, i) => <div key={i} className='mapset__top-stat'>
+				<div className='mapset__top-label'>{s.label}</div>
+				<div className='mapset__top-value'>{s.value}</div>
+			</div>)}
+		</div>
+	</div>;
+}

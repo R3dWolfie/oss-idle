@@ -1,3 +1,4 @@
+import { versionLabel } from '@osu-idle/shared/rate';
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { music } from '../../audio/MusicPlayer';
@@ -11,14 +12,15 @@ export default function ResultMeta({
 	playerName, 
 	playedAt, 
 	beatmap,
-}: { playerName: string; playedAt: string; beatmap?: LightBeatmap }) {
+	rate,
+}: { playerName: string; playedAt: string; beatmap?: LightBeatmap; rate: number }) {
 	const live = music.beatmap.use((b) => b);
 	const map = beatmap ?? live;
 	const track = map && {
 		title: map.set.metadata.title,
 		artist: map.set.metadata.artist,
 		creator: map.set.metadata.creator,
-		version: map.metadata.version,
+		version: versionLabel(map.metadata.version, rate),
 	};
 	return (
 		<div className="result__meta">

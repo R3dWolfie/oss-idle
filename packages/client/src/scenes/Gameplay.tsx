@@ -1,3 +1,5 @@
+import RatedVersion from '../components/RatedVersion';
+import { rateOfPlay } from '../gameplay/playRate';
 import type { MedalBatch } from '@osu-idle/shared/play';
 import './Gameplay.css';
 import {
@@ -27,6 +29,8 @@ import {
 	finishPlaySession,
 	skipPlaySession,
 	startPlaySession,
+	restrictedMessage,
+	inMatchMessage,
 	type PlayContext,
 } from '../online/play';
 import Account from '../online/account';
@@ -76,6 +80,7 @@ import {
 import BeatmapStore from '../osu/beatmap/beatmap_store';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import Multiplayer from '../online/multiplayer';
+import RoundWaiting from '../components/multiplayer/RoundWaiting';
 import MatchScoreboard from '../components/multiplayer/MatchScoreboard';
 import { scoreboardEdge } from '../components/multiplayer/scoreboardEdge';
 import SceneManager, { SCENE } from './SceneManager';
@@ -163,6 +168,7 @@ function GameplayInner({
 	const sampleSchedRef = useRef<SampleSchedule | null>(null);
 	const videoInfoRef = useRef<{ time: number } | null>(null);
 	const [done, setDone] = useState(false);
+	const [waitingRound, setWaitingRound] = useState(false);
 	// live grade for the HUD badge - a DOM <img> overlaid on the canvas, so it is
 	// React state pushed from the renderer only when the grade actually changes
 	const [grade, setGrade] = useState<Grade>('X');
@@ -238,6 +244,8 @@ function GameplayInner({
 
 	Controls.back.usePress(onAbort);
 
+	const rate = rateOfPlay(play);
+
 	// build the game once; a freshly-built game starts a fresh clock so the two
 	// always stay in lock-step (HMR preserves both refs → seamless resume)
 	const ensureGame = () => {
@@ -261,7 +269,7 @@ function GameplayInner({
 		// server, which constructs ManiaGame with the default window).
 		const divine = hasUnlock(character.generation, 'DIVINE');
 		gameRef.current = new ManiaGame(beatmap, botRef.current, {
-			noFail: play.mode === 'debug', divine,
+			noFail: play.mode === 'debug', divine, rate,
 		});
 		// ranked replays don't analyze strain locally - run a display-only analysis
 		// of the same map with the character's skills (an approximation of the
@@ -279,7 +287,9 @@ function GameplayInner({
 				character.skills, 
 				beatmap.difficulty.overallDifficulty,
 			);
-			new ManiaGame(beatmap, strainBotRef.current, { divine });
+			new ManiaGame(beatmap, strainBotRef.current, {
+				divine, rate,
+			});
 		}
 		clockRef.current = null;
 		hitsoundPtr.current = 0;
@@ -349,7 +359,7 @@ function GameplayInner({
 			});
 			return;
 		}
-		const pp = await calculatePP(game.score, beatmap).catch((e) => {
+		const pp = await calculatePP(game.score, beatmap, rate).catch((e) => {
 			console.warn('[score] pp failed, finishing without it', e);
 			return 0;
 		});
@@ -367,6 +377,7 @@ function GameplayInner({
 			ur: game.unstableRate(),
 			pfc: c.MISS === 0 && c.BAD === 0 && c.GOOD === 0,
 			playedAt: Date.now(),
+			rate,
 		});
 		localScoreRef.current = local;
 
@@ -518,6 +529,11 @@ function GameplayInner({
 				await fetchResult(effect.attempt);
 				return;
 			case 'show-result':
+				// a match round: stay here, watching the others' scores, until it's over
+				if (Multiplayer.waitingOnRound()) {
+					setWaitingRound(true);
+					await Multiplayer.roundOver();
+				}
 				showResult(effect.source, effect.failed);
 				return;
 			case 'exit':
@@ -679,7 +695,10 @@ function GameplayInner({
 		void (async () => {
 			const assets = await loadStoryboardAssets(beatmapInfo, beatmap);
 			if (!alive) return;
-			sampleSchedRef.current = new SampleSchedule(assets.samples);
+			// storyboard times are the map's own: a rate moves them like the notes
+			sampleSchedRef.current = new SampleSchedule(assets.samples.map(s => ({
+				...s, time: s.time / rate,
+			})));
 			// keysounds are played per note at press time (see queueHitsounds); only
 			// the blobs need preloading here so they trigger with no latency.
 			void preloadSamples(setId, [...assets.keysounds, ...assets.samples]);
@@ -745,7 +764,9 @@ function GameplayInner({
 			const video = videoRef.current;
 			const info = videoInfoRef.current;
 			if (!video || !info || !video.src) return;
-			const target = (now - info.time) / 1000;
+			// the video runs in the map's own time, sped up with the music
+			const target = (now * rate - info.time) / 1000;
+			video.playbackRate = rate;
 			const advancing = now > lastVideoNow;
 			lastVideoNow = now;
 			if (target < 0 || (video.duration && target > video.duration)) {
@@ -786,7 +807,7 @@ function GameplayInner({
 			// decode the track now, during the silent lead-in, so it can start the
 			// instant the clock crosses 0. `false` = keysound map (no backing track),
 			// so the clock stays on the perf timer for the whole play.
-			void music.prepareGameplay(beatmapInfo).then((hasAudio) => {
+			void music.prepareGameplay(beatmapInfo, rate, SETTINGS.pitchFollowsRate.get()).then((hasAudio) => {
 				c0.noAudio = !hasAudio;
 				// Anchor the clock to the play's start time so every viewer shows the
 				// exact same position: songPos = (now - startedAt) - lead-in. Computed
@@ -1060,7 +1081,7 @@ function GameplayInner({
 			</div>
 			<div className="play__title">
 				{beatmap.metadata.artist} - {beatmap.metadata.title}
-				<span> [{beatmap.metadata.version}]</span>
+				<RatedVersion version={beatmap.metadata.version} rate={rate} />
 			</div>
 
 			{queue && (
@@ -1069,7 +1090,7 @@ function GameplayInner({
 						<Trans>Next up:</Trans> {nextUp
 							? <>
 								{nextUp.set.metadata.artist} - {nextUp.set.metadata.title}
-								<span> [{nextUp.metadata.version}]</span>
+								<RatedVersion version={nextUp.metadata.version} />
 							</>
 							: '-'}
 					</div>
@@ -1078,6 +1099,7 @@ function GameplayInner({
 
 			<SkipToEndButton shown={debug && !done} onSkip={skipToEnd} />
 			<MatchScoreboard beatmapId={beatmapInfo.metadata.id} />
+			{waitingRound && <RoundWaiting />}
 
 			{confirmAbort && (
 				<ContextMenu
@@ -1124,6 +1146,7 @@ const localContext = async (
 		mode,
 		token: run.token,
 		beatmapId: run.beatmapId,
+		rate: run.rate,
 		offsets: run.offsets,
 		startedAt: run.startedAt,
 		endsAt: run.endsAt,
@@ -1288,6 +1311,15 @@ export default function Gameplay({
 					await fail(t`Couldn't take over the running play.`);
 					return;
 				}
+			}
+
+			if (session.mode === 'restricted') {
+				await fail(restrictedMessage());
+				return;
+			}
+			if (session.mode === 'inMatch') {
+				await fail(inMatchMessage());
+				return;
 			}
 
 			let play: PlayContext;

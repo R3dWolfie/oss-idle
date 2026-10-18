@@ -7,8 +7,9 @@ import useAsync from '@osu-idle/shared/hooks/useAsync';
 import './Background.css';
 
 /** The live track's backdrop, or a given map's - a screen about one particular
- *  map (a result) says which, instead of following whatever is selected. */
-export default function Background({ beatmap }: { beatmap?: LightBeatmap }) {
+ *  map (a result) says which, instead of following whatever is selected. An
+ *  `image` replaces both. */
+export default function Background({ beatmap, image }: { beatmap?: LightBeatmap; image?: string }) {
 	const [parallaxOn] = useSynced(SETTINGS.parallax);
 	const parallax = useParallax(0.08, parallaxOn);
 	
@@ -16,7 +17,7 @@ export default function Background({ beatmap }: { beatmap?: LightBeatmap }) {
 		return map?.getBackgroundUri() ?? previous?.getBackgroundUri();
 	});
 	const own = useAsync(async () => beatmap?.getBackgroundUri(), [beatmap]);
-	const background = beatmap ? own : live;
+	const background = image ?? (beatmap ? own : live);
 
 	return (
 		<div

@@ -1,4 +1,5 @@
 import './PlayerLeaderboard.css';
+import { useCurrentCharacter } from '../../hooks/useCurrentCharacter';
 import Link from '../Link';
 import Pager from './Pager';
 import type { getMedalRanking } from '../../api/rankings';
@@ -14,6 +15,7 @@ export default function PlayerMedalLeaderboard({ page, players }: {
 	page: number,
 	players: Players,
 }) {
+	const self = useCurrentCharacter();
 	return (<div className='player__lb'>
 		<div className='player__lb_scroll'>
 			<table className='player__lb_listing'>
@@ -27,7 +29,10 @@ export default function PlayerMedalLeaderboard({ page, players }: {
 					</tr>
 				</thead>
 				<tbody>
-					{players.map((player, r) => <tr key={player.character.id}>
+					{players.map((player, r) => <tr
+						key={player.character.id}
+						className={player.character.id === self?.id ? 'is-self' : undefined}
+					>
 						<td>{rank(r+1+((page - 1) * 50))}</td>
 						<td className='main'><div className='player__lb_listing_main'>
 							<Flag country={player.user.country} />

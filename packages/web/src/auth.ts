@@ -32,3 +32,23 @@ export function loginWithOsu(): void {
 		window.location.href = OAUTH_LOGIN;
 	}
 }
+const RETURN_KEY = 'osu-idle:after-login';
+
+/** Sign in, then come back to this page (the top-level flow lands on /auth/callback first). */
+export function loginAndReturn(): void {
+	try {
+		sessionStorage.setItem(RETURN_KEY, window.location.pathname + window.location.search);
+	} catch { /* storage blocked: the player lands on the callback page */ }
+	loginWithOsu();
+}
+
+/** Where {@link loginAndReturn} asked to come back to, once. */
+export function takeReturnPath(): string | undefined {
+	try {
+		const path = sessionStorage.getItem(RETURN_KEY);
+		sessionStorage.removeItem(RETURN_KEY);
+		return path?.startsWith('/web/') ? path : undefined;
+	} catch {
+		return undefined;
+	}
+}

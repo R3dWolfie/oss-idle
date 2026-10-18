@@ -21,6 +21,15 @@ export const users = mysqlTable('user', {
 	pmFromAnyone: boolean().notNull().default(true),
 	// linked from the options; the Discord bot gives this account's level role to it
 	discordId: varchar({ length: 32 }).unique(),
+	// the supporter tag shows while this is in the future
+	supporterUntil: timestamp(),
+	// every month of supporter ever received: the profile's hearts
+	supporterMonths: int().notNull().default(0),
+	// the buyer's Stripe customer, for the subscription portal
+	stripeCustomerId: varchar({ length: 255 }).unique(),
+	// restricted (osu!'s word): can't play or chat, hidden everywhere, until an admin lifts it
+	restrictedAt: timestamp(),
+	restrictedReason: varchar({ length: 255 }),
 	createdAt: timestamp().notNull().defaultNow(),
 	updatedAt: timestamp().notNull().defaultNow().onUpdateNow(),
 });
@@ -37,8 +46,21 @@ export function toUserDTO(row: UserRow): UserDTO {
 		avatarUrl: row.avatarUrl,
 		country: row.country,
 		createdAt: row.createdAt.toISOString(),
+		supporter: Boolean(row.supporterUntil && row.supporterUntil > new Date()),
+		restricted: Boolean(row.restrictedAt),
 	};
 }
+
+/** Restricted accounts can't play or chat and are hidden everywhere. So is a deleted one whose
+ *  socket is still open. */
+export const isRestricted = async (userId: number): Promise<boolean> => {
+	const [row] = await db
+		.select({ at: users.restrictedAt })
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+	return !row || Boolean(row.at);
+};
 
 export const getUserById = async (id: number) => {
 	const [row] = await db

@@ -40,6 +40,7 @@ const t = table('score', {
 	ur:          real(),
 	pfc:         boolean(),
 	playedAt:    integer(),
+	rate:        real().default(1),
 }, {
 	indexes: {
 		idx_score_online_id: 'onlineId',
@@ -116,6 +117,7 @@ export class Score extends DAO(t) {
 			pp:          nonNeg(this.pp),
 			ur:          nonNeg(this.ur),
 			pfc:         this.pfc,
+			rate:        this.rate,
 			playedAt:    int(this.playedAt),
 		};
 	}

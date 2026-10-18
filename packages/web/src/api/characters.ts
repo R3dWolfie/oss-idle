@@ -50,3 +50,15 @@ export const getCharacterRecent = (id: number | string, page: number | string) =
 			id: String(id), page: String(page), 
 		}, 
 	}));
+export const getCharacterNbRankedMaps = (id: number | string) =>
+	unwrap(rpc.v1.characters[':id'].countrankedmaps.$get({ param: { id: String(id) } }));
+export const getCharacterRankedMaps = (id: number | string, page: number | string) =>
+	unwrap(rpc.v1.characters[':id'].rankedmaps[':page'].$get({
+		param: {
+			id: String(id), page: String(page), 
+		}, 
+	}));
+
+/** Players whose name holds `q`. */
+export const searchPlayers = (q: string) =>
+	unwrap(rpc.v1.characters.search.$get({ query: { q } }));

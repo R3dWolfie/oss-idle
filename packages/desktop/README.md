@@ -27,23 +27,29 @@ focused.
 
 Sign-in runs in the user's **real system browser** (no embedded webview). The
 browser can't hand a cookie or a custom-scheme deep link back to the app (some
-browsers, e.g. Firefox, block the latter outright), so the app **polls** the
-server for the result, keyed by a one-time code it generated:
+browsers, e.g. Firefox, block the latter outright), so the app waits on its own
+loopback (RFC 8252):
 
-1. Renderer calls `window.osuIdleDesktop.login()` → main generates a one-time
-   `poll` code and opens `…/v1/auth/osu/login?client=desktop&poll=<code>` in the
-   system browser. It then polls `POST /v1/auth/osu/desktop/exchange` for that
-   code every ~1.5s (up to 5 min).
-2. osu! → server callback. The `client=desktop` tag and the `poll` code (both
-   carried in the signed CSRF state) make the callback stash the session under
-   the poll code and show a "you can close this tab" page.
-3. The app's next poll redeems the code for the token (HTTPS, single-use), stores
-   it (encrypted, `safeStorage`), and pushes it to every frame.
+1. Renderer calls `window.osuIdleDesktop.login()` → main listens on
+   `127.0.0.1:<random port>` and opens
+   `…/v1/auth/osu/login?client=desktop&port=<port>&key=<random key>` in the system
+   browser (up to 5 min).
+2. osu! → server callback. The port and key (carried in the signed CSRF state) make
+   the callback stash the session under a fresh one-time code and send the browser
+   to `http://127.0.0.1:<port>/callback?code=…&key=…`. Only the machine that
+   signed in receives it, whoever started the login, so a crafted login link
+   can't hand someone's session to its author.
+3. The app checks the key, sends the browser on to the "you can close this tab"
+   page, and redeems the code with `POST /v1/auth/osu/desktop/exchange` (HTTPS,
+   single-use). It stores the token (encrypted, `safeStorage`) and pushes it to
+   every frame.
 4. The bridge fires `onAuthChanged`; the client re-resolves its session and the
    /web iframe re-reads `/auth/me`.
 
 The long-lived token never travels in a URL (only the one-time code does). **No
-new osu! redirect URI is needed** - osu! still calls the same server callback.
+new osu! redirect URI is needed** - osu! still calls the same server callback. An
+app from before the loopback sign-in can't sign in until it takes the update its
+banner offers (see Self-update).
 
 ## Build & run
 

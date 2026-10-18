@@ -68,6 +68,7 @@ import {
 	setNewFirstPlace,
 } from './db/schema/first_place';
 import {
+	beatmapPageIds,
 	reindexCharacter,
 	unindexBeatmap,
 } from './rankings';
@@ -112,6 +113,8 @@ export async function purgeBeatmapScores(beatmapId: number): Promise<void> {
 			plays: count(),
 			score: sum(scores.score),
 			hits: sql<string | null>`sum(${sql.join(nonMiss.map(j => sql`${scores[j]}`), sql` + `)})`,
+			// plays counted at their real duration, as addScoreToTotals does
+			lengths: sql<string | null>`sum(1 / ${scores.rate})`,
 		})
 		.from(scores)
 		.where(eq(scores.beatmapId, beatmapId))
@@ -122,7 +125,7 @@ export async function purgeBeatmapScores(beatmapId: number): Promise<void> {
 		totals.playCount -= row.plays;
 		totals.totalScore -= Number(row.score ?? 0);
 		totals.hits -= Number(row.hits ?? 0);
-		totals.playTime -= row.plays * lengthSec;
+		totals.playTime -= Math.round(Number(row.lengths ?? 0) * lengthSec);
 		const bestRow = await getBestPlay(row.characterId, beatmapId);
 		if (bestRow) removeBestScoreFromTotals(totals, bestRow);
 		await updateCharacterTotals(totals);
@@ -218,6 +221,14 @@ export const checkNewFirstPlace = async (score: ScoreRow) => {
 	// Beating your own #1 is not news.
 	if (best?.characterId === score.characterId) return;
 	await announceFirstPlace(score);
+};
+
+/** Hand a map's #1 to whoever now tops its leaderboard (a restriction lifted or set). */
+export const recomputeFirstPlace = async (beatmapId: number) => {
+	const [top] = await beatmapPageIds(beatmapId, 1);
+	const row = top === undefined ? undefined : await getBestPlay(top, beatmapId);
+	if (row) await setNewFirstPlace(row);
+	else await db.delete(firstPlace).where(eq(firstPlace.beatmapId, beatmapId));
 };
 
 /** Server-announce a new #1 in chat (a "perfect" variant for a max score). */

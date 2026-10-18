@@ -5,8 +5,12 @@ import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { pageTitle } from '../globals';
-import { Trans } from '@lingui/react/macro';
+import {
+	Trans,
+	useLingui,
+} from '@lingui/react/macro';
 import PlayOsuIdle from './PlayOsuIdle';
+import { takeReturnPath } from '../auth';
 
 /** osu! → API → here. The API already set the session cookie; this page just
  * notifies the game (same-origin localStorage ping) and closes the popup. */
@@ -25,13 +29,20 @@ export default function AuthCallback() {
 		// root), now signed in.
 		if (window.opener && window.opener !== window) {
 			window.close();
+			return;
 		}
+		const back = takeReturnPath();
+		if (back) window.location.replace(back);
         
 	}, []);
 
+	const { t } = useLingui();
 	const user = useCurrentUser();
 
-	pageTitle.set(user ? 'Login' : 'one moment...');
+	useEffect(() => {
+		pageTitle.set(user ? t`login` : t`one moment...`);
+		return () => void pageTitle.set('');
+	}, [user, t]);
 
 	return (
 		<main className="page-contents">

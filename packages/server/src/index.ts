@@ -1,3 +1,4 @@
+import { backfillRateStars } from './beatmaps/rateStars';
 import { serve } from '@hono/node-server';
 import { appendFile } from 'node:fs/promises';
 import Logfile from '@osu-idle/shared/helpers/logfile';
@@ -7,7 +8,6 @@ import {
 	port,
 } from './env';
 import { separateStagingMapIds } from './beatmaps/storage';
-import { recoverSkippedDifficulties } from './beatmaps/recover';
 import { redis } from './redis';
 import { sweepDuePlays } from './play';
 import { sweepMatches } from './ws/multiplayer';
@@ -43,11 +43,13 @@ injectWebSocket(server);
 // Staging shares prod's beatmap files: its new maps count from 2e9, prod's from 1e9.
 if (!isProd) void separateStagingMapIds();
 
-void recoverSkippedDifficulties();
 
 // Build the Redis ranking index from MySQL when it is missing or no longer
 // matches it (one cluster worker wins the lock; the rest return immediately).
 void ensureRankings();
+
+// Stars at every rate for the difficulties ingested before rates existed.
+void backfillRateStars();
 
 // Finalise plays whose end time has passed even if no client ever returns to
 // finish them - the server is authoritative. Safe on every worker: the atomic

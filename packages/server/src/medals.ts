@@ -6,12 +6,9 @@ import {
 	gt,
 	inArray,
 	isNull,
-	lte,
 	max,
-	or,
 	sql,
 } from 'drizzle-orm';
-import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core';
 import { ADMIN_USER_IDS } from '@osu-idle/shared/admin';
 import {
 	MEDALS,
@@ -19,10 +16,10 @@ import {
 } from '@osu-idle/shared/achievements/catalogue';
 import { Skills } from '@osu-idle/shared/skills';
 import { maxUpgrades } from '@osu-idle/shared/upgrades';
+import { countCurated } from './beatmaps/curated';
 import { db } from './db/client';
 import { scores } from './db/schema/score';
 import { beatmaps } from './db/schema/beatmap';
-import { beatmapset } from './db/schema/beatmapset';
 import { firstPlace } from './db/schema/first_place';
 import { beatmaps_played } from './db/schema/beatmaps_played';
 import { beatmapRequests } from './db/schema/beatmap_request';
@@ -60,13 +57,16 @@ const FAIL_99 = 0.99;
 const POSSESSION_ID = 1168087;
 const PERFECT_SCORE = 1_000_000;
 
+// the stars a play was actually played at: a rate changes them
+const playedStars = sql`coalesce(${scores.sr}, ${beatmaps.sr})`;
+
 /** Best star rating passed and full-combo'd, and the one-off score feats. */
 const scoreFacts = async (characterId: number) => {
 	const [row] = await db.select({
-		pass: max(sql<number>`floor(${beatmaps.sr})`),
-		fc: max(sql<number>`if(${scores.MISS} = 0, floor(${beatmaps.sr}), null)`),
-		rice: max(sql<number>`${beatmaps.sr} >= 4 and ${beatmaps.rice} > 0.9 * ${beatmaps.objects}`),
-		ln: max(sql<number>`${beatmaps.sr} >= 4 and ${beatmaps.ln} > 0.5 * ${beatmaps.objects}`),
+		pass: max(sql<number>`floor(${playedStars})`),
+		fc: max(sql<number>`if(${scores.MISS} = 0, floor(${playedStars}), null)`),
+		rice: max(sql<number>`${playedStars} >= 4 and ${beatmaps.rice} > 0.9 * ${beatmaps.objects}`),
+		ln: max(sql<number>`${playedStars} >= 4 and ${beatmaps.ln} > 0.5 * ${beatmaps.objects}`),
 		combo727: max(sql<number>`${scores.maxCombo} = 727`),
 		possessed: max(sql<number>`${scores.beatmapId} = ${POSSESSION_ID}
 			and ${scores.score} >= ${PERFECT_SCORE}`),
@@ -100,27 +100,6 @@ const mostReplays = async (characterId: number) => {
 	return Number(row?.n ?? 0);
 };
 
-/** How many maps the account proposed are now ranked. Adri also gets the ranked maps nobody proposed. */
-const curatedQuery = (user: number | AnyMySqlColumn) => db.select({ n: count() })
-	.from(beatmapset)
-	.leftJoin(beatmapRequests, eq(beatmapRequests.setId, beatmapset.osuId))
-	.where(and(
-		or(
-			eq(beatmapRequests.userId, user),
-			and(
-				isNull(beatmapRequests.setId),
-				inArray(sql`${user}`, [...ADMIN_USER_IDS]),
-			),
-		),
-		eq(beatmapset.status, 'ranked'),
-		lte(beatmapset.rankedAt, new Date()),
-	));
-
-const curated = async (userId: number) => {
-	const [row] = await curatedQuery(userId);
-	return row?.n ?? 0;
-};
-
 /** The account rebirthed past this character (the old one keeps the medal too). */
 const rebirthedPast = async (character: CharacterRow) => {
 	const [row] = await db.select({ n: count() })
@@ -143,7 +122,7 @@ const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 		scoreFacts(id),
 		firstPlaces(id),
 		mostReplays(id),
-		curated(character.userId),
+		countCurated(character.userId),
 		getCharacterTotals(id),
 		hasChatted(id),
 		rebirthedPast(character),
@@ -464,6 +443,7 @@ export const progressPage = async (
 		.where(and(
 			eq(characterProgress.line, line),
 			gt(characterProgress.value, 0),
+			isNull(users.restrictedAt),
 			perAccount && eq(characters.id, users.currentCharacter),
 			country === undefined ? undefined : eq(users.country, country),
 			among && inArray(characters.id, among.length ? among : [0]),

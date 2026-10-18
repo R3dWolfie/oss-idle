@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { rateSchema } from './rate.js';
 import { MAX_ACCURACY } from './sim/scoring.js';
 import {
 	Grades,
@@ -28,6 +29,7 @@ export const scoreDTO = z.object({
 	pp: z.number().min(0),
 	ur: z.number().min(0),
 	pfc: z.boolean(),
+	rate: rateSchema,
 	playedAt: z.number().int(), // epoch ms
 });
 export type ScoreDTO = z.infer<typeof scoreDTO>;

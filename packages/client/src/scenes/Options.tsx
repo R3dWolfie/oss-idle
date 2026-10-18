@@ -1,3 +1,4 @@
+import PitchFollowsRate from '../components/options/PitchFollowsRate';
 import {
 	useEffect,
 	useRef,
@@ -193,6 +194,10 @@ export default function Options() {
 						{
 							search: t`volume`,
 							component: () => EffectVolume,
+						},
+						{
+							search: t`pitch|rate|speed|double|half|nightcore|mods`,
+							component: () => PitchFollowsRate,
 						},
 					],
 				},

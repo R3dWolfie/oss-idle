@@ -8,50 +8,57 @@ type Props = {
 	editing: boolean,
 	source: string,
 	onChange: (source: string) => void,
-	/** View mode: an older source to diff against, enabling the "Changes" tab. */
+	/** View mode: an older source to diff against, enabling "View changes". */
 	diffAgainst?: string,
 };
 
+type Shown = 'none' | 'code' | 'diff';
+
 /**
- * The right column shared by every add-on view: an editable editor,
- * a read-only view, or a unified diff with a Code / Changes toggle
- * when a diff is given.
+ * The right column shared by every add-on view: an editable editor, or in view
+ * mode the code / its diff, hidden until asked for since a big add-on is slow
+ * to highlight.
  */
-export default function AddonCodePane({ 
-	editing, 
-	source, 
-	onChange, 
-	diffAgainst, 
+export default function AddonCodePane({
+	editing,
+	source,
+	onChange,
+	diffAgainst,
 }: Props) {
-	const mode = diffAgainst !== undefined ? 'diff' : 'code';
-	const [tab, setTab] = useState<'code' | 'diff'>(mode);
+	const [shown, setShown] = useState<Shown>('none');
+	const toggle = (s: Shown) => setShown(cur => (cur === s ? 'none' : s));
+
+	if (editing) {
+		return (
+			<>
+				<div className='addon-view__codehead'>
+					<span className='addon-view__codelabel'><Trans>Code</Trans></span>
+				</div>
+				<AddonCodeEditor value={source} onChange={onChange} />
+			</>
+		);
+	}
 
 	return (
 		<>
 			<div className='addon-view__codehead'>
-				{diffAgainst !== undefined ? (
-					<>
-						<button 
-							className={`addons__sort-btn ${tab === 'code' ? 'is-active' : ''}`} 
-							onClick={() => setTab('code')}
-						>
-							<Trans>Code</Trans>
-						</button>
-						<button 
-							className={`addons__sort-btn ${tab === 'diff' ? 'is-active' : ''}`} 
-							onClick={() => setTab('diff')}
-						>
-							<Trans>Changes</Trans>
-						</button>
-					</>
-				) : <span className='addon-view__codelabel'><Trans>Code</Trans></span>}
+				<button
+					className={`addons__sort-btn ${shown === 'code' ? 'is-active' : ''}`}
+					onClick={() => toggle('code')}
+				>
+					{shown === 'code' ? <Trans>Hide code</Trans> : <Trans>View code</Trans>}
+				</button>
+				{diffAgainst !== undefined && (
+					<button
+						className={`addons__sort-btn ${shown === 'diff' ? 'is-active' : ''}`}
+						onClick={() => toggle('diff')}
+					>
+						{shown === 'diff' ? <Trans>Hide changes</Trans> : <Trans>View changes</Trans>}
+					</button>
+				)}
 			</div>
-
-			{editing
-				? <AddonCodeEditor value={source} onChange={onChange} />
-				: (tab === 'diff' && diffAgainst !== undefined
-					? <CodeDiff before={diffAgainst} after={source} />
-					: <AddonCodeView source={source} />)}
+			{shown === 'code' && <AddonCodeView source={source} />}
+			{shown === 'diff' && diffAgainst !== undefined && <CodeDiff before={diffAgainst} after={source} />}
 		</>
 	);
 }

@@ -11,11 +11,15 @@ import {
 	type UpgradePurchase,
 } from '@osu-idle/shared/upgrades';
 
+import SkillPerk from './SkillPerk';
+import type { SkillName } from '@osu-idle/shared/skills';
+
 const Arrow = () => <span className="ladder-tip__arrow"> → </span>;
 
 /** What the buy button would do, before it is clicked; how far off it is when
  *  it cannot be bought yet. Levels here are XP levels, the ones upgrades spend. */
 export default function UpgradeTooltip({
+	skill,
 	level,
 	xp,
 	upgrades,
@@ -23,6 +27,7 @@ export default function UpgradeTooltip({
 	minLevel,
 	preview,
 }: {
+	skill: SkillName,
 	level: number,
 	xp: number,
 	upgrades: number,
@@ -43,6 +48,7 @@ export default function UpgradeTooltip({
 			<HoverCardRow label={<Trans>XP boost</Trans>}>
 				x{boost}<Arrow /><span className="ladder-tip__boost">x{nextBoost}</span>
 			</HoverCardRow>
+			<SkillPerk skill={skill} upgrades={upgrades} next={upgrades + 1} />
 		</>;
 	}
 
@@ -58,5 +64,6 @@ export default function UpgradeTooltip({
 		<HoverCardRow label={<Trans>XP boost</Trans>}>
 			x{boost}<Arrow /><span className="ladder-tip__boost">x{nextBoost}</span>
 		</HoverCardRow>
+		<SkillPerk skill={skill} upgrades={upgrades} next={preview.upgrades} />
 	</>;
 }
