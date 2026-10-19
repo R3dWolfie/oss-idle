@@ -7,8 +7,8 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import compareVersions from '@osu-idle/shared/helpers/compareVersions';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import compareVersions from '@oss-idle/shared/helpers/compareVersions';
 import Auth from '../../online/auth';
 import {
 	Addon as InstalledAddon,

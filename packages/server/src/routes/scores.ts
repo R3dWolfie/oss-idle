@@ -9,7 +9,7 @@ import {
 } from 'drizzle-orm';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
-import { betterScore } from '@osu-idle/shared/scoreOrder';
+import { betterScore } from '@oss-idle/shared/scoreOrder';
 import { db } from '../db/client';
 import {
 	scores,

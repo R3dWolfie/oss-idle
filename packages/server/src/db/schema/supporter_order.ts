@@ -28,5 +28,7 @@ export const supporterOrders = mysqlTable('supporter_order', {
 	endsAt: datetime(),
 	// euro cents refunded so far
 	refunded: int().notNull().default(0),
+	// its Abby livre des recettes entry, once booked
+	abbyId: varchar({ length: 64 }),
 	createdAt: timestamp().notNull().defaultNow(),
 });

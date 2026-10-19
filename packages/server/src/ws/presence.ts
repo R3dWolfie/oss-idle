@@ -2,7 +2,7 @@ import {
 	type PresenceEntry,
 	type Status,
 	STATUS,
-} from '@osu-idle/shared/community/presence';
+} from '@oss-idle/shared/community/presence';
 import { redis } from '../redis';
 import { redisKeyPrefix } from '../env';
 import {
@@ -11,8 +11,8 @@ import {
 } from '../db/schema/character';
 import type { UserRow } from '../db/schema/user';
 import { getCharacterTotals } from '../db/schema/character_totals';
-import hitAccuracy from '@osu-idle/shared/osu/hitAccuracy';
-import compareVersions from '@osu-idle/shared/helpers/compareVersions';
+import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
+import compareVersions from '@oss-idle/shared/helpers/compareVersions';
 import { globalRank } from '../rankings';
 import type { GeoResult } from '../geo';
 import { hub } from './hub';

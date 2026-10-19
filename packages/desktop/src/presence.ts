@@ -1,7 +1,7 @@
 import net from 'node:net';
 import { randomUUID } from 'node:crypto';
 // eslint-disable-next-line @stylistic/max-len
-import type { DesktopPresence } from '@osu-idle/shared/desktop' with { 'resolution-mode': 'import' };
+import type { DesktopPresence } from '@oss-idle/shared/desktop' with { 'resolution-mode': 'import' };
 import {
 	DISCORD_CLIENT_ID,
 	DISCORD_LARGE_IMAGE,

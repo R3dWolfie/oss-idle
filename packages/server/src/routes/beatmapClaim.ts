@@ -10,7 +10,7 @@ import {
 	ne,
 } from 'drizzle-orm';
 import { z } from 'zod';
-import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
+import { INTRO_SET_ID } from '@oss-idle/shared/beatmap';
 import { db } from '../db/client';
 import {
 	beatmapClaims,

@@ -17,6 +17,8 @@ type Props = {
 	onClose: () => void;
 	/** osu!'s "1. Abort", "2. Cancel": the number is added here, never translated */
 	numbered?: boolean;
+	/** between the header and the buttons, e.g. a list to pick from */
+	children?: React.ReactNode;
 };
 
 /**
@@ -24,7 +26,9 @@ type Props = {
  * full-width coloured buttons centred on the screen. Purely presentational -
  * the caller owns what the options do (and must close the menu itself).
  */
-export default function ContextMenu({ title, sub, header, options, onClose, numbered }: Props) {
+export default function ContextMenu({
+	title, sub, header, options, onClose, numbered, children,
+}: Props) {
 	return (
 		<div className="ctxmenu" onClick={onClose}>
 			<div className="ctxmenu__header">
@@ -33,6 +37,7 @@ export default function ContextMenu({ title, sub, header, options, onClose, numb
 					{sub && <div className="ctxmenu__sub">{sub}</div>}
 				</>}
 			</div>
+			{children}
 			<div className="ctxmenu__options">
 				{options.map((o, i) => (
 					<button

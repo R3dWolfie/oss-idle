@@ -1,5 +1,5 @@
-import type { SkinStatus } from '@osu-idle/shared/skin';
-import Synced from '@osu-idle/shared/helpers/synced';
+import type { SkinStatus } from '@oss-idle/shared/skin';
+import Synced from '@oss-idle/shared/helpers/synced';
 import {
 	boolean,
 	DAO,
@@ -11,7 +11,7 @@ import Skin, {
 	currentSkin,
 	currentSkinDAO,
 } from '../../osu/skin/Skin';
-import Log from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
 import {
 	ph,
 	t,

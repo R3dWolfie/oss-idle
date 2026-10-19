@@ -2,9 +2,9 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
-import type { MatchSlot } from '@osu-idle/shared/multiplayer';
-import { rateLabel } from '@osu-idle/shared/rate';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
+import type { MatchSlot } from '@oss-idle/shared/multiplayer';
+import { rateLabel } from '@oss-idle/shared/rate';
 
 /** What a seat reads: Open, Locked, or the player and their state. */
 export default function SlotLabel({ slot, player }: {

@@ -10,6 +10,7 @@ import type { AddressInfo } from 'node:net';
 import { randomUUID } from 'node:crypto';
 import {
 	API_BASE,
+	DESKTOP_SCHEME,
 	IS_DEV,
 	SITE_BASE,
 } from './config';
@@ -26,7 +27,7 @@ import { broadcast } from './frames';
  */
 
 const LOGIN_TIMEOUT_MS = 5 * 60_000;
-const SIGNED_IN_PAGE = `${IS_DEV ? 'http://localhost:5173' : SITE_BASE}/web/auth/desktop`;
+const SIGNED_IN_PAGE = `${IS_DEV ? 'http://localhost:5173' : SITE_BASE}/web/auth/desktop?scheme=${DESKTOP_SCHEME}`;
 
 let token: string | null = null;
 // The in-flight login's listener: a newer login closes it.
@@ -68,7 +69,7 @@ function setToken(next: string | null): void {
 	persist();
 	// push to every frame (top + the /web iframe) so each bridge - and its API
 	// client - switches identity.
-	broadcast('osu-idle:auth-token', token);
+	broadcast('oss-idle:auth-token', token);
 }
 
 /** Swap the one-time code for the session token. */

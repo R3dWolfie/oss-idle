@@ -8,7 +8,7 @@ import {
 } from 'node:fs';
 import { extname } from 'node:path';
 import AdmZip from 'adm-zip';
-import '@osu-idle/shared/osu/controlPointPatch';
+import '@oss-idle/shared/osu/controlPointPatch';
 import { BeatmapDecoder } from 'osu-parsers';
 import type {
 	Beatmap,
@@ -16,7 +16,7 @@ import type {
 } from 'osu-classes';
 import { ManiaRuleset } from 'osu-mania-stable';
 import * as rosu from 'rosu-pp-js';
-import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
+import { INTRO_SET_ID } from '@oss-idle/shared/beatmap';
 import {
 	and,
 	eq,

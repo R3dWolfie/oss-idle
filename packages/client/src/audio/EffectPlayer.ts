@@ -1,7 +1,7 @@
-import Log from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
 import { audioContext } from './audioContext';
 import { SETTINGS } from '../db/settings';
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import { unwrapWav } from './wav';
 
 export type PlayOptions = {
@@ -172,7 +172,7 @@ export class EffectPlayer {
 
 // HMR reuse instance (mirrors MusicPlayer) so hot reloads don't leak contexts
  
-const globalStore = globalThis as unknown as { __osuIdleEffects?: EffectPlayer };
+const globalStore = globalThis as unknown as { __ossIdleEffects?: EffectPlayer };
  
-export const effects: EffectPlayer = globalStore.__osuIdleEffects ?? new EffectPlayer();
-globalStore.__osuIdleEffects = effects;
+export const effects: EffectPlayer = globalStore.__ossIdleEffects ?? new EffectPlayer();
+globalStore.__ossIdleEffects = effects;

@@ -7,14 +7,25 @@ import {
 	clientMessage,
 	serverMessage,
 	chatLineDTO,
-} from '@osu-idle/shared/community/wire';
-import { presenceEntryDTO } from '@osu-idle/shared/community/presence';
-import { Skills } from '@osu-idle/shared/skills';
+	knowsLegacyChannel,
+} from '@oss-idle/shared/community/wire';
+import { presenceEntryDTO } from '@oss-idle/shared/community/presence';
+import { Skills } from '@oss-idle/shared/skills';
 import {
 	firstPlaceMessage,
 	isSkillLevelMilestone,
 	skillLevelMessage,
-} from '@osu-idle/shared/community/announcements';
+} from '@oss-idle/shared/community/announcements';
+
+describe('clients from before the rename', () => {
+	it('know the default channel by its old name up to 1.0.1.0', () => {
+		expect(knowsLegacyChannel('1.0.1.0')).toBe(true);
+		expect(knowsLegacyChannel('1.0.0.2')).toBe(true);
+		expect(knowsLegacyChannel('0.19.1')).toBe(true);
+		expect(knowsLegacyChannel('1.0.1.1')).toBe(false);
+		expect(knowsLegacyChannel('1.1.0.0')).toBe(false);
+	});
+});
 
 describe('community wire contract', () => {
 	it('round-trips a presence entry', () => {
@@ -64,7 +75,7 @@ describe('community wire contract', () => {
 
 	it('parses each client message variant and rejects bad ones', () => {
 		expect(clientMessage.safeParse({
-			type: 'chat', channel: '#osu!idle', text: 'hi',
+			type: 'chat', channel: '#oss!idle', text: 'hi',
 		}).success).toBe(true);
 		expect(clientMessage.safeParse({
 			type: 'status', status: 'afk',
@@ -75,7 +86,7 @@ describe('community wire contract', () => {
 		}).success).toBe(false);
 		// empty chat text is rejected
 		expect(clientMessage.safeParse({
-			type: 'chat', channel: '#osu!idle', text: '',
+			type: 'chat', channel: '#oss!idle', text: '',
 		}).success).toBe(false);
 	});
 
@@ -110,7 +121,7 @@ describe('community wire contract', () => {
 			line: {
 				id: 'm1',
 				kind: 'player' as const,
-				channel: '#osu!idle',
+				channel: '#oss!idle',
 				from: {
 					characterId: 3, userId: 30, name: 'someone', color: '#fa81c6',
 				},
@@ -154,7 +165,7 @@ describe('community wire contract', () => {
 		const line = {
 			id: 'm2',
 			kind: 'system' as const,
-			channel: '#osu!idle',
+			channel: '#oss!idle',
 			color: '#fa81c6',
 			text: 'someone achieved rank #1 on Artist - Title [Hard]',
 			at: 1_700_000_000_000,

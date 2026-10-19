@@ -1,5 +1,5 @@
 import { SETTINGS } from '../db/settings';
-import { desktop } from '@osu-idle/shared/desktop';
+import { desktop } from '@oss-idle/shared/desktop';
 
 /**
  * Enter/leave fullscreen to match the setting.

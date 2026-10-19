@@ -4,8 +4,8 @@ import {
 	useState,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { unlocksForGeneration } from '@osu-idle/shared/rebirth';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { unlocksForGeneration } from '@oss-idle/shared/rebirth';
 import Entities from '../../entity/entities';
 import type Character from '../../db/schema/character';
 import {

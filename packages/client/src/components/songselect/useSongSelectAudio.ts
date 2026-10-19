@@ -1,4 +1,4 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import LightBeatmap from '../../osu/beatmap/LightBeatmap';
 import {
 	music,

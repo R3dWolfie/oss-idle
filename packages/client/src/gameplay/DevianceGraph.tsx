@@ -2,9 +2,9 @@ import {
 	useEffect,
 	useRef,
 } from 'react';
-import type { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
+import type { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
 import { drawDevianceGraph } from './hitError';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { currentSkin } from '../osu/skin/Skin';
 
 /**

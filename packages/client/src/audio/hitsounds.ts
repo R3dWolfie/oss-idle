@@ -4,6 +4,8 @@ import type { SampleEvent } from '../osu/beatmap/storyboard';
 import {
 	currentSkin,
 	HITSOUND,
+	type Hitsound,
+	Hitsounds,
 } from '../osu/skin/Skin';
 
 /**
@@ -17,10 +19,15 @@ import {
  * slot in here by resolving the right default key(s) per note from the beatmap.
  */
 
-/** Decode the default skin's hitsounds so they can be played with no latency. */
-export function preloadDefaultHitsounds(): Promise<void> {
-	return effects.preload(currentSkin.get().data.hitSounds);
+const hitsoundKey = (sound: Hitsound) => currentSkin.get().data.hitSounds[sound];
+
+/** Decode the current skin's hitsounds, keyed by URL so a skin change never reuses
+ *  the previous skin's buffers. */
+async function preloadHitsounds(): Promise<void> {
+	await Promise.all(Hitsounds.map(sound => effects.load(hitsoundKey(sound), hitsoundKey(sound))));
 }
+
+void currentSkin.sync(preloadHitsounds);
 
 /**
  * Decode a set's sample blobs (keysounds / storyboard samples) into the effects
@@ -42,7 +49,7 @@ export async function preloadSamples(
 
 /** Play the hitsound(s) for a landed hit, now. */
 export function playHitsound(): void {
-	effects.play(currentSkin.get().data.hitSounds[HITSOUND.NORMAL]);
+	effects.play(hitsoundKey(HITSOUND.NORMAL));
 }
 
 /**
@@ -54,7 +61,7 @@ export function playHitsound(): void {
  */
 export function scheduleHitsound(songMs: number, nowMs: number): void {
 	if (songMs < nowMs) return;
-	effects.play(HITSOUND.NORMAL, { atMs: effects.now() + (songMs - nowMs) });
+	effects.play(hitsoundKey(HITSOUND.NORMAL), { atMs: effects.now() + (songMs - nowMs) });
 }
 
 /** Drop every hitsound already queued on the audio clock. Called when a play ends

@@ -17,7 +17,7 @@ import DocsGuide from './DocsGuide';
 import DocsEndpoint from './DocsEndpoint';
 import DocsObject from './DocsObject';
 
-const LANGUAGE_KEY = 'osu-idle:docs-language';
+const LANGUAGE_KEY = 'oss-idle:docs-language';
 
 const TOC: TocItem[] = [
 	{

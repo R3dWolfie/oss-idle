@@ -7,8 +7,8 @@ import {
 } from 'react';
 import Auth from '../online/auth';
 import Account from '../online/account';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 import {
 	Trans,
 	useLingui,

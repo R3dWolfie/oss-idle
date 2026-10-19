@@ -13,12 +13,12 @@ import {
 	computeHpMultiplier,
 	maxHpIncrease,
 	type HpObject,
-} from '@osu-idle/shared/sim/scoring';
+} from '@oss-idle/shared/sim/scoring';
 import {
 	JUDGEMENT,
 	GRADE,
 	type Judgement,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 
 /** Build a finished {@link ScoreState} by feeding `[judgement, count]` runs in order. */
 function play(hp:number, od: number, maxObjects: number, runs: [Judgement, number][]): ScoreState {

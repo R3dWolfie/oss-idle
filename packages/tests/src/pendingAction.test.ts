@@ -3,12 +3,12 @@ import {
 	it,
 	expect,
 } from 'vitest';
-import { pendingActionDTO } from '@osu-idle/shared/pendingAction';
-import { characterDTO } from '@osu-idle/shared/character';
+import { pendingActionDTO } from '@oss-idle/shared/pendingAction';
+import { characterDTO } from '@oss-idle/shared/character';
 import {
 	Skills,
 	SKILL,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 
 const character = () => ({
 	id: 1,

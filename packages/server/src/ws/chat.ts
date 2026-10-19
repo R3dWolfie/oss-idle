@@ -1,10 +1,16 @@
 import {
 	ANNOUNCE_CHANNEL,
 	DEFAULT_CHANNEL,
+	LEGACY_DEFAULT_CHANNEL,
 	MAX_CHAT_LENGTH,
 	type ChatLine,
-} from '@osu-idle/shared/community/wire';
-import { isAdmin } from '@osu-idle/shared/admin';
+} from '@oss-idle/shared/community/wire';
+import {
+	type Group,
+	GROUP_BADGE,
+	isAdmin,
+} from '@oss-idle/shared/groups';
+import { groupsOf } from '../groups';
 import { isSupporter } from '../supporter';
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
@@ -14,9 +20,10 @@ import { db } from '../db/client';
 import { characters } from '../db/schema/character';
 import { isRestricted } from '../db/schema/user';
 import { hub } from './hub';
-import { LOBBY_CHANNEL } from '@osu-idle/shared/multiplayer';
+import { LOBBY_CHANNEL } from '@oss-idle/shared/multiplayer';
 import { channelMembers } from './multiplayer';
 import { pushMedals } from '../medals';
+import { rollMax } from '@oss-idle/shared/community/roll';
 
 /**
  * The chat relay + its moderation surface. Messages fan out over the socket and
@@ -51,10 +58,13 @@ const BAN_KEY = `${redisKeyPrefix}chat:banned`;
 const CHATTED_KEY = `${redisKeyPrefix}chat:chatted`;
 const timeoutKey = (userId: number): string => `${redisKeyPrefix}chat:timeout:${userId}`;
 
-/** Chat username colours, osu!stable's: pale yellow for players, strong yellow for supporters. Admins purple. */
+/** Chat username colours, osu!stable's: pale yellow for players, strong yellow for supporters, red
+ *  for the GMT (green on the web, like osu!). Admins keep their purple. */
 export const PLAYER_NAME_COLOR = '#feefb0';
 export const SUPPORTER_NAME_COLOR = '#fddf43';
-export const ADMIN_NAME_COLOR = '#b06cff';
+const GROUP_NAME_COLOR: Record<Group, string> = {
+	admin: GROUP_BADGE.admin.colour, gmt: '#ff4040',
+};
 /** MakiseBot, our BanchoBot, speaks in pink. */
 export const BOT_COLOR = '#ff66aa';
 /** `/announce` renders the whole line in this attention-grabbing red. */
@@ -63,7 +73,8 @@ const ANNOUNCE_COLOR = '#ff6b6b';
 const DELETED_TEXT = '<deleted>';
 
 export const nameColor = async (userId: number): Promise<string> => {
-	if (isAdmin(userId)) return ADMIN_NAME_COLOR;
+	const [group] = await groupsOf(userId);
+	if (group) return GROUP_NAME_COLOR[group];
 	return await isSupporter(userId) ? SUPPORTER_NAME_COLOR : PLAYER_NAME_COLOR;
 };
 
@@ -163,6 +174,7 @@ export const handleChat = async (
 ): Promise<void> => {
 	const trimmed = text.trim();
 	if (!trimmed) return;
+	if (channel === LEGACY_DEFAULT_CHANNEL) channel = DEFAULT_CHANNEL;
 
 	// a match's channel reaches its players only
 	const members = await channelMembers(channel);
@@ -173,7 +185,7 @@ export const handleChat = async (
 		return;
 	}
 
-	if ((channel === ANNOUNCE_CHANNEL && !isAdmin(userId)) || await isMuted(userId)) {
+	if ((channel === ANNOUNCE_CHANNEL && !isAdmin(await groupsOf(userId))) || await isMuted(userId)) {
 		hub.sendTo(from.characterId, {
 			type: 'error', message: 'You cannot post to chat right now.',
 		});
@@ -202,6 +214,25 @@ export const handleChat = async (
 	void redis.sadd(CHATTED_KEY, String(from.characterId))
 		.then(added => added ? pushMedals(from.characterId) : undefined)
 		.catch(e => console.error('[chat] medals failed for', from.characterId, e));
+	relay(line, members);
+
+	const max = rollMax(trimmed);
+	if (max === undefined) return;
+	const roll: ChatLine = {
+		id: randomUUID(),
+		kind: 'system',
+		channel,
+		name: 'MakiseBot',
+		color: BOT_COLOR,
+		text: `${from.name} rolls ${Math.floor(Math.random() * max) + 1} point(s)`,
+		at: Date.now(),
+	};
+	await store(channel, roll);
+	relay(roll, members);
+};
+
+/** Send a line to a match's players, or everyone. */
+const relay = (line: ChatLine, members: number[] | undefined): void => {
 	if (members) {
 		for (const id of members) {
 			hub.sendTo(id, {

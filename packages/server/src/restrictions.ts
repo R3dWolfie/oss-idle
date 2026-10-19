@@ -27,6 +27,37 @@ import {
 	cancelSubscriptions,
 	idOf,
 } from './stripe';
+import { accountHistory } from './db/schema/account_history';
+import {
+	moderationOf,
+	setBanned,
+	timeoutUser,
+	untimeoutUser,
+} from './ws/chat';
+import type {
+	Sanction,
+	Standing,
+} from '@oss-idle/shared/standing';
+import { alias } from 'drizzle-orm/mysql-core';
+
+const log = (userId: number, action: Sanction, reason: string, seconds: number, actorId: number) =>
+	db.insert(accountHistory).values({
+		userId, action, reason: reason.slice(0, 255), seconds, actorId,
+	});
+
+/** osu!'s silence: no chat or private messages for `seconds`, or until lifted with 0. */
+export const silence = async (
+	userId: number, seconds: number, reason: string, actorId: number,
+): Promise<void> => {
+	if (seconds) await timeoutUser(userId, seconds);
+	else await setBanned(userId, true);
+	await log(userId, 'silence', reason, seconds, actorId);
+};
+
+export const unsilence = async (userId: number): Promise<void> => {
+	await untimeoutUser(userId);
+	await setBanned(userId, false);
+};
 
 const characterIds = async (userId: number) => (await db
 	.select({ id: characters.id })
@@ -34,14 +65,15 @@ const characterIds = async (userId: number) => (await db
 	.where(eq(characters.userId, userId))).map(c => c.id);
 
 /** osu!'s restricted mode: the account can't play or chat, and drops off every ranking,
- *  leaderboard, #1 and the online list until an admin lifts it. */
-export const restrict = async (userId: number, reason: string): Promise<void> => {
+ *  leaderboard, #1 and the online list until a moderator lifts it. `actorId` 0 is the server. */
+export const restrict = async (userId: number, reason: string, actorId = 0): Promise<void> => {
 	const [{ affectedRows }] = await db.update(users)
 		.set({
 			restrictedAt: new Date(), restrictedReason: reason.slice(0, 255),
 		})
 		.where(and(eq(users.id, userId), isNull(users.restrictedAt)));
 	if (!affectedRows) return;
+	await log(userId, 'restriction', reason, 0, actorId);
 
 	const ids = await characterIds(userId);
 	for (const id of ids) {
@@ -75,6 +107,44 @@ export const unrestrict = async (userId: number): Promise<void> => {
 		.from(best)
 		.where(inArray(best.characterId, ids));
 	for (const { beatmapId } of maps) await recomputeFirstPlace(beatmapId);
+};
+
+const actor = alias(users, 'actor');
+const actorCharacter = alias(characters, 'actor_character');
+
+/** osu-web's Account Standing: the sanctions in force and every past one, newest first. The
+ *  moderators' names are for the team only. */
+export const standing = async (userId: number, withActors: boolean): Promise<Standing> => {
+	const [user] = await db
+		.select({ restrictedAt: users.restrictedAt })
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+	const chat = await moderationOf(userId);
+	const rows = await db
+		.select({
+			id: accountHistory.id,
+			action: accountHistory.action,
+			reason: accountHistory.reason,
+			seconds: accountHistory.seconds,
+			at: accountHistory.createdAt,
+			actor: actorCharacter.name,
+		})
+		.from(accountHistory)
+		.leftJoin(actor, eq(actor.id, accountHistory.actorId))
+		.leftJoin(actorCharacter, eq(actorCharacter.id, actor.currentCharacter))
+		.where(eq(accountHistory.userId, userId))
+		.orderBy(desc(accountHistory.createdAt), desc(accountHistory.id));
+	return {
+		silencedUntil: chat.timeoutUntil,
+		silenced: chat.banned,
+		restricted: Boolean(user?.restrictedAt),
+		history: rows.map(({ at, actor, ...row }) => ({
+			...row,
+			at: at.getTime(),
+			...withActors && actor ? { actor } : {},
+		})),
+	};
 };
 
 /** The restricted accounts, newest first, for the admin page. */

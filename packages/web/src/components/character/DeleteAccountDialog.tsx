@@ -5,7 +5,7 @@ import { useLingui } from '@lingui/react/macro';
 import { ph } from '@lingui/core/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import { getUser } from '../../api/users';
 import { deleteAccount } from '../../api/accounts';
 

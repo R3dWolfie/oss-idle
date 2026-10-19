@@ -4,6 +4,14 @@ import initSqlJs, {
 	type SqlValue,
 } from 'sql.js';
 import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url';
+import {
+	LEGACY_SAVE_DB,
+	SAVE_DB,
+	SAVE_KEY,
+	SAVE_STORE,
+	openSave,
+	readSave,
+} from '@oss-idle/shared/save';
 import { migrate } from './migrations';
 // import { debugMode } from '../globals';
 
@@ -271,39 +279,10 @@ export const table = <C extends Columns>(
 // blob after every write and restored on boot. None of this needs touching
 // when tables are added - new schemas register themselves via table().
 
-const IDB_NAME = 'osu-idle';
-const IDB_STORE = 'kv';
-const DB_KEY = 'data.sqlite';
-
-function idb(): Promise<IDBDatabase> {
-	return new Promise((resolve, reject) => {
-		const req = indexedDB.open(IDB_NAME, 1);
-		req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
-		req.onsuccess = () => resolve(req.result);
-		req.onerror = () => reject(req.error);
-	});
-}
-
-async function idbLoad(): Promise<Uint8Array | null> {
-	try {
-		const store = (await idb())
-			.transaction(IDB_STORE, 'readonly')
-			.objectStore(IDB_STORE);
-
-		return await new Promise((resolve, reject) => {
-			const req = store.get(DB_KEY);
-			req.onsuccess = () => resolve((req.result as Uint8Array) ?? null);
-			req.onerror = () => reject(req.error);
-		});
-	} catch {
-		return null;
-	}
-}
-
 // resolves on commit, not on the put's success: a reload in between drops it
 async function idbSave(bytes: Uint8Array): Promise<void> {
-	const tx = (await idb()).transaction(IDB_STORE, 'readwrite');
-	tx.objectStore(IDB_STORE).put(bytes, DB_KEY);
+	const tx = (await openSave(SAVE_DB, true)).transaction(SAVE_STORE, 'readwrite');
+	tx.objectStore(SAVE_STORE).put(bytes, SAVE_KEY);
 	await new Promise<void>((resolve, reject) => {
 		tx.oncomplete = () => resolve();
 		tx.onerror = tx.onabort = () => reject(tx.error);
@@ -415,7 +394,9 @@ let connection: Promise<Database> | undefined;
 
 async function connect(): Promise<Database> {
 	const SQL = await initSqlJs({ locateFile: () => wasmUrl });
-	const saved = await idbLoad();
+	const current = await readSave(SAVE_DB);
+	const legacy = current ? undefined : await readSave(LEGACY_SAVE_DB);
+	const saved = current ?? legacy;
 	const db = saved ? new SQL.Database(saved) : new SQL.Database();
 	try {
 		for (const t of registry) db.run(t.ddl());
@@ -424,6 +405,10 @@ async function connect(): Promise<Database> {
 		console.error(e);
 		if (migrate(db)) await idbSave(db.export());
 		for (const t of registry) db.run(t.ddl());
+	}
+	if (legacy) {
+		await idbSave(db.export());
+		indexedDB.deleteDatabase(LEGACY_SAVE_DB);
 	}
 	// if (debugMode.get()) {
 	(window as any).db = DB;

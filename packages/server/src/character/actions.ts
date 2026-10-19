@@ -25,17 +25,17 @@ import {
 	canUpgrade,
 	maxUpgrades,
 	type UpgradeState,
-} from '@osu-idle/shared/upgrades';
-import { xpGivesLevel } from '@osu-idle/shared/sim/skills/xp';
+} from '@oss-idle/shared/upgrades';
+import { xpGivesLevel } from '@oss-idle/shared/sim/skills/xp';
 import {
 	SKILL,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import {
 	assertNameAvailable,
 	displacedName,
 } from './names';
-import type { PendingAction } from '@osu-idle/shared/pendingAction';
+import type { PendingAction } from '@oss-idle/shared/pendingAction';
 
 /**
  * The three progression loops, as plain functions on a character row.

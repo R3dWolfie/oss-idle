@@ -5,7 +5,7 @@ import {
 } from '../../api/maps';
 import NominationDiffs from './NominationDiffs';
 import { phaseOf } from './nominationStatus';
-import { osuSetUrl } from '@osu-idle/shared/beatmap';
+import { osuSetUrl } from '@oss-idle/shared/beatmap';
 
 /** ISO timestamp -> value for an <input type="datetime-local"> (local time). */
 const toLocalInput = (iso: string | null): string => {

@@ -5,14 +5,16 @@ import { Addon } from '../db/schema/addon';
  * Add-on runtime. Add-ons are unsandboxed userscripts: we run them by turning
  * their source into an ES module (via a Blob URL) and importing it in the page
  * realm, so they have full window/DOM access. The *only* contract is the two
- * exports `mount` / `unmount` - no API is handed to them.
+ * exports `mount` / `unmount`; `mount` gets the add-on's own metadata.
  *
  * A live add-on's `unmount` is held here so enabling/disabling, updating, or
  * uninstalling can tear it down cleanly without a page reload.
  */
 
+type AddonMeta = Pick<Addon, 'id' | 'name' | 'version' | 'gameVersion' | 'authorId' | 'authorName'>;
+
 type AddonModule = {
-	mount?: () => void,
+	mount?: (addon: AddonMeta) => void,
 	unmount?: () => void,
 };
 
@@ -35,15 +37,15 @@ const load = async (source: string): Promise<AddonModule> => {
 };
 
 /** Run an add-on's source: import, call `mount`, and remember its `unmount`. */
-const mount = async (
-	id: number,
-	name: string, 
-	source: string,
-): Promise<void> => {
+const mount = async ({
+	id, name, version, gameVersion, authorId, authorName, source,
+}: Addon): Promise<void> => {
 	if (live.has(id)) return;
 	try {
 		const mod = await load(source);
-		mod.mount?.();
+		mod.mount?.({
+			id, name, version, gameVersion, authorId, authorName,
+		});
 		live.set(id, mod.unmount ?? (() => {}));
 	} catch (e) {
 		console.error(`Add-on "${name}" failed to load`, e);
@@ -66,7 +68,7 @@ const unmount = (id: number, name: string): void => {
 /** Enable an installed add-on: persist the flag and mount it. */
 export const enableAddon = async (addon: Addon): Promise<void> => {
 	await addon.setEnabled(true);
-	await mount(addon.id, addon.name, addon.source);
+	await mount(addon);
 };
 
 /** Disable an installed add-on: persist the flag and unmount it. */
@@ -84,7 +86,7 @@ export const uninstallAddon = async (addon: Addon): Promise<void> => {
 /** Swap a running add-on's source after an update: unmount old, mount new. */
 export const remountAddon = async (addon: Addon): Promise<void> => {
 	unmount(addon.id, addon.name);
-	if (addon.enabled) await mount(addon.id, addon.name, addon.source);
+	if (addon.enabled) await mount(addon);
 };
 
 /** On boot, mount every enabled installed add-on. */
@@ -93,6 +95,6 @@ export const bootAddons = async (): Promise<void> => {
 	await Promise.all(
 		installed
 			.filter(a => a.enabled)
-			.map(a => mount(a.id, a.name, a.source)),
+			.map(mount),
 	);
 };

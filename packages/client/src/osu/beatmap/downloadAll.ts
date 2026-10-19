@@ -1,4 +1,4 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import BeatmapAPI, { type Metadata } from './beatmap_api';
 import BeatmapStore from './beatmap_store';
 

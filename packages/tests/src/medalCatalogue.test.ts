@@ -6,12 +6,12 @@ import { i18n } from '@lingui/core';
 import {
 	MEDAL_LINES,
 	MEDALS,
-} from '@osu-idle/shared/achievements/catalogue';
-import { GLYPHS } from '@osu-idle/shared/achievements/glyphs';
+} from '@oss-idle/shared/achievements/catalogue';
+import { GLYPHS } from '@oss-idle/shared/achievements/glyphs';
 import {
 	medalDescription,
 	medalName,
-} from '@osu-idle/shared/display/medals';
+} from '@oss-idle/shared/display/medals';
 
 i18n.loadAndActivate({
 	locale: 'en', messages: {},

@@ -1,6 +1,8 @@
 import Link from './components/Link';
-import OutLink from './components/OutLink';
-import { useAdmin } from './hooks/useAdmin';
+import {
+	useAdmin,
+	useModerator,
+} from './hooks/useAdmin';
 import { SKILL_SORT } from './components/leaderboard/PlayerSkillLeaderboard';
 import { useLingui } from '@lingui/react/macro';
 
@@ -16,6 +18,7 @@ type Props = {
 export default function HeaderLinks({ open, onNavigate, showSub }: Props) {
 	const { t } = useLingui();
 	const admin = useAdmin();
+	const moderator = useModerator();
 
 	return (
 		<div
@@ -26,8 +29,8 @@ export default function HeaderLinks({ open, onNavigate, showSub }: Props) {
 				<Link to='/' className="topbar__link-anchor"><span>{t`home`}</span></Link>
 				<div className='topbar__sub'>
 					<Link to='/news' className="topbar__sublink"><span>{t`news`}</span></Link>
-					<OutLink href='https://osu.ppy.sh' target='_blank' className="topbar__sublink"><span>{t`play osu!`}</span></OutLink>
-					<Link to='/download' className="topbar__sublink"><span>{t`play osu!idle`}</span></Link>
+					<Link to='/changelog' className="topbar__sublink"><span>{t`changelog`}</span></Link>
+					<Link to='/download' className="topbar__sublink"><span>{t`play oss!idle`}</span></Link>
 				</div>
 			</div>
 
@@ -72,9 +75,11 @@ export default function HeaderLinks({ open, onNavigate, showSub }: Props) {
 				</div>
 			</div>
 
-			{admin && (
+			{moderator && (
 				<div className="topbar__link regular">
-					<Link to='/admin' className="topbar__link-anchor"><span>{t`admin`}</span></Link>
+					<Link to={admin ? '/admin' : '/admin/chat'} className="topbar__link-anchor">
+						<span>{t`admin`}</span>
+					</Link>
 				</div>
 			)}
 		</div>

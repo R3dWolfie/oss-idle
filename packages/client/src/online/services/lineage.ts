@@ -1,5 +1,5 @@
-import type { CharacterDTO } from '@osu-idle/shared/character';
-import Log from '@osu-idle/shared/helpers/log';
+import type { CharacterDTO } from '@oss-idle/shared/character';
+import Log from '@oss-idle/shared/helpers/log';
 import { rpc } from '../client';
 import Account from '../account';
 import Entities from '../../entity/entities';

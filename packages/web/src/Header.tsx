@@ -16,7 +16,7 @@ import { useLingui } from '@lingui/react/macro';
 import HeaderLinks from './HeaderLinks';
 import HeaderPlayfields from './components/HeaderPlayfields';
 import UserMenu from './UserMenu';
-import { DISCORD_URL } from '@osu-idle/shared/links';
+import { DISCORD_URL } from '@oss-idle/shared/links';
 
 export default function Header() {
 	const { t } = useLingui();

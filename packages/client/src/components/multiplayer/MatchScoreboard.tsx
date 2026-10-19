@@ -3,7 +3,7 @@ import {
 	useRef,
 	type CSSProperties,
 } from 'react';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { scoreboardEdge } from './scoreboardEdge';
 import Multiplayer from '../../online/multiplayer';
 import Entities from '../../entity/entities';

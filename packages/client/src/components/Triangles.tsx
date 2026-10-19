@@ -2,7 +2,7 @@ import {
 	useEffect,
 	useRef,
 } from 'react';
-import type { Parallax } from '@osu-idle/shared/hooks/useParallax';
+import type { Parallax } from '@oss-idle/shared/hooks/useParallax';
 
 interface Triangle {
 	x: number // 0..1 horizontal position

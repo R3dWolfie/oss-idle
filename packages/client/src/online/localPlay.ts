@@ -1,15 +1,15 @@
 import { Beatmap } from 'osu-classes';
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import {
 	LEAD_IN_MS,
 	ManiaGame,
 	type ReplayOffset,
-} from '@osu-idle/shared/sim/maniaGame';
-import CharacterBot, { type SkillProgress } from '@osu-idle/shared/sim/bots/character';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
-import Memory from '@osu-idle/shared/sim/skills/memory';
-import { hasUnlock } from '@osu-idle/shared/rebirth';
-import type { Grade } from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/sim/maniaGame';
+import CharacterBot, { type SkillProgress } from '@oss-idle/shared/sim/bots/character';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
+import Memory from '@oss-idle/shared/sim/skills/memory';
+import { hasUnlock } from '@oss-idle/shared/rebirth';
+import type { Grade } from '@oss-idle/shared/judgement';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import Character from '../db/schema/character';
 import { Score } from '../db/schema/score';

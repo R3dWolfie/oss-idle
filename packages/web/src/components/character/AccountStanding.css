@@ -1,0 +1,26 @@
+.account-standing__alert {
+	margin-bottom: 10px;
+	padding: 10px 15px;
+	border-radius: 6px;
+	background: hsl(var(--hsl-red-3));
+	color: #fff;
+	font-weight: 700;
+}
+
+.account-standing__table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.account-standing__table th {
+	padding: 6px 8px;
+	color: hsl(var(--hsl-c2));
+	font-weight: 600;
+	text-align: left;
+}
+
+.account-standing__table td {
+	padding: 6px 8px;
+	border-top: 1px solid hsla(var(--hsl-c2), 0.15);
+}

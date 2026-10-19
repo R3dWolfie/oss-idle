@@ -8,12 +8,12 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	matchPlayers,
 	type Match,
-} from '@osu-idle/shared/multiplayer';
+} from '@oss-idle/shared/multiplayer';
 import Background from './Background';
 import SceneManager, { SCENE } from './SceneManager';
 import Controls from '../input/Controls';

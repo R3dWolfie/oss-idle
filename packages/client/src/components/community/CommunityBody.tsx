@@ -1,6 +1,6 @@
 import './CommunityBody.css';
 import { useLingui } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Account from '../../online/account';
 import Socket from '../../online/socket';
 import { friends } from '../../online/friends';

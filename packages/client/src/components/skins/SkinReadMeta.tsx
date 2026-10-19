@@ -1,6 +1,6 @@
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { SkinCreateBody } from '@osu-idle/shared/skin';
+import { SkinCreateBody } from '@oss-idle/shared/skin';
 import { Skin } from '../../online/skins';
 import SkinIcon from './SkinIcon';
 

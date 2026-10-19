@@ -1,6 +1,6 @@
 import './Tabs.css';
-import Synced from '@osu-idle/shared/helpers/synced';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import Synced from '@oss-idle/shared/helpers/synced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import {
 	useEffect,
 	type ReactNode,
@@ -9,7 +9,8 @@ import {
 export type Tab<Id extends string = string> = {
 	id: Id,
 	label: ReactNode,
-	className?: 'special',
+	/** `read`: a chat tab with nothing new, drawn dark */
+	className?: 'special' | 'read',
 	render: () => ReactNode,
 	onClick?: () => void,
 };

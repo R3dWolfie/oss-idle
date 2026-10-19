@@ -15,14 +15,14 @@
  * reported and left alone - run `fix:overall` first, which is what puts the
  * totals back in step with the levels.
  *
- *   npm -w @osu-idle/server run relevel:prod -- --dry-run
+ *   npm -w @oss-idle/server run relevel:prod -- --dry-run
  */
 import { eq } from 'drizzle-orm';
-import { xpGivesLevel } from '@osu-idle/shared/sim/skills/xp';
+import { xpGivesLevel } from '@oss-idle/shared/sim/skills/xp';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import { db } from './client';
 import { characters } from './schema/character';
 import { reindexCharacter } from '../rankings';

@@ -13,7 +13,7 @@ import {
 	oauthClientUpdateBody,
 	parseScopes,
 	type Scope,
-} from '@osu-idle/shared/oauth';
+} from '@oss-idle/shared/oauth';
 import { db } from '../db/client';
 import {
 	oauthClients,

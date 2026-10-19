@@ -17,8 +17,8 @@ import DashboardCharacter from '../components/DashboardCharacter';
 import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import FancyGraph from '../components/FancyGraph';
-import num from '@osu-idle/shared/display/num';
-import { dateAgo } from '@osu-idle/shared/display/ago';
+import num from '@oss-idle/shared/display/num';
+import { dateAgo } from '@oss-idle/shared/display/ago';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { Trans } from '@lingui/react/macro';
@@ -68,7 +68,7 @@ export default function Home({ articles, stats, recent, recentMaps }: {
 				<div className='dashboard__buttons'>
 					<DashboardCharacter />
 					<HomeButton to='/download' icon={faDownload} hue={274}>
-						<Trans>download osu!idle</Trans>
+						<Trans>download oss!idle</Trans>
 					</HomeButton>
 					<HomeButton to='/store' icon={faHeart} hue={340}>
 						<Trans>support the game</Trans>

@@ -1,10 +1,10 @@
 import './Announce.css';
 import type { CSSProperties } from 'react';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import { getLatest } from '../online/services/news';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { SETTINGS } from '../db/settings';
-import { NEWS_TAGS } from '@osu-idle/shared/news';
+import { NEWS_TAGS } from '@oss-idle/shared/news';
 import { BASE_URL } from '../online/client';
 import { updateStatus } from '../online/desktopUpdate';
 import { useLingui } from '@lingui/react/macro';

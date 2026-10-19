@@ -1,7 +1,7 @@
 import RatedVersion from '../RatedVersion';
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import accuracy from '@osu-idle/shared/display/accuracy';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import accuracy from '@oss-idle/shared/display/accuracy';
 import PlayManager from '../../online/playManager';
 import PlayQueue from '../../gameplay/playQueue';
 import { currentSkin } from '../../osu/skin/Skin';

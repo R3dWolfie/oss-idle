@@ -1,19 +1,19 @@
 import { ph } from '@lingui/core/macro';
 import './ScoreTooltip.css';
 import { createPortal } from 'react-dom';
-import { ScoreDTO } from '@osu-idle/shared/score';
+import { ScoreDTO } from '@oss-idle/shared/score';
 import { Trans } from '@lingui/react/macro';
 import {
 	JUDGEMENT,
 	Judgement,
 	Judgements,
-} from '@osu-idle/shared/judgement';
-import { showsDivine } from '@osu-idle/shared/rebirth';
-import accuracyText from '@osu-idle/shared/display/accuracy';
+} from '@oss-idle/shared/judgement';
+import { showsDivine } from '@oss-idle/shared/rebirth';
+import accuracyText from '@oss-idle/shared/display/accuracy';
 import { currentSkin } from '../../osu/skin/Skin';
 import { Score } from '../../db/schema/score';
-import { dateAgo } from '@osu-idle/shared/display/ago';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import { dateAgo } from '@oss-idle/shared/display/ago';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 interface Props {
 	score: Score | ScoreDTO,

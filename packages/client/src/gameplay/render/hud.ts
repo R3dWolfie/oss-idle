@@ -1,12 +1,12 @@
-import Reading from '@osu-idle/shared/sim/skills/reading';
-import Speed from '@osu-idle/shared/sim/skills/speed';
-import num from '@osu-idle/shared/display/num';
+import Reading from '@oss-idle/shared/sim/skills/reading';
+import Speed from '@oss-idle/shared/sim/skills/speed';
+import num from '@oss-idle/shared/display/num';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
-import { type Grade } from '@osu-idle/shared/judgement';
-import { MAX_HP } from '@osu-idle/shared/sim/scoring';
+} from '@oss-idle/shared/skills';
+import { type Grade } from '@oss-idle/shared/judgement';
+import { MAX_HP } from '@oss-idle/shared/sim/scoring';
 import { drawHpBar } from '../hpBar';
 import { drawHitErrorBar } from '../hitError';
 import {

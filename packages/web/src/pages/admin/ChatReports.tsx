@@ -3,7 +3,7 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import type { ReportReason } from '@osu-idle/shared/social';
+import type { ReportReason } from '@oss-idle/shared/social';
 import Link from '../../components/Link';
 import {
 	getReports,

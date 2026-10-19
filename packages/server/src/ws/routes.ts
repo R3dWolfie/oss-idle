@@ -6,8 +6,8 @@ import {
 	createNodeWebSocket,
 	type NodeWebSocket,
 } from '@hono/node-ws';
-import { clientMessage } from '@osu-idle/shared/community/wire';
-import { VERSION } from '@osu-idle/shared/version';
+import { clientMessage } from '@oss-idle/shared/community/wire';
+import { VERSION } from '@oss-idle/shared/version';
 import { eq } from 'drizzle-orm';
 import { db } from '../db/client';
 import {
@@ -28,11 +28,13 @@ import { verifySession } from '../auth/jwt';
 import {
 	clientIp,
 	geoLookup,
+	type GeoResult,
 	validTimezone,
 } from '../geo';
 import type { WSContext } from 'hono/ws';
 import { hub } from './hub';
 import {
+	areOnline,
 	join,
 	leave,
 	presenceSnapshot,
@@ -91,6 +93,30 @@ const resolveCharacter = async (
 	} : undefined;
 };
 
+/** Put a character on the roster. join() resets status to idle, so a live play
+ *  is restored as `playing`. */
+const enter = async (character: CharacterRow, user: UserRow, geo: GeoResult): Promise<void> => {
+	await join({
+		character, user, geo,
+	});
+	const live = await livePlayPresence(character.id);
+	if (live) await update(character.id, live);
+};
+
+/** Refresh a connection's last-seen. The roster entry is per character, so
+ *  another of its sockets closing - elsewhere in the cluster too - takes it away
+ *  from this one; put it back. */
+const heartbeat = async (characterId: number, userId: number, geo: GeoResult): Promise<void> => {
+	void touchActive(userId);
+	const [listed] = await areOnline([characterId]);
+	if (listed) {
+		await touch(characterId);
+		return;
+	}
+	const now = await resolveCharacter(userId);
+	if (now && !now.user.restrictedAt) await enter(now.character, now.user, geo);
+};
+
 /**
  * Mount the community WebSocket at `/v1/ws`. Returns `injectWebSocket`, which the
  * server entrypoint attaches to the Node http server. Not part of `AppType` - the
@@ -147,13 +173,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 				feed = new PlayFeed(() => bound(ws), ws);
 				scores = new MatchFeed(() => bound(ws), ws);
 				// join() broadcasts our entry; the snapshot below already includes it.
-				await join({
-					character, user, geo,
-				});
-				// join() resets status to idle; restore `playing` if mid-play so a
-				// reconnect during gameplay doesn't show the player as idle.
-				const live = await livePlayPresence(character.id);
-				if (live) await update(character.id, live);
+				await enter(character, user, geo);
 				hub.sendLocal(ws, {
 					type: 'presence:init', entries: await presenceSnapshot(),
 				});
@@ -178,10 +198,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 					});
 				}
 				void touchActive(userId);
-				beat = setInterval(() => {
-					void touch(bound(ws));
-					void touchActive(userId);
-				}, TOUCH_MS);
+				beat = setInterval(() => void heartbeat(bound(ws), userId, geo), TOUCH_MS);
 			},
 			onMessage: async (evt, ws) => {
 				if (typeof evt.data !== 'string') return;
@@ -238,6 +255,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 					const id = bound(ws);
 					if (!(await isPlaying(id))) await update(id, { status: msg.status });
 				} else if (msg.type === 'version') {
+					hub.noteVersion(ws, msg.version);
 					await recordAdoption(bound(ws), msg.version, msg.platform);
 				}
 			},
@@ -248,7 +266,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 				// read before the remove, which is what forgets where it belonged
 				const id = bound(ws);
 				hub.remove(ws);
-				void leave(id);
+				if (!hub.isLocal(id)) void leave(id);
 			},
 		};
 	}));

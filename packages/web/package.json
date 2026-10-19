@@ -1,7 +1,7 @@
 {
-  "name": "@osu-idle/web",
+  "name": "@oss-idle/web",
   "private": true,
-  "version": "1.0.1.0",
+  "version": "1.0.2.0",
   "type": "module",
   "description": "osu!web-style site served at /web, browsable in-game",
   "scripts": {
@@ -18,8 +18,8 @@
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
     "@lingui/react": "^5.9.5",
-    "@osu-idle/server": "*",
-    "@osu-idle/shared": "*",
+    "@oss-idle/server": "*",
+    "@oss-idle/shared": "*",
     "@tanstack/react-router": "^1.170.16",
     "@tanstack/zod-adapter": "^1.167.0",
     "d3-shape": "^3.2.0",

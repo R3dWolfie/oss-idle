@@ -36,7 +36,22 @@ import {
 	setPresence,
 } from './presence';
 // eslint-disable-next-line @stylistic/max-len
-import type { DesktopPresence } from '@osu-idle/shared/desktop' with { 'resolution-mode': 'import' };
+import type { DesktopPresence } from '@oss-idle/shared/desktop' with { 'resolution-mode': 'import' };
+
+// The data folder was named after the package before the rename to oss!idle. It
+// holds the save and the session, so it moves over once, before anything opens it.
+const USER_DATA = path.join(app.getPath('appData'), 'oss!idle');
+const LEGACY_USER_DATA = path.join(app.getPath('appData'), '@osu-idle', 'desktop');
+if (!fs.existsSync(USER_DATA) && fs.existsSync(LEGACY_USER_DATA)) {
+	try {
+		fs.renameSync(LEGACY_USER_DATA, USER_DATA);
+		fs.rmdirSync(path.dirname(LEGACY_USER_DATA));
+	} catch (e) {
+		console.error('[userData] move from the old folder failed', e);
+	}
+}
+const stillLegacy = !fs.existsSync(USER_DATA) && fs.existsSync(LEGACY_USER_DATA);
+app.setPath('userData', stillLegacy ? LEGACY_USER_DATA : USER_DATA);
 
 // Privileges must be declared before the app is ready.
 registerAppSchemePrivileges();
@@ -88,14 +103,31 @@ function createWindow(): void {
 	void mainWindow.loadURL(RENDERER_URL);
 	if (IS_DEV) mainWindow.webContents.openDevTools({ mode: 'detach' });
 	mainWindow.on('closed', () => { mainWindow = null; });
+	mainWindow.webContents.on('did-finish-load', () => {
+		if (!pendingDeepLink) return;
+		mainWindow?.webContents.send('oss-idle:deep-link', pendingDeepLink);
+		pendingDeepLink = undefined;
+	});
 	// mirror native fullscreen changes (F11 / OS) back to the renderer so the
 	// in-game setting stays truthful.
 	mainWindow.on('enter-full-screen', 
-		() => mainWindow?.webContents.send('osu-idle:fullscreen', true),
+		() => mainWindow?.webContents.send('oss-idle:fullscreen', true),
 	);
 	mainWindow.on('leave-full-screen', 
-		() => mainWindow?.webContents.send('osu-idle:fullscreen', false),
+		() => mainWindow?.webContents.send('oss-idle:fullscreen', false),
 	);
+}
+
+/** A link that came before the game could take it (cold start), sent once it loads. */
+let pendingDeepLink: string | undefined;
+
+function sendDeepLink(link: string): void {
+	const contents = mainWindow?.webContents;
+	if (!contents || contents.isLoading()) {
+		pendingDeepLink = link;
+		return;
+	}
+	contents.send('oss-idle:deep-link', link);
 }
 
 function focusWindow(): void {
@@ -104,7 +136,7 @@ function focusWindow(): void {
 	mainWindow.focus();
 }
 
-/** A deep link (`osu-idle://...`) sitting in a process argv list, if any. */
+/** A deep link (`oss-idle://...`) sitting in a process argv list, if any. */
 function deepLinkFromArgv(argv: string[]): string | undefined {
 	return argv.find(arg => arg.startsWith(`${DESKTOP_SCHEME}://`));
 }
@@ -127,14 +159,14 @@ if (!app.requestSingleInstanceLock()) {
 } else {
 	app.on('second-instance', (_event, argv) => {
 		const link = deepLinkFromArgv(argv);
-		if (link) handleDeepLink(link);
+		if (link) handleDeepLink(link, sendDeepLink);
 		focusWindow();
 	});
 
 	// macOS delivers the deep link through this event rather than argv.
 	app.on('open-url', (event, url) => {
 		event.preventDefault();
-		handleDeepLink(url);
+		handleDeepLink(url, sendDeepLink);
 		focusWindow();
 	});
 
@@ -145,30 +177,30 @@ if (!app.requestSingleInstanceLock()) {
 
 		// Bridge IPC. `bootstrap` is synchronous so the preload can seed the token
 		// before the renderer's first API call (no signed-out flash on launch).
-		ipcMain.on('osu-idle:bootstrap', event => {
+		ipcMain.on('oss-idle:bootstrap', event => {
 			event.returnValue = {
 				token: getToken(), version: app.getVersion(), uncapped,
 			};
 		});
-		ipcMain.handle('osu-idle:login', () => startLogin());
-		ipcMain.handle('osu-idle:logout', () => { logout(); });
-		ipcMain.on('osu-idle:set-fullscreen', (_event, on: boolean) => mainWindow?.setFullScreen(!!on));
-		ipcMain.on('osu-idle:quit', () => app.quit());
-		ipcMain.on('osu-idle:set-uncapped', (_event, on: boolean) => {
+		ipcMain.handle('oss-idle:login', () => startLogin());
+		ipcMain.handle('oss-idle:logout', () => { logout(); });
+		ipcMain.on('oss-idle:set-fullscreen', (_event, on: boolean) => mainWindow?.setFullScreen(!!on));
+		ipcMain.on('oss-idle:quit', () => app.quit());
+		ipcMain.on('oss-idle:set-uncapped', (_event, on: boolean) => {
 			if (on) fs.writeFileSync(UNCAPPED_FLAG, '');
 			else fs.rmSync(UNCAPPED_FLAG, { force: true });
 		});
 
 		// Self-update IPC. install ends the app, so it's fire-and-forget (send).
 		initUpdater();
-		ipcMain.handle('osu-idle:update-check', () => checkForUpdate());
-		ipcMain.handle('osu-idle:update-download', () => downloadUpdate());
-		ipcMain.on('osu-idle:update-install', () => installUpdate());
+		ipcMain.handle('oss-idle:update-check', () => checkForUpdate());
+		ipcMain.handle('oss-idle:update-download', () => downloadUpdate());
+		ipcMain.on('oss-idle:update-install', () => installUpdate());
 
 		// Discord Rich Presence. The renderer pushes scene/map changes; the client
 		// is self-healing, so this is fire-and-forget too.
 		initPresence();
-		ipcMain.on('osu-idle:presence', 
+		ipcMain.on('oss-idle:presence', 
 			(_event, presence: DesktopPresence | null) => setPresence(presence),
 		);
 
@@ -194,7 +226,7 @@ if (!app.requestSingleInstanceLock()) {
 		// A deep link passed on first launch (cold start via the protocol) rides in
 		// this process's argv on Windows/Linux.
 		const initial = deepLinkFromArgv(process.argv);
-		if (initial) handleDeepLink(initial);
+		if (initial) handleDeepLink(initial, sendDeepLink);
 
 		app.on('activate', () => {
 			if (BrowserWindow.getAllWindows().length === 0) createWindow();

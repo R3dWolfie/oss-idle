@@ -8,7 +8,7 @@ import { scores } from '../db/schema/score';
 import { max } from 'drizzle-orm';
 import { characters } from '../db/schema/character';
 import { getStats } from '../stats';
-import { VERSION } from '@osu-idle/shared/version';
+import { VERSION } from '@oss-idle/shared/version';
 import { requireAdmin } from '../auth/admin';
 import {
 	adoptionBreakdown,

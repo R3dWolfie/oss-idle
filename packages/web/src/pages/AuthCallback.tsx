@@ -9,7 +9,7 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import PlayOsuIdle from './PlayOsuIdle';
+import PlayOssIdle from './PlayOssIdle';
 import { takeReturnPath } from '../auth';
 
 /** osu! → API → here. The API already set the session cookie; this page just
@@ -18,7 +18,7 @@ export default function AuthCallback() {
 	const navigate = useNavigate();
 	useEffect(() => {
 		try {
-			localStorage.setItem('osu-idle:auth', String(Date.now()));
+			localStorage.setItem('oss-idle:auth', String(Date.now()));
 		} catch {
 			void navigate({ to: '/auth/error' });
 			return;
@@ -50,7 +50,7 @@ export default function AuthCallback() {
 				{user && (<>
 					<h1 className='center'><Trans>Hello {ph({ username: user.username })}!</Trans></h1>
                     
-					<PlayOsuIdle />
+					<PlayOssIdle />
 				</>)}
 			</div>
 		</main>

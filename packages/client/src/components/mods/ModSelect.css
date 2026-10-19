@@ -150,3 +150,46 @@
 	cursor: not-allowed;
 	opacity: 0.25;
 }
+
+/* phones: osu!'s sizes would leave the tiles off screen */
+@media (max-width: 850px), (max-height: 500px) {
+	.mod-select {
+		align-items: flex-start;
+		padding: 16px 0;
+		overflow-y: auto;
+	}
+	.mod-select__panel {
+		gap: 14px;
+		margin: auto 0;
+	}
+	.mod-select__intro {
+		font-size: 1rem;
+	}
+	.mod-select__multiplier {
+		font-size: 1.6rem;
+	}
+	.mod-select__row {
+		grid-template-columns: minmax(0, 1fr) auto;
+		column-gap: 12px;
+		min-height: 0;
+		padding-bottom: 36px;
+	}
+	.mod-select__heading {
+		font-size: 1.4rem;
+		white-space: normal;
+	}
+}
+
+/* landscape phones: the two rows side by side */
+@media (max-height: 500px) {
+	.mod-select__panel {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		column-gap: 32px;
+	}
+	.mod-select__intro,
+	.mod-select__multiplier,
+	.mod-select__panel > .ctxmenu__options {
+		grid-column: 1 / -1;
+	}
+}

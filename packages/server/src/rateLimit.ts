@@ -38,12 +38,15 @@ export const rateLimit = (
 	await next();
 });
 
-/** At most `perDay` requests a day per signed-in account (behind requireAuth or requireActive). */
+/** At most `perDay` successful requests a day per signed-in account (behind requireAuth or requireActive). */
 export const dailyLimit = (name: string, perDay: number) =>
 	createMiddleware<{ Variables: { userId: number } }>(async (c, next) => {
 		const key = `${redisKeyPrefix}daily:${name}:${c.get('userId')}:${Math.floor(Date.now() / 86_400_000)}`;
+		if (Number(await redis.get(key)) >= perDay) {
+			return c.json({ error: `You can only do this ${perDay} times a day` }, 429);
+		}
+		await next();
+		if (!c.res.ok) return;
 		const count = await redis.incr(key);
 		if (count === 1) await redis.expire(key, 86_400);
-		if (count > perDay) return c.json({ error: `You can only do this ${perDay} times a day` }, 429);
-		await next();
 	});

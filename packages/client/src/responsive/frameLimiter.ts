@@ -1,4 +1,4 @@
-import { desktop } from '@osu-idle/shared/desktop';
+import { desktop } from '@oss-idle/shared/desktop';
 import {
 	type FrameLimit,
 	SETTINGS,

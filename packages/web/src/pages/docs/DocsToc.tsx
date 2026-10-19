@@ -35,7 +35,7 @@ export default function DocsToc({ items, active, language, onLanguage, onGo }: {
 	</li>;
 
 	return <>
-		<img className='docs-toc__logo' src={Asset('/idle-white.png')} alt='osu!idle' />
+		<img className='docs-toc__logo' src={Asset('/idle-white.png')} alt='oss!idle' />
 		<div className='docs-toc__languages'>
 			{LANGUAGES.map(l => <button
 				key={l}
@@ -59,7 +59,7 @@ export default function DocsToc({ items, active, language, onLanguage, onGo }: {
 			</Fragment>)}
 		</ul>
 		<ul className='docs-toc__footer'>
-			<li><Link to='/'>osu!idle</Link></li>
+			<li><Link to='/'>oss!idle</Link></li>
 			<li><Link to='/settings'>OAuth applications</Link></li>
 			<li><Link to='/legal/api'>API Terms of Use</Link></li>
 		</ul>

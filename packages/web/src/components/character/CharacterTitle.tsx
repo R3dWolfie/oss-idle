@@ -1,17 +1,21 @@
 import { Trans } from '@lingui/react/macro';
-import { medalName } from '@osu-idle/shared/display/medals';
+import { medalName } from '@oss-idle/shared/display/medals';
 import Link from '../Link';
 
-/** The medal name a character wears as its title; its owner's line leads to the settings. */
-export default function CharacterTitle({ title, editable }: {
+/** The medal name a character wears as its title, in its group's colour like osu!web; its owner's
+ *  line leads to the settings. */
+export default function CharacterTitle({ title, editable, colour }: {
 	title?: string;
 	editable: boolean;
+	colour?: string;
 }) {
 	const text = title ? medalName(title) : <Trans>no title</Trans>;
+	const style = title && colour ? { color: colour } : undefined;
 	if (editable) {
-		return <Link to='/settings' className={`character__meta-title ${title ? '' : 'is-empty'}`}>
+		const className = `character__meta-title ${title ? '' : 'is-empty'}`;
+		return <Link to='/settings' className={className} style={style}>
 			{text}
 		</Link>;
 	}
-	return title ? <div className='character__meta-title'>{text}</div> : null;
+	return title ? <div className='character__meta-title' style={style}>{text}</div> : null;
 }

@@ -1,15 +1,15 @@
-import { betterScore } from '@osu-idle/shared/scoreOrder';
+import { betterScore } from '@oss-idle/shared/scoreOrder';
 import {
 	count,
 	eq,
 	sql,
 	sum,
 } from 'drizzle-orm';
-import { type SkillName } from '@osu-idle/shared/skills';
+import { type SkillName } from '@oss-idle/shared/skills';
 import {
 	JUDGEMENT,
 	Judgements,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 import { db } from './db/client';
 import {
 	characters,
@@ -21,15 +21,15 @@ import {
 	getBeatmapById,
 } from './db/schema/beatmap';
 import { announce } from './ws/chat';
-import { ANNOUNCE_CHANNEL } from '@osu-idle/shared/community/wire';
+import { ANNOUNCE_CHANNEL } from '@oss-idle/shared/community/wire';
 import {
 	billionsMessage,
 	firstPlaceMessage,
 	isSkillLevelMilestone,
 	ppsMessage,
 	skillLevelMessage,
-} from '@osu-idle/shared/community/announcements';
-import { skillName } from '@osu-idle/shared/display/skills';
+} from '@oss-idle/shared/community/announcements';
+import { skillName } from '@oss-idle/shared/display/skills';
 import {
 	getSkillMilestones,
 	setSkillMilestone,
@@ -72,8 +72,8 @@ import {
 	reindexCharacter,
 	unindexBeatmap,
 } from './rankings';
-import Overall from '@osu-idle/shared/sim/skills/overall';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
+import Overall from '@oss-idle/shared/sim/skills/overall';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
 
 /** Recompute only the character's pp: the weighted (0.95^i) sum of its per-map
  *  best pp, read straight from the `best_pp` table (one row per beatmap). Leaves

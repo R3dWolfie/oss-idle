@@ -1,9 +1,9 @@
 import {
 	MedalCategories,
 	MEDALS,
-} from '@osu-idle/shared/achievements/catalogue';
-import { MEDAL_XP_BONUS } from '@osu-idle/shared/upgrades';
-import { medalTierName } from '@osu-idle/shared/display/medals';
+} from '@oss-idle/shared/achievements/catalogue';
+import { MEDAL_XP_BONUS } from '@oss-idle/shared/upgrades';
+import { medalTierName } from '@oss-idle/shared/display/medals';
 import MedalBadge from '../components/medals/MedalBadge';
 import { medalSamples } from './medalSamples';
 import '../components/medals/medals.css';

@@ -1,5 +1,5 @@
-appId: net.rhythmgamers.osuidle
-productName: osu!idle
+appId: net.rhythmgamers.ossidle
+productName: oss!idle
 
 electronVersion: 33.2.0
 
@@ -8,17 +8,17 @@ directories:
   buildResources: build
 
 # Stable, version-less names so the download URL never changes (productName has a
-# "!" and a space, so we can't use it). Each deploy overwrites osu-idle.exe /
-# osu-idle.AppImage + latest*.yml; electron-updater carries the version inside the
+# "!" and a space, so we can't use it). Each deploy overwrites oss-idle.exe /
+# oss-idle.AppImage + latest*.yml; electron-updater carries the version inside the
 # feed, so a fixed filename is exactly what "always download the latest" wants.
-artifactName: osu-idle.${ext}
+artifactName: oss-idle.${ext}
 
 # Self-update feed: electron-builder writes latest*.yml next to the installers and
 # bundles app-update.yml so electron-updater reads from here with no extra setup.
 # The deploy copies the installers + latest*.yml into the dir served at this URL.
 publish:
   provider: generic
-  url: https://osu.idle.rhythmgamers.net/download/
+  url: https://oss.idle.rhythmgamers.net/download/
 
 # Our versions carry a `-buildNNNN` prerelease tag (4-segment MAJOR.MINOR.PATCH.BUILD
 # → semver). Don't infer a per-build update channel from it, or every build would
@@ -53,15 +53,20 @@ extraResources:
 
 # Custom scheme the OS routes back to the running app (app-directed deep links).
 protocols:
-  - name: osu!idle
+  - name: oss!idle
     schemes:
-      - osu-idle
+      - oss-idle
 
 mac:
   category: public.app-category.games
   target:
     - dmg
     - zip
+
+# The Windows install was keyed by the old appId (net.rhythmgamers.osuidle): keep its
+# GUID so updates replace that install instead of adding a second one.
+nsis:
+  guid: 8d51b8dd-5d30-50fd-b4ba-dc081d7af03d
 
 # App icon (path is relative to this package). A single square PNG - electron-
 # builder generates the Windows .ico and the Linux icon set from it.

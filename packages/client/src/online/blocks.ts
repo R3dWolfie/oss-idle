@@ -1,9 +1,9 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import { rpc } from './client';
 import Auth from './auth';
 import { isCommunityOpen } from '../globals';
 
-/** The accounts the signed-in player blocked: their #osu!idle lines show as
+/** The accounts the signed-in player blocked: their #oss!idle lines show as
  *  `<block>`. Blocking happens on the web profile, so it's re-read whenever
  *  the overlay opens. */
 export const blocked = new Synced<ReadonlySet<number>>(new Set());

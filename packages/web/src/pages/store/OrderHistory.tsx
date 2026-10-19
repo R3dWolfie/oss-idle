@@ -3,7 +3,7 @@ import {
 	useLingui,
 } from '@lingui/react/macro';
 import { ph } from '@lingui/core/macro';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import Link from '../../components/Link';
 import { getOrders } from '../../api/store';
 import { useCurrentUser } from '../../hooks/useCurrentUser';

@@ -1,6 +1,6 @@
 import { InferResponseType } from 'hono/client';
 import { rpc } from '../client';
-import MemCache from '@osu-idle/shared/storage/memcache';
+import MemCache from '@oss-idle/shared/storage/memcache';
 import Character from '../../db/schema/character';
 import { Score } from '../../db/schema/score';
 

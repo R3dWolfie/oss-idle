@@ -30,6 +30,28 @@ describe('timeStretch', () => {
 		});
 	}
 
+	for (const rate of [0.5, 0.75, 1.5]) {
+		it(`keeps x${rate} on time, so hitsounds land with the music`, () => {
+			// clicks over a quiet tone: pure silence leaves nothing to line up on
+			const input = tone(220, 20).map(v => v * 0.05);
+			const clicks: number[] = [];
+			for (let ms = 1000; ms < 19000; ms += 500) {
+				const at = Math.round(ms * RATE / 1000);
+				for (let k = 0; k < 40; k++) input[at + k] = 1 - k / 40;
+				clicks.push(ms / rate);
+			}
+			const [out] = timeStretch([input], RATE, rate);
+			const errors = clicks.flatMap((ms) => {
+				const from = Math.round((ms - 100) * RATE / 1000);
+				const window = Array.from(out.subarray(from, from + RATE / 5), Math.abs);
+				const peak = Math.max(...window);
+				return peak > 0.5 ? [(from + window.indexOf(peak)) * 1000 / RATE - ms] : [];
+			});
+			const mean = errors.reduce((a, b) => a + b, 0) / errors.length;
+			expect(Math.abs(mean)).toBeLessThan(10);
+		});
+	}
+
 	it('keeps channels apart', () => {
 		const [left, right] = timeStretch([tone(440, 2), tone(660, 2)], RATE, 1.5);
 		expect(pitchOf(left)).toBeCloseTo(440, -1);

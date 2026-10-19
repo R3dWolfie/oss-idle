@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { msg } from '@lingui/core/macro';
-import { GoodGrade } from '@osu-idle/shared/judgement';
+import { GoodGrade } from '@oss-idle/shared/judgement';
 import {
 	getCountryGradesRanking,
 	getGradesRanking,

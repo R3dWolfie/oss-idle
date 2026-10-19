@@ -4,7 +4,7 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { openPage } from '../globals';
 import Entities from '../entity/entities';
 import Page from '../components/page/Page';

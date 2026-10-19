@@ -1,5 +1,5 @@
-import '@osu-idle/shared/osu/controlPointPatch';
-import Synced from '@osu-idle/shared/helpers/synced';
+import '@oss-idle/shared/osu/controlPointPatch';
+import Synced from '@oss-idle/shared/helpers/synced';
 import { Unzipped } from 'fflate';
 import {
 	Manifest,

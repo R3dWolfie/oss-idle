@@ -2,13 +2,13 @@ import './PlayerLeaderboard.css';
 import { useCurrentCharacter } from '../../hooks/useCurrentCharacter';
 import Link from '../Link';
 import Pager from './Pager';
-import int from '@osu-idle/shared/math/int';
+import int from '@oss-idle/shared/math/int';
 import type { getGlobalRanking } from '../../api/rankings';
 import Flag from '../Flag';
-import rank from '@osu-idle/shared/display/rank';
-import num from '@osu-idle/shared/display/num';
-import hitAccuracy from '@osu-idle/shared/osu/hitAccuracy';
-import accuracy from '@osu-idle/shared/display/accuracy';
+import rank from '@oss-idle/shared/display/rank';
+import num from '@oss-idle/shared/display/num';
+import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
+import accuracy from '@oss-idle/shared/display/accuracy';
 import {
 	Trans,
 	useLingui,

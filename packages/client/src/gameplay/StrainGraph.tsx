@@ -2,10 +2,10 @@ import {
 	useEffect,
 	useRef,
 } from 'react';
-import type { HitRecord } from '@osu-idle/shared/sim/maniaGame';
+import type { HitRecord } from '@oss-idle/shared/sim/maniaGame';
 import { drawDevianceGraph } from './hitError';
-import { HitWindows } from '@osu-idle/shared/sim/scoring';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import { HitWindows } from '@oss-idle/shared/sim/scoring';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { currentSkin } from '../osu/skin/Skin';
 
 interface Props {

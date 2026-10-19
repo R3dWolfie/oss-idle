@@ -1,10 +1,10 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import {
 	allowedRate,
 	RATE_STEP,
-} from '@osu-idle/shared/rate';
-import { SKILL } from '@osu-idle/shared/skills';
-import type Skill from '@osu-idle/shared/sim/skills/skill';
+} from '@oss-idle/shared/rate';
+import { SKILL } from '@oss-idle/shared/skills';
+import type Skill from '@oss-idle/shared/sim/skills/skill';
 import { SETTINGS } from '../db/settings';
 import Entities from '../entity/entities';
 import type Character from '../db/schema/character';

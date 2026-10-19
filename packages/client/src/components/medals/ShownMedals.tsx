@@ -1,4 +1,4 @@
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { shownMedals } from '../../online/medalWatch';
 import MedalUnlockOverlay from './MedalUnlockOverlay';
 

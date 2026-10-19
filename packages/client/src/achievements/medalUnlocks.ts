@@ -1,12 +1,12 @@
 import {
 	medalById,
 	medalLook,
-} from '@osu-idle/shared/achievements/catalogue';
-import type { MedalLook } from '@osu-idle/shared/achievements/medal';
+} from '@oss-idle/shared/achievements/catalogue';
+import type { MedalLook } from '@oss-idle/shared/achievements/medal';
 import {
 	medalDescription,
 	medalName,
-} from '@osu-idle/shared/display/medals';
+} from '@oss-idle/shared/display/medals';
 
 export type MedalUnlock = {
 	id: string,

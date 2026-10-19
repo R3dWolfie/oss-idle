@@ -40,7 +40,7 @@ const TEST_USERS = {
 };
 
 // the dev server's Redis keys (redisKeyPrefix in packages/server/src/env.ts)
-const REDIS_PREFIX = 'osu-idle:dev:';
+const REDIS_PREFIX = 'oss-idle:dev:';
 
 /** Drop the plays and match seats an earlier test left behind: a client would
  *  load straight into spectating the play, or back into the match. */

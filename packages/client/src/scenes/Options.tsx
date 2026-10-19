@@ -4,13 +4,13 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import './Options.css';
 import { isOptionsOpen } from '../globals';
 import {
 	mapped,
 	ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
+} from '@oss-idle/shared/helpers/mapped';
 import SignIn from '../components/options/SignIn';
 import PmFromAnyone from '../components/options/PmFromAnyone';
 import LinkDiscord from '../components/options/LinkDiscord';
@@ -360,7 +360,7 @@ export default function Options() {
 				<div className='options__scroll' ref={scrollRef} onScroll={onScroll}>
 					<div className='options__heading'><Trans>Options</Trans></div>
 					<div className='options__subheading'>
-						<Trans>Change the way osu!idle behaves</Trans>
+						<Trans>Change the way oss!idle behaves</Trans>
 					</div>
 
 					<label className='options__search'>

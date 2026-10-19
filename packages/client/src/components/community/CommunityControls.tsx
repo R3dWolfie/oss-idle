@@ -1,6 +1,10 @@
 import './CommunityControls.css';
+import {
+	useEffect,
+	useRef,
+} from 'react';
 import { useLingui } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { isCommunityOpen } from '../../globals';
 import CommunityToggle from './CommunityToggle';
 import {
@@ -21,6 +25,20 @@ export default function CommunityControls() {
 	const [open] = useSynced(isCommunityOpen);
 	const [chat] = useSynced(showChat);
 	const [unread] = useSynced(chatUnread);
+	const ref = useRef<HTMLDivElement>(null);
+
+	// the chat input reserves this space so typed text isn't hidden under the buttons
+	useEffect(() => {
+		const el = ref.current;
+		if (!el) return;
+		const root = document.documentElement.style;
+		const ro = new ResizeObserver(() => {
+			root.setProperty('--community-controls-width', `${el.offsetWidth}px`);
+			root.setProperty('--community-controls-height', `${el.offsetHeight}px`);
+		});
+		ro.observe(el);
+		return () => ro.disconnect();
+	}, []);
 
 	const toggleCommunity = () => {
 		const current = showUsers.get();
@@ -56,7 +74,7 @@ export default function CommunityControls() {
 	});
 
 	return (
-		<div className="community-controls">
+		<div className="community-controls" ref={ref}>
 			{open && (<>
 				<CommunityToggle value={showTicker} label={t`Show ticker`} />
 				<CommunityToggle value={autoHide} label={t`Auto-hide`} />

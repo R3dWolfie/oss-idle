@@ -4,16 +4,16 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	REBIRTH_MIN_OVERALL_LEVEL,
 	canRebirth,
-} from '@osu-idle/shared/upgrades';
+} from '@oss-idle/shared/upgrades';
 import {
 	REBIRTH_UNLOCKS,
 	unlocksForGeneration,
-} from '@osu-idle/shared/rebirth';
+} from '@oss-idle/shared/rebirth';
 import ConfirmMenu, { type Confirm } from '../ConfirmMenu';
 import Entities from '../../entity/entities';
 import { rebirth } from '../../online/services/prestige';

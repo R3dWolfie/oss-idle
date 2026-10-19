@@ -9,7 +9,7 @@ import {
 	mapCoverUrl,
 	type BeatmapStatus,
 	type MapCover,
-} from '@osu-idle/shared/beatmap';
+} from '@oss-idle/shared/beatmap';
 
 /** A set's cover as a CSS background-image: osu!'s, else our own preview. */
 export const coverBackground = (set: MapCover, size: 'list' | 'cover') => {

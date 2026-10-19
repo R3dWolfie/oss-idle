@@ -42,8 +42,12 @@ import {
 	medalHolders,
 	medalProgress,
 } from '../medals';
-import { supportLevel } from '@osu-idle/shared/supporter';
-import { isAdmin } from '@osu-idle/shared/admin';
+import { supportLevel } from '@oss-idle/shared/supporter';
+import { isModerator } from '@oss-idle/shared/groups';
+import {
+	groupsByUser,
+	groupsOf,
+} from '../groups';
 import { createMiddleware } from 'hono/factory';
 import { sessionUserId } from '../auth/middleware';
 import {
@@ -53,14 +57,14 @@ import {
 
 const numberParam = z.coerce.number().int().positive();
 
-/** A restricted account's characters exist only for their owner and admins. */
+/** A restricted account's characters exist only for their owner and the moderators. */
 const hideRestricted = createMiddleware(async (c, next) => {
 	const id = numberParam.safeParse(c.req.param('id'));
 	if (id.success) {
 		const character = await getCharacterById(id.data);
 		const owner = character && await getUserById(character.userId);
 		const viewer = await sessionUserId(c);
-		if (owner?.restrictedAt && viewer !== owner.id && !isAdmin(viewer)) {
+		if (owner?.restrictedAt && viewer !== owner.id && !isModerator(await groupsOf(viewer))) {
 			throw new HTTPException(404, { message: 'Character not found' });
 		}
 	}
@@ -74,19 +78,29 @@ export const charactersRoutes = new Hono()
 	.get('/search', async c => {
 		const q = z.string().trim().min(1).max(32).safeParse(c.req.query('q'));
 		if (!q.success) return c.json([]);
-		return c.json(await db
+		const players = await db
 			.select({
 				userId: users.id,
+				userAvatarUrl: users.avatarUrl,
 				character: {
 					id: characters.id,
 					name: characters.name,
+					avatarUrl: characters.avatarUrl,
 				},
 			})
 			.from(users)
 			.innerJoin(characters, eq(characters.id, users.currentCharacter))
 			.where(and(isNull(users.restrictedAt), like(characters.name, `%${likeEscape(q.data)}%`)))
 			.orderBy(sql`${characters.name} = ${q.data} desc`, asc(characters.name))
-			.limit(50));
+			.limit(50);
+		const groups = await groupsByUser(players.map(p => p.userId));
+		return c.json(players.map(({ userAvatarUrl, ...p }) => ({
+			...p,
+			character: {
+				...p.character, avatarUrl: resolveAvatarUrl(p.character.avatarUrl, userAvatarUrl),
+			},
+			groups: groups.get(p.userId)!,
+		})));
 	})
 	.use('/:id', hideRestricted)
 	.use('/:id/*', hideRestricted)
@@ -107,6 +121,7 @@ export const charactersRoutes = new Hono()
 			bannerUrl: resolveBannerUrl(row.bannerUrl),
 			formerNames,
 			restricted: Boolean(user?.restrictedAt),
+			groups: await groupsOf(row.userId),
 			supportLevel: supportLevel(
 				Boolean(user?.supporterUntil && user.supporterUntil > new Date()),
 				user?.supporterMonths ?? 0,

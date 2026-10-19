@@ -14,11 +14,12 @@ import { ZodError } from 'zod';
 import {
 	clientUrl,
 	DESKTOP_ORIGIN,
+	LEGACY_CLIENT_URL,
 	isProd,
 } from './env';
 import { i18nMiddleware } from './i18n';
 import { reportError } from './discord/error';
-import { __ } from '@osu-idle/shared/i18n/translate';
+import { __ } from '@oss-idle/shared/i18n/translate';
 import {
 	UPLOAD_DIR,
 	UPLOAD_ROUTE,
@@ -39,6 +40,8 @@ import { skinsRoutes } from './routes/skins';
 import { matchesRoutes } from './routes/matches';
 import { socialRoutes } from './routes/social';
 import { storeRoutes } from './routes/store';
+import { teamRoutes } from './routes/team';
+import { groupsRoutes } from './routes/groups';
 import { restrictionsRoutes } from './routes/restrictions';
 import { accountsRoutes } from './routes/accounts';
 import { oauthRoutes } from './routes/oauth';
@@ -51,7 +54,7 @@ import { apiV2Routes } from './api/v2';
 // game's /web proxy (CLIENT_URL), but opening it directly is common while
 // iterating on the web platform. Prod stays locked to CLIENT_URL + the app.
 const allowedOrigins = isProd
-	? [clientUrl, DESKTOP_ORIGIN]
+	? [clientUrl, LEGACY_CLIENT_URL, DESKTOP_ORIGIN]
 	: [clientUrl, DESKTOP_ORIGIN, 'http://localhost:5173', 'http://localhost:5174'];
 
 const MB = 1024 * 1024;
@@ -94,6 +97,8 @@ const v1 = new Hono()
 	.route('/matches', matchesRoutes)
 	.route('/store', storeRoutes)
 	.route('/restrictions', restrictionsRoutes)
+	.route('/team', teamRoutes)
+	.route('/groups', groupsRoutes)
 	.route('/accounts', accountsRoutes)
 	.route('/oauth', oauthRoutes)
 ;
@@ -124,6 +129,8 @@ const app = new Hono()
 	.use('/v1/auth/osu/desktop/exchange', rateLimit('auth', 60))
 	.use('/v1/auth/osu/callback', rateLimit('auth', 60))
 	.use('/v1/auth/discord/callback', rateLimit('auth', 60))
+	.use('/v1/auth/move', rateLimit('auth', 60))
+	.use('/v1/auth/move/redeem', rateLimit('auth', 60))
 	.get('/health', async c => await healthy()
 		? c.json({ status: 'ok' })
 		: c.json({ status: 'down' }, 503))

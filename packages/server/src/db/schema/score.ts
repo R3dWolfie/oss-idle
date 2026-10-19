@@ -4,7 +4,7 @@ import {
 	Grades,
 	type Judgement,
 	Judgements,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 import {
 	type AnyMySqlColumn,
 	boolean,
@@ -17,7 +17,7 @@ import {
 	timestamp,
 } from 'drizzle-orm/mysql-core';
 import { characters } from './character';
-import type { ScoreDTO } from '@osu-idle/shared/score';
+import type { ScoreDTO } from '@oss-idle/shared/score';
 import { db } from '../client';
 import { profilePage } from '../profilePage';
 import {

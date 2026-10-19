@@ -361,10 +361,14 @@
 /* ---- playlist autopilot countdown ---- */
 
 /* ---- exit ---- */
-.result__exit {
+.result__actions {
 	position: absolute;
 	bottom: 0;
 	left: 0;
+	display: flex;
+	z-index: 500;
+}
+.result__exit {
 	font-size: 2rem;
 	padding: 1rem 3rem;
 	font-weight: 700;
@@ -372,7 +376,6 @@
 	transition:
 		transform 0.12s ease,
 		filter 0.15s ease;
-	z-index: 500;
 }
 .result__exit:hover {
 	transform: translateY(-1px);
@@ -435,8 +438,10 @@
 		height: 250px;
 	}
 
-	.result__exit {
+	.result__actions {
 		position: relative;
+	}
+	.result__exit {
 		background-color: #0000002a;
 		margin: 1rem;
 	}

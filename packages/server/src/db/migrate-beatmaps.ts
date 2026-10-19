@@ -8,7 +8,7 @@ import {
 	join,
 } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
+import { INTRO_SET_ID } from '@oss-idle/shared/beatmap';
 import { pool } from './client';
 import { ingestOsz } from '../beatmaps/ingest';
 
@@ -17,7 +17,7 @@ import { ingestOsz } from '../beatmaps/ingest';
  * main corpus ingest skipped because it isn't mania. Everything else is already
  * in the DB; this just gets the intro in so the startup sequence works.
  *
- *   npm -w @osu-idle/server run migrate:beatmaps[:prod]
+ *   npm -w @oss-idle/server run migrate:beatmaps[:prod]
  */
 
 const here = dirname(fileURLToPath(import.meta.url));

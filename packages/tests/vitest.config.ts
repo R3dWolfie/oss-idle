@@ -7,12 +7,12 @@ const src = (pkg: string) => fileURLToPath(new URL(`../${pkg}/src`, import.meta.
 
 export default defineConfig({
 	resolve: {
-		// `@osu-idle/shared/foo` → `../shared/src/foo`. The package's own `exports`
+		// `@oss-idle/shared/foo` → `../shared/src/foo`. The package's own `exports`
 		// map points at `dist/`; aliasing to source keeps the suite testing the
 		// code you're editing. Add server/client/web here if/when they're imported.
 		alias: {
-			'@osu-idle/shared': src('shared'),
-			'@osu-idle/client': src('client'),
+			'@oss-idle/shared': src('shared'),
+			'@oss-idle/client': src('client'),
 		},
 	},
 	test: {

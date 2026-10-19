@@ -1,4 +1,4 @@
-import { SCOPES } from '@osu-idle/shared/oauth';
+import { SCOPES } from '@oss-idle/shared/oauth';
 import Link from '../../components/Link';
 import DocsSample from './DocsSample';
 import DocsParams from './DocsParams';
@@ -49,8 +49,8 @@ export default function DocsGuide({ api, site, language }: {
 	return <>
 		<h1 id='introduction'>Introduction</h1>
 		<p>
-			Welcome to the documentation for the osu!idle API. It works like osu!api v2: the same
-			OAuth flows, paths and object names, with what osu!idle has. Use it to get information on
+			Welcome to the documentation for the oss!idle API. It works like osu!api v2: the same
+			OAuth flows, paths and object names, with what oss!idle has. Use it to get information on
 			players, their characters and scores, the ranked maps and the rankings.
 		</p>
 		<p>

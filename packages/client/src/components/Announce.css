@@ -221,4 +221,8 @@
 	.announce__summary {
 		display: none;
 	}
+	/* the open menu's options reach the bottom of a landscape phone */
+	.menu--open .announce {
+		display: none;
+	}
 }

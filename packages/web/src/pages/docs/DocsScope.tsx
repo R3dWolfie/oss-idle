@@ -1,4 +1,4 @@
-import type { Scope } from '@osu-idle/shared/oauth';
+import type { Scope } from '@oss-idle/shared/oauth';
 
 /** A scope's badge, linking to its row in the Scopes table. */
 export default function DocsScope({ scope }: { scope: Scope }) {

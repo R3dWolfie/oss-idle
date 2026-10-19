@@ -8,29 +8,15 @@ import {
 import Controls from '../input/Controls';
 import {
 	isWebOpen,
+	SITE_URL,
 	webUrl,
 } from '../globals';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { useLingui } from '@lingui/react/macro';
+import { copyText } from '../clipboard';
 
-/** The page's address as someone else can open it: the desktop app's frame runs
- *  on app://, not on the site. */
-const SITE_URL = import.meta.env.VITE_SITE_URL || location.origin;
+/** The page's address as someone else can open it. */
 const shareUrl = (path: string): string => `${SITE_URL}${path}`;
-
-/** The clipboard API needs a secure context (the LAN staging origin isn't one). */
-const copy = (text: string): void => {
-	if (navigator.clipboard) {
-		void navigator.clipboard.writeText(text);
-		return;
-	}
-	const field = document.createElement('textarea');
-	field.value = text;
-	document.body.append(field);
-	field.select();
-	document.execCommand('copy');
-	field.remove();
-};
 
 /**
  * Lazer-style in-game browser: a fullscreen overlay that embeds the osu! web
@@ -125,7 +111,7 @@ export default function WebBrowser() {
 						aria-label={t`Page link`}
 						onFocus={e => e.currentTarget.select()}
 					/>
-					<button className="web__btn" title={t`Copy link`} onClick={() => copy(address)}>
+					<button className="web__btn" title={t`Copy link`} onClick={() => copyText(address)}>
 						{t`Copy`}
 					</button>
 					<button 

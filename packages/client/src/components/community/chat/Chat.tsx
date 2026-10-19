@@ -4,17 +4,18 @@ import {
 	useRef,
 } from 'react';
 import { useLingui } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { DEFAULT_CHANNEL } from '@osu-idle/shared/community/wire';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Tabs, { Tab } from '../../tabs/Tabs';
 import {
 	activeChatTab,
+	channelPickerOpen,
 	chatTabs,
 	pmContact,
 } from './state';
 import { contactNames } from '../../../online/privateMessages';
-import { isMatchChannel } from '@osu-idle/shared/multiplayer';
+import { isMatchChannel } from '@oss-idle/shared/multiplayer';
 import ChatTabContents from './ChatTabContents';
+import { unreadTabs } from './unread';
 import { isCommunityOpen } from '../../../globals';
 import { showChat } from '../state';
 
@@ -23,6 +24,7 @@ export default function Chat() {
 	const [channels = []] = useSynced(chatTabs);
 	const [activeId] = useSynced(activeChatTab);
 	const [names = new Map<number, string>()] = useSynced(contactNames);
+	const [unread = new Set<string>()] = useSynced(unreadTabs);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	// osu! behaviour: clicking anywhere in the chat focuses the compose input
@@ -41,10 +43,6 @@ export default function Chat() {
 
 	const closeChannel = (channel: string) => {
 		void chatTabs.set(channels.filter(c => c !== channel));
-	};
-
-	const join = () => {
-		if (!channels.includes(DEFAULT_CHANNEL)) void chatTabs.set([DEFAULT_CHANNEL, ...channels]);
 	};
 
 	// a span, not a button: the tab label already sits inside the Tabs <button>,
@@ -67,13 +65,22 @@ export default function Chat() {
 	const tabs: Tab[] = channels.map(channel => ({
 		id: channel,
 		label: <ChatTabButton channel={channel} />,
+		className: unread.has(channel) ? undefined : 'read',
 		render: () => <ChatTabContents key={channel} channel={channel} inputRef={inputRef} />,
 	}));
 
 	return (
 		<div className="chat" onClick={focusInput}>
 			<div className="chat__tabs">
-				<Tabs tabs={tabs} active={activeChatTab} onSelect={join} />
+				<Tabs tabs={tabs} active={activeChatTab} />
+				<button
+					className="chat__add"
+					aria-label={t`Join a channel`}
+					onClick={e => {
+						e.stopPropagation();
+						void channelPickerOpen.set(true);
+					}}
+				/>
 			</div>
 			{tabs.find(t => t.id === activeId)?.render()}
 		</div>

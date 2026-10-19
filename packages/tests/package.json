@@ -1,5 +1,5 @@
 {
-  "name": "@osu-idle/tests",
+  "name": "@oss-idle/tests",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,10 +14,10 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@osu-idle/shared": "*",
-    "@osu-idle/server": "*",
-    "@osu-idle/client": "*",
-    "@osu-idle/web": "*",
+    "@oss-idle/shared": "*",
+    "@oss-idle/server": "*",
+    "@oss-idle/client": "*",
+    "@oss-idle/web": "*",
     "osu-parsers": "^4.1.7"
   },
   "devDependencies": {

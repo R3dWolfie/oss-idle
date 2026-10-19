@@ -10,7 +10,7 @@ import {
 	Judgements,
 	type Grade,
 	type Judgement,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 import { db } from '../client';
 import { eq } from 'drizzle-orm';
 import type { BestScoreRow } from './best';

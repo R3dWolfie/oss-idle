@@ -1,6 +1,6 @@
 import './Grade.css';
 
-import { Grade as GradeName } from '@osu-idle/shared/judgement';
+import { Grade as GradeName } from '@oss-idle/shared/judgement';
 import { Asset } from '../../router';
 
 export default function Grade({

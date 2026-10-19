@@ -1,4 +1,4 @@
-import { rateLabel } from '@osu-idle/shared/rate';
+import { rateLabel } from '@oss-idle/shared/rate';
 
 /** A leaderboard row's mods: its rate when it isn't x1. */
 export default function ScoreMods({ rate }: { rate: number }) {

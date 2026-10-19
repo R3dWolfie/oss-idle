@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import num from '@osu-idle/shared/display/num';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import num from '@oss-idle/shared/display/num';
 import {
 	addFriend,
 	getRelation,

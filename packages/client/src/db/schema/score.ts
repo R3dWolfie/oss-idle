@@ -1,5 +1,5 @@
-import { ScoreDTO } from '@osu-idle/shared/score';
-import Synced from '@osu-idle/shared/helpers/synced';
+import { ScoreDTO } from '@oss-idle/shared/score';
+import Synced from '@oss-idle/shared/helpers/synced';
 import {
 	boolean,
 	Column,
@@ -13,14 +13,14 @@ import {
 import {
 	betterScore,
 	rankValueSQL,
-} from '@osu-idle/shared/scoreOrder';
+} from '@oss-idle/shared/scoreOrder';
 import { ScoreBest } from './score_best';
 import { ScoreBestPP } from './score_best_pp';
 import {
 	Grade,
 	Judgement,
 	Judgements,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 
 const judgementColumns = Object.fromEntries(
 	Judgements.map(j => [j, integer()]),

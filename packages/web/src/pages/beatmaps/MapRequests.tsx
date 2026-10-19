@@ -140,7 +140,7 @@ export default function MapRequests({ filter, sort, page }: {
 			<div className='page-contents'>
 				<p className='requests__intro'>
 					<Trans>
-						Anyone can propose a map for ranking in osu!idle - osu!mania 4K only.
+						Anyone can propose a map for ranking in oss!idle - osu!mania 4K only.
 						Support the ones you want to play so it shows what people are after.
 						Accepted maps join the nomination queue and are ranked from there.
 					</Trans>

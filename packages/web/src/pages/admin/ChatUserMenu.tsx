@@ -1,6 +1,9 @@
 import './ChatUserMenu.css';
 
-import { useEffect } from 'react';
+import {
+	useEffect,
+	useState,
+} from 'react';
 import type { ModerateBody } from '../../api/chat';
 
 const TIMEOUTS: { label: string; seconds: number }[] = [
@@ -52,6 +55,8 @@ export default function ChatUserMenu(props: Props) {
 		};
 	}, [onClose]);
 
+	const [reason, setReason] = useState('');
+
 	const act = (body: ModerateBody) => {
 		onAction(body);
 		onClose();
@@ -65,13 +70,20 @@ export default function ChatUserMenu(props: Props) {
 			}}
 			onPointerDown={e => e.stopPropagation()}
 		>
+			<input
+				className='chat-menu__reason'
+				value={reason}
+				onChange={e => setReason(e.target.value)}
+				maxLength={255}
+				placeholder='Reason (account standing)'
+			/>
 			<span className='chat-menu__label'>Timeout</span>
 			<div className='chat-menu__timeouts'>
 				{TIMEOUTS.map(t => (
 					<button
 						key={t.seconds}
 						onClick={() => act({
-							action: 'timeout', characterId, seconds: t.seconds, channel, messageId,
+							action: 'timeout', characterId, seconds: t.seconds, reason, channel, messageId,
 						})}
 					>{t.label}</button>
 				))}
@@ -97,7 +109,7 @@ export default function ChatUserMenu(props: Props) {
 				<button
 					className='chat-menu__item danger'
 					onClick={() => act({
-						action: 'ban', characterId, channel, messageId,
+						action: 'ban', characterId, reason, channel, messageId,
 					})}
 				>Ban from chat</button>
 			)}

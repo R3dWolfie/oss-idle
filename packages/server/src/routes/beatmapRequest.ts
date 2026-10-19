@@ -14,9 +14,10 @@ import {
 	beatmapRequestPatch,
 	MAX_PENDING_REQUESTS,
 	parseBeatmapsetId,
-} from '@osu-idle/shared/beatmapRequest';
-import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
-import { isAdmin } from '@osu-idle/shared/admin';
+} from '@oss-idle/shared/beatmapRequest';
+import { INTRO_SET_ID } from '@oss-idle/shared/beatmap';
+import { isAdmin } from '@oss-idle/shared/groups';
+import { groupsOf } from '../groups';
 import { db } from '../db/client';
 import {
 	beatmapRequests,
@@ -66,7 +67,7 @@ const resolveSet = async (setId: number) => {
 
 	const playable = (set.beatmaps ?? []).filter(b => b.mode_int === 3 && Math.round(b.cs) === 4);
 	if (!playable.length) {
-		throw new HTTPException(400, { message: 'Only osu!mania 4K maps can be ranked in osu!idle' });
+		throw new HTTPException(400, { message: 'Only osu!mania 4K maps can be ranked in oss!idle' });
 	}
 
 	const srs = playable.map(b => b.difficulty_rating);
@@ -183,7 +184,7 @@ export const beatmapRequestRoutes = new Hono()
 		if (ingested) {
 			throw new HTTPException(409, {
 				message: ingested.status === 'ranked'
-					? 'That map is already ranked in osu!idle'
+					? 'That map is already ranked in oss!idle'
 					: 'That map is already in the nomination queue',
 			});
 		}
@@ -296,7 +297,7 @@ export const beatmapRequestRoutes = new Hono()
 		if (!request) throw new HTTPException(404, { message: 'No such request' });
 
 		const own = request.userId === userId && request.status === 'pending';
-		if (!own && !isAdmin(userId)) throw new HTTPException(403, { message: 'Forbidden' });
+		if (!own && !isAdmin(await groupsOf(userId))) throw new HTTPException(403, { message: 'Forbidden' });
 
 		await db.delete(beatmapRequestVotes).where(eq(beatmapRequestVotes.setId, setId));
 		await db.delete(beatmapRequests).where(eq(beatmapRequests.setId, setId));

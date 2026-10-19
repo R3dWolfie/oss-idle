@@ -1,9 +1,9 @@
-import { useParallax } from '@osu-idle/shared/hooks/useParallax';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import { useParallax } from '@oss-idle/shared/hooks/useParallax';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { music } from '../audio/MusicPlayer';
 import { SETTINGS } from '../db/settings';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import './Background.css';
 
 /** The live track's backdrop, or a given map's - a screen about one particular

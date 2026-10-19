@@ -29,6 +29,14 @@ export const mapCoverUrl = (set: MapCover, size: 'list' | 'cover', apiBase = '')
 	if (set.background) return `${apiBase}/v1/beatmap/preview/${set.id}/${set.background}`;
 };
 
+/** Downloads a set into the game: the desktop app takes it from the OS, an
+ *  open game tab or frame from {@link MAP_LINK_CHANNEL}. */
+export const mapDownloadLink = (setId: number) => `oss-idle://dl/${setId}`;
+
+/** Same-origin BroadcastChannel game tabs listen on for {@link mapDownloadLink}s;
+ *  a game that takes one answers `true`. */
+export const MAP_LINK_CHANNEL = 'oss-idle:links';
+
 /** A set's page on osu!, when it is on osu!. */
 export const osuSetUrl = (osuSetId: number | null | undefined) => osuSetId
 	? `https://osu.ppy.sh/beatmapsets/${osuSetId}`

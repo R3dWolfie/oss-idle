@@ -103,6 +103,12 @@ const NAMES = defineMessages({
 	'pp-5k': 'High Orbit',
 	'pp-10k': 'Escape Velocity',
 	'pp-20k': 'Beyond the Stars',
+	'play-pp-50': 'First Spark',
+	'play-pp-100': 'Triple Digits',
+	'play-pp-200': 'Heating Up',
+	'play-pp-500': 'Wildfire',
+	'play-pp-750': 'Inferno',
+	'play-pp-1k': 'Supernova',
 	'curator-1': 'Curator',
 	'curator-5': 'Talent Scout',
 	'curator-25': 'Tastemaker',
@@ -131,7 +137,7 @@ const DESCRIPTIONS = defineMessages({
 	'same-map-100': 'Play the same map 100 times',
 	'fail-99': 'Fail a map with 1% of it left',
 	'night-owl': 'Play between 3 and 5 am',
-	'first-chat': 'Say something in #osu!idle',
+	'first-chat': 'Say something in #oss!idle',
 	possessed: 'Get a 1,000,000 score on TAG underground - POSSESSION',
 });
 
@@ -150,6 +156,7 @@ const SERIES_DESCRIPTIONS = defineMessages({
 	prestige: 'Prestige {count} times in total',
 	first: 'Hold #1 on {count} ranked maps',
 	pp: 'Reach {pp} pp',
+	'play-pp': 'Set a {pp} pp play',
 	curator: 'Have {count} of your proposed maps ranked',
 });
 

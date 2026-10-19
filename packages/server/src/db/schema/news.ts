@@ -9,7 +9,7 @@ import {
 import type {
 	NewsDTO,
 	NewsTag,
-} from '@osu-idle/shared/news';
+} from '@oss-idle/shared/news';
 import { users } from './user';
 
 export const news = mysqlTable('news', {

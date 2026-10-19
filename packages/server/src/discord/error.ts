@@ -14,6 +14,16 @@ const trim = (text: string, max = 1000) =>
  * publish itself swallows failures, and we never report in dev (no live webhook
  * worth spamming) - the console.error in onError still fires there.
  */
+/** A one-line problem for the Discord error feed, outside a request. */
+export const warn = (title: string): void => {
+	if (!env.ERROR_FEED_WEBHOOK) return;
+	void publish(env.ERROR_FEED_WEBHOOK, {
+		embeds: [{
+			title: trim(title, 256), color: 15548997,
+		}],
+	});
+};
+
 const REPEAT_MS = 60_000;
 const lastSent = new Map<string, number>();
 

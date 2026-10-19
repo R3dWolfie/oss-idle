@@ -2,7 +2,7 @@ import type { InferResponseType } from 'hono/client';
 import type {
 	AddonCreateBody,
 	AddonUpdateBody,
-} from '@osu-idle/shared/addon';
+} from '@oss-idle/shared/addon';
 import {
 	BASE_URL,
 	rpc,

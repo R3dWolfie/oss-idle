@@ -1,5 +1,5 @@
-import { rankValue } from '@osu-idle/shared/scoreOrder';
-import { effectiveLevelOf } from '@osu-idle/shared/sim/skills/levelCurve';
+import { rankValue } from '@oss-idle/shared/scoreOrder';
+import { effectiveLevelOf } from '@oss-idle/shared/sim/skills/levelCurve';
 import {
 	and,
 	count,
@@ -11,7 +11,7 @@ import {
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import { redis } from './redis';
 import { db } from './db/client';
 import {
@@ -26,13 +26,13 @@ import {
 	characterMedals,
 	getMedals,
 } from './db/schema/character_medal';
-import { medalWeight } from '@osu-idle/shared/achievements/catalogue';
+import { medalWeight } from '@oss-idle/shared/achievements/catalogue';
 import { recordProgress } from './medals';
 import { redisKeyPrefix } from './env';
 import {
 	GoodGrades,
 	type GoodGrade,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 
 /**
  * Player rankings, kept in Redis sorted sets instead of recomputed on every

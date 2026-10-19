@@ -23,6 +23,9 @@
 .tabs.classic .tab.special {
 	background: linear-gradient(0deg, #dc153d, #be1134);
 }
+.tabs.classic .tab.read {
+	background: linear-gradient(0deg, #2b3f9c, #3651bf);
+}
 .tabs.classic .tab:hover {
 	filter: brightness(1.2);
 }

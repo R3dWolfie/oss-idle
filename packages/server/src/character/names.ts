@@ -9,7 +9,7 @@ import { characters } from '../db/schema/character';
 import {
 	OLD_SUFFIX,
 	usesReservedOld,
-} from '@osu-idle/shared/rebirth';
+} from '@oss-idle/shared/rebirth';
 
 /** The name a displaced character falls back to, osu!-style: append _old until
  *  it is free, so a lineage chains Adri -> Adri_old -> Adri_old_old. */

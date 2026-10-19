@@ -1,16 +1,16 @@
 import { t } from '@lingui/core/macro';
-import Synced from '@osu-idle/shared/helpers/synced';
-import { desktop } from '@osu-idle/shared/desktop';
+import Synced from '@oss-idle/shared/helpers/synced';
+import { desktop } from '@oss-idle/shared/desktop';
 import SceneManager, {
 	SCENE,
 	type Scene,
 } from '../scenes/SceneManager';
 import { music } from '../audio/MusicPlayer';
 import type LightBeatmap from '../osu/beatmap/LightBeatmap';
-import { ScoreDTO } from '@osu-idle/shared/score';
+import { ScoreDTO } from '@oss-idle/shared/score';
 import { Score } from '../db/schema/score';
 import { currentScore } from '../globals';
-import num from '@osu-idle/shared/display/num';
+import num from '@oss-idle/shared/display/num';
 
 /**
  * Drives the desktop app's Discord Rich Presence from the live scene and the

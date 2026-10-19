@@ -1,4 +1,4 @@
-# @osu-idle/desktop
+# @oss-idle/desktop
 
 The Electron shell that runs the game client as a standalone PC app. Its reason
 to exist: browsers throttle (and eventually pause) hidden tabs - rAF stops,
@@ -10,7 +10,7 @@ focused.
 ## How it fits the monorepo
 
 - **Renderer = the existing builds.** It does not fork the client. The compiled
-  `@osu-idle/client` (and `@osu-idle/web`) bundles are served from a registered
+  `@oss-idle/client` (and `@oss-idle/web`) bundles are served from a registered
   `app://idle` scheme (standard + secure → stable origin, secure context,
   IndexedDB persists). The `/web` profile platform stays a same-origin iframe.
 - **Only the app shell ships.** The on-demand static library (`beatmaps/`,
@@ -30,7 +30,7 @@ browser can't hand a cookie or a custom-scheme deep link back to the app (some
 browsers, e.g. Firefox, block the latter outright), so the app waits on its own
 loopback (RFC 8252):
 
-1. Renderer calls `window.osuIdleDesktop.login()` → main listens on
+1. Renderer calls `window.ossIdleDesktop.login()` → main listens on
    `127.0.0.1:<random port>` and opens
    `…/v1/auth/osu/login?client=desktop&port=<port>&key=<random key>` in the system
    browser (up to 5 min).
@@ -67,7 +67,7 @@ npm run dist:desktop
 Dev talks to the local server (`localhost:3873`) and loads the live Vite client;
 packaged builds talk to the public API and load the bundled `app://idle` origin.
 Deep links in dev require the protocol to point back at the dev Electron binary -
-`main.ts` handles that automatically. The `osu-idle://` scheme is registered and
+`main.ts` handles that automatically. The `oss-idle://` scheme is registered and
 routed (see deeplink.ts) but currently carries no actions - it's kept as the
 transport for future app-directed links.
 
@@ -79,7 +79,7 @@ bundles `app-update.yml`, so the app finds the feed with no extra wiring. Update
 is **user-initiated**, reusing the client's existing version poll:
 
 1. The client already polls the server version every few seconds. When it sees a
-   newer one **and** it's the desktop app, it calls `osuIdleDesktop.update.check()`
+   newer one **and** it's the desktop app, it calls `ossIdleDesktop.update.check()`
    instead of the browser's "refresh to update" prompt.
 2. The in-game `DesktopUpdate` banner (client) shows *Download* → progress →
    *Restart & install*, driven by `update.onStatus` and ending in `quitAndInstall`.
@@ -97,7 +97,7 @@ self-healing**, so there's almost nothing to manage:
 
 1. The client's `online/presence.ts` watches the live scene (`SceneManager`) and
    the playing map (`music.beatmap`) and pushes a small `DesktopPresence` snapshot
-   through the bridge - `osuIdleDesktop.setPresence(...)`. Inert in a browser.
+   through the bridge - `ossIdleDesktop.setPresence(...)`. Inert in a browser.
 2. `presence.ts` (main) speaks Discord's local IPC protocol directly (no
    dependency - just the documented opcode+length framing over the
    `discord-ipc-*` socket). It connects lazily, remembers the last snapshot, and
@@ -114,8 +114,8 @@ in the client's `presence.ts`; the Discord plumbing here never changes.
 
 `deploy:prod` ends with `npm run publish:desktop`, which builds the Linux
 (AppImage) + Windows (NSIS, via Wine) installers, then `scripts/publish-desktop.mjs`
-copies `osu-idle.exe` / `osu-idle.AppImage` + the `latest*.yml` feed and a
-`manifest.json` (version + filenames, read by the web *Play osu!idle* page) into
+copies `oss-idle.exe` / `oss-idle.AppImage` + the `latest*.yml` feed and a
+`manifest.json` (version + filenames, read by the web *Play oss!idle* page) into
 the download dir. Stable filenames + a single `latest` channel
 (`detectUpdateChannel: false`), so the URL never changes and auto-update always
 sees the next build. So every release also refreshes the download.
@@ -136,7 +136,7 @@ be cross-built from Linux - add them via a Mac or CI runner later (electron-buil
 
 ## Steam (later)
 
-The app is **not** Steam-coupled: `window.osuIdleDesktop.steam` is an inert
+The app is **not** Steam-coupled: `window.ossIdleDesktop.steam` is an inert
 feature-detect stub today. Wiring Steamworks (overlay, achievements, cloud saves,
 rich presence) means adding `steamworks.js` in the main process and filling that
 namespace - no change to the auth or rendering paths.

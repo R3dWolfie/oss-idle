@@ -13,8 +13,12 @@ const HANDOFF_TTL_MS = 60_000;
 const handoffKey = (code: string) => `${redisKeyPrefix}authhandoff:${code}`;
 
 /** Stash a session token under a one-time code, for the app to redeem. */
-export async function storeHandoff(code: string, token: string): Promise<void> {
-	await redis.set(handoffKey(code), token, 'PX', HANDOFF_TTL_MS);
+export async function storeHandoff(
+	code: string,
+	token: string,
+	ttlMs = HANDOFF_TTL_MS,
+): Promise<void> {
+	await redis.set(handoffKey(code), token, 'PX', ttlMs);
 }
 
 /** Redeem a one-time code for its session token, consuming it. Null if the code

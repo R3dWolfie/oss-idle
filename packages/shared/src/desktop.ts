@@ -35,12 +35,12 @@ export interface DesktopUpdater {
 }
 
 /**
- * The bridge the Electron app injects on `window.osuIdleDesktop` (via its
+ * The bridge the Electron app injects on `window.ossIdleDesktop` (via its
  * preload, in every frame). Absent in a normal browser - {@link desktop} returns
  * null there, so all desktop-specific behaviour is opt-in and the web build is
  * unaffected. The desktop preload implements this exact shape.
  */
-export interface OsuIdleDesktop {
+export interface OssIdleDesktop {
 	readonly isDesktop: true;
 	readonly version: string;
 	/** In-app self-update controls. */
@@ -67,6 +67,8 @@ export interface OsuIdleDesktop {
 	/** Discord Rich Presence: reflect the current scene / playing map. Pass null
 	 *  to clear. No-op when Discord isn't running or no client id was built in. */
 	setPresence(presence: DesktopPresence | null): void;
+	/** Subscribe to `oss-idle://` links the OS hands the app; returns an unsubscribe fn. */
+	onDeepLink(cb: (link: string) => void): () => void;
 	/** Quit the desktop app immediately. The browser `window.close()` lingers in
 	 *  Electron, so the renderer calls this for a snappy exit. No-op in a browser. */
 	quit(): void;
@@ -83,11 +85,11 @@ export interface OsuIdleDesktop {
 
 declare global {
 	interface Window {
-		osuIdleDesktop?: OsuIdleDesktop;
+		ossIdleDesktop?: OssIdleDesktop;
 	}
 }
 
 /** The desktop bridge when running inside the Electron app, otherwise null. */
-export function desktop(): OsuIdleDesktop | null {
-	return typeof window !== 'undefined' && window.osuIdleDesktop ? window.osuIdleDesktop : null;
+export function desktop(): OssIdleDesktop | null {
+	return typeof window !== 'undefined' && window.ossIdleDesktop ? window.ossIdleDesktop : null;
 }

@@ -1,11 +1,11 @@
-import type { UserDTO } from '@osu-idle/shared/user';
+import type { UserDTO } from '@oss-idle/shared/user';
 import {
 	BASE_URL,
 	rpc,
 	withAuth,
 } from './client';
-import Synced from '@osu-idle/shared/helpers/synced';
-import { desktop } from '@osu-idle/shared/desktop';
+import Synced from '@oss-idle/shared/helpers/synced';
+import { desktop } from '@oss-idle/shared/desktop';
 import {
 	isWebOpen,
 	webUrl,

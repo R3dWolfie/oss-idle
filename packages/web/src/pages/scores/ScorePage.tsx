@@ -1,15 +1,15 @@
 import './ScorePage.css';
 import { Trans } from '@lingui/react/macro';
 import { ph } from '@lingui/core/macro';
-import { JUDGEMENT } from '@osu-idle/shared/judgement';
-import { showsDivine } from '@osu-idle/shared/rebirth';
+import { JUDGEMENT } from '@oss-idle/shared/judgement';
+import { showsDivine } from '@oss-idle/shared/rebirth';
 import {
 	difficultyColor,
 	difficultyTextColor,
-} from '@osu-idle/shared/display/difficulty';
-import accuracy from '@osu-idle/shared/display/accuracy';
-import num from '@osu-idle/shared/display/num';
-import rank from '@osu-idle/shared/display/rank';
+} from '@oss-idle/shared/display/difficulty';
+import accuracy from '@oss-idle/shared/display/accuracy';
+import num from '@oss-idle/shared/display/num';
+import rank from '@oss-idle/shared/display/rank';
 import type { getScore } from '../../api/scores';
 import { coverBackground } from '../../api/maps';
 import Link from '../../components/Link';

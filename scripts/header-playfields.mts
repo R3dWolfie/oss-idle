@@ -11,10 +11,10 @@
  */
 import { writeFileSync } from 'node:fs';
 import AdmZip from 'adm-zip';
-import '@osu-idle/shared/osu/controlPointPatch';
+import '@oss-idle/shared/osu/controlPointPatch';
 import { BeatmapDecoder } from 'osu-parsers';
 import { ManiaRuleset } from 'osu-mania-stable';
-import { ScrollModel } from '@osu-idle/shared/sim/scroll';
+import { ScrollModel } from '@oss-idle/shared/sim/scroll';
 
 const MAPS: [set: number, version: string][] = [
 	[551469, 'CHALLENGE'],

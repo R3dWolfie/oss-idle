@@ -1,24 +1,24 @@
-![Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fosu-idle%2Fosu-idle%2Fmain%2Fpackage.json&query=%24.version&label=version&color=ff66aa)
-[![CI](https://github.com/osu-idle/osu-idle/actions/workflows/ci.yml/badge.svg)](https://github.com/osu-idle/osu-idle/actions/workflows/ci.yml)
+![Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Foss-idle%2Foss-idle%2Fmain%2Fpackage.json&query=%24.version&label=version&color=ff66aa)
+[![CI](https://github.com/oss-idle/oss-idle/actions/workflows/ci.yml/badge.svg)](https://github.com/oss-idle/oss-idle/actions/workflows/ci.yml)
 [![AGPLv3 License](https://img.shields.io/badge/License-AGPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![CodeFactor](https://www.codefactor.io/repository/github/osu-idle/osu-idle/badge)](https://www.codefactor.io/repository/github/osu-idle/osu-idle)
-[![Crowdin](https://badges.crowdin.net/osu-idle/localized.svg)](https://crowdin.com/project/osu-idle)
-![GitHub contributors](https://img.shields.io/github/contributors/osu-idle/osu-idle)
-![GitHub last commit](https://img.shields.io/github/last-commit/osu-idle/osu-idle)
-[![osu!idle discord](https://discordapp.com/api/guilds/1511463564135759954/widget.png?style=shield)](https://osu.idle.rhythmgamers.net/discord)
+[![CodeFactor](https://www.codefactor.io/repository/github/oss-idle/oss-idle/badge)](https://www.codefactor.io/repository/github/oss-idle/oss-idle)
+[![Crowdin](https://badges.crowdin.net/oss-idle/localized.svg)](https://crowdin.com/project/oss-idle)
+![GitHub contributors](https://img.shields.io/github/contributors/oss-idle/oss-idle)
+![GitHub last commit](https://img.shields.io/github/last-commit/oss-idle/oss-idle)
+[![oss!idle discord](https://discordapp.com/api/guilds/1511463564135759954/widget.png?style=shield)](https://oss.idle.rhythmgamers.net/discord)
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="packages/web/public/idle-white.png" />
-    <img src="packages/web/public/idle-black.png" alt="osu!idle" width="400" />
+    <img src="packages/web/public/idle-black.png" alt="oss!idle" width="400" />
   </picture>
 </p>
 
-# osu!idle
+# oss!idle
 
 An osu!mania idle game where you train your own character on actual maps.
 
-**Play it at [osu.idle.rhythmgamers.net](https://osu.idle.rhythmgamers.net)**, in the
+**Play it at [oss.idle.rhythmgamers.net](https://oss.idle.rhythmgamers.net)**, in the
 browser or with the desktop app. Sign in with your osu! account to get on the
 rankings. Not affiliated with osu! or ppy Pty Ltd.
 
@@ -79,8 +79,8 @@ CI runs the typecheck, lint, tests and the client/web builds on every push and p
 
 ## Self-hosting
 
-The production setup is the one running osu.idle.rhythmgamers.net: the server under
-pm2 with `NODE_ENV=production` (`npm -w @osu-idle/server run start:prod`), behind a
+The production setup is the one running oss.idle.rhythmgamers.net: the server under
+pm2 with `NODE_ENV=production` (`npm -w @oss-idle/server run start:prod`), behind a
 reverse proxy that also forwards the `/v1/ws` WebSocket, and the built `client` and
 `web` bundles served as static files. Its hostnames live in
 `packages/server/src/env.ts` and the `.env.production` files of the client and web,
@@ -88,7 +88,7 @@ so change those for your own domain.
 
 ## Translations
 
-Translations are on [Crowdin](https://crowdin.com/project/osu-idle). Write new strings in
+Translations are on [Crowdin](https://crowdin.com/project/oss-idle). Write new strings in
 English in the code; they are picked up from there.
 
 ```sh

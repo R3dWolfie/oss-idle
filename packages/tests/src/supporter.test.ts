@@ -11,7 +11,7 @@ import {
 	supporterSaving,
 	refundCut,
 	unusedRefund,
-} from '@osu-idle/shared/supporter';
+} from '@oss-idle/shared/supporter';
 
 describe('supporter tag', () => {
 	it('prices like osu!store', () => {

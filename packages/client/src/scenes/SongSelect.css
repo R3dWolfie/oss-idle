@@ -808,6 +808,35 @@
 	}
 }
 
+/* landscape phones: the two dropdowns side by side, clear of the search bar */
+@media (max-height: 500px) and (max-width: 850px) {
+	.game__topfilter_scroll {
+		display: none;
+	}
+	.game__topfilter_sort {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+	.dropdown {
+		min-width: 135px;
+	}
+	.dropdown .dropdown__current {
+		font-size: 14px;
+	}
+	.game__top_md-container {
+		width: calc(100vw - 300px);
+	}
+	.game__top_md_text,
+	.game__top_version {
+		min-width: 0;
+	}
+	.game__top_md_title,
+	.game__top_md_creator {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
 /* debug xp multiplier, sitting beside the strain debug button */
 .game__xp-btn {
 	left: 3.4rem;

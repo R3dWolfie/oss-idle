@@ -3,8 +3,8 @@ import {
 	useEffect,
 	type ReactNode,
 } from 'react';
-import Synced from '@osu-idle/shared/helpers/synced';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import Synced from '@oss-idle/shared/helpers/synced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Auth from '../online/auth';
 import Account from '../online/account';
 import SceneManager, { SCENE } from '../scenes/SceneManager';
@@ -42,7 +42,7 @@ export default function Tutorial() {
 
 	const STEPS: Step[] = [
 		{
-			title: t`Welcome to osu!idle`,
+			title: t`Welcome to oss!idle`,
 			body: <Trans>
 				This is an <b>automated, idle</b> osu!mania stable client:
 				your character plays the maps on its own and progresses with every play.
@@ -51,7 +51,7 @@ export default function Tutorial() {
 		{
 			title: t`Play online`,
 			body: <Trans>
-				osu!idle features <b>online leaderboards</b>, just like osu!.
+				oss!idle features <b>online leaderboards</b>, just like osu!.
 				Sign in with your osu! account to compete and save your progression online.
 			</Trans>,
 		},

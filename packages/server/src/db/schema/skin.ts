@@ -10,7 +10,7 @@ import { users } from './user';
 import {
 	SKIN_STATUS,
 	type SkinStatus,
-} from '@osu-idle/shared/skin';
+} from '@oss-idle/shared/skin';
 
 export const skins = mysqlTable('skin', {
 	id: int().autoincrement().primaryKey(),

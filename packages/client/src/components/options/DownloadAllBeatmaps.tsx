@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
-import Log from '@osu-idle/shared/helpers/log';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import Log from '@oss-idle/shared/helpers/log';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Button from './controls/Button';
 import DownloadAllWarning from './DownloadAllWarning';
 import type { Metadata } from '../../osu/beatmap/beatmap_api';

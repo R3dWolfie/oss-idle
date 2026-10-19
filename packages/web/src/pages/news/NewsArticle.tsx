@@ -3,8 +3,8 @@ import './News.css';
 import {
 	NEWS_TAGS,
 	type NewsDTO,
-} from '@osu-idle/shared/news';
-import { isAdmin } from '@osu-idle/shared/admin';
+} from '@oss-idle/shared/news';
+import { isAdmin } from '@oss-idle/shared/groups';
 
 import { formatDate } from '../../api/news';
 import {
@@ -38,10 +38,10 @@ export default function NewsArticle({ article }: { article: NewsDTO }) {
 				<h1 className="news-article__title">{article.title}</h1>
 				<p className="news-article__byline">by {article.authorName}</p>
 
-				{/* Trusted HTML - authored by an admin (see ADMIN_USER_IDS). */}
+				{/* Trusted HTML - authored by an admin. */}
 				<div className="news-article__body" dangerouslySetInnerHTML={{ __html: article.content }} />
 
-				{isAdmin(user?.id) && (
+				{isAdmin(user?.groups) && (
 					<Link to="/news/admin" className="news-btn news-article__edit">Edit in admin</Link>
 				)}
 			</article>

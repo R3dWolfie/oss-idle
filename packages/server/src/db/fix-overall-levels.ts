@@ -15,17 +15,17 @@
  *
  * Lifetime is deliberately left alone: it is the one figure nothing spends.
  *
- *   npm -w @osu-idle/server run fix:overall:prod -- --dry-run
+ *   npm -w @oss-idle/server run fix:overall:prod -- --dry-run
  */
 import { eq } from 'drizzle-orm';
 import {
 	xpGivesLevel,
 	xpToLevel,
-} from '@osu-idle/shared/sim/skills/xp';
+} from '@oss-idle/shared/sim/skills/xp';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import { db } from './client';
 import { characters } from './schema/character';
 import { reindexCharacter } from '../rankings';

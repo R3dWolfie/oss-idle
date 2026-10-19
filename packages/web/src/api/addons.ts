@@ -3,7 +3,7 @@ import {
 	rpc,
 	unwrap,
 } from './client';
-import type { AddonStatus } from '@osu-idle/shared/addon';
+import type { AddonStatus } from '@oss-idle/shared/addon';
 
 /** Admin: every pending + published add-on for the moderation queue. */
 export const listAddonsAdmin = () => unwrap(rpc.v1.addons.admin.$get());

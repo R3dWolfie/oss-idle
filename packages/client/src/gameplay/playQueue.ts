@@ -1,10 +1,10 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import { t } from '@lingui/core/macro';
 import {
 	mapped,
 	ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
+} from '@oss-idle/shared/helpers/mapped';
 
 export const AutopilotModes = [
 	'PLAYLIST',

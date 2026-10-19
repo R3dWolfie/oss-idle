@@ -2,7 +2,7 @@ import './SupporterHeart.css';
 import { Trans } from '@lingui/react/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Auth from '../online/auth';
 
 /** osu!'s main menu heart, for supporters. */

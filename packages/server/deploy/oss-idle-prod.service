@@ -1,0 +1,34 @@
+[Unit]
+Description=oss!idle API server (Hono)
+After=network.target mariadb.service redis-server.service
+Wants=mariadb.service redis-server.service
+
+[Service]
+Type=simple
+User=adri
+# Runs from the prod checkout, never the dev tree (see scripts/prod-build.mjs).
+WorkingDirectory=/main/osu/idle-prod/packages/server
+
+Environment=NODE_ENV=production
+Environment=PORT_PROD=3875
+# Its own pm2 home, so it never shares a daemon with another pm2 on this host.
+Environment=PM2_HOME=/home/adri/.pm2-oss-idle-prod
+Environment="PATH=/home/adri/.nvm/versions/node/v22.13.0/bin:/usr/local/bin:/usr/bin:/bin"
+# Cluster mode (-i max) forks one worker per CPU sharing the listen port; all
+# play state lives in Redis so the workers stay consistent. pm2 cluster needs the
+# Node interpreter (not the `tsx` binary), so we run node with tsx as an ESM
+# loader via --node-args instead of --interpreter tsx.
+ExecStart=/home/adri/.nvm/versions/node/v22.13.0/bin/pm2-runtime start /main/osu/idle-prod/packages/server/src/index.ts --name oss-idle-prod -i max --interpreter node --node-args="--import tsx"
+# Resilience
+Restart=on-failure
+RestartSec=3
+# Give the app a moment to close the DB pool on stop
+TimeoutStopSec=15
+
+# Logs go to journald (view with: journalctl -u oss-idle-prod -f)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=oss-idle
+
+[Install]
+WantedBy=multi-user.target

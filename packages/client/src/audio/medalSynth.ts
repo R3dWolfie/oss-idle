@@ -1,4 +1,4 @@
-import type { MedalTier } from '@osu-idle/shared/achievements/medal';
+import type { MedalTier } from '@oss-idle/shared/achievements/medal';
 
 /**
  * Medal unlock sounds, synthesised. Pure scheduling over any BaseAudioContext,

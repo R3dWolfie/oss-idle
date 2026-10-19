@@ -1,8 +1,8 @@
 import {
 	mapped,
 	ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
+} from '@oss-idle/shared/helpers/mapped';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
 import {
 	Column,
 	DAO,
@@ -13,12 +13,12 @@ import {
 	table,
 	text,
 } from '../dao';
-import Synced from '@osu-idle/shared/helpers/synced';
-import { CharacterDTO } from '@osu-idle/shared/character';
-import type { SkillName } from '@osu-idle/shared/skills';
-import { xpGivesLevel } from '@osu-idle/shared/sim/skills/xp';
+import Synced from '@oss-idle/shared/helpers/synced';
+import { CharacterDTO } from '@oss-idle/shared/character';
+import type { SkillName } from '@oss-idle/shared/skills';
+import { xpGivesLevel } from '@oss-idle/shared/sim/skills/xp';
 
-export type { SkillName } from '@osu-idle/shared/skills';
+export type { SkillName } from '@oss-idle/shared/skills';
 
 export const STATUS = mapped(['IDLE']);
 export type CharacterStatus = ValueIn<typeof STATUS>;

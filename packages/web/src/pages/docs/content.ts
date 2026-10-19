@@ -1,6 +1,6 @@
-import type { Scope } from '@osu-idle/shared/oauth';
-import { Skills } from '@osu-idle/shared/skills';
-import { MATCH_EVENT } from '@osu-idle/shared/multiplayer';
+import type { Scope } from '@oss-idle/shared/oauth';
+import { Skills } from '@oss-idle/shared/skills';
+import { MATCH_EVENT } from '@oss-idle/shared/multiplayer';
 
 /** The API reference, in English only like osu!'s: not sent to Crowdin. */
 
@@ -47,7 +47,7 @@ const USER_COMPACT = {
 	username: 'Paturages',
 	country_code: 'FR',
 	avatar_url: 'https://a.ppy.sh/1375479?1786973894.png',
-	profile_url: 'https://osu.idle.rhythmgamers.net/web/c/13',
+	profile_url: 'https://oss.idle.rhythmgamers.net/web/c/13',
 };
 
 const STATISTICS = {
@@ -99,7 +99,7 @@ const BEATMAP = {
 	count_circles: 5308,
 	count_sliders: 517,
 	playcount: 310,
-	url: 'https://osu.idle.rhythmgamers.net/web/maps/1300539?diff=2697726',
+	url: 'https://oss.idle.rhythmgamers.net/web/maps/1300539?diff=2697726',
 };
 
 const BEATMAPSET = {
@@ -112,7 +112,7 @@ const BEATMAPSET = {
 	ranked_date: '2026-06-16T16:01:42.000Z',
 	submitted_date: '2026-06-22T10:05:56.000Z',
 	covers: { cover: 'https://assets.ppy.sh/beatmaps/1300539/covers/cover.jpg' },
-	url: 'https://osu.idle.rhythmgamers.net/web/maps/1300539',
+	url: 'https://oss.idle.rhythmgamers.net/web/maps/1300539',
 };
 
 const SCORE = {
@@ -147,7 +147,7 @@ const NEWS_POST = {
 	preview: 'Screensaver mode, phones and tablets, and Discord level roles',
 	published_at: '2026-10-14T22:16:58.000Z',
 	updated_at: '2026-10-14T22:16:58.000Z',
-	url: 'https://osu.idle.rhythmgamers.net/web/news/beta-0-20-4',
+	url: 'https://oss.idle.rhythmgamers.net/web/news/beta-0-20-4',
 };
 
 const USER_PARAM: Param = {
@@ -515,7 +515,7 @@ export const OBJECTS: ObjectDoc[] = [
 			['count_circles', 'integer', 'Notes.'],
 			['count_sliders', 'integer', 'Long notes.'],
 			['playcount', 'integer', ''],
-			['url', 'string', 'Its page on osu!idle.'],
+			['url', 'string', 'Its page on oss!idle.'],
 			['beatmapset', 'Beatmapset', 'On Get Beatmap and Lookup Beatmap.'],
 		],
 	},
@@ -533,7 +533,7 @@ export const OBJECTS: ObjectDoc[] = [
 			['ranked_date', 'Timestamp', ''],
 			['submitted_date', 'Timestamp', ''],
 			['covers', 'object', 'cover: the cover image.'],
-			['url', 'string', 'Its page on osu!idle.'],
+			['url', 'string', 'Its page on oss!idle.'],
 			['beatmaps', 'Beatmap[]', 'On Get Beatmapset.'],
 		],
 	},

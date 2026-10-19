@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { useLingui } from '@lingui/react/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import type { ReportReason } from '@osu-idle/shared/social';
+import type { ReportReason } from '@oss-idle/shared/social';
 import { report } from '../../api/social';
 
 /** osu!web's report dialog. */

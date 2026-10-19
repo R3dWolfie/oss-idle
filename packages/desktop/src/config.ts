@@ -1,10 +1,10 @@
 import { app } from 'electron';
 import path from 'node:path';
 
-/** Custom scheme the OS routes back to the running app (`osu-idle://<action>`) -
+/** Custom scheme the OS routes back to the running app (`oss-idle://<action>`) -
  *  must match electron-builder's `protocols`. The transport for app-directed deep
  *  links (see deeplink.ts); auth no longer uses it. */
-export const DESKTOP_SCHEME = 'osu-idle';
+export const DESKTOP_SCHEME = 'oss-idle';
 
 /** Local scheme the renderer bundle is served from. A registered standard +
  *  secure scheme gives a stable, secure origin (so IndexedDB persists and
@@ -31,7 +31,7 @@ export const IS_DEV = !app.isPackaged;
 /** Backend API base (absolute - the renderer loads from app://, not the API). */
 export const API_BASE = IS_DEV
 	? 'http://localhost:3873'
-	: 'https://api.osu.idle.rhythmgamers.net';
+	: 'https://api.oss.idle.rhythmgamers.net';
 
 /** What the main window loads: the live Vite dev server, or the bundled origin. */
 export const RENDERER_URL = IS_DEV ? 'http://localhost:5173/' : `${APP_ORIGIN}/`;
@@ -40,7 +40,7 @@ export const RENDERER_URL = IS_DEV ? 'http://localhost:5173/' : `${APP_ORIGIN}/`
  *  static library (beatmaps, previews) is streamed from here instead of being
  *  packed into the installer (it's ~2.4 GB). Only used by the app:// handler,
  *  which runs in packaged builds, so the prod origin is always right here. */
-export const SITE_BASE = 'https://osu.idle.rhythmgamers.net';
+export const SITE_BASE = 'https://oss.idle.rhythmgamers.net';
 
 /** Bundle path prefixes served from the website instead of the local files, so a
  *  prod build stays small. The client requests these as root-relative URLs (see

@@ -1,6 +1,6 @@
 import { hc } from 'hono/client';
-import type { AppType } from '@osu-idle/server';
-import { desktop } from '@osu-idle/shared/desktop';
+import type { AppType } from '@oss-idle/server';
+import { desktop } from '@oss-idle/shared/desktop';
 import API from './api';
 
 export const BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');

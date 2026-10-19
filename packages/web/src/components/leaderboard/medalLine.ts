@@ -1,7 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import type { MessageDescriptor } from '@lingui/core';
-import num from '@osu-idle/shared/display/num';
-import { overdriveText } from '@osu-idle/shared/display/overdrive';
+import num from '@oss-idle/shared/display/num';
+import { overdriveText } from '@oss-idle/shared/display/overdrive';
 
 export type Goal = { id: string, goal: number };
 

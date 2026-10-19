@@ -4,16 +4,16 @@ import Link from '../Link';
 import Pager from './Pager';
 import type { getSkillRanking } from '../../api/rankings';
 import Flag from '../Flag';
-import rank from '@osu-idle/shared/display/rank';
-import { level } from '@osu-idle/shared/display/num';
-import { levelFromTotalXp } from '@osu-idle/shared/display/levelDisplay';
-import SkillLevel from '@osu-idle/shared/display/SkillLevel';
-import { Skills } from '@osu-idle/shared/skills';
+import rank from '@oss-idle/shared/display/rank';
+import { level } from '@oss-idle/shared/display/num';
+import { levelFromTotalXp } from '@oss-idle/shared/display/levelDisplay';
+import SkillLevel from '@oss-idle/shared/display/SkillLevel';
+import { Skills } from '@oss-idle/shared/skills';
 import {
 	mapped,
 	ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
-import { skillName } from '@osu-idle/shared/display/skills';
+} from '@oss-idle/shared/helpers/mapped';
+import { skillName } from '@oss-idle/shared/display/skills';
 import { Trans } from '@lingui/react/macro';
 
 export const SkillSorts = ['overall', ...Skills] as const;

@@ -1,4 +1,4 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import { music } from './MusicPlayer';
 import { SETTINGS } from '../db/settings';
 import { selectedRate } from '../gameplay/playRate';

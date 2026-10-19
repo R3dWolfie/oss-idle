@@ -9,8 +9,8 @@ import {
 	text,
 	timestamp,
 } from 'drizzle-orm/mysql-core';
-import { MATCH_EVENT } from '@osu-idle/shared/multiplayer';
-import { Grades } from '@osu-idle/shared/judgement';
+import { MATCH_EVENT } from '@oss-idle/shared/multiplayer';
+import { Grades } from '@oss-idle/shared/judgement';
 import { judgeColumns } from './score';
 
 /** A multiplayer match's history: its id is the live match's id. */

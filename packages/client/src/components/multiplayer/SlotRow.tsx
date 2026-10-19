@@ -1,9 +1,9 @@
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
 import type {
 	Match,
 	MatchSlot,
-} from '@osu-idle/shared/multiplayer';
-import type { GlyphName } from '@osu-idle/shared/achievements/glyphs';
+} from '@oss-idle/shared/multiplayer';
+import type { GlyphName } from '@oss-idle/shared/achievements/glyphs';
 import Glyph from './Glyph';
 import SlotLabel from './SlotLabel';
 import Multiplayer from '../../online/multiplayer';

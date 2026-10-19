@@ -1,13 +1,13 @@
 {
-  "name": "@osu-idle/desktop",
-  "version": "1.0.1.0",
+  "name": "@oss-idle/desktop",
+  "version": "1.0.2.0",
   "author": {
     "name": "Adrien Boitelle",
     "email": "adrien.boitelle@gmail.com",
-    "url": "https://osu.idle.rhythmgamers.net/"
+    "url": "https://oss.idle.rhythmgamers.net/"
   },
   "private": true,
-  "description": "osu!idle",
+  "description": "oss!idle",
   "main": "out/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -17,7 +17,7 @@
     "dist:linuxwin": "electron-builder --linux --win"
   },
   "dependencies": {
-    "@osu-idle/shared": "*",
+    "@oss-idle/shared": "*",
     "electron-updater": "^6.3.9"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@ import * as ppjs from 'rosu-pp-js-web';
 import { Beatmap } from 'osu-classes';
 import BeatmapStore from './beatmap/beatmap_store';
 import rosuReady from './rosu';
-import { ScoreState } from '@osu-idle/shared/sim/scoring';
+import { ScoreState } from '@oss-idle/shared/sim/scoring';
 
 const calculatePP = async (
 	score: ScoreState,

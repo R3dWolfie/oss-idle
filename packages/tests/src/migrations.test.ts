@@ -10,9 +10,9 @@ import type {
 } from 'sql.js';
 import initSqlJs from 'sql.js';
 import { createRequire } from 'node:module';
-import { migrate } from '@osu-idle/client/db/migrations';
-import { Skills } from '@osu-idle/shared/skills';
-import { xpToLevel } from '@osu-idle/shared/sim/skills/xp';
+import { migrate } from '@oss-idle/client/db/migrations';
+import { Skills } from '@oss-idle/shared/skills';
+import { xpToLevel } from '@oss-idle/shared/sim/skills/xp';
 
 const require = createRequire(import.meta.url);
 

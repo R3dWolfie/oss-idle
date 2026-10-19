@@ -1,19 +1,19 @@
 import { randomUUID } from 'node:crypto';
-import '@osu-idle/shared/osu/controlPointPatch';
+import '@oss-idle/shared/osu/controlPointPatch';
 import { BeatmapDecoder } from 'osu-parsers';
 import {
 	LEAD_IN_MS,
 	ManiaGame,
 	unstableRate,
 	type ReplayOffset,
-} from '@osu-idle/shared/sim/maniaGame';
-import CharacterBot from '@osu-idle/shared/sim/bots/character';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
-import { hasUnlock } from '@osu-idle/shared/rebirth';
+} from '@oss-idle/shared/sim/maniaGame';
+import CharacterBot from '@oss-idle/shared/sim/bots/character';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
+import { hasUnlock } from '@oss-idle/shared/rebirth';
 import {
 	MINDBLOCK_SKILLS,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import {
 	compareGradeGT,
 	compareGradeGTE,
@@ -21,13 +21,13 @@ import {
 	Judgements,
 	type Grade,
 	type Judgement,
-} from '@osu-idle/shared/judgement';
-import type { ScoreDTO } from '@osu-idle/shared/score';
+} from '@oss-idle/shared/judgement';
+import type { ScoreDTO } from '@oss-idle/shared/score';
 import type {
 	PlayDeltas,
 	PlayResult,
 	PlayState,
-} from '@osu-idle/shared/play';
+} from '@oss-idle/shared/play';
 import {
 	getCharacterById,
 	type CharacterRow,
@@ -39,12 +39,12 @@ import {
 	type NewScoreRow,
 	type ScoreRow,
 } from './db/schema/score';
-import Memory from '@osu-idle/shared/sim/skills/memory';
+import Memory from '@oss-idle/shared/sim/skills/memory';
 import {
 	calculatePP,
 	starsAt,
 } from './pp';
-import { allowedRate } from '@osu-idle/shared/rate';
+import { allowedRate } from '@oss-idle/shared/rate';
 import {
 	getBeatmap,
 	getLiveBeatmap,
@@ -54,7 +54,7 @@ import { hub } from './ws/hub';
 import {
 	STATUS,
 	type Status,
-} from '@osu-idle/shared/community/presence';
+} from '@oss-idle/shared/community/presence';
 import { getPlays } from './db/schema/beatmaps_played';
 import {
 	mindblockFactor,
@@ -81,7 +81,7 @@ import {
 	medalMultiplier,
 } from './medals';
 import type { Beatmap } from 'osu-classes';
-import type { ScoreState } from '@osu-idle/shared/sim/scoring';
+import type { ScoreState } from '@oss-idle/shared/sim/scoring';
 
 /** A finished play's result stays fetchable this long (resume / cross-tab). */
 const RESULT_TTL_MS = 10 * 60 * 1000;

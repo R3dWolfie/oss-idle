@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 import useSmoothNumber from '../../animations/useSmoothNumber';
 import { linear } from '../../animations/smoothNumber';
 

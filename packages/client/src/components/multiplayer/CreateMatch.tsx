@@ -5,15 +5,15 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import Synced from '@osu-idle/shared/helpers/synced';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import Synced from '@oss-idle/shared/helpers/synced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import {
 	MAX_MATCH_NAME,
 	MAX_MATCH_PASSWORD,
 	MAX_SLOTS,
 	MIN_SLOTS,
-} from '@osu-idle/shared/multiplayer';
-import Log from '@osu-idle/shared/helpers/log';
+} from '@oss-idle/shared/multiplayer';
+import Log from '@oss-idle/shared/helpers/log';
 import Checkbox from '../options/controls/Checkbox';
 import Dropdown from '../dropdown/Dropdown';
 import Entities from '../../entity/entities';

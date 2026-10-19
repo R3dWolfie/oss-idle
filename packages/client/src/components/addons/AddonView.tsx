@@ -3,8 +3,8 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import { ADDON_TEMPLATE } from '@osu-idle/shared/addon';
-import { VERSION } from '@osu-idle/shared/version';
+import { ADDON_TEMPLATE } from '@oss-idle/shared/addon';
+import { VERSION } from '@oss-idle/shared/version';
 import {
 	createAddon,
 	updateAddon,

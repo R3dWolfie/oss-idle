@@ -29,7 +29,7 @@ import {
 	skinCreateBody,
 	skinModerateBody,
 	skinUpdateBody,
-} from '@osu-idle/shared/skin';
+} from '@oss-idle/shared/skin';
 
 
 // skins publish without review: new ones and their icons are capped per account

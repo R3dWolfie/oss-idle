@@ -6,13 +6,19 @@ import {
 	Client,
 	Events,
 	GatewayIntentBits,
+	PermissionFlagsBits,
 	type Guild,
 	type GuildMember,
 	type Role,
 } from 'discord.js';
 import { Redis } from 'ioredis';
 import mysql, { type RowDataPacket } from 'mysql2/promise';
-import type { ServerMessage } from '@osu-idle/shared/community/wire';
+import type { ServerMessage } from '@oss-idle/shared/community/wire';
+import {
+	GROUP_BADGE,
+	GROUPS,
+	OWNER_ID,
+} from '@oss-idle/shared/groups';
 
 // One .env for the whole backend: the bot reads the server's.
 config({ path: fileURLToPath(new URL('../../server/.env', import.meta.url)) });
@@ -63,6 +69,33 @@ const colourOf = (tier: number) => {
 	return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
 };
 
+/** Above the ladder so their colour wins, not hoisted so the member list still reads by level.
+ *  Highest first. */
+const BADGES = [
+	...GROUPS.map(group => ({
+		key: group, ...GROUP_BADGE[group], 
+	})),
+	{
+		key: 'supporter', name: 'Supporter', colour: '#ff66aa', 
+	},
+];
+/** Moderation without Manage Roles, so they can't hand out Supporter or levels. */
+const PERMISSIONS: Partial<Record<string, bigint[]>> = {
+	gmt: [
+		PermissionFlagsBits.KickMembers,
+		PermissionFlagsBits.BanMembers,
+		PermissionFlagsBits.ModerateMembers,
+		PermissionFlagsBits.ManageMessages,
+		PermissionFlagsBits.ManageThreads,
+		PermissionFlagsBits.ManageNicknames,
+		PermissionFlagsBits.MuteMembers,
+		PermissionFlagsBits.DeafenMembers,
+		PermissionFlagsBits.MoveMembers,
+		PermissionFlagsBits.ViewAuditLog,
+	],
+};
+const isBadge = (role: Role) => BADGES.some(badge => badge.name === role.name);
+
 const FULL_SYNC_MS = 15 * 60 * 1000;
 
 const db = mysql.createPool({
@@ -74,24 +107,50 @@ const db = mysql.createPool({
 	connectionLimit: 2,
 });
 
-/** Discord id → overall level of the account's current character, for linked accounts. */
-const linkedLevels = async (filter = '', args: unknown[] = []) => {
+type Linked = { level?: number; badges: string[] };
+
+/** Discord id → overall level of the account's current character and its badge role names,
+ *  for linked accounts. */
+const linkedMembers = async (filter = '', args: unknown[] = []) => {
 	const [rows] = await db.query<RowDataPacket[]>(
-		`SELECT u.discord_id AS discordId, c.overall_level AS level
-		FROM user u JOIN \`character\` c ON c.id = u.current_character
+		`SELECT u.id, u.discord_id AS discordId, c.overall_level AS level,
+			u.supporter_until > UTC_TIMESTAMP() AS supporter,
+			(SELECT GROUP_CONCAT(g.\`group\`) FROM user_group g WHERE g.user_id = u.id) AS \`groups\`
+		FROM user u LEFT JOIN \`character\` c ON c.id = u.current_character
 		WHERE u.discord_id IS NOT NULL AND u.restricted_at IS NULL ${filter}`,
 		args,
 	);
-	return new Map(rows.map(row => [row.discordId as string, row.level as number]));
+	return new Map(rows.map(row => {
+		const keys = new Set<string>(row.groups?.split(',') ?? []);
+		if (row.id === OWNER_ID) keys.add('admin');
+		if (row.supporter) keys.add('supporter');
+		const linked: Linked = {
+			level: row.level ?? undefined,
+			badges: BADGES.filter(badge => keys.has(badge.key)).map(badge => badge.name),
+		};
+		return [row.discordId as string, linked];
+	}));
 };
 
-/** Keep the level roles together, highest on top, so the member list reads as a ladder. */
+/** Keep the level roles together, highest on top, so the member list reads as a ladder, and
+ *  the badges right over it. */
 const orderRoles = async (guild: Guild) => {
+	// New roles share position 1 without lifting the rest, so the block can outgrow the bot's
+	// own position. Any reorder makes Discord renumber every role.
+	const lowest = guild.roles.cache.find(role => role.position === 1);
+	if (lowest) await guild.roles.setPositions([{
+		role: lowest, position: 1, 
+	}]);
+	await guild.roles.fetch();
 	const ladder = [...guild.roles.cache.values()]
 		.filter(role => tierOfRole(role) !== undefined)
 		.sort((a, b) => tierOfRole(a)! - tierOfRole(b)!);
-	const base = Math.min(...ladder.map(role => role.position));
-	await guild.roles.setPositions(ladder.map((role, i) => ({
+	const badges = [...BADGES].reverse()
+		.map(badge => guild.roles.cache.find(role => role.name === badge.name))
+		.filter(role => role !== undefined);
+	const managed = [...ladder, ...badges];
+	const base = Math.min(...managed.map(role => role.position));
+	await guild.roles.setPositions(managed.map((role, i) => ({
 		role, position: base + i, 
 	})));
 };
@@ -115,6 +174,22 @@ const roleFor = (guild: Guild, tier: number): Promise<Role> => {
 	return made;
 };
 
+const ensureBadges = async (guild: Guild) => {
+	for (const { key, name, colour } of BADGES) {
+		const permissions = PERMISSIONS[key];
+		const existing = guild.roles.cache.find(role => role.name === name);
+		if (!existing) await guild.roles.create({
+			name, colors: { primaryColor: parseInt(colour.slice(1), 16) }, permissions,
+		});
+		else if (permissions && !existing.permissions.equals(permissions)) {
+			// Discord only lets the bot grant what it holds: a missing one shouldn't stop the roles.
+			await existing.setPermissions(permissions)
+				.catch(err => console.error(`[discord] ${name} permissions:`, err.message));
+		}
+	}
+	await orderRoles(guild);
+};
+
 /** A level role nobody holds any more goes: the ladder only shows levels players are at. */
 const dropEmpty = async (roles: Role[]) => {
 	for (const role of roles) {
@@ -122,30 +197,35 @@ const dropEmpty = async (roles: Role[]) => {
 	}
 };
 
-const syncMember = async (member: GuildMember, level: number | undefined) => {
+const syncMember = async (member: GuildMember, linked: Linked | undefined) => {
 	if (member.user.bot) return;
-	const tier = level === undefined ? undefined : tierOf(level);
+	const tier = linked?.level === undefined ? undefined : tierOf(linked.level);
 	const want = tier === undefined ? undefined : await roleFor(member.guild, tier);
-	const stale = member.roles.cache.filter(role => role !== want && tierOfRole(role) !== undefined);
-	if (want && !member.roles.cache.has(want.id)) await member.roles.add(want);
+	const badges = member.guild.roles.cache.filter(role => !!linked?.badges.includes(role.name));
+	const add = [want, ...badges.values()]
+		.filter((role): role is Role => role !== undefined && !member.roles.cache.has(role.id));
+	const stale = member.roles.cache.filter(role => tierOfRole(role) !== undefined
+		? role !== want
+		: isBadge(role) && !badges.has(role.id));
+	if (add.length) await member.roles.add(add);
 	if (stale.size) {
 		await member.roles.remove(stale);
 		await dropEmpty([...stale.values()]);
 	}
 };
 
-const syncLinked = async (guild: Guild, levels: Map<string, number>) => {
-	for (const [discordId, level] of levels) {
+const syncLinked = async (guild: Guild, linked: Map<string, Linked>) => {
+	for (const [discordId, one] of linked) {
 		const member = await guild.members.fetch(discordId).catch(() => undefined);
-		if (member) await syncMember(member, level);
+		if (member) await syncMember(member, one);
 	}
 };
 
 /** Every member: also takes the role back from an account that was unlinked or relinked. */
 const syncAll = async (guild: Guild) => {
-	const levels = await linkedLevels();
+	const linked = await linkedMembers();
 	const members = await guild.members.fetch();
-	for (const member of members.values()) await syncMember(member, levels.get(member.id));
+	for (const member of members.values()) await syncMember(member, linked.get(member.id));
 	await dropEmpty([...guild.roles.cache.values()]);
 };
 
@@ -159,12 +239,12 @@ const followCharacters = (guild: Guild) => {
 		db: env.REDIS_DB,
 	});
 	sub.on('error', err => console.error('[discord] redis:', err.message));
-	void sub.subscribe(`${isProd ? 'osu-idle:prod:' : 'osu-idle:dev:'}ws:broadcast`);
+	void sub.subscribe(`${isProd ? 'oss-idle:prod:' : 'oss-idle:dev:'}ws:broadcast`);
 	sub.on('message', (_channel, payload) => {
 		const { msg } = JSON.parse(payload) as { msg?: ServerMessage };
 		if (msg?.type !== 'character') return;
-		void linkedLevels('AND u.id = ?', [msg.character.userId])
-			.then(levels => syncLinked(guild, levels))
+		void linkedMembers('AND u.id = ?', [msg.character.userId])
+			.then(linked => syncLinked(guild, linked))
 			.catch(err => console.error('[discord] character sync:', err));
 	});
 };
@@ -174,17 +254,18 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.once(Events.ClientReady, async ready => {
 	const guild = await ready.guilds.fetch(env.DISCORD_GUILD_ID);
 	await guild.roles.fetch();
+	await ensureBadges(guild);
 	followCharacters(guild);
 	const fullSync = () => syncAll(guild).catch(err => console.error('[discord] full sync:', err));
 	await fullSync();
 	setInterval(fullSync, FULL_SYNC_MS);
-	console.log(`[discord] ${ready.user.tag} managing level roles on ${guild.name}`);
+	console.log(`[discord] ${ready.user.tag} managing level and badge roles on ${guild.name}`);
 });
 
 client.on(Events.GuildMemberAdd, member => {
 	if (member.guild.id !== env.DISCORD_GUILD_ID) return;
-	void linkedLevels('AND u.discord_id = ?', [member.id])
-		.then(levels => syncMember(member, levels.get(member.id)))
+	void linkedMembers('AND u.discord_id = ?', [member.id])
+		.then(linked => syncMember(member, linked.get(member.id)))
 		.catch(err => console.error('[discord] member join:', err));
 });
 

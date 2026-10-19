@@ -12,11 +12,11 @@ import {
 	isWebOpen,
 } from '../../globals';
 import Auth from '../../online/auth';
-import num from '@osu-idle/shared/display/num';
-import accuracyText from '@osu-idle/shared/display/accuracy';
-import hitAccuracy from '@osu-idle/shared/osu/hitAccuracy';
-import { xpForLevel } from '@osu-idle/shared/sim/skills/xp';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import num from '@oss-idle/shared/display/num';
+import accuracyText from '@oss-idle/shared/display/accuracy';
+import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
+import { xpForLevel } from '@oss-idle/shared/sim/skills/xp';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 
 /** Profile card: avatar + online stats, clicking through to osu! web
  *  (or the login flow for a guest). Online stats only show once loaded. */

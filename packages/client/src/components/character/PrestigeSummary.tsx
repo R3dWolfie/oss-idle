@@ -3,12 +3,12 @@ import {
 	useReducer,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import type Skill from '@osu-idle/shared/sim/skills/skill';
-import { skillName } from '@osu-idle/shared/display/skills';
+import type Skill from '@oss-idle/shared/sim/skills/skill';
+import { skillName } from '@oss-idle/shared/display/skills';
 import {
 	canPrestige,
 	prestigeXPMultiplier,
-} from '@osu-idle/shared/upgrades';
+} from '@oss-idle/shared/upgrades';
 
 const tally = (skills: Skill[], locked: boolean) => {
 	const rows = skills.map(skill => {

@@ -34,8 +34,9 @@ const similarity = (mono: Float32Array, at: number, tail: Float32Array): number 
 };
 
 const bestOffset = (mono: Float32Array, from: number, seek: number, tail: Float32Array): number => {
-	let best = 0;
-	let bestScore = -Infinity;
+	// silence matches everywhere: start at the centre so ties stay on time
+	let best = seek >> 1;
+	let bestScore = similarity(mono, from + best, tail);
 	for (let k = 0; k < seek; k += SEEK_STEP) {
 		const score = similarity(mono, from + k, tail);
 		if (score > bestScore) [best, bestScore] = [k, score];
@@ -59,6 +60,9 @@ export const timeStretch = (
 	const seek = Math.round(SEEK_MS * sampleRate / 1000);
 	const hop = sequence - overlap;
 	const mono = mixDown(channels);
+	// a piece is copied at 1x, so read it from where its middle belongs, and
+	// centre the search on that, or the output drifts ahead (worst slowed down)
+	const bias = (rate - 1) * hop / 2 - seek / 2;
 
 	const out = channels.map(() => new Float32Array(Math.ceil(length / rate) + sequence));
 	let written = 0;
@@ -66,8 +70,9 @@ export const timeStretch = (
 	let tails = channels.map(ch => ch.slice(0, overlap));
 	let monoTail = mono.slice(0, overlap);
 
-	for (let nominal = 0; nominal + seek + sequence < length; nominal += rate * hop) {
-		const start = Math.floor(nominal) + bestOffset(mono, Math.floor(nominal), seek, monoTail);
+	for (let nominal = bias; nominal + seek + sequence < length; nominal += rate * hop) {
+		const from = Math.max(0, Math.floor(nominal));
+		const start = from + bestOffset(mono, from, seek, monoTail);
 		channels.forEach((ch, c) => {
 			const o = out[c];
 			const tail = tails[c];

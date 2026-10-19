@@ -49,8 +49,9 @@ export default function HoverCard({
 
 	return <span
 		className={className}
-		onMouseEnter={e => setAt(e.currentTarget.getBoundingClientRect())}
-		onMouseLeave={() => setAt(undefined)}
+		// a tap would open it with nothing to close it
+		onPointerEnter={e => e.pointerType !== 'touch' && setAt(e.currentTarget.getBoundingClientRect())}
+		onPointerLeave={() => setAt(undefined)}
 	>
 		{children}
 		{at !== undefined && card !== undefined && typeof document !== 'undefined' && createPortal(

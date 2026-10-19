@@ -4,9 +4,9 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Trans } from '@lingui/react/macro';
-import { skillName } from '@osu-idle/shared/display/skills';
-import { bignum } from '@osu-idle/shared/display/num';
-import type { SkillName } from '@osu-idle/shared/skills';
+import { skillName } from '@oss-idle/shared/display/skills';
+import { bignum } from '@oss-idle/shared/display/num';
+import type { SkillName } from '@oss-idle/shared/skills';
 import type { BeatmapXPInsight } from '../xpInsights';
 import './BeatmapXPBreakdown.css';
 

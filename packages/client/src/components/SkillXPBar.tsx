@@ -2,11 +2,11 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import Skill from '@osu-idle/shared/sim/skills/skill';
-import { SkillProgress } from '@osu-idle/shared/sim/bots/character';
-import { skillName } from '@osu-idle/shared/display/skills';
-import { bignum } from '@osu-idle/shared/display/num';
-import SkillLevel from '@osu-idle/shared/display/SkillLevel';
+import Skill from '@oss-idle/shared/sim/skills/skill';
+import { SkillProgress } from '@oss-idle/shared/sim/bots/character';
+import { skillName } from '@oss-idle/shared/display/skills';
+import { bignum } from '@oss-idle/shared/display/num';
+import SkillLevel from '@oss-idle/shared/display/SkillLevel';
 
 const SEGMENT_MS = 2000;     // time to pour a full level's worth of fill
 const MIN_SEGMENT_MS = 1000; // floor so tiny gains still read as a fill

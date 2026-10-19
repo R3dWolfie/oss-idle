@@ -2,7 +2,7 @@ import {
 	describe,
 	it,
 } from 'vitest';
-import { SKILL } from '@osu-idle/shared/skills';
+import { SKILL } from '@oss-idle/shared/skills';
 import {
 	CHARTS,
 	getBeatmap,

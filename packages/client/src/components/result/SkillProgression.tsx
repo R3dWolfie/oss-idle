@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Entities from '../../entity/entities';
 import SkillXPBar from '../SkillXPBar';
 

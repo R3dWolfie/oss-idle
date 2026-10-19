@@ -2,14 +2,14 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import Controls from '../input/Controls';
 import useSmoothNumber from '../animations/useSmoothNumber';
 import './VolumeOverlay.css';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { SETTINGS } from '../db/settings';
 import { isVolumeVisible } from '../globals';
-import clamp from '@osu-idle/shared/math/clamp';
+import clamp from '@oss-idle/shared/math/clamp';
 
 type Channel = 'main' | 'music' | 'effects';
 

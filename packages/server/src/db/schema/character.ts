@@ -10,14 +10,14 @@ import { jsonColumn } from '../columns';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
-import type { CharacterDTO } from '@osu-idle/shared/character';
-import type { PendingAction } from '@osu-idle/shared/pendingAction';
+} from '@oss-idle/shared/skills';
+import type { CharacterDTO } from '@oss-idle/shared/character';
+import type { PendingAction } from '@oss-idle/shared/pendingAction';
 import { users } from './user';
 import { apiBaseUrl } from '../../env';
 import { db } from '../client';
 import { eq } from 'drizzle-orm';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 
 /** Daily global pp rank samples, oldest first, capped at RANK_HISTORY_DAYS.
  *  `date` is the UTC day (YYYY-MM-DD) of the latest sample. */

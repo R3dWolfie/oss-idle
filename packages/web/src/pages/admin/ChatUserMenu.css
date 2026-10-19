@@ -56,3 +56,12 @@
 .chat-menu__item.danger {
 	color: hsl(var(--hsl-red-1));
 }
+.chat-menu__reason {
+	margin: 0.2rem;
+	padding: 0.3rem 0.4rem;
+	border: none;
+	border-radius: 4px;
+	background-color: hsl(var(--hsl-b4));
+	color: inherit;
+	font: inherit;
+}

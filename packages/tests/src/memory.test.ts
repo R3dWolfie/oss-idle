@@ -3,11 +3,11 @@ import {
 	it,
 	expect,
 } from 'vitest';
-import Memory from '@osu-idle/shared/sim/skills/memory';
-import SpeedJam from '@osu-idle/shared/sim/skills/speedjam';
-import { newStrain } from '@osu-idle/shared/sim/bots/character';
-import type { BotContext } from '@osu-idle/shared/sim/bot';
-import type RuntimeNote from '@osu-idle/shared/sim/runtimeNote';
+import Memory from '@oss-idle/shared/sim/skills/memory';
+import SpeedJam from '@oss-idle/shared/sim/skills/speedjam';
+import { newStrain } from '@oss-idle/shared/sim/bots/character';
+import type { BotContext } from '@oss-idle/shared/sim/bot';
+import type RuntimeNote from '@oss-idle/shared/sim/runtimeNote';
 
 const note = (time: number) => ({ time }) as unknown as RuntimeNote;
 

@@ -5,7 +5,7 @@ import {
 	t,
 } from '@lingui/core/macro';
 import { CarouselItem } from '../../components/BeatmapCarousel';
-import { Grades } from '@osu-idle/shared/judgement';
+import { Grades } from '@oss-idle/shared/judgement';
 
 /** Per-character play history, keyed by beatmap (difficulty) id. Mirrors what
  *  SongSelect derives from the local score table; the two history-based group

@@ -1,8 +1,8 @@
 import './ReportMessageDialog.css';
 import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
-import Log from '@osu-idle/shared/helpers/log';
-import type { ReportReason } from '@osu-idle/shared/social';
+import Log from '@oss-idle/shared/helpers/log';
+import type { ReportReason } from '@oss-idle/shared/social';
 import { rpc } from '../../../online/client';
 import type { PlayerChatLine } from '../state';
 

@@ -1,4 +1,4 @@
-import { GRADE } from '@osu-idle/shared/judgement';
+import { GRADE } from '@oss-idle/shared/judgement';
 import {
 	Bounds,
 	Expectation,

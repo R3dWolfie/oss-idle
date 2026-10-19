@@ -1,4 +1,4 @@
-import type { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
+import type { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
 import type Skin from '../osu/skin/Skin';
 import {
 	playfieldGeometry,
@@ -39,14 +39,16 @@ export {
  */
 export default class GameplayRenderer {
 
-	// stacked back-to-front; HUD carries eased state so it's an instance
-	private readonly layers: Layer[] = [
+	// stacked back-to-front; mirrored vertically for upscroll
+	private readonly field: Layer[] = [
 		drawPlayfield,
 		drawBarlines,
 		drawNotes,
 		drawReceptors,
-		makeHud(),
 	];
+
+	// carries eased state so it's an instance
+	private readonly hud = makeHud();
 
 	constructor(
 		private ctx: CanvasRenderingContext2D,
@@ -75,7 +77,14 @@ export default class GameplayRenderer {
 			g,
 			opts,
 		};
-		for (const layer of this.layers) layer(frame);
+		this.ctx.save();
+		if (this.skin.data.playfield.upscroll) {
+			this.ctx.translate(0, vp.h);
+			this.ctx.scale(1, -1);
+		}
+		for (const layer of this.field) layer(frame);
+		this.ctx.restore();
+		this.hud(frame);
 		return g;
 	}
 

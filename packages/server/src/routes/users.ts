@@ -8,7 +8,9 @@ import {
 	toUserDTO,
 } from '../db/schema/user';
 
-import { isAdmin } from '@osu-idle/shared/admin';
+import { isModerator } from '@oss-idle/shared/groups';
+import { groupsOf } from '../groups';
+import { standing } from '../restrictions';
 import { sessionUserId } from '../auth/middleware';
 
 const idParam = z.coerce.number().int().positive();
@@ -28,9 +30,18 @@ export const usersRoutes = new Hono()
 		const [row] = await db.select().from(users).where(eq(users.id, id)).limit(1);
 
 		const viewer = await sessionUserId(c);
-		if (!row || (row.restrictedAt && viewer !== row.id && !isAdmin(viewer))) {
+		if (!row || (row.restrictedAt && viewer !== row.id && !isModerator(await groupsOf(viewer)))) {
 			throw new HTTPException(404, { message: 'User not found' });
 		}
 
-		return c.json(toUserDTO(row));
+		return c.json(toUserDTO(row, await groupsOf(row.id)));
+	})
+
+	// osu-web's Account Standing: for the player and the moderators.
+	.get('/:id/standing', async c => {
+		const id = idParam.parse(c.req.param('id'));
+		const viewer = await sessionUserId(c);
+		const moderator = isModerator(await groupsOf(viewer));
+		if (viewer !== id && !moderator) throw new HTTPException(404, { message: 'User not found' });
+		return c.json(await standing(id, moderator));
 	});

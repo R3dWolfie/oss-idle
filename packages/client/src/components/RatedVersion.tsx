@@ -1,5 +1,5 @@
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { versionLabel } from '@osu-idle/shared/rate';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { versionLabel } from '@oss-idle/shared/rate';
 import { selectedRate } from '../gameplay/playRate';
 
 /** " [Beginner x1.3]": a difficulty at the rate it's played at - the picked one,

@@ -120,4 +120,37 @@ test.describe('social', () => {
 		);
 		expect(rows.map(r => r.reason)).toEqual(['chat']);
 	});
+
+	test('/np links the map: song select moves to it, the menu plays it', async ({ playerAs }) => {
+		const b = await playerAs(bob);
+		const bobGame = await inGame(b);
+		const a = await playerAs(alice);
+		const game = await inGame(a);
+		await game.enterSongSelect();
+		const { set, version } = await game.easiestMap();
+		const other = await game.hardestMap();
+		await game.search(set.title);
+		await game.selectCard(version.id);
+
+		await game.fromRoster(bob.name, 'Start Chat');
+		await game.say('/np');
+		const link = a.locator('.chat__line .chat__link', { hasText: version.version });
+		await expect(link).toBeVisible();
+
+		// song select: away from the map, then the link brings it back
+		await a.keyboard.press('Escape');
+		await game.search(other.set.title);
+		await game.selectCard(other.version.id);
+		await a.keyboard.press('F8');
+		await link.click();
+		await expect(a.locator('.community-chat-container')).not.toHaveClass(/is-enabled/);
+		await expect.poll(() => game.nowPlaying()).toBe(version.id);
+
+		// the main menu: the link puts it on
+		await b.keyboard.press('F8');
+		await b.locator('.chat__tabs .tab', { hasText: alice.name }).click();
+		await b.locator('.chat__line .chat__link', { hasText: version.version }).click();
+		await expect.poll(() => bobGame.nowPlaying()).toBe(version.id);
+		expect(await bobGame.scene()).toBe('MENU');
+	});
 });

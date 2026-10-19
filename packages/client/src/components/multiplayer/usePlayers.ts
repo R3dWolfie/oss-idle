@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
 import Socket from '../../online/socket';
 
 /** Online players by character id - a match only carries ids. */

@@ -33,6 +33,10 @@ msgstr "{count} selected"
 msgid "{days, plural, =0 {today} one {# day ago} other {# days ago}}"
 msgstr "{days, plural, =0 {today} one {# day ago} other {# days ago}}"
 
+#: src/components/character/SanctionLength.tsx
+msgid "{days, plural, one {# day} other {# days}}"
+msgstr "{days, plural, one {# day} other {# days}}"
+
 #: src/pages/beatmaps/RequestSearchHit.tsx
 msgid "{diffs} × 4K"
 msgstr "{diffs} × 4K"
@@ -41,13 +45,37 @@ msgstr "{diffs} × 4K"
 msgid "{holders} players ({share})"
 msgstr "{holders} players ({share})"
 
+#: src/components/character/SanctionLength.tsx
+msgid "{hours, plural, one {# hour} other {# hours}}"
+msgstr "{hours, plural, one {# hour} other {# hours}}"
+
+#: src/components/character/SanctionLength.tsx
+msgid "{minutes, plural, one {# minute} other {# minutes}}"
+msgstr "{minutes, plural, one {# minute} other {# minutes}}"
+
 #: src/pages/store/SupportDuration.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# month} other {# months}}"
 
+#: src/components/character/AccountStanding.tsx
+msgid "{name} is silenced until a moderator lifts it."
+msgstr "{name} is silenced until a moderator lifts it."
+
+#: src/components/character/AccountStanding.tsx
+msgid "{name} will be able to speak again in <0/>."
+msgstr "{name} will be able to speak again in <0/>."
+
+#: src/components/character/AccountStanding.tsx
+msgid "{name}'s account is not in a good standing."
+msgstr "{name}'s account is not in a good standing."
+
 #: src/components/character/MedalProgressBar.tsx
 msgid "{now} / {goal} (best {best})"
 msgstr "{now} / {goal} (best {best})"
+
+#: src/pages/changelog/UpdateStreams.tsx
+msgid "{online, plural, one {# user online} other {# users online}}"
+msgstr "{online, plural, one {# user online} other {# users online}}"
 
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
@@ -119,8 +147,8 @@ msgid "<0>Sign in</0> to propose a map or support someone else's."
 msgstr "<0>Sign in</0> to propose a map or support someone else's."
 
 #: src/pages/store/Store.tsx
-msgid "<0>Sign in</0> to support osu!idle."
-msgstr "<0>Sign in</0> to support osu!idle."
+msgid "<0>Sign in</0> to support oss!idle."
+msgstr "<0>Sign in</0> to support oss!idle."
 
 #: src/pages/help/FAQ.tsx
 msgid "<0>Unranked:</0> signed in, on a map or difficulty that isn't ranked. Saved in your browser only, with no experience."
@@ -138,6 +166,10 @@ msgstr "A hidden medal"
 msgid "A pink heart next to your name on your profile. It grows more hearts the longer you support."
 msgstr "A pink heart next to your name on your profile. It grows more hearts the longer you support."
 
+#: src/pages/store/SupporterPerks.tsx
+msgid "A pink Supporter role on our Discord server, once you link your Discord account in the options."
+msgstr "A pink Supporter role on our Discord server, once you link your Discord account in the options."
+
 #: src/pages/matches/MatchEventLine.tsx
 msgid "a player"
 msgstr "a player"
@@ -154,6 +186,10 @@ msgstr "Accept selected"
 #: src/pages/beatmaps/requestPhase.ts
 msgid "accepted"
 msgstr "accepted"
+
+#: src/components/character/AccountStanding.tsx
+msgid "Account Standing"
+msgstr "Account Standing"
 
 #: src/pages/matches/MatchGameScore.tsx
 msgid "accuracy"
@@ -179,6 +215,10 @@ msgstr "Achieved on {date}"
 #: src/pages/help/FAQ.tsx
 msgid "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
 msgstr "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
+
+#: src/components/character/AccountStanding.tsx
+msgid "Action"
+msgstr "Action"
 
 #: src/pages/rankings/Country.tsx
 msgid "Active Players"
@@ -207,7 +247,7 @@ msgstr "all"
 
 #: src/components/leaderboard/CountryFilter.tsx
 #: src/components/leaderboard/useFriendsFilter.ts
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "All"
 msgstr "All"
 
@@ -224,8 +264,8 @@ msgid "An idle game built on osu!mania 4K. You don't press the keys: your charac
 msgstr "An idle game built on osu!mania 4K. You don't press the keys: your character plays the maps for you. Every play earns experience in its skills, better skills mean better plays, and better plays climb the rankings."
 
 #: src/pages/beatmaps/MapRequests.tsx
-msgid "Anyone can propose a map for ranking in osu!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
-msgstr "Anyone can propose a map for ranking in osu!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
+msgid "Anyone can propose a map for ranking in oss!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
+msgstr "Anyone can propose a map for ranking in oss!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
 
 #: src/pages/settings/OAuthSettings.tsx
 #: src/routes/docs.tsx
@@ -271,8 +311,8 @@ msgid "Avg. Performance"
 msgstr "Avg. Performance"
 
 #: src/pages/DesktopDone.tsx
-msgid "Back in osu!idle already? You can close this tab."
-msgstr "Back in osu!idle already? You can close this tab."
+msgid "Back in oss!idle already? You can close this tab."
+msgstr "Back in oss!idle already? You can close this tab."
 
 #: src/pages/admin/AdminNav.tsx
 #: src/routes/admin/balancing.tsx
@@ -303,7 +343,7 @@ msgstr "beatmaps"
 msgid "Beatmaps"
 msgstr "Beatmaps"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Best for performance and idling."
 msgstr "Best for performance and idling."
 
@@ -355,6 +395,7 @@ msgstr "Can I talk to other players?"
 #: src/components/character/DeleteAccountDialog.tsx
 #: src/components/character/ReportDialog.tsx
 #: src/components/character/RestrictDialog.tsx
+#: src/components/character/SilenceDialog.tsx
 #: src/components/EditableCharacterName.tsx
 #: src/pages/oauth/Authorize.tsx
 #: src/pages/settings/OAuthClientDialog.tsx
@@ -369,6 +410,12 @@ msgstr "Change banner"
 #: src/components/EditableCharacterName.tsx
 msgid "Change username"
 msgstr "Change username"
+
+#: src/HeaderLinks.tsx
+#: src/routes/changelog/$version.tsx
+#: src/routes/changelog/index.tsx
+msgid "changelog"
+msgstr "changelog"
 
 #: src/routes/c/$id.tsx
 #: src/routes/preview.tsx
@@ -436,8 +483,8 @@ msgid "Country Ranking"
 msgstr "Country Ranking"
 
 #: src/pages/PublicLanding.tsx
-msgid "Create your own osu! character and watch it grow to become a<0/><1>legendary mania player</1>."
-msgstr "Create your own osu! character and watch it grow to become a<0/><1>legendary mania player</1>."
+msgid "Create your own oss! character and watch it grow to become a<0/><1>legendary mania player</1>."
+msgstr "Create your own oss! character and watch it grow to become a<0/><1>legendary mania player</1>."
 
 #: src/pages/help/FAQ.tsx
 msgid "Customisation"
@@ -448,6 +495,7 @@ msgstr "Customisation"
 msgid "dashboard"
 msgstr "dashboard"
 
+#: src/components/character/AccountStanding.tsx
 #: src/pages/store/OrderHistory.tsx
 msgid "Date"
 msgstr "Date"
@@ -466,7 +514,7 @@ msgstr "Delete {0}? This cannot be undone."
 msgid "Delete {username}'s account?"
 msgstr "Delete {username}'s account?"
 
-#: src/components/character/ProfileMenu.tsx
+#: src/components/character/SanctionItems.tsx
 msgid "Delete account"
 msgstr "Delete account"
 
@@ -478,9 +526,17 @@ msgstr "Delete for good"
 msgid "Delete selected"
 msgstr "Delete selected"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Description"
+msgstr "Description"
+
 #: src/routes/auth/discord.tsx
 msgid "Discord linked"
 msgstr "Discord linked"
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Discord role"
+msgstr "Discord role"
 
 #: src/pages/help/FAQ.tsx
 msgid "Do I have to watch my plays?"
@@ -490,19 +546,23 @@ msgstr "Do I have to watch my plays?"
 msgid "Do I need an osu! account?"
 msgstr "Do I need an osu! account?"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/beatmaps/DownloadButton.tsx
+msgid "Download"
+msgstr "Download"
+
+#: src/pages/PlayOssIdle.tsx
 msgid "Download for {platform} (v{version})"
 msgstr "Download for {platform} (v{version})"
 
 #: src/pages/Home.tsx
-msgid "download osu!idle"
-msgstr "download osu!idle"
+msgid "download oss!idle"
+msgstr "download oss!idle"
 
 #: src/pages/beatmaps/RequestActions.tsx
 msgid "Download the .osz and push it into the nomination queue"
 msgstr "Download the .osz and push it into the nomination queue"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Download the desktop app"
 msgstr "Download the desktop app"
 
@@ -614,6 +674,10 @@ msgstr "Golden name"
 msgid "grades"
 msgstr "grades"
 
+#: src/routes/groups/$group.tsx
+msgid "groups"
+msgstr "groups"
+
 #: src/pages/AuthCallback.tsx
 msgid "Hello {username}!"
 msgstr "Hello {username}!"
@@ -660,7 +724,7 @@ msgstr "How do I earn experience?"
 msgid "How do I get a map ranked?"
 msgstr "How do I get a map ranked?"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "How do you want to play?"
 msgstr "How do you want to play?"
 
@@ -728,6 +792,7 @@ msgstr "legal notice"
 msgid "Legal notice"
 msgstr "Legal notice"
 
+#: src/components/character/AccountStanding.tsx
 #: src/pages/beatmaps/BeatmapsetStats.tsx
 msgid "Length"
 msgstr "Length"
@@ -740,14 +805,23 @@ msgstr "level"
 msgid "lifetime"
 msgstr "lifetime"
 
-#: src/components/character/ProfileMenu.tsx
+#: src/components/character/SanctionItems.tsx
 msgid "Lift restriction"
 msgstr "Lift restriction"
+
+#: src/components/character/SanctionItems.tsx
+msgid "Lift silence"
+msgstr "Lift silence"
+
+#: src/pages/changelog/ChangelogNav.tsx
+msgid "listing"
+msgstr "listing"
 
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/MapScoreboard.tsx
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/friends/Friends.tsx
+#: src/pages/groups/GroupPage.tsx
 #: src/pages/oauth/Authorize.tsx
 #: src/pages/settings/OAuthSettings.tsx
 #: src/pages/settings/TitleSettings.tsx
@@ -852,6 +926,10 @@ msgstr "menu"
 msgid "Menu background"
 msgstr "Menu background"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Moderator"
+msgstr "Moderator"
+
 #: src/pages/beatmaps/MapScoreboard.tsx
 msgid "Mods"
 msgstr "Mods"
@@ -911,6 +989,10 @@ msgstr "Next medal"
 msgid "No authorized clients."
 msgstr "No authorized clients."
 
+#: src/pages/changelog/Changelog.tsx
+msgid "No builds yet. Check back soon!"
+msgstr "No builds yet. Check back soon!"
+
 #: src/pages/news/News.tsx
 #: src/pages/PublicLanding.tsx
 msgid "No news yet. Check back soon!"
@@ -945,7 +1027,7 @@ msgstr "No. Without signing in you play as a guest: everything is saved in your 
 msgid "Nobody yet"
 msgstr "Nobody yet"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Not yet available for {platform}"
 msgstr "Not yet available for {platform}"
 
@@ -974,7 +1056,7 @@ msgstr "now {now}"
 msgid "OAuth"
 msgstr "OAuth"
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Offline"
 msgstr "Offline"
 
@@ -995,7 +1077,7 @@ msgstr "one moment..."
 msgid "One URL per line."
 msgstr "One URL per line."
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Online"
 msgstr "Online"
 
@@ -1016,13 +1098,13 @@ msgstr "open"
 msgid "order history"
 msgstr "order history"
 
+#: src/pages/store/SupporterTag.tsx
+msgid "oss!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
+msgstr "oss!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
+
 #: src/pages/beatmaps/BeatmapsetHeader.tsx
 msgid "osu! page"
 msgstr "osu! page"
-
-#: src/pages/store/SupporterTag.tsx
-msgid "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
-msgstr "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
 
 #: src/pages/help/FAQ.tsx
 msgid "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
@@ -1032,7 +1114,7 @@ msgstr "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a 
 msgid "Other (type below)"
 msgstr "Other (type below)"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Other platforms:"
 msgstr "Other platforms:"
 
@@ -1062,6 +1144,10 @@ msgstr "Payment received, thank you! Your tag shows up as soon as Stripe confirm
 msgid "Performance"
 msgstr "Performance"
 
+#: src/components/character/SanctionLength.tsx
+msgid "Permanent"
+msgstr "Permanent"
+
 #: src/pages/store/SupporterPerks.tsx
 msgid "Pick your own main menu background: set <0>menu.background</0> to an image link in your skin."
 msgstr "Pick your own main menu background: set <0>menu.background</0> to an image link in your skin."
@@ -1079,22 +1165,18 @@ msgstr "Play count"
 msgid "Play Count"
 msgstr "Play Count"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Play in the browser"
 msgstr "Play in the browser"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Play now"
 msgstr "Play now"
 
 #: src/HeaderLinks.tsx
-msgid "play osu!"
-msgstr "play osu!"
-
-#: src/HeaderLinks.tsx
 #: src/routes/download.tsx
-msgid "play osu!idle"
-msgstr "play osu!idle"
+msgid "play oss!idle"
+msgstr "play oss!idle"
 
 #: src/pages/scores/ScorePage.tsx
 msgid "Played by"
@@ -1181,8 +1263,8 @@ msgstr "Proposed maps for ranking on Discord? Tick the ones you proposed and sav
 msgid "Proposed maps ranked"
 msgstr "Proposed maps ranked"
 
+#: src/components/UserList.tsx
 #: src/pages/beatmaps/MapScoreboard.tsx
-#: src/pages/friends/Friends.tsx
 msgid "Rank"
 msgstr "Rank"
 
@@ -1235,6 +1317,7 @@ msgstr "Read public data on your behalf."
 
 #: src/components/character/ReportDialog.tsx
 #: src/components/character/RestrictDialog.tsx
+#: src/components/character/SilenceDialog.tsx
 msgid "Reason"
 msgstr "Reason"
 
@@ -1242,11 +1325,15 @@ msgstr "Reason"
 msgid "reason (optional)"
 msgstr "reason (optional)"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Recent Infringements"
+msgstr "Recent Infringements"
+
 #: src/pages/characters/CharacterPage.tsx
 msgid "Recent scores"
 msgstr "Recent scores"
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Recently active"
 msgstr "Recently active"
 
@@ -1319,8 +1406,8 @@ msgstr "Reset the client secret? Applications using the old one will stop workin
 msgid "Reset to osu! avatar"
 msgstr "Reset to osu! avatar"
 
-#: src/components/character/ProfileMenu.tsx
 #: src/components/character/RestrictDialog.tsx
+#: src/components/character/SanctionItems.tsx
 msgid "Restrict"
 msgstr "Restrict"
 
@@ -1333,9 +1420,13 @@ msgstr "Restrict {name}?"
 msgid "restricted accounts"
 msgstr "restricted accounts"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Restriction"
+msgstr "Restriction"
+
 #: src/pages/DesktopDone.tsx
-msgid "Return to osu!idle"
-msgstr "Return to osu!idle"
+msgid "Return to oss!idle"
+msgstr "Return to oss!idle"
 
 #: src/pages/settings/OAuthSettings.tsx
 msgid "Revoke Access"
@@ -1485,7 +1576,17 @@ msgstr "Sign out"
 msgid "signed in"
 msgstr "signed in"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/components/character/AccountStanding.tsx
+#: src/components/character/SanctionItems.tsx
+#: src/components/character/SilenceDialog.tsx
+msgid "Silence"
+msgstr "Silence"
+
+#: src/components/character/SilenceDialog.tsx
+msgid "Silence {name}?"
+msgstr "Silence {name}?"
+
+#: src/pages/PlayOssIdle.tsx
 msgid "Simplest, nothing to install."
 msgstr "Simplest, nothing to install."
 
@@ -1524,9 +1625,9 @@ msgstr "So far you gave <0>{amount}</0>, and held a supporter tag for <1><2/></1
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
 #: src/components/leaderboard/PlayerSkillLeaderboard.tsx
+#: src/components/UserList.tsx
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/RankedMaps.tsx
-#: src/pages/friends/Friends.tsx
 msgid "Sort by"
 msgstr "Sort by"
 
@@ -1581,6 +1682,11 @@ msgstr "supporter tag"
 msgid "Supporter tag"
 msgstr "Supporter tag"
 
+#: src/pages/admin/AdminNav.tsx
+#: src/routes/admin/team.tsx
+msgid "team"
+msgstr "team"
+
 #: src/routes/legal/terms.tsx
 msgid "terms"
 msgstr "terms"
@@ -1588,6 +1694,14 @@ msgstr "terms"
 #: src/Footer.tsx
 msgid "Terms"
 msgstr "Terms"
+
+#: src/pages/groups/GroupPage.tsx
+msgid "The <0>Administrators</0> run oss!idle: they develop the game, rank the maps and manage the team."
+msgstr "The <0>Administrators</0> run oss!idle: they develop the game, rank the maps and manage the team."
+
+#: src/pages/groups/GroupPage.tsx
+msgid "The <0>Global Moderation Team</0> keeps the community a fun and welcoming place: they handle reports and moderate the chat, silencing or restricting players who break the rules."
+msgstr "The <0>Global Moderation Team</0> keeps the community a fun and welcoming place: they handle reports and moderate the chat, silencing or restricting players who break the rules."
 
 #: src/pages/help/FAQ.tsx
 msgid "The game"
@@ -1602,8 +1716,12 @@ msgid "The queue is the list of maps your character plays one after the other. A
 msgstr "The queue is the list of maps your character plays one after the other. Autopilot fills it from the song select: a playlist, the next songs, shuffle, or the same map on loop. You can reorder it, skip ahead or stop after the current map. The queue is not saved when you close the game; save it as a playlist to keep it."
 
 #: src/pages/PublicLanding.tsx
-msgid "The ultimate<0/>osu!mania idle game"
-msgstr "The ultimate<0/>osu!mania idle game"
+msgid "The ultimate<0/>VSRG idle game"
+msgstr "The ultimate<0/>VSRG idle game"
+
+#: src/components/character/SilenceDialog.tsx
+msgid "They can't chat or send private messages until it ends."
+msgstr "They can't chat or send private messages until it ends."
 
 #: src/components/character/RestrictDialog.tsx
 msgid "They can't play, chat or buy, and disappear from rankings until you lift it."
@@ -1679,7 +1797,7 @@ msgstr "Upload a profile picture"
 msgid "Upload banner"
 msgstr "Upload banner"
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Username"
 msgstr "Username"
 
@@ -1724,8 +1842,8 @@ msgid "What happens to my scores if a map is unranked?"
 msgstr "What happens to my scores if a map is unranked?"
 
 #: src/pages/help/FAQ.tsx
-msgid "What is osu!idle?"
-msgstr "What is osu!idle?"
+msgid "What is oss!idle?"
+msgstr "What is oss!idle?"
 
 #: src/pages/help/FAQ.tsx
 msgid "What is prestige?"
@@ -1792,8 +1910,8 @@ msgid "Your Discord account is linked!"
 msgstr "Your Discord account is linked!"
 
 #: src/pages/DiscordLinked.tsx
-msgid "Your level role will show up on the osu!idle Discord server. You can close this tab."
-msgstr "Your level role will show up on the osu!idle Discord server. You can close this tab."
+msgid "Your level role will show up on the oss!idle Discord server. You can close this tab."
+msgstr "Your level role will show up on the oss!idle Discord server. You can close this tab."
 
 #: src/pages/store/SupporterPerks.tsx
 msgid "Your name shows in gold in chat, for everyone to see."

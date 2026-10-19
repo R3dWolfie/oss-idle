@@ -5,7 +5,7 @@ import {
 import { HTTPException } from 'hono/http-exception';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import type { SkillName } from '@osu-idle/shared/skills';
+import type { SkillName } from '@oss-idle/shared/skills';
 import {
 	and,
 	desc,
@@ -46,7 +46,7 @@ import {
 	Judgements,
 	type GoodGrade,
 	type Judgement,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 
 const idParam = z.coerce.number().int().positive();
 

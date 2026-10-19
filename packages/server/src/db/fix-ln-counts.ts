@@ -5,7 +5,7 @@
  * chart (its long notes are holds), so no map could unlock the LN medal.
  * Medals re-check every score on each play, so owners get it on their next one.
  *
- *   npm -w @osu-idle/server run fix:ln:prod -- --dry-run
+ *   npm -w @oss-idle/server run fix:ln:prod -- --dry-run
  */
 import { eq } from 'drizzle-orm';
 import * as rosu from 'rosu-pp-js';

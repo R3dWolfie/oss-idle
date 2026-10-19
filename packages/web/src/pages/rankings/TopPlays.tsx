@@ -1,5 +1,5 @@
 import './TopPlays.css';
-import rank from '@osu-idle/shared/display/rank';
+import rank from '@oss-idle/shared/display/rank';
 import type { getTopPlays } from '../../api/rankings';
 import ScoreRow from '../../components/score/ScoreRow';
 import Pager from '../../components/leaderboard/Pager';

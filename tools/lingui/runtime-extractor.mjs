@@ -1,6 +1,6 @@
 // Custom Lingui extractor for packages that can't run the Babel macros (shared,
 // built with tsc; server, run with tsx). It collects the source strings passed
-// to the runtime helpers in @osu-idle/shared/i18n/translate:
+// to the runtime helpers in @oss-idle/shared/i18n/translate:
 //
 //   __('Some text'[, 'context'])                -> one message
 //   defineMessages({ key: 'Some text', ... })   -> one message per literal value

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
-import accuracy from '@osu-idle/shared/display/accuracy';
-import num from '@osu-idle/shared/display/num';
-import { Judgements } from '@osu-idle/shared/judgement';
+import accuracy from '@oss-idle/shared/display/accuracy';
+import num from '@oss-idle/shared/display/num';
+import { Judgements } from '@oss-idle/shared/judgement';
 import Grade from '../../components/score/Grade';
 import PlayerName from './PlayerName';
 import type { HistoryScore } from './types';

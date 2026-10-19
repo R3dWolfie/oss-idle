@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import {
 	UPGRADE_LEVELS,
 	UPGRADE_XP_BONUS,
-} from '@osu-idle/shared/upgrades';
+} from '@oss-idle/shared/upgrades';
 import type Character from '../../db/schema/character';
 import UpgradesSummary from './UpgradesSummary';
 import UpgradeRow from './UpgradeRow';

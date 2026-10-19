@@ -11,7 +11,7 @@
     "types": ["node"],
     // Mirror the vitest alias so `tsc` typechecks against shared's source too.
     "paths": {
-      "@osu-idle/shared/*": ["../shared/src/*"]
+      "@oss-idle/shared/*": ["../shared/src/*"]
     }
   },
   "include": ["src", "vitest.config.ts"]

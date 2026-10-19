@@ -4,6 +4,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
 import { faHeartPulse } from '@fortawesome/free-solid-svg-icons/faHeartPulse';
 import { faImage } from '@fortawesome/free-solid-svg-icons/faImage';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord';
 
 /** What a supporter tag gives. */
 export default function SupporterPerks() {
@@ -31,6 +32,11 @@ export default function SupporterPerks() {
 				<p>
 					<Trans>Pick your own main menu background: set <code>menu.background</code> to an image link in your skin.</Trans>
 				</p>
+			</div>
+			<div className='store__perk'>
+				<div className='store__perk-icon'><FontAwesomeIcon icon={faDiscord} /></div>
+				<h3><Trans>Discord role</Trans></h3>
+				<p><Trans>A pink Supporter role on our Discord server, once you link your Discord account in the options.</Trans></p>
 			</div>
 		</div>
 	</section>;

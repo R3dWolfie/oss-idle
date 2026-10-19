@@ -1,5 +1,9 @@
-import { Hono } from 'hono';
 import {
+	type Context,
+	Hono,
+} from 'hono';
+import {
+	getCookie,
 	setCookie,
 	deleteCookie,
 } from 'hono/cookie';
@@ -10,6 +14,7 @@ import {
 	eq,
 	ne,
 } from 'drizzle-orm';
+import { groupsOf } from '../groups';
 import { db } from '../db/client';
 import {
 	users,
@@ -41,6 +46,7 @@ import { pushCharacter } from '../character/push';
 import { env } from '../env';
 import {
 	requireAuth,
+	sessionUserId,
 	SESSION_COOKIE,
 } from '../auth/middleware';
 import {
@@ -50,6 +56,17 @@ import {
 } from '../auth/handoff';
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 days, seconds
+
+const setSession = (c: Context, session: string) => setCookie(c, SESSION_COOKIE, session, {
+	httpOnly: true,
+	sameSite: 'Lax',
+	secure: cookieSecure,
+	path: '/',
+	maxAge: SESSION_MAX_AGE,
+});
+
+/** A move's code outlives a background tab's throttled timers. */
+const MOVE_TTL_MS = 10 * 60_000;
 
 const desktopReturn = z.object({
 	port: z.coerce.number().int().min(1024).max(65535),
@@ -128,13 +145,7 @@ export const authRoutes = new Hono()
 			return c.redirect(back.toString());
 		}
 
-		setCookie(c, SESSION_COOKIE, session, {
-			httpOnly: true,
-			sameSite: 'Lax',
-			secure: cookieSecure,
-			path: '/',
-			maxAge: SESSION_MAX_AGE,
-		});
+		setSession(c, session);
 
 		// Back to the same-origin /web page, which pings the game and closes.
 		return c.redirect(`${clientUrl}/web/auth/callback`);
@@ -150,11 +161,29 @@ export const authRoutes = new Hono()
 		return c.json({ token });
 	})
 
+	// The move from osu.idle to oss.idle (shared/src/hostMove.ts): the old host's
+	// page swaps its session cookie for a one-time code, and the new host's
+	// move.html redeems it for a cookie of its own.
+	.post('/move', async c => {
+		const session = getCookie(c, SESSION_COOKIE);
+		if (!session || !await sessionUserId(c)) throw new HTTPException(401, { message: 'Not signed in' });
+		const code = crypto.randomUUID();
+		await storeHandoff(code, session, MOVE_TTL_MS);
+		return c.json({ code });
+	})
+	.post('/move/redeem', async c => {
+		const { code } = await c.req.json().catch(() => ({ code: undefined })) as { code?: string };
+		const session = code ? await takeHandoff(code) : null;
+		if (!session) throw new HTTPException(401, { message: 'Invalid or expired code' });
+		setSession(c, session);
+		return c.json({ ok: true });
+	})
+
 	// Current session → user profile (cookie- or Bearer-authenticated).
 	.get('/me', requireAuth, async c => {
 		const [row] = await db.select().from(users).where(eq(users.id, c.get('userId'))).limit(1);
 		if (!row) throw new HTTPException(401, { message: 'User not found' });
-		return c.json(toUserDTO(row));
+		return c.json(toUserDTO(row, await groupsOf(row.id)));
 	})
 
 	// Discord link: whether one is linked, and a fresh URL to link (or relink) one.
@@ -183,7 +212,7 @@ export const authRoutes = new Hono()
 		if (!await claimStateNonce(nonce)) return c.redirect(`${clientUrl}/web/auth/discord`);
 
 		const discordId = await fetchDiscordId(code);
-		// One osu!idle account per Discord account: a relink moves it.
+		// One oss!idle account per Discord account: a relink moves it.
 		await db.update(users)
 			.set({ discordId: null })
 			.where(and(eq(users.discordId, discordId), ne(users.id, uid)));

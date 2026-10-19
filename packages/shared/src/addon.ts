@@ -39,11 +39,11 @@ const tags = z.array(
  * The starter source seeded into the editor when creating a new add-on. The
  * runtime imports an add-on as an ES module and drives it purely through these
  * two exports - no other API is exposed (add-ons run unsandboxed against the
- * page). `mount` runs when the add-on is enabled, `unmount` when it is disabled,
- * updated, or removed.
+ * page). `mount` runs when the add-on is enabled and receives its metadata,
+ * `unmount` when it is disabled, updated, or removed.
  */
-export const ADDON_TEMPLATE = `// osu!idle add-on
-export const mount = () => {
+export const ADDON_TEMPLATE = `// oss!idle add-on
+export const mount = ({ id, name, version, gameVersion, authorId, authorName }) => {
 	// runs when the add-on is enabled
 };
 

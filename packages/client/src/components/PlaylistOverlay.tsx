@@ -7,9 +7,9 @@ import {
 	Playlist,
 	playlistsVersion,
 } from '../db/schema/playlist';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import { rateLabel } from '@osu-idle/shared/rate';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import { rateLabel } from '@oss-idle/shared/rate';
 import {
 	canPlayAt,
 	liveSpeedUpgrades,

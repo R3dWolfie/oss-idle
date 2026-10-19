@@ -1,5 +1,5 @@
-import Skill from '@osu-idle/shared/sim/skills/skill';
-import type { SkillName } from '@osu-idle/shared/skills';
+import Skill from '@oss-idle/shared/sim/skills/skill';
+import type { SkillName } from '@oss-idle/shared/skills';
 import Character from '../db/schema/character';
 
 type Seed = [level: number, upgrades: number, overdrive: number, prestige: number];

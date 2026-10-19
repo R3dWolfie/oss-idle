@@ -1,16 +1,16 @@
 import {
 	JUDGEMENT,
 	Judgements,
-} from '@osu-idle/shared/judgement';
-import type { HitRecord } from '@osu-idle/shared/sim/maniaGame';
+} from '@oss-idle/shared/judgement';
+import type { HitRecord } from '@oss-idle/shared/sim/maniaGame';
 import Skin from '../osu/skin/Skin';
-import { HitWindows } from '@osu-idle/shared/sim/scoring';
+import { HitWindows } from '@oss-idle/shared/sim/scoring';
 import {
 	colorA,
 	colorDim,
-} from '@osu-idle/shared/types/color';
+} from '@oss-idle/shared/types/color';
 
-export { unstableRate } from '@osu-idle/shared/sim/maniaGame';
+export { unstableRate } from '@oss-idle/shared/sim/maniaGame';
 
 function meanOffset(hits: HitRecord[]): number | null {
 	let sum = 0;

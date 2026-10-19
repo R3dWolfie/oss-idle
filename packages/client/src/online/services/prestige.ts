@@ -1,12 +1,12 @@
 import {
 	SKILL,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import {
 	applyPrestige,
 	canRebirth,
-} from '@osu-idle/shared/upgrades';
-import Log from '@osu-idle/shared/helpers/log';
+} from '@oss-idle/shared/upgrades';
+import Log from '@oss-idle/shared/helpers/log';
 import { rpc } from '../client';
 import Account from '../account';
 import Entities from '../../entity/entities';

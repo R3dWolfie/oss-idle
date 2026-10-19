@@ -9,7 +9,7 @@ import {
 import {
 	SKILL,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import {
 	LEVEL,
 	Profile,

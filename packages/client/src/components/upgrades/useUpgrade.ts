@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
 import { ph } from '@lingui/core/macro';
-import type Skill from '@osu-idle/shared/sim/skills/skill';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import type Skill from '@oss-idle/shared/sim/skills/skill';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import {
 	skillName,
 	upgradeLabel,
-} from '@osu-idle/shared/display/skills';
+} from '@oss-idle/shared/display/skills';
 import {
 	applyUpgrade,
 	canUpgrade,
@@ -14,9 +14,9 @@ import {
 	upgradeCost,
 	upgradeMinLevel,
 	upgradeXPMultiplier,
-} from '@osu-idle/shared/upgrades';
-import num from '@osu-idle/shared/display/num';
-import { overdriveText } from '@osu-idle/shared/display/overdrive';
+} from '@oss-idle/shared/upgrades';
+import num from '@oss-idle/shared/display/num';
+import { overdriveText } from '@oss-idle/shared/display/overdrive';
 import type { Confirm } from '../ConfirmMenu';
 import { purchaseUpgrade } from '../../online/services/upgrades';
 

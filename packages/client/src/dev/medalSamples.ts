@@ -1,4 +1,4 @@
-import { MEDALS } from '@osu-idle/shared/achievements/catalogue';
+import { MEDALS } from '@oss-idle/shared/achievements/catalogue';
 import {
 	medalUnlocks,
 	type MedalUnlock,

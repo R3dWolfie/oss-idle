@@ -6,18 +6,18 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import {
 	MAX_MATCH_NAME,
 	type Match,
-} from '@osu-idle/shared/multiplayer';
+} from '@oss-idle/shared/multiplayer';
 import Checkbox from '../options/controls/Checkbox';
 import Dropdown from '../dropdown/Dropdown';
 import MatchBeatmap from './MatchBeatmap';
 import PasswordPrompt from './PasswordPrompt';
 import Multiplayer from '../../online/multiplayer';
 
-// osu!idle has no mods, teams or win conditions yet: shown, with only the default
+// oss!idle has no mods, teams or win conditions yet: shown, with only the default
 const freeMods = new Synced(false);
 const teamMode = new Synced('head-to-head');
 const winCondition = new Synced('score');

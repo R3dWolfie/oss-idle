@@ -6,7 +6,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { DEFAULT_CHANNEL } from '@osu-idle/shared/community/wire';
+import { DEFAULT_CHANNEL } from '@oss-idle/shared/community/wire';
 import {
 	type ChatHistory,
 	type ModerateBody,

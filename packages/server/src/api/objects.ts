@@ -1,12 +1,12 @@
-import { Skills } from '@osu-idle/shared/skills';
+import { Skills } from '@oss-idle/shared/skills';
 import {
 	GoodGrades,
 	Judgements,
 	type Judgement,
-} from '@osu-idle/shared/judgement';
-import type { ScoreDTO } from '@osu-idle/shared/score';
-import { mapCoverUrl } from '@osu-idle/shared/beatmap';
-import { supportLevel } from '@osu-idle/shared/supporter';
+} from '@oss-idle/shared/judgement';
+import type { ScoreDTO } from '@oss-idle/shared/score';
+import { mapCoverUrl } from '@oss-idle/shared/beatmap';
+import { supportLevel } from '@oss-idle/shared/supporter';
 import type { BeatmapRow } from '../db/schema/beatmap';
 import type { BeatmapsetRow } from '../db/schema/beatmapset';
 import {

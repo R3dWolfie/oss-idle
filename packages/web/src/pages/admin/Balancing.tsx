@@ -1,7 +1,7 @@
 import './Balancing.css';
 
 import { useAdmin } from '../../hooks/useAdmin';
-import { xpForLevel } from '@osu-idle/shared/sim/skills/xp';
+import { xpForLevel } from '@oss-idle/shared/sim/skills/xp';
 import OsuPlot, { precise4 } from '../../components/OsuPlot';
 import {
 	accBasedScoreFactor,
@@ -9,14 +9,14 @@ import {
 	lowDensityBasedNotesFactor,
 	mapXP,
 	speedBasedScoreFactor,
-} from '@osu-idle/shared/sim/bots/character';
-import { SKILL } from '@osu-idle/shared/skills';
-import Reading from '@osu-idle/shared/sim/skills/reading';
-import Speed from '@osu-idle/shared/sim/skills/speed';
-import Stamina from '@osu-idle/shared/sim/skills/stamina';
-import JackSpeed from '@osu-idle/shared/sim/skills/jackspeed';
-import Accuracy, { MIN_MAX_BAD_MS } from '@osu-idle/shared/sim/skills/accuracy';
-import { smoothNormalize } from '@osu-idle/shared/math/normalize';
+} from '@oss-idle/shared/sim/bots/character';
+import { SKILL } from '@oss-idle/shared/skills';
+import Reading from '@oss-idle/shared/sim/skills/reading';
+import Speed from '@oss-idle/shared/sim/skills/speed';
+import Stamina from '@oss-idle/shared/sim/skills/stamina';
+import JackSpeed from '@oss-idle/shared/sim/skills/jackspeed';
+import Accuracy, { MIN_MAX_BAD_MS } from '@oss-idle/shared/sim/skills/accuracy';
+import { smoothNormalize } from '@oss-idle/shared/math/normalize';
 
 export default function BalancingPage() {
 	const admin = useAdmin();

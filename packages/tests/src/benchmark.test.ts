@@ -3,7 +3,7 @@ import {
 	it,
 	expect,
 } from 'vitest';
-import { skillProfiler } from '@osu-idle/shared/sim/profiler';
+import { skillProfiler } from '@oss-idle/shared/sim/profiler';
 import {
 	simulate,
 	uniform,

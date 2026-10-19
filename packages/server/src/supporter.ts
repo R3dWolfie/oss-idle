@@ -8,17 +8,21 @@ import {
 	or,
 	sql,
 	sum,
+	count,
 	countDistinct,
 	type SQL,
 	isNull,
 } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
 import { HTTPException } from 'hono/http-exception';
+import { createTransport } from 'nodemailer';
+import { CONTACT_EMAIL } from '@oss-idle/shared/contact';
 import {
 	supporterMonths,
+	supportLevel,
 	unusedRefund,
 	type CheckoutBody,
-} from '@osu-idle/shared/supporter';
+} from '@oss-idle/shared/supporter';
 import { db } from './db/client';
 import { users } from './db/schema/user';
 import {
@@ -36,6 +40,8 @@ import {
 } from './stripe';
 import { onRefund } from './supporterRefund';
 import { onDispute } from './restrictions';
+import { warn } from './discord/error';
+import { supporterThanks } from './supporterThanks';
 
 const storeUrl = `${clientUrl}/web/store`;
 
@@ -83,9 +89,51 @@ const giveBack = async (payment: Payment, subscription: string | undefined): Pro
 	}
 };
 
+const mailer = env.SMTP_URL ? createTransport(env.SMTP_URL) : undefined;
+
+/** The recipient's tag just before this order landed. */
+type Before = {
+	months: number;
+	active: boolean;
+};
+
+const sendThanks = async (orderId: number, to: string, before: Before): Promise<void> => {
+	if (!mailer) return;
+	const [order] = await orderRows(eq(supporterOrders.id, orderId));
+	if (!order?.buyerId) return;
+	const [bought] = await db
+		.select({ n: count() })
+		.from(supporterOrders)
+		.where(eq(supporterOrders.buyerId, order.buyerId));
+	const {
+		subject, text, html,
+	} = supporterThanks({
+		firstPurchase: bought?.n === 1,
+		firstTag: before.months === 0,
+		heartsBefore: supportLevel(before.active, before.months),
+		heartsAfter: supportLevel(true, before.months + order.months),
+		buyerName: order.buyerName ?? undefined,
+		giftTo: order.recipientId === order.buyerId ? undefined : order.recipientName ?? 'another player',
+		months: order.months,
+		recurring: order.recurring,
+		tagEndsAt: order.endsAt ?? undefined,
+		storeUrl,
+	});
+	await mailer.sendMail({
+		from: {
+			name: 'oss!idle', address: CONTACT_EMAIL,
+		}, to, subject, text, html,
+	});
+};
+
 /** A paid tag lands: extends the recipient's tag from now or from its current end, once per
- *  payment (Stripe retries a webhook until it is acknowledged). */
-const grant = async (meta: OrderMeta, payment: Payment, subscription?: string): Promise<void> => {
+ *  payment (Stripe retries a webhook until it is acknowledged), and thanks the buyer by email. */
+const grant = async (
+	meta: OrderMeta,
+	payment: Payment,
+	email: string | undefined,
+	subscription?: string,
+): Promise<void> => {
 	const buyerId = Number(meta.buyerId);
 	const recipientId = Number(meta.recipientId);
 	const months = Number(meta.months);
@@ -98,24 +146,43 @@ const grant = async (meta: OrderMeta, payment: Payment, subscription?: string): 
 			.select({
 				startsAt: asDate(tagStart),
 				endsAt: asDate(sql`DATE_ADD(${tagStart}, INTERVAL ${months} MONTH)`),
+				until: users.supporterUntil,
+				monthsBefore: users.supporterMonths,
 			})
 			.from(users)
 			.where(eq(users.id, recipientId))
 			.for('update');
-		if (!window) return false;
-		const { startsAt, endsAt } = window;
-		const [{ affectedRows }] = await tx.insert(supporterOrders).ignore().values({
+		if (!window) return undefined;
+		const {
+			startsAt, endsAt, until, monthsBefore,
+		} = window;
+		const [{ affectedRows, insertId }] = await tx.insert(supporterOrders).ignore().values({
 			...payment, buyerId, recipientId, months, startsAt, endsAt,
 		});
-		if (affectedRows) {
-			await tx.update(users).set({
-				supporterUntil: endsAt,
-				supporterMonths: sql`${users.supporterMonths} + ${months}`,
-			}).where(eq(users.id, recipientId));
-		}
-		return true;
+		if (!affectedRows) return {};
+		await tx.update(users).set({
+			supporterUntil: endsAt,
+			supporterMonths: sql`${users.supporterMonths} + ${months}`,
+		}).where(eq(users.id, recipientId));
+		const before = {
+			months: monthsBefore, active: Boolean(until && until > new Date()),
+		};
+		return {
+			order: {
+				id: insertId, before,
+			},
+		};
 	});
-	if (!landed) await giveBack(payment, subscription);
+	if (!landed) {
+		await giveBack(payment, subscription);
+		return;
+	}
+	const { order } = landed;
+	if (order && email) {
+		void sendThanks(order.id, email, order.before).catch((e: Error) => {
+			warn(`Supporter order ${order.id}: thank-you email not sent: ${e.message}`);
+		});
+	}
 };
 
 const WAIVER_TEXT = 'The supporter tag starts right away: you gave up the 14-day withdrawal right.';
@@ -162,7 +229,7 @@ export const checkout = async (buyerId: number, body: CheckoutBody): Promise<str
 			price_data: {
 				currency: 'eur',
 				unit_amount: body.amount * 100,
-				product_data: { name: `osu!idle supporter tag, ${months} month${months > 1 ? 's' : ''}` },
+				product_data: { name: `oss!idle supporter tag, ${months} month${months > 1 ? 's' : ''}` },
 				recurring: body.recurring ? {
 					interval: 'month', interval_count: months,
 				} : undefined,
@@ -172,7 +239,7 @@ export const checkout = async (buyerId: number, body: CheckoutBody): Promise<str
 		customer_creation: !body.recurring && !buyer?.customer ? 'always' : undefined,
 		client_reference_id: String(buyerId),
 		metadata: {
-			...metadata, waiver: new Date().toISOString(), 
+			...metadata, waiver: new Date().toISOString(),
 		},
 		subscription_data: body.recurring ? { metadata } : undefined,
 		custom_text: { submit: { message: WAIVER_TEXT } },
@@ -207,7 +274,7 @@ const onCheckout = async (session: Stripe.Checkout.Session): Promise<void> => {
 		recurring: false,
 		stripeRef: session.id,
 		paymentIntent: idOf(session.payment_intent),
-	});
+	}, session.customer_details?.email ?? undefined);
 };
 
 const onInvoice = async (invoice: Stripe.Invoice): Promise<void> => {
@@ -221,7 +288,7 @@ const onInvoice = async (invoice: Stripe.Invoice): Promise<void> => {
 		recurring: true,
 		stripeRef: invoice.id,
 		paymentIntent: idOf(payments.data[0]?.payment.payment_intent),
-	}, idOf(invoice.parent?.subscription_details?.subscription));
+	}, invoice.customer_email ?? undefined, idOf(invoice.parent?.subscription_details?.subscription));
 };
 
 const CHECKOUT_EVENTS = new Set([

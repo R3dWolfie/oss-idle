@@ -21,6 +21,7 @@ const maxLenIgnore = [
 export default tseslint.config(
 	{
 		ignores: [
+			'.claude/**',
 			'**/dist/**',
 			'**/node_modules/**',
 			'**/out/**',
@@ -84,7 +85,7 @@ export default tseslint.config(
 		rules: {
 			'no-restricted-imports': ['error', {
 				paths: [{
-					name: '@osu-idle/shared/sim/skills/levelCurve',
+					name: '@oss-idle/shared/sim/skills/levelCurve',
 					importNames: ['mapLevel', 'LEVEL_MAPPING'],
 					message: 'gameplay skill is internal to the sim - show effectiveLevelOf instead',
 				}],

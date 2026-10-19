@@ -6,16 +6,30 @@ import {
 	createRouter,
 } from '@tanstack/react-router';
 import type { MessageDescriptor } from '@lingui/core';
-import { detectBrowserLocale } from '@osu-idle/shared/i18n/locales';
+import { detectBrowserLocale } from '@oss-idle/shared/i18n/locales';
+import { moveHost } from '@oss-idle/shared/hostMove';
 import {
 	i18n,
 	activateLocale,
 } from './i18n';
 import { routeTree } from './routeTree.gen';
 import PageError from './components/PageError';
-import '@osu-idle/shared/shared.css';
+import '@oss-idle/shared/shared.css';
 import './font.css';
 import './styles.css';
+
+await moveHost();
+
+// A tab opened before a deploy asks for chunks the new build removed.
+window.addEventListener('vite:preloadError', (event) => {
+	const key = 'preload-reload';
+	try {
+		if (Number(sessionStorage.getItem(key)) > Date.now() - 10_000) return;
+		sessionStorage.setItem(key, String(Date.now()));
+	} catch { return; }
+	event.preventDefault();
+	window.location.reload();
+});
 
 // Load the catalog for the browser's language before first render so the UI
 // never flashes message keys. A saved user preference can override this later.

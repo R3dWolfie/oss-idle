@@ -1,5 +1,5 @@
 import type { WSContext } from 'hono/ws';
-import type { ClientMessage } from '@osu-idle/shared/community/wire';
+import type { ClientMessage } from '@oss-idle/shared/community/wire';
 import type { CharacterRow } from '../db/schema/character';
 import {
 	abortPlay,
@@ -17,7 +17,7 @@ import { isProd } from '../env';
 import type {
 	PlayResult,
 	PlayStartResult,
-} from '@osu-idle/shared/play';
+} from '@oss-idle/shared/play';
 
 /**
  * The play consumer of the community socket. Commands (start/skip/abort/result)

@@ -1,10 +1,10 @@
 import type { Database } from 'sql.js';
-import { rankValueSQL } from '@osu-idle/shared/scoreOrder';
+import { rankValueSQL } from '@oss-idle/shared/scoreOrder';
 import {
 	xpGivesLevel,
 	xpToLevel,
-} from '@osu-idle/shared/sim/skills/xp';
-import { GRADE } from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/sim/skills/xp';
+import { GRADE } from '@oss-idle/shared/judgement';
 
 /**
  * Schema migrations, applied in order on boot.

@@ -35,5 +35,5 @@ jobs:
       - run: npm test
       - name: Build
         run: |
-          npm -w @osu-idle/client run build
-          npm -w @osu-idle/web run build
+          npm -w @oss-idle/client run build
+          npm -w @oss-idle/web run build

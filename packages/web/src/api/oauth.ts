@@ -3,7 +3,7 @@ import type {
 	AuthorizeBody,
 	OAuthClientBody,
 	OAuthClientUpdateBody,
-} from '@osu-idle/shared/oauth';
+} from '@oss-idle/shared/oauth';
 import {
 	rpc,
 	unwrap,

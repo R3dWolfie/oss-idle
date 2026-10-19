@@ -1,4 +1,4 @@
-import type { CheckoutBody } from '@osu-idle/shared/supporter';
+import type { CheckoutBody } from '@oss-idle/shared/supporter';
 import {
 	rpc,
 	unwrap,

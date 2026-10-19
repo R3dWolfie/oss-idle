@@ -7,9 +7,9 @@ import { Score } from '../../db/schema/score';
 import ScoreEntry from './ScoreEntry';
 import PersonalBest from './PersonalBest';
 import { music } from '../../audio/MusicPlayer';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { ScoreDTO } from '@osu-idle/shared/score';
-import { countryName } from '@osu-idle/shared/display/country';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { ScoreDTO } from '@oss-idle/shared/score';
+import { countryName } from '@oss-idle/shared/display/country';
 import {
 	getBeatmapScores,
 	type BoardPlayer,

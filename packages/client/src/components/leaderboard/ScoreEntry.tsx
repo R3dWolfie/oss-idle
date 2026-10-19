@@ -4,16 +4,16 @@ import { useState } from 'react';
 import { Score } from '../../db/schema/score';
 import Character from '../../db/schema/character';
 import SceneManager, { SCENE } from '../../scenes/SceneManager';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import { ScoreDTO } from '@osu-idle/shared/score';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import { ScoreDTO } from '@oss-idle/shared/score';
 import { getCharacter } from '../../online/services/characters';
 import { currentSkin } from '../../osu/skin/Skin';
 import { getUser } from '../../online/services/users';
-import { recentTimeAgo } from '@osu-idle/shared/display/ago';
+import { recentTimeAgo } from '@oss-idle/shared/display/ago';
 import Entities from '../../entity/entities';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 import ScoreTooltip from './ScoreTooltip';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import type { BoardPlayer } from '../../online/services/scores';
 
 interface Props {

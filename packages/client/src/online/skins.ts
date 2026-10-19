@@ -7,7 +7,7 @@ import {
 import {
 	SkinCreateBody,
 	SkinUpdateBody,
-} from '@osu-idle/shared/skin';
+} from '@oss-idle/shared/skin';
 
 /** One catalog/own skin as it crosses the wire, inferred from the route. */
 export type Skin = InferResponseType<typeof rpc.v1.skins[':id']['$get']>;

@@ -3,8 +3,12 @@ import { HTTPException } from 'hono/http-exception';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { eq } from 'drizzle-orm';
-import { DEFAULT_CHANNEL } from '@osu-idle/shared/community/wire';
-import { requireAdmin } from '../auth/admin';
+import { DEFAULT_CHANNEL } from '@oss-idle/shared/community/wire';
+import { isAdmin } from '@oss-idle/shared/groups';
+import { requireModerator } from '../auth/admin';
+import { groupsOf } from '../groups';
+import { silence } from '../restrictions';
+import { sanctionable } from './restrictions';
 import { db } from '../db/client';
 import { characters } from '../db/schema/character';
 import { users } from '../db/schema/user';
@@ -20,7 +24,6 @@ import {
 	moderationOf,
 	nameColor,
 	setBanned,
-	timeoutUser,
 	untimeoutUser,
 } from '../ws/chat';
 
@@ -39,13 +42,16 @@ const messageBody = z.object({
 	text: z.string().min(1),
 });
 
-/** One moderation action. Timeout / ban optionally delete the line that
- *  triggered them; delete / deleteDay clear messages directly. */
+const reason = z.string().trim().max(255).default('');
+
+/** One moderation action. Timeout / ban are silences (logged with their reason) and optionally
+ *  delete the line that triggered them; delete / deleteDay clear messages directly. */
 const moderateBody = z.discriminatedUnion('action', [
 	z.object({
 		action: z.literal('timeout'),
 		characterId,
 		seconds: z.number().int().positive(),
+		reason,
 		channel: z.string().optional(),
 		messageId: z.string().optional(),
 	}),
@@ -55,6 +61,7 @@ const moderateBody = z.discriminatedUnion('action', [
 	z.object({
 		action: z.literal('ban'),
 		characterId,
+		reason,
 		channel: z.string().optional(),
 		messageId: z.string().optional(),
 	}),
@@ -86,11 +93,11 @@ const adminCharacter = async (userId: number) => {
 
 /**
  * The admin chat console API: browse a channel's rolling-day history, post as
- * yourself (or `/announce`), and moderate (timeout / ban / delete). All gated by
- * `requireAdmin`. Live game clients are updated over the socket by `../ws/chat`.
+ * yourself (or `/announce`, admins only), and moderate (timeout / ban / delete). All gated by
+ * `requireModerator`. Live game clients are updated over the socket by `../ws/chat`.
  */
 export const chatRoutes = new Hono()
-	.get('/history', requireAdmin, zValidator('query', historyQuery, r => {
+	.get('/history', requireModerator, zValidator('query', historyQuery, r => {
 		if (!r.success) throw r.error;
 	}), async c => {
 		const channel = c.req.valid('query').channel ?? DEFAULT_CHANNEL;
@@ -107,10 +114,11 @@ export const chatRoutes = new Hono()
 			channels: chatChannels(), channel, messages, moderation,
 		});
 	})
-	.post('/message', requireAdmin, jsonBody(messageBody), async c => {
+	.post('/message', requireModerator, jsonBody(messageBody), async c => {
 		const { channel, text } = c.req.valid('json');
 		const prefix = '/announce ';
 		if (text.startsWith(prefix)) {
+			if (!isAdmin(await groupsOf(c.get('userId')))) throw new HTTPException(403, { message: 'Forbidden' });
 			adminAnnounce(channel, text.slice(prefix.length).trim());
 			return c.json({ ok: true });
 		}
@@ -122,7 +130,7 @@ export const chatRoutes = new Hono()
 		}, userId, channel, text, { bypassRate: true });
 		return c.json({ ok: true });
 	})
-	.post('/moderate', requireAdmin, jsonBody(moderateBody), async c => {
+	.post('/moderate', requireModerator, jsonBody(moderateBody), async c => {
 		const body = c.req.valid('json');
 
 		if (body.action === 'delete') {
@@ -134,20 +142,18 @@ export const chatRoutes = new Hono()
 			return c.json({ ok: true });
 		}
 
-		const userId = await characterOwner(body.characterId);
-		if (!userId) throw new HTTPException(404, { message: 'Unknown character' });
+		const owner = await characterOwner(body.characterId);
+		if (!owner) throw new HTTPException(404, { message: 'Unknown character' });
+		const userId = await sanctionable(String(owner));
 
 		switch (body.action) {
 			case 'timeout':
-				await timeoutUser(userId, body.seconds);
+			case 'ban':
+				await silence(userId, body.action === 'ban' ? 0 : body.seconds, body.reason, c.get('userId'));
 				if (body.channel && body.messageId) await deleteMessages(body.channel, [body.messageId]);
 				break;
 			case 'untimeout':
 				await untimeoutUser(userId);
-				break;
-			case 'ban':
-				await setBanned(userId, true);
-				if (body.channel && body.messageId) await deleteMessages(body.channel, [body.messageId]);
 				break;
 			case 'unban':
 				await setBanned(userId, false);

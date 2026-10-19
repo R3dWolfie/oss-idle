@@ -11,13 +11,78 @@
 	background: rgba(255, 255, 255, 0.2);
 }
 
-.chat__close,
-.chat__join {
-	border: none;
-	background: transparent;
-	color: inherit;
-	font: inherit;
+.chat__tabs .tab {
+	position: relative;
+}
+
+/* osu!: a red disc with a white cross, on the hovered tab only */
+.chat__close {
+	position: absolute;
+	top: 50%;
+	/* clear of the next tab, which overlaps this one by 15px */
+	right: 21px;
+	display: none;
 	cursor: pointer;
+	transform: translateY(-50%) rotate(45deg);
+}
+.chat__tabs .tab:hover .chat__close {
+	display: block;
+}
+/* nothing hovers on a touchscreen: the active tab keeps it */
+@media (hover: none) {
+	.chat__tabs .tab.is-active .chat__close {
+		display: block;
+		/* the active tab sits above its neighbours */
+		right: 6px;
+	}
+}
+
+.chat__close::before,
+.chat__add::before {
+	content: "";
+	display: block;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	box-shadow:
+		0 0 0 1.5px #fff,
+		0 0 3px 1px rgba(0, 0, 0, 0.6);
+	background:
+		linear-gradient(var(--glyph), var(--glyph)) center / 10px 3px no-repeat,
+		linear-gradient(var(--glyph), var(--glyph)) center / 3px 10px no-repeat,
+		var(--disc);
+}
+.chat__close::before {
+	--glyph: #fff;
+	--disc: radial-gradient(circle at 35% 30%, #ff6b6b, #d4001f 70%);
+}
+
+/* tucked under the last tab, like the others overlap */
+.chat__add {
+	flex-shrink: 0;
+	align-self: flex-start;
+	display: flex;
+	align-items: center;
+	height: 29px;
+	margin: 2px 0 2px -25px;
+	padding: 0 8px 0 23px;
+	border: none;
+	border-radius: 0 10px 0 0;
+	background: linear-gradient(0deg, #d9a400, #f7c933);
+	box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+}
+.chat__add:hover {
+	filter: brightness(1.15);
+}
+.tabs:empty + .chat__add {
+	margin-left: 10px;
+	padding-left: 8px;
+	border-radius: 10px 10px 0 0;
+}
+.chat__add::before {
+	--glyph: #e0a400;
+	--disc: #fff;
 }
 
 .chat__log {
@@ -67,6 +132,15 @@
 .chat__compose {
 	align-items: center;
 	padding: 0 12px;
+	/* the fixed bottom-right controls (CommunityControls) sit on this row */
+	padding-right: calc(var(--community-controls-width, 0px) + 16px);
+}
+/* too narrow to share the row: the input sits above the controls */
+@media (max-width: 850px) and (orientation: portrait) {
+	.chat__compose {
+		padding-right: 12px;
+		margin-bottom: var(--community-controls-height, 0px);
+	}
 }
 .chat__compose span {
 	font-size: 24px;

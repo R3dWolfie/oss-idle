@@ -1,4 +1,4 @@
-import { colorA } from '@osu-idle/shared/types/color';
+import { colorA } from '@oss-idle/shared/types/color';
 import type { Layer } from './frame';
 
 /** the per-column receptors at the judgement line, flashing on a hit */

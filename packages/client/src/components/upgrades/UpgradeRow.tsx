@@ -1,12 +1,12 @@
 import { Trans } from '@lingui/react/macro';
-import Skill from '@osu-idle/shared/sim/skills/skill';
+import Skill from '@oss-idle/shared/sim/skills/skill';
 import {
 	skillName,
 	upgradeDescription,
 	upgradeLabel,
-} from '@osu-idle/shared/display/skills';
-import SkillLevel from '@osu-idle/shared/display/SkillLevel';
-import { overdriveText } from '@osu-idle/shared/display/overdrive';
+} from '@oss-idle/shared/display/skills';
+import SkillLevel from '@oss-idle/shared/display/SkillLevel';
+import { overdriveText } from '@oss-idle/shared/display/overdrive';
 import ConfirmMenu from '../ConfirmMenu';
 import { useUpgrade } from './useUpgrade';
 import UpgradeTrack from './UpgradeTrack';

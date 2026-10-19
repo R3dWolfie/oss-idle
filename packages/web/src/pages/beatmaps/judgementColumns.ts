@@ -1,7 +1,7 @@
 import {
 	JUDGEMENT,
 	type Judgement,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 
 /** osu!mania's names for the judgement columns: MAX, 300, 200, 100, 50, MISS. */
 export const JUDGEMENT_COLUMNS: { judgement: Judgement; label: string }[] = [

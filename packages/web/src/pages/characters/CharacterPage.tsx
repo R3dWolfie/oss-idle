@@ -19,6 +19,9 @@ import EditableProfilePicture from '../../components/EditableProfilePicture';
 import CharacterName from '../../components/character/CharacterName';
 import CharacterTitle from '../../components/character/CharacterTitle';
 import SupporterBadge from '../../components/character/SupporterBadge';
+import GroupBadge from '../../components/character/GroupBadge';
+import { GROUP_BADGE } from '@oss-idle/shared/groups';
+import AccountStanding from '../../components/character/AccountStanding';
 import ProfileBanner from '../../components/character/ProfileBanner';
 import {
 	refreshCurrentUser,
@@ -33,12 +36,12 @@ import ShowMoreLink from '../../components/ShowMoreLink';
 import {
 	JUDGEMENT,
 	Judgements,
-} from '@osu-idle/shared/judgement';
-import { showsDivine } from '@osu-idle/shared/rebirth';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import num from '@osu-idle/shared/display/num';
-import hitAccuracy from '@osu-idle/shared/osu/hitAccuracy';
-import accuracy from '@osu-idle/shared/display/accuracy';
+} from '@oss-idle/shared/judgement';
+import { showsDivine } from '@oss-idle/shared/rebirth';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import num from '@oss-idle/shared/display/num';
+import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
+import accuracy from '@oss-idle/shared/display/accuracy';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import ScoreRow from '../../components/score/ScoreRow';
@@ -51,10 +54,10 @@ import CharacterMedals from '../../components/character/CharacterMedals';
 import CharacterBeatmaps from '../../components/character/CharacterBeatmaps';
 import ProfileSocialBar from '../../components/character/ProfileSocialBar';
 import ProfileTabs from '../../components/character/ProfileTabs';
-import { SkillName } from '@osu-idle/shared/skills';
-import { extractSkills } from '@osu-idle/shared/osu/level';
+import { SkillName } from '@oss-idle/shared/skills';
+import { extractSkills } from '@oss-idle/shared/osu/level';
 import { Trans } from '@lingui/react/macro';
-import { countryName } from '@osu-idle/shared/display/country';
+import { countryName } from '@oss-idle/shared/display/country';
 import { i18n } from '../../i18n';
 import { coverBackground } from '../../api/maps';
 
@@ -109,8 +112,13 @@ export default function CharacterPage({ id, character, stats }: {
 								editable={isSelf}
 							/>
 							<SupporterBadge level={character.supportLevel} />
+							{character.groups.map(g => <GroupBadge key={g} group={g} />)}
 						</div>
-						<CharacterTitle title={character.title ?? undefined} editable={isSelf} />
+						<CharacterTitle
+							title={character.title ?? undefined}
+							editable={isSelf}
+							colour={character.groups[0] && GROUP_BADGE[character.groups[0]].colour}
+						/>
 					</div>
 					<div className='character__meta-down'>
 						<div className='character__meta-flag'><Flag country={user.country} /></div>
@@ -179,6 +187,7 @@ export default function CharacterPage({ id, character, stats }: {
 				userId={character.userId}
 				name={character.name}
 				restricted={character.restricted}
+				groups={character.groups}
 			/>
 			<ProfileTabs blocks={blocks} />
 			<div className='character__blocks' ref={blocks}>
@@ -281,6 +290,7 @@ export default function CharacterPage({ id, character, stats }: {
 				</div>
 				<CharacterBeatmaps id={id} />
 				<CharacterMedals id={id} />
+				<AccountStanding userId={character.userId} name={character.name} />
 			</div>
 		</main>
 	);

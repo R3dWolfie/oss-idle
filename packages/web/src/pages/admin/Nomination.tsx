@@ -5,7 +5,7 @@ import {
 	useMemo,
 	useState,
 } from 'react';
-import type { BeatmapStatus } from '@osu-idle/shared/beatmap';
+import type { BeatmapStatus } from '@oss-idle/shared/beatmap';
 import {
 	type Nomination,
 	deleteNomination,

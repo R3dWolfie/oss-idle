@@ -1,5 +1,5 @@
-import Listener from '@osu-idle/shared/helpers/listener';
-import Synced from '@osu-idle/shared/helpers/synced';
+import Listener from '@oss-idle/shared/helpers/listener';
+import Synced from '@oss-idle/shared/helpers/synced';
 import SceneManager, { SCENE } from '../scenes/SceneManager';
 import { SETTINGS } from '../db/settings';
 import {

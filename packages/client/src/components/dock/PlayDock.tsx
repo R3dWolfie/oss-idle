@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import PlayManager from '../../online/playManager';
 import PlayQueue from '../../gameplay/playQueue';
 import SceneManager, { SCENE } from '../../scenes/SceneManager';

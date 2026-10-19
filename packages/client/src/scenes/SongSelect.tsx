@@ -58,16 +58,17 @@ import SceneManager, { SCENE } from './SceneManager';
 import Multiplayer from '../online/multiplayer';
 import {
 	debugMode,
+	isCommunityOpen,
 	openPage,
 } from '../globals';
-import { useParallax } from '@osu-idle/shared/hooks/useParallax';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import { useParallax } from '@oss-idle/shared/hooks/useParallax';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	getCharacter,
 	getCharacterStats,
 } from '../online/services/characters';
-import { Grades } from '@osu-idle/shared/judgement';
+import { Grades } from '@oss-idle/shared/judgement';
 import { Score } from '../db/schema/score';
 import {
 	SETTINGS,
@@ -81,7 +82,7 @@ import {
 } from '../db/schema/playlist';
 import SongSelectDebug from '../components/songselect/SongSelectDebug';
 import PlayQueue, { AUTOPILOT_MODE } from '../gameplay/playQueue';
-import Log from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
 import { launchPlay } from './launchPlay';
 import { xpGainsVersion } from '../db/schema/score_xp';
 import { getXPInsights } from '../xpInsights';
@@ -736,8 +737,8 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 								onKeyDown={(e) => { if (e.key === 'Tab') e.preventDefault(); }}
 								onBlur={() => {
 									// keep the box focused (osu!-style), unless another surface
-									// legitimately owns the keyboard (debug view, an open overlay)
-									if (!debugBeatmap && !menuItem && !playlistItem) {
+									// legitimately owns the keyboard (debug view, an open overlay, chat)
+									if (!debugBeatmap && !menuItem && !playlistItem && !isCommunityOpen.get()) {
 										requestAnimationFrame(() => searchRef.current?.focus());
 									}
 								}}

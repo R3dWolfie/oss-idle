@@ -6,7 +6,8 @@ import {
 	timestamp,
 	varchar,
 } from 'drizzle-orm/mysql-core';
-import type { UserDTO } from '@osu-idle/shared/user';
+import type { UserDTO } from '@oss-idle/shared/user';
+import type { Group } from '@oss-idle/shared/groups';
 import { db } from '../client';
 import { eq } from 'drizzle-orm';
 
@@ -40,7 +41,7 @@ export type NewUserRow = typeof users.$inferInsert;
 
 /** Map a user row to the wire contract. `avatarUrl` is the account's osu! avatar;
  *  a per-character custom upload lives on the character and overrides it there. */
-export function toUserDTO(row: UserRow): UserDTO {
+export function toUserDTO(row: UserRow, groups: Group[]): UserDTO {
 	return {
 		id: row.id,
 		username: row.username,
@@ -49,6 +50,7 @@ export function toUserDTO(row: UserRow): UserDTO {
 		createdAt: row.createdAt.toISOString(),
 		supporter: Boolean(row.supporterUntil && row.supporterUntil > new Date()),
 		restricted: Boolean(row.restrictedAt),
+		groups,
 	};
 }
 

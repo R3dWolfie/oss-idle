@@ -3,14 +3,15 @@ import {
 	useEffect,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { rateLabel } from '@osu-idle/shared/rate';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { rateLabel } from '@oss-idle/shared/rate';
 import {
 	selectedRate,
 	stepRate,
 } from '../../gameplay/playRate';
 import { modSelectOpen } from '../mods/modSelectOpen';
 import ModSelect from '../mods/ModSelect';
+import { createPortal } from 'react-dom';
 
 const RATE_KEYS: Record<string, 1 | -1> = {
 	Minus: -1, Equal: 1,
@@ -63,6 +64,10 @@ export default function SongSelectFooter({ onRandom, onOptions }: {
 				<span className="select-footer__key">F3</span>
 			</button>
 		</div>
-		{modsOpen && <ModSelect onClose={() => void modSelectOpen.set(false)} />}
+		{/* out of the bottom bar's stacking context, over the carousel and the dock */}
+		{modsOpen && createPortal(
+			<ModSelect onClose={() => void modSelectOpen.set(false)} />,
+			document.body,
+		)}
 	</>);
 }

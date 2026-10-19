@@ -2,8 +2,8 @@ import * as ppjs from 'rosu-pp-js';
 import {
 	RATES,
 	rateKey,
-} from '@osu-idle/shared/rate';
-import type { ScoreState } from '@osu-idle/shared/sim/scoring';
+} from '@oss-idle/shared/rate';
+import type { ScoreState } from '@oss-idle/shared/sim/scoring';
 
 /**
  * Performance points for a finished play, computed from the raw `.osu` chart and

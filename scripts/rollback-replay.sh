@@ -42,7 +42,7 @@ node scripts/version-bump.mjs "$BUMP" \
 node scripts/prod-build.mjs --follow
 
 step "3/8 stop the server"
-sudo systemctl stop osu-idle-prod
+sudo systemctl stop oss-idle-prod
 
 step "4/8 dump the scores the snapshot predates (server is down, so the set is closed)"
 node scripts/dump-missing-scores.mjs "$SNAPSHOT" "$SCORES"
@@ -54,12 +54,12 @@ step "6/8 migrate the restored database"
 npm run migrate:prod
 
 step "7/8 replay those scores"
-npm -w @osu-idle/server run replay:scores:prod -- --file "../../$SCORES"
+npm -w @oss-idle/server run replay:scores:prod -- --file "../../$SCORES"
 
 step "8/8 drop the rankings cache so it rebuilds from the restored data"
 node scripts/reset-rankings.mjs
 
 step "starting the server"
-sudo systemctl start osu-idle-prod
+sudo systemctl start oss-idle-prod
 
 printf '\n\033[1;32mdone\033[0m - players rolled back, scores replayed, rankings rebuilding on boot\n'

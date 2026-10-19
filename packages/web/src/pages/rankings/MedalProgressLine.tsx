@@ -12,7 +12,7 @@ import MedalLineIcon from '../../components/leaderboard/MedalLineIcon';
 import Pager from '../../components/leaderboard/Pager';
 import Flag from '../../components/Flag';
 import Link from '../../components/Link';
-import rank from '@osu-idle/shared/display/rank';
+import rank from '@oss-idle/shared/display/rank';
 import type { getProgressRanking } from '../../api/rankings';
 import {
 	LINE_NAMES,

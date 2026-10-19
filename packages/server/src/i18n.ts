@@ -6,8 +6,8 @@ import {
 import {
 	createI18n,
 	loadAndActivate,
-} from '@osu-idle/shared/i18n/runtime';
-import { DEFAULT_LOCALE } from '@osu-idle/shared/i18n/locales';
+} from '@oss-idle/shared/i18n/runtime';
+import { DEFAULT_LOCALE } from '@oss-idle/shared/i18n/locales';
 
 declare module 'hono' {
 	interface ContextVariableMap {
@@ -21,7 +21,7 @@ declare module 'hono' {
  * Locale is hard-wired to English for now - request locale needs the
  * authenticated user's preference, which is out of scope. When that lands,
  * swap the constant for `negotiateLocale(...)` against a saved pref or the
- * `Accept-Language` header (see `@osu-idle/shared/i18n/locales`).
+ * `Accept-Language` header (see `@oss-idle/shared/i18n/locales`).
  *
  * The instance is per request, never a process-global: once locale negotiation
  * is live, concurrent requests in different locales must not share one mutable

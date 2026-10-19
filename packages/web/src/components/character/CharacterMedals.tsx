@@ -1,13 +1,13 @@
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	MedalCategories,
 	MEDAL_LINES,
 	MEDALS,
 	medalById,
-} from '@osu-idle/shared/achievements/catalogue';
-import { medalCategoryName } from '@osu-idle/shared/display/medals';
+} from '@oss-idle/shared/achievements/catalogue';
+import { medalCategoryName } from '@oss-idle/shared/display/medals';
 import { getCharacterMedals } from '../../api/characters';
 import ProfileMedal from './ProfileMedal';
 import './CharacterMedals.css';

@@ -5,12 +5,12 @@ import {
 } from 'react';
 import { Trans } from '@lingui/react/macro';
 import { Beatmap } from 'osu-classes';
-import { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
-import CharacterBot from '@osu-idle/shared/sim/bots/character';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
-import { scrollSpeedToMs } from '@osu-idle/shared/osu/scroll_speed';
-import { type Grade } from '@osu-idle/shared/judgement';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
+import CharacterBot from '@oss-idle/shared/sim/bots/character';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
+import { scrollSpeedToMs } from '@oss-idle/shared/osu/scroll_speed';
+import { type Grade } from '@oss-idle/shared/judgement';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { music } from '../../audio/MusicPlayer';
 import { SETTINGS } from '../../db/settings';
 import { DEBUG_BOT_LEVEL } from '../../gameplay/strainDebug';

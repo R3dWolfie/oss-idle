@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
 	ADDON_STATUS,
 	type AddonStatus,
-} from '@osu-idle/shared/addon';
+} from '@oss-idle/shared/addon';
 import {
 	addonIconUrl,
 	type AddonVerdict,

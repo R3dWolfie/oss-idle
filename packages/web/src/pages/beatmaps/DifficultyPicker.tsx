@@ -1,4 +1,4 @@
-import { difficultyColor } from '@osu-idle/shared/display/difficulty';
+import { difficultyColor } from '@oss-idle/shared/display/difficulty';
 import Link from '../../components/Link';
 import type { MapDiff } from '../../api/maps';
 

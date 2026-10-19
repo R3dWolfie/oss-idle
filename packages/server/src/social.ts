@@ -8,24 +8,20 @@ import {
 	isNull,
 } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/mysql-core';
+import { playerCards } from './playerCards';
 import { db } from './db/client';
 import {
 	getUserById,
 	users,
 } from './db/schema/user';
-import {
-	characters,
-	resolveAvatarUrl,
-} from './db/schema/character';
+import { characters } from './db/schema/character';
 import { userFollows } from './db/schema/user_follow';
 import { userBlocks } from './db/schema/user_block';
 import type {
 	ReportBody,
 	SocialSettings,
-} from '@osu-idle/shared/social';
+} from '@oss-idle/shared/social';
 import { userReports } from './db/schema/user_report';
-import { areOnline } from './ws/presence';
-import { globalRanks } from './rankings';
 
 /** Friends are per account: a rebirth or a character switch keeps them. Shown
  *  through each account's current character. */
@@ -57,20 +53,9 @@ export const friendsOf = async (userId: number) => {
 		))
 		.where(and(eq(userFollows.userId, userId), isNull(users.restrictedAt)));
 
-	const ids = rows.map(r => r.character.id);
-	const [online, ranks] = await Promise.all([areOnline(ids), globalRanks('pp', ids)]);
-	return rows.map((r, i) => ({
-		userId: r.userId,
-		mutual: r.mutual,
-		online: online[i],
-		lastActiveAt: r.lastActiveAt?.toISOString(),
-		character: {
-			id: r.character.id,
-			name: r.character.name,
-			avatarUrl: resolveAvatarUrl(r.character.avatarUrl, r.userAvatarUrl),
-			country: r.country,
-			rank: ranks[i],
-		},
+	const cards = await playerCards(rows);
+	return cards.map((card, i) => ({
+		...card, mutual: rows[i].mutual,
 	}));
 };
 

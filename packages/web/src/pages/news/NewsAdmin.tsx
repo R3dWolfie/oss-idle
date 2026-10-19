@@ -9,7 +9,7 @@ import {
 	NEWS_TAG_NAMES,
 	type NewsTag,
 	type NewsDTO,
-} from '@osu-idle/shared/news';
+} from '@oss-idle/shared/news';
 
 import {
 	listAllNews,

@@ -13,14 +13,14 @@ import Grade from '../../components/score/Grade';
 import { headlineGrades } from './headlineGrades';
 import { SkillBar } from '../../components/character/SkillBar';
 import { CharacterRanks } from '../../components/character/CharacterRanks';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import num from '@osu-idle/shared/display/num';
-import accuracy from '@osu-idle/shared/display/accuracy';
-import hitAccuracy from '@osu-idle/shared/osu/hitAccuracy';
-import { extractSkills } from '@osu-idle/shared/osu/level';
-import { SkillName } from '@osu-idle/shared/skills';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import num from '@oss-idle/shared/display/num';
+import accuracy from '@oss-idle/shared/display/accuracy';
+import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
+import { extractSkills } from '@oss-idle/shared/osu/level';
+import { SkillName } from '@oss-idle/shared/skills';
 import { Trans } from '@lingui/react/macro';
-import { countryName } from '@osu-idle/shared/display/country';
+import { countryName } from '@oss-idle/shared/display/country';
 import { i18n } from '../../i18n';
 
 

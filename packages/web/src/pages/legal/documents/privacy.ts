@@ -12,7 +12,7 @@ export const privacy: Bilingual = {
 			{
 				title: 'Who is responsible',
 				blocks: [
-					`${PUBLISHER}, ${ADDRESS}, runs osu!idle and decides what is done with your data (the "controller" under the GDPR). For any question or request: ${EMAIL}.`,
+					`${PUBLISHER}, ${ADDRESS}, runs oss!idle and decides what is done with your data (the "controller" under the GDPR). For any question or request: ${EMAIL}.`,
 				],
 			},
 			{
@@ -31,7 +31,7 @@ export const privacy: Bilingual = {
 					{ sub: 'Applications (the API)' },
 					'If you register an application on our API, we keep its name, its callback URLs and its client secret, attached to your account. If you authorize someone\'s application, we keep which one, the permissions you gave it and its access tokens, until they expire or you revoke them from your settings. That application then receives what those permissions allow; it is run by its developer, not by us, and its own privacy policy applies.',
 					{ sub: 'Technical logs' },
-					'Our servers log requests (address requested, status, timing) and errors, without your IP address, to keep osu!idle running and fix problems.',
+					'Our servers log requests (address requested, status, timing) and errors, without your IP address, to keep oss!idle running and fix problems.',
 				],
 			},
 			{
@@ -43,7 +43,7 @@ export const privacy: Bilingual = {
 			{
 				title: 'Who receives your data',
 				blocks: [
-					'We do not sell your data, and there is no advertising or tracking in osu!idle. Data only goes to the services that make it work:',
+					'We do not sell your data, and there is no advertising or tracking in oss!idle. Data only goes to the services that make it work:',
 					{
 						list: [
 							'osu! (ppy Pty Ltd) for signing in;',
@@ -74,7 +74,7 @@ export const privacy: Bilingual = {
 			{
 				title: 'Cookies and local storage',
 				blocks: [
-					'osu!idle uses a single cookie, "session", which keeps you signed in for 30 days. It is strictly necessary, so it needs no consent. There are no advertising or third-party cookies.',
+					'oss!idle uses a single cookie, "session", which keeps you signed in for 30 days. It is strictly necessary, so it needs no consent. There are no advertising or third-party cookies.',
 					'The game also saves data in your browser or app: your settings, your guest progression, your playlists, skins and addons, and your private messages. It stays on your device and you can clear it at any time.',
 				],
 			},
@@ -105,7 +105,7 @@ export const privacy: Bilingual = {
 			{
 				title: 'Qui est responsable',
 				blocks: [
-					`${PUBLISHER}, ${ADDRESS}, édite osu!idle et décide de l'usage de vos données (le « responsable de traitement » au sens du RGPD). Pour toute question ou demande : ${EMAIL}.`,
+					`${PUBLISHER}, ${ADDRESS}, édite oss!idle et décide de l'usage de vos données (le « responsable de traitement » au sens du RGPD). Pour toute question ou demande : ${EMAIL}.`,
 				],
 			},
 			{
@@ -124,7 +124,7 @@ export const privacy: Bilingual = {
 					{ sub: 'Applications (l\'API)' },
 					'Si vous enregistrez une application sur notre API, nous conservons son nom, ses URL de retour et son secret client, rattachés à votre compte. Si vous autorisez l\'application de quelqu\'un, nous conservons laquelle, les permissions que vous lui avez données et ses jetons d\'accès, jusqu\'à leur expiration ou jusqu\'à ce que vous les révoquiez depuis vos réglages. Cette application reçoit alors ce que ces permissions permettent ; elle est gérée par son développeur, pas par nous, et sa propre politique de confidentialité s\'applique.',
 					{ sub: 'Journaux techniques' },
-					'Nos serveurs journalisent les requêtes (adresse demandée, statut, durée) et les erreurs, sans votre adresse IP, pour faire fonctionner osu!idle et corriger les problèmes.',
+					'Nos serveurs journalisent les requêtes (adresse demandée, statut, durée) et les erreurs, sans votre adresse IP, pour faire fonctionner oss!idle et corriger les problèmes.',
 				],
 			},
 			{
@@ -136,7 +136,7 @@ export const privacy: Bilingual = {
 			{
 				title: 'Qui reçoit vos données',
 				blocks: [
-					'Nous ne vendons pas vos données, et il n\'y a ni publicité ni pistage dans osu!idle. Les données ne vont qu\'aux services qui le font fonctionner :',
+					'Nous ne vendons pas vos données, et il n\'y a ni publicité ni pistage dans oss!idle. Les données ne vont qu\'aux services qui le font fonctionner :',
 					{
 						list: [
 							'osu! (ppy Pty Ltd) pour la connexion ;',
@@ -167,7 +167,7 @@ export const privacy: Bilingual = {
 			{
 				title: 'Cookies et stockage local',
 				blocks: [
-					'osu!idle utilise un seul cookie, « session », qui vous garde connecté pendant 30 jours. Il est strictement nécessaire et ne demande donc pas de consentement. Il n\'y a aucun cookie publicitaire ou tiers.',
+					'oss!idle utilise un seul cookie, « session », qui vous garde connecté pendant 30 jours. Il est strictement nécessaire et ne demande donc pas de consentement. Il n\'y a aucun cookie publicitaire ou tiers.',
 					'Le jeu enregistre aussi des données dans votre navigateur ou application : vos réglages, votre progression en invité, vos playlists, skins et addons, et vos messages privés. Elles restent sur votre appareil et vous pouvez les effacer à tout moment.',
 				],
 			},

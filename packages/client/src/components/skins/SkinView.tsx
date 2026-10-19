@@ -16,7 +16,9 @@ import {
 import {
 	SkinCreateBody,
 	SkinUpdateBody,
-} from '@osu-idle/shared/skin';
+	skinUpdateBody,
+} from '@oss-idle/shared/skin';
+import { z } from 'zod';
 import {
 	createSkin,
 	SkinDetail,
@@ -93,23 +95,25 @@ export default function SkinView({
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | undefined>();
 
-	const validation = useMemo(
-		() => editing ? validateSkinSource(definition) : undefined,
-		[editing, definition],
-	);
+	const body = useMemo(() => ({
+		name: name.trim(),
+		description: description.trim(),
+		tags: tags.split(',').map(s => s.trim()).filter(Boolean),
+		version: version.trim(),
+		icon,
+		definition,
+	} satisfies SkinUpdateBody), [name, description, tags, version, icon, definition]);
+
+	const validation = useMemo(() => {
+		if (!editing) return undefined;
+		const meta = skinUpdateBody.safeParse(body);
+		return validateSkinSource(definition) ?? (meta.success ? undefined : z.prettifyError(meta.error));
+	}, [editing, body, definition]);
 
 	const save = useCallback(async () => {
 		if (!editing) return;
 		setBusy(true);
 		setError(undefined);
-		const body = {
-			name: name.trim(),
-			description: description.trim(),
-			tags: tags.split(',').map(s => s.trim()).filter(Boolean),
-			version: version.trim(),
-			icon,
-			definition,
-		} satisfies SkinUpdateBody;
 		try {
 			if (id) await updateSkin(id, body);
 			else await createSkin(body);
@@ -119,7 +123,7 @@ export default function SkinView({
 		} finally {
 			setBusy(false);
 		}
-	}, [editing, name, description, tags, version, icon, definition]);
+	}, [editing, body]);
 
 	return (
 		<div className='skin-view'>

@@ -1,10 +1,10 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import {
 	mapped,
 	type ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
-import type { ChatLine } from '@osu-idle/shared/community/wire';
+} from '@oss-idle/shared/helpers/mapped';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
+import type { ChatLine } from '@oss-idle/shared/community/wire';
 import { Setting } from '../../db/settings';
 import { isCommunityOpen } from '../../globals';
 import {
@@ -32,5 +32,11 @@ export type MenuTarget = Pick<PresenceEntry, 'characterId' | 'userId' | 'name'> 
 	line?: PlayerChatLine;
 };
 export const menuFor = new Synced<MenuTarget | undefined>(undefined);
-void isCommunityOpen.sync(open => { if (!open) void menuFor.set(undefined); });
+/** A web address clicked in chat: the menu asking to open it is up. */
+export const linkFor = new Synced<string | undefined>(undefined);
+void isCommunityOpen.sync(open => {
+	if (open) return;
+	void menuFor.set(undefined);
+	void linkFor.set(undefined);
+});
 

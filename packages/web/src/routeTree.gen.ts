@@ -22,6 +22,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news/index'
 import { Route as MapsIndexRouteImport } from './routes/maps/index'
+import { Route as ChangelogIndexRouteImport } from './routes/changelog/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ScoresIdRouteImport } from './routes/scores/$id'
 import { Route as RankingsScoreRouteImport } from './routes/rankings/score'
@@ -42,11 +43,14 @@ import { Route as LegalNoticeRouteImport } from './routes/legal/notice'
 import { Route as LegalCopyrightRouteImport } from './routes/legal/copyright'
 import { Route as LegalApiRouteImport } from './routes/legal/api'
 import { Route as HelpFaqRouteImport } from './routes/help/faq'
+import { Route as GroupsGroupRouteImport } from './routes/groups/$group'
+import { Route as ChangelogVersionRouteImport } from './routes/changelog/$version'
 import { Route as CIdRouteImport } from './routes/c/$id'
 import { Route as AuthErrorRouteImport } from './routes/auth/error'
 import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
 import { Route as AuthDesktopRouteImport } from './routes/auth/desktop'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as AdminTeamRouteImport } from './routes/admin/team'
 import { Route as AdminSkinsRouteImport } from './routes/admin/skins'
 import { Route as AdminRestrictionsRouteImport } from './routes/admin/restrictions'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
@@ -127,6 +131,11 @@ const NewsIndexRoute = NewsIndexRouteImport.update({
 const MapsIndexRoute = MapsIndexRouteImport.update({
   id: '/maps/',
   path: '/maps/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangelogIndexRoute = ChangelogIndexRouteImport.update({
+  id: '/changelog/',
+  path: '/changelog/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -229,6 +238,16 @@ const HelpFaqRoute = HelpFaqRouteImport.update({
   path: '/help/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GroupsGroupRoute = GroupsGroupRouteImport.update({
+  id: '/groups/$group',
+  path: '/groups/$group',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangelogVersionRoute = ChangelogVersionRouteImport.update({
+  id: '/changelog/$version',
+  path: '/changelog/$version',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CIdRoute = CIdRouteImport.update({
   id: '/c/$id',
   path: '/c/$id',
@@ -253,6 +272,11 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTeamRoute = AdminTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminSkinsRoute = AdminSkinsRouteImport.update({
   id: '/skins',
@@ -358,11 +382,14 @@ export interface FileRoutesByFullPath {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
+  '/admin/team': typeof AdminTeamRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
+  '/changelog/$version': typeof ChangelogVersionRoute
+  '/groups/$group': typeof GroupsGroupRoute
   '/help/faq': typeof HelpFaqRoute
   '/legal/api': typeof LegalApiRoute
   '/legal/copyright': typeof LegalCopyrightRoute
@@ -383,6 +410,7 @@ export interface FileRoutesByFullPath {
   '/rankings/score': typeof RankingsScoreRoute
   '/scores/$id': typeof ScoresIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/changelog/': typeof ChangelogIndexRoute
   '/maps/': typeof MapsIndexRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/grades/$grade': typeof RankingsGradesGradeRoute
@@ -413,11 +441,14 @@ export interface FileRoutesByTo {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
+  '/admin/team': typeof AdminTeamRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
+  '/changelog/$version': typeof ChangelogVersionRoute
+  '/groups/$group': typeof GroupsGroupRoute
   '/help/faq': typeof HelpFaqRoute
   '/legal/api': typeof LegalApiRoute
   '/legal/copyright': typeof LegalCopyrightRoute
@@ -438,6 +469,7 @@ export interface FileRoutesByTo {
   '/rankings/score': typeof RankingsScoreRoute
   '/scores/$id': typeof ScoresIdRoute
   '/admin': typeof AdminIndexRoute
+  '/changelog': typeof ChangelogIndexRoute
   '/maps': typeof MapsIndexRoute
   '/news': typeof NewsIndexRoute
   '/rankings/grades/$grade': typeof RankingsGradesGradeRoute
@@ -470,11 +502,14 @@ export interface FileRoutesById {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
+  '/admin/team': typeof AdminTeamRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/auth/error': typeof AuthErrorRoute
   '/c/$id': typeof CIdRoute
+  '/changelog/$version': typeof ChangelogVersionRoute
+  '/groups/$group': typeof GroupsGroupRoute
   '/help/faq': typeof HelpFaqRoute
   '/legal/api': typeof LegalApiRoute
   '/legal/copyright': typeof LegalCopyrightRoute
@@ -495,6 +530,7 @@ export interface FileRoutesById {
   '/rankings/score': typeof RankingsScoreRoute
   '/scores/$id': typeof ScoresIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/changelog/': typeof ChangelogIndexRoute
   '/maps/': typeof MapsIndexRoute
   '/news/': typeof NewsIndexRoute
   '/rankings/grades/$grade': typeof RankingsGradesGradeRoute
@@ -528,11 +564,14 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/restrictions'
     | '/admin/skins'
+    | '/admin/team'
     | '/auth/callback'
     | '/auth/desktop'
     | '/auth/discord'
     | '/auth/error'
     | '/c/$id'
+    | '/changelog/$version'
+    | '/groups/$group'
     | '/help/faq'
     | '/legal/api'
     | '/legal/copyright'
@@ -553,6 +592,7 @@ export interface FileRouteTypes {
     | '/rankings/score'
     | '/scores/$id'
     | '/admin/'
+    | '/changelog/'
     | '/maps/'
     | '/news/'
     | '/rankings/grades/$grade'
@@ -583,11 +623,14 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/restrictions'
     | '/admin/skins'
+    | '/admin/team'
     | '/auth/callback'
     | '/auth/desktop'
     | '/auth/discord'
     | '/auth/error'
     | '/c/$id'
+    | '/changelog/$version'
+    | '/groups/$group'
     | '/help/faq'
     | '/legal/api'
     | '/legal/copyright'
@@ -608,6 +651,7 @@ export interface FileRouteTypes {
     | '/rankings/score'
     | '/scores/$id'
     | '/admin'
+    | '/changelog'
     | '/maps'
     | '/news'
     | '/rankings/grades/$grade'
@@ -639,11 +683,14 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/restrictions'
     | '/admin/skins'
+    | '/admin/team'
     | '/auth/callback'
     | '/auth/desktop'
     | '/auth/discord'
     | '/auth/error'
     | '/c/$id'
+    | '/changelog/$version'
+    | '/groups/$group'
     | '/help/faq'
     | '/legal/api'
     | '/legal/copyright'
@@ -664,6 +711,7 @@ export interface FileRouteTypes {
     | '/rankings/score'
     | '/scores/$id'
     | '/admin/'
+    | '/changelog/'
     | '/maps/'
     | '/news/'
     | '/rankings/grades/$grade'
@@ -692,6 +740,8 @@ export interface RootRouteChildren {
   AuthDiscordRoute: typeof AuthDiscordRoute
   AuthErrorRoute: typeof AuthErrorRoute
   CIdRoute: typeof CIdRoute
+  ChangelogVersionRoute: typeof ChangelogVersionRoute
+  GroupsGroupRoute: typeof GroupsGroupRoute
   HelpFaqRoute: typeof HelpFaqRoute
   LegalApiRoute: typeof LegalApiRoute
   LegalCopyrightRoute: typeof LegalCopyrightRoute
@@ -711,6 +761,7 @@ export interface RootRouteChildren {
   RankingsPlaysRoute: typeof RankingsPlaysRoute
   RankingsScoreRoute: typeof RankingsScoreRoute
   ScoresIdRoute: typeof ScoresIdRoute
+  ChangelogIndexRoute: typeof ChangelogIndexRoute
   MapsIndexRoute: typeof MapsIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   RankingsGradesGradeRoute: typeof RankingsGradesGradeRoute
@@ -813,6 +864,13 @@ declare module '@tanstack/react-router' {
       path: '/maps'
       fullPath: '/maps/'
       preLoaderRoute: typeof MapsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/changelog/': {
+      id: '/changelog/'
+      path: '/changelog'
+      fullPath: '/changelog/'
+      preLoaderRoute: typeof ChangelogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -955,6 +1013,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelpFaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/groups/$group': {
+      id: '/groups/$group'
+      path: '/groups/$group'
+      fullPath: '/groups/$group'
+      preLoaderRoute: typeof GroupsGroupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/changelog/$version': {
+      id: '/changelog/$version'
+      path: '/changelog/$version'
+      fullPath: '/changelog/$version'
+      preLoaderRoute: typeof ChangelogVersionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/c/$id': {
       id: '/c/$id'
       path: '/c/$id'
@@ -989,6 +1061,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/callback'
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/team': {
+      id: '/admin/team'
+      path: '/team'
+      fullPath: '/admin/team'
+      preLoaderRoute: typeof AdminTeamRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/skins': {
       id: '/admin/skins'
@@ -1115,6 +1194,7 @@ interface AdminRouteRouteChildren {
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminRestrictionsRoute: typeof AdminRestrictionsRoute
   AdminSkinsRoute: typeof AdminSkinsRoute
+  AdminTeamRoute: typeof AdminTeamRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1128,6 +1208,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminOrdersRoute: AdminOrdersRoute,
   AdminRestrictionsRoute: AdminRestrictionsRoute,
   AdminSkinsRoute: AdminSkinsRoute,
+  AdminTeamRoute: AdminTeamRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -1152,6 +1233,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthDiscordRoute: AuthDiscordRoute,
   AuthErrorRoute: AuthErrorRoute,
   CIdRoute: CIdRoute,
+  ChangelogVersionRoute: ChangelogVersionRoute,
+  GroupsGroupRoute: GroupsGroupRoute,
   HelpFaqRoute: HelpFaqRoute,
   LegalApiRoute: LegalApiRoute,
   LegalCopyrightRoute: LegalCopyrightRoute,
@@ -1171,6 +1254,7 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsPlaysRoute: RankingsPlaysRoute,
   RankingsScoreRoute: RankingsScoreRoute,
   ScoresIdRoute: ScoresIdRoute,
+  ChangelogIndexRoute: ChangelogIndexRoute,
   MapsIndexRoute: MapsIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   RankingsGradesGradeRoute: RankingsGradesGradeRoute,

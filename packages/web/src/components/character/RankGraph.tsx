@@ -11,7 +11,7 @@ import {
 	Trans,
 } from '@lingui/react/macro';
 import FancyGraph from '../FancyGraph';
-import num from '@osu-idle/shared/display/num';
+import num from '@oss-idle/shared/display/num';
 
 const HEIGHT = 90;
 const MARGIN = 3;

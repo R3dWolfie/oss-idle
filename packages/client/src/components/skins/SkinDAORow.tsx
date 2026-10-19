@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 import type { SkinDAO } from '../../db/schema/skin';
 import SkinIcon from './SkinIcon';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { currentSkinDAO } from '../../osu/skin/Skin';
 
 type Props = {

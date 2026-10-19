@@ -82,6 +82,10 @@ export default class Game {
 		return this.page.evaluate(() => window.__idle!.scene());
 	}
 
+	async nowPlaying(): Promise<number | undefined> {
+		return this.page.evaluate(() => window.__idle!.nowPlaying());
+	}
+
 	async expectScene(scene: Scene, timeout = 30_000): Promise<void> {
 		await this.page.waitForFunction(
 			(want) => window.__idle!.scene() === want, scene, { timeout },

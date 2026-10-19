@@ -11,7 +11,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import {
 	MAX_PENDING_REQUESTS,
 	parseBeatmapsetId,
-} from '@osu-idle/shared/beatmapRequest';
+} from '@oss-idle/shared/beatmapRequest';
 import {
 	searchMapRequests,
 	submitMapRequest,

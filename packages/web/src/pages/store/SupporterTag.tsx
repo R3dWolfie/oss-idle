@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Trans } from '@lingui/react/macro';
-import type { UserDTO } from '@osu-idle/shared/user';
-import { MIN_SUPPORT } from '@osu-idle/shared/supporter';
+import type { UserDTO } from '@oss-idle/shared/user';
+import { MIN_SUPPORT } from '@oss-idle/shared/supporter';
 import Link from '../../components/Link';
 import { useCurrentCharacter } from '../../hooks/useCurrentCharacter';
 import { inGameBrowser } from '../../auth';
@@ -53,7 +53,7 @@ export default function SupporterTag({ me, subscribed }: { me: UserDTO; subscrib
 		<div className='store__product-text'>
 			<p>
 				<Trans>
-					osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it.
+					oss!idle runs on a server that costs money every month. A supporter tag is how players help pay for it.
 					It changes nothing in the game.
 				</Trans>
 			</p>

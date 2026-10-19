@@ -1,5 +1,10 @@
 import type { WSContext } from 'hono/ws';
-import type { ServerMessage } from '@osu-idle/shared/community/wire';
+import {
+	DEFAULT_CHANNEL,
+	LEGACY_DEFAULT_CHANNEL,
+	knowsLegacyChannel,
+	type ServerMessage,
+} from '@oss-idle/shared/community/wire';
 import { redis } from '../redis';
 import { redisKeyPrefix } from '../env';
 
@@ -38,6 +43,24 @@ type Envelope =
 
 const OPEN = 1;
 
+/** The message as a client from before the rename to oss!idle reads it: the
+ *  default channel under its old name. Undefined when it reads the same. */
+const legacyMessage = (msg: ServerMessage): ServerMessage | undefined => {
+	if (msg.type === 'chat' && msg.line.channel === DEFAULT_CHANNEL) {
+		return {
+			...msg, line: {
+				...msg.line, channel: LEGACY_DEFAULT_CHANNEL,
+			},
+		};
+	}
+	if (msg.type === 'chat:delete' && msg.channel === DEFAULT_CHANNEL) {
+		return {
+			...msg, channel: LEGACY_DEFAULT_CHANNEL,
+		};
+	}
+	return undefined;
+};
+
 class WsHub {
 
 	private readonly conns = new Map<number, Set<WSContext>>();
@@ -46,6 +69,8 @@ class WsHub {
 	 *  connected with - so this, not the caller, is what says where it lives. */
 	private readonly owner = new Map<WSContext, number>();
 	private subscribed = false;
+	/** Sockets of clients from before the rename to oss!idle. */
+	private readonly legacy = new WeakSet<WSContext>();
 
 	/** Start listening for published messages. Idempotent; called once per worker. */
 	public init(): void {
@@ -109,6 +134,11 @@ class WsHub {
 		for (const ws of set) this.owner.set(ws, to);
 	}
 
+	/** What the client said it runs: one from before the rename is served the old channel name. */
+	public noteVersion(ws: WSContext, version: string): void {
+		if (knowsLegacyChannel(version)) this.legacy.add(ws);
+	}
+
 	/** Is this character connected to *this* worker? */
 	public isLocal(characterId: number): boolean {
 		return this.conns.has(characterId);
@@ -139,12 +169,14 @@ class WsHub {
 		}
 		const { to, msg } = envelope;
 		const data = JSON.stringify(msg);
+		const legacy = legacyMessage(msg);
+		const legacyData = legacy && JSON.stringify(legacy);
 		const sets = to === undefined
 			? this.conns.values()
 			: [this.conns.get(to)].filter(s => s !== undefined);
 		for (const set of sets) {
 			for (const ws of set) {
-				if (ws.readyState === OPEN) ws.send(data);
+				if (ws.readyState === OPEN) ws.send(legacyData && this.legacy.has(ws) ? legacyData : data);
 			}
 		}
 	}

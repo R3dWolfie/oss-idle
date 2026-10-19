@@ -8,10 +8,10 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import { countryName } from '@osu-idle/shared/display/country';
-import { statusName } from '@osu-idle/shared/display/community';
-import accuracyText from '@osu-idle/shared/display/accuracy';
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
+import { countryName } from '@oss-idle/shared/display/country';
+import { statusName } from '@oss-idle/shared/display/community';
+import accuracyText from '@oss-idle/shared/display/accuracy';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
 
 /**
  * One online character, osu!stable user-panel style: avatar, name and a

@@ -5,13 +5,13 @@ import {
 import { ph } from '@lingui/core/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
-import { bignum } from '@osu-idle/shared/display/num';
-import { dateAgo } from '@osu-idle/shared/display/ago';
+import { bignum } from '@oss-idle/shared/display/num';
+import { dateAgo } from '@oss-idle/shared/display/ago';
 import {
 	difficultyColor,
 	difficultyTextColor,
-} from '@osu-idle/shared/display/difficulty';
-import { osuSetUrl } from '@osu-idle/shared/beatmap';
+} from '@oss-idle/shared/display/difficulty';
+import { osuSetUrl } from '@oss-idle/shared/beatmap';
 import OutLink from '../../components/OutLink';
 import {
 	coverBackground,
@@ -20,6 +20,7 @@ import {
 } from '../../api/maps';
 import DifficultyPicker from './DifficultyPicker';
 import BeatmapsetStats from './BeatmapsetStats';
+import DownloadButton from './DownloadButton';
 
 /** osu!'s beatmap header: the cover, the difficulties, who made it, then its stats. */
 export default function BeatmapsetHeader({ mapset, diff }: { mapset: Mapset; diff: MapDiff }) {
@@ -49,11 +50,12 @@ export default function BeatmapsetHeader({ mapset, diff }: { mapset: Mapset; dif
 			<div className='mapset__mapper'>
 				<Trans>mapped by <b>{ph({ creator: set.creator })}</b></Trans>
 			</div>
-			{osu && <div className='mapset__buttons'>
-				<OutLink href={osu} target='_blank' className='mapset__button'>
+			<div className='mapset__buttons'>
+				<DownloadButton setId={set.id} />
+				{osu && <OutLink href={osu} target='_blank' className='mapset__button'>
 					<Trans>osu! page</Trans>
-				</OutLink>
-			</div>}
+				</OutLink>}
+			</div>
 		</div>
 		<div className='mapset__side'>
 			<div className='mapset__status'>

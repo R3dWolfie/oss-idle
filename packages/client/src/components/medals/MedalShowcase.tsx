@@ -6,9 +6,9 @@ import {
 	type RefObject,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import type { MedalTier } from '@osu-idle/shared/achievements/medal';
-import { MEDAL_XP_BONUS } from '@osu-idle/shared/upgrades';
-import { MEDALS } from '@osu-idle/shared/achievements/catalogue';
+import type { MedalTier } from '@oss-idle/shared/achievements/medal';
+import { MEDAL_XP_BONUS } from '@oss-idle/shared/upgrades';
+import { MEDALS } from '@oss-idle/shared/achievements/catalogue';
 import type { MedalUnlock } from '../../achievements/medalUnlocks';
 import {
 	medalFinale,

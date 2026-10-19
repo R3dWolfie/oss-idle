@@ -1,4 +1,4 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import './Skin.css';
 import {
 	GRADE,
@@ -6,15 +6,15 @@ import {
 	Grades,
 	JUDGEMENT,
 	Judgements,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 import {
 	Color,
 	ColorSchema,
-} from '@osu-idle/shared/types/color';
+} from '@oss-idle/shared/types/color';
 import { merge } from 'ts-deepmerge';
 import { SkinDAO } from '../../db/schema/skin';
 import { z } from 'zod';
-import Log from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
 import {
 	ph,
 	t,
@@ -22,8 +22,8 @@ import {
 import {
 	deepPartial,
 	DeepPartial,
-} from '@osu-idle/shared/types/deep_partial';
-import { ValueIn } from '@osu-idle/shared/helpers/mapped';
+} from '@oss-idle/shared/types/deep_partial';
+import { ValueIn } from '@oss-idle/shared/helpers/mapped';
 
 const COLUMN_RECORD_EXAMPLE = '{ 0: ..., 1: ..., 2: ..., 3: ... }';
 
@@ -71,6 +71,7 @@ const SkinDefinitionSchema = z.object({
 		noteHeight: z.number(),
 		receptorHeight: z.number(),
 		hitPosition: z.number(),
+		upscroll: z.boolean(),
 	}),
 	hitObjects: z.record(
 		z.number(),
@@ -115,6 +116,7 @@ export const defaultSkin: () => SkinDefinition = () => ({
 		noteHeight: 24,
 		receptorHeight: 30,
 		hitPosition: 100,
+		upscroll: false,
 	},
 	judgements: {
 		[JUDGEMENT.DIVINE]: getUniformJudgeConfig(ColorSchema.parse('#a8f0ff'), 'DIVINE'),

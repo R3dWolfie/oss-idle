@@ -6,7 +6,7 @@ import {
 import {
 	betterScore,
 	rankValue,
-} from '@osu-idle/shared/scoreOrder';
+} from '@oss-idle/shared/scoreOrder';
 
 const play = (score: number, accuracy: number | string, id: number) => ({
 	score, accuracy, id,

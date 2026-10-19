@@ -1,5 +1,5 @@
-import Synced from '@osu-idle/shared/helpers/synced';
-import type { ValueIn } from '@osu-idle/shared/helpers/mapped';
+import Synced from '@oss-idle/shared/helpers/synced';
+import type { ValueIn } from '@oss-idle/shared/helpers/mapped';
 
 /**
  * Client-side feature unlocks, seeded for a future upgrade system: each entry

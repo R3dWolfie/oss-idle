@@ -2,7 +2,7 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import Link from '../../components/Link';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { getMapBoard } from '../../api/maps';

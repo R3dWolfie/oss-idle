@@ -2,7 +2,7 @@ import {
 	rpc,
 	unwrap,
 } from './client';
-import type { BeatmapRequestStatus } from '@osu-idle/shared/beatmapRequest';
+import type { BeatmapRequestStatus } from '@oss-idle/shared/beatmapRequest';
 
 /** Public: every ranking proposition, with its backers and nomination state. */
 export const listMapRequests = () => unwrap(rpc.v1.beatmap.request.$get());

@@ -1,14 +1,14 @@
-import Synced from '@osu-idle/shared/helpers/synced';
-import Log, { POPUP_TYPE } from '@osu-idle/shared/helpers/log';
-import sleep from '@osu-idle/shared/helpers/sleep';
-import type { CharacterDTO } from '@osu-idle/shared/character';
+import Synced from '@oss-idle/shared/helpers/synced';
+import Log, { POPUP_TYPE } from '@oss-idle/shared/helpers/log';
+import sleep from '@oss-idle/shared/helpers/sleep';
+import type { CharacterDTO } from '@oss-idle/shared/character';
 import { rpc } from './client';
 import Auth from './auth';
 import Entities from '../entity/entities';
 import { isWebOpen } from '../globals';
 import Character from '../db/schema/character';
 import { projectPending } from './projectPending';
-import { desktop } from '@osu-idle/shared/desktop';
+import { desktop } from '@oss-idle/shared/desktop';
 
 /** Give a single validation attempt this long before declaring us offline. */
 const VALIDATE_TIMEOUT_MS = 15_000;
@@ -16,7 +16,7 @@ const VALIDATE_TIMEOUT_MS = 15_000;
 const RECONNECT_INTERVAL_MS = 5_000;
 
 /** localStorage key the login popup writes to signal the session changed. */
-const AUTH_PING_KEY = 'osu-idle:auth';
+const AUTH_PING_KEY = 'oss-idle:auth';
 
 /** Keep the local row in step with the account's character: scores are assigned
  *  by character id, so the row has to be there. It is a copy - the live

@@ -5,14 +5,14 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import {
 	MAX_RATE,
 	MIN_RATE,
 	RATE_STEP,
 	rateSteps,
 	scoreMultiplier,
-} from '@osu-idle/shared/rate';
+} from '@oss-idle/shared/rate';
 import Entities from '../../entity/entities';
 import { SETTINGS } from '../../db/settings';
 import { inTextBox } from '../../input/Controls';

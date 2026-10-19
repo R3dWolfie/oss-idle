@@ -9,7 +9,7 @@ import { oszPath } from '../beatmaps/storage';
  * difficulties an older ingest skipped (no osu! id), ranked like any other; the
  * set's other difficulties stay as they are.
  *
- *   npm -w @osu-idle/server run reingest:beatmaps[:prod] -- <setId> [<setId>…]
+ *   npm -w @oss-idle/server run reingest:beatmaps[:prod] -- <setId> [<setId>…]
  */
 const main = async (): Promise<void> => {
 	const ids = process.argv.slice(2).map(Number);

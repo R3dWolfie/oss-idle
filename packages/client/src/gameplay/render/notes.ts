@@ -1,15 +1,15 @@
 import {
 	Color,
 	colorA,
-} from '@osu-idle/shared/types/color';
-import Reading from '@osu-idle/shared/sim/skills/reading';
+} from '@oss-idle/shared/types/color';
+import Reading from '@oss-idle/shared/sim/skills/reading';
 import {
 	noteY,
 	roundRect,
 	type Frame,
 	type Layer,
 } from './frame';
-import type { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
+import type { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
 
 type RenderNote = ManiaGame['notes'][number];
 

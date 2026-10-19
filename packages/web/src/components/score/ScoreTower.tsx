@@ -1,7 +1,7 @@
 import {
 	compareGrade,
 	type Grade as GradeName,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 import Grade from './Grade';
 
 const TOWER: GradeName[] = ['XX', 'X', 'SS', 'S', 'A', 'B', 'C', 'D'];

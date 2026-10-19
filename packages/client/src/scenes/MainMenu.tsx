@@ -3,7 +3,7 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import OsuLogo from '../components/OsuLogo';
+import IdleLogo from '../components/IdleLogo';
 import LogoVisualizer from '../components/LogoVisualizer';
 import {
 	music,
@@ -14,24 +14,24 @@ import Background from './Background';
 import Multiplayer from '../online/multiplayer';
 import SceneManager, { SCENE } from './SceneManager';
 import Device from '../responsive/Device';
-import { useParallax } from '@osu-idle/shared/hooks/useParallax';
+import { useParallax } from '@oss-idle/shared/hooks/useParallax';
 import Announce from '../components/Announce';
 import {
 	mapped,
 	ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
+} from '@oss-idle/shared/helpers/mapped';
 import { useLingui } from '@lingui/react/macro';
 import Controls from '../input/Controls';
-import normalize from '@osu-idle/shared/math/normalize';
+import normalize from '@oss-idle/shared/math/normalize';
 import {
 	isOptionsOpen,
 	isWebOpen,
 	webUrl,
 } from '../globals';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Entities from '../entity/entities';
 import { SETTINGS } from '../db/settings';
-import { VERSION } from '@osu-idle/shared/version';
+import { VERSION } from '@oss-idle/shared/version';
 import DesktopUpdate from '../components/DesktopUpdate';
 import SupporterHeart from '../components/SupporterHeart';
 import { currentSkin } from '../osu/skin/Skin';
@@ -39,10 +39,10 @@ import Auth from '../online/auth';
 import ContextMenu from '../components/ContextMenu';
 import ConfirmMenu from '../components/ConfirmMenu';
 import PlayManager from '../online/playManager';
-import { desktop } from '@osu-idle/shared/desktop';
+import { desktop } from '@oss-idle/shared/desktop';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord';
-import { DISCORD_URL } from '@osu-idle/shared/links';
+import { DISCORD_URL } from '@oss-idle/shared/links';
 
 interface Props {
 	/** play the white-flash "drop" entrance (true when arriving from the intro) */
@@ -217,14 +217,14 @@ export default function MainMenu({ flash = false }: Props) {
 	const mobileShift = 1 - normalize(window.innerWidth, [400, 850]);
 
 	return (
-		<div className={`menu ${flash ? 'menu--flash' : ''}`}>
+		<div className={`menu ${flash ? 'menu--flash' : ''} ${menu === MENU.CLOSED ? '' : 'menu--open'}`}>
 			<Background image={user?.supporter ? skin.data.menu.background : undefined} />
 			<div className="menu__vignette" />
 
 			<header className="menu__top">
 			</header>
 			<div className="menu__brand">
-				<span className="menu__brand-name">osu!</span>
+				<span className="menu__brand-name">oss!</span>
 				<span className="menu__brand-tag">idle</span>
 				<span className="menu__brand-version">v{VERSION}</span>
 				<a
@@ -297,7 +297,7 @@ export default function MainMenu({ flash = false }: Props) {
 				>
 					<div className="menu__logo-enter">
 						<LogoVisualizer size={logoSize} />
-						<OsuLogo size={logoSize} onClick={mainClick} />
+						<IdleLogo size={logoSize} onClick={mainClick} />
 					</div>
 				</div>
 			</div>
@@ -307,7 +307,7 @@ export default function MainMenu({ flash = false }: Props) {
 
 			{exitConfirm && (
 				<ContextMenu
-					title={t`Exit osu!idle`}
+					title={t`Exit oss!idle`}
 					sub={t`Are you sure you want to quit?`}
 					onClose={() => setExitConfirm(false)}
 					options={[

@@ -6,8 +6,8 @@ import {
 	faGripLines,
 	faMusic,
 } from '@fortawesome/free-solid-svg-icons';
-import { length } from '@osu-idle/shared/display/length';
-import num, { bpm } from '@osu-idle/shared/display/num';
+import { length } from '@oss-idle/shared/display/length';
+import num, { bpm } from '@oss-idle/shared/display/num';
 import {
 	previewUrl,
 	type MapDiff,

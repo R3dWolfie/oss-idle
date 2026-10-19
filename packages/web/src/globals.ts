@@ -1,4 +1,4 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 
 export const debugMode = new Synced(import.meta.env.DEV);
 

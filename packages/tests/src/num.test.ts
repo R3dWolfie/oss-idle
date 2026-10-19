@@ -3,7 +3,7 @@ import {
 	it,
 	expect,
 } from 'vitest';
-import { bignum } from '@osu-idle/shared/display/num';
+import { bignum } from '@oss-idle/shared/display/num';
 
 describe('bignum', () => {
 	it('leaves an unsuffixed number a plain integer', () => {

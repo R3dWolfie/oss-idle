@@ -3,7 +3,7 @@ import {
 	expect,
 	it,
 } from 'vitest';
-import { medalSlots } from '@osu-idle/client/components/medals/medalLayout';
+import { medalSlots } from '@oss-idle/client/components/medals/medalLayout';
 
 const W = 1216;
 const H = 520;

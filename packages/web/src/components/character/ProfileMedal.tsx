@@ -3,13 +3,13 @@ import { Trans } from '@lingui/react/macro';
 import {
 	medalLook,
 	type MedalDef,
-} from '@osu-idle/shared/achievements/catalogue';
+} from '@oss-idle/shared/achievements/catalogue';
 import {
 	medalCategoryName,
 	medalDescription,
 	medalName,
 	medalTierName,
-} from '@osu-idle/shared/display/medals';
+} from '@oss-idle/shared/display/medals';
 import MedalIcon from './MedalIcon';
 import MedalProgressBar from './MedalProgressBar';
 

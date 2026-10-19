@@ -1,4 +1,4 @@
-import { ValueIn } from '@osu-idle/shared/helpers/mapped';
+import { ValueIn } from '@oss-idle/shared/helpers/mapped';
 
 export const PROFILE = {
 	/** Lvl 0 : Player just starting out the game, human baseline */

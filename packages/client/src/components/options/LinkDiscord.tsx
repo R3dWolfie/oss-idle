@@ -3,7 +3,7 @@ import {
 	useState,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Auth from '../../online/auth';
 import { rpc } from '../../online/client';
 import Button from './controls/Button';
@@ -13,7 +13,7 @@ const discordLink = async () => {
 	return res.ok ? await res.json() : undefined;
 };
 
-/** Links the account's Discord, for the level role on the osu!idle server. */
+/** Links the account's Discord, for the level role on the oss!idle server. */
 export default function LinkDiscord() {
 	const [user] = useSynced(Auth.user);
 	const [linked, setLinked] = useState<boolean>();

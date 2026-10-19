@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { gt } from 'drizzle-orm';
-import { MEDALS } from '@osu-idle/shared/achievements/catalogue';
+import { MEDALS } from '@oss-idle/shared/achievements/catalogue';
 import { requireAdmin } from '../auth/admin';
 import { db } from '../db/client';
 import { character_totals } from '../db/schema/character_totals';

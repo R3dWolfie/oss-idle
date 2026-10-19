@@ -1,4 +1,4 @@
-import { GoodGrade } from '@osu-idle/shared/judgement';
+import { GoodGrade } from '@oss-idle/shared/judgement';
 import { SkillSort } from '../components/leaderboard/PlayerSkillLeaderboard';
 import {
 	rpc,

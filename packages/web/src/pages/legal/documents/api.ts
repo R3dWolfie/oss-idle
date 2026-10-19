@@ -8,14 +8,14 @@ export const api: Bilingual = {
 			{
 				title: 'What these terms cover',
 				blocks: [
-					'These terms apply to the osu!idle API and to the applications you register in the OAuth section of your settings. By registering an application, you accept them, on top of the Terms of Use and the Rules.',
+					'These terms apply to the oss!idle API and to the applications you register in the OAuth section of your settings. By registering an application, you accept them, on top of the Terms of Use and the Rules.',
 				],
 			},
 			{
 				title: 'Your application',
 				blocks: [
 					'You are responsible for your application and for everything it does with the API. Keep its client secret secret: whoever holds it can act as your application. If it leaks, reset it from your settings.',
-					'Your application\'s name must follow the Rules. Do not present it as made, run or endorsed by osu!idle or by osu!. You may say that it uses the osu!idle API.',
+					'Your application\'s name must follow the Rules. Do not present it as made, run or endorsed by oss!idle or by osu!. You may say that it uses the oss!idle API.',
 				],
 			},
 			{
@@ -36,7 +36,7 @@ export const api: Bilingual = {
 				title: 'Fair use',
 				blocks: [
 					'Stay under the rate limits written in the API documentation and keep what you can instead of asking again. Do not get around the limits with several applications, accounts or addresses.',
-					'Do not use the API to cheat, to spam, to harm or harass players, or to copy osu!idle wholesale.',
+					'Do not use the API to cheat, to spam, to harm or harass players, or to copy oss!idle wholesale.',
 				],
 			},
 			{
@@ -60,14 +60,14 @@ export const api: Bilingual = {
 			{
 				title: 'Ce que couvrent ces conditions',
 				blocks: [
-					'Ces conditions s\'appliquent à l\'API d\'osu!idle et aux applications que vous enregistrez dans la section OAuth de vos réglages. En enregistrant une application, vous les acceptez, en plus des conditions d\'utilisation et des règles.',
+					'Ces conditions s\'appliquent à l\'API d\'oss!idle et aux applications que vous enregistrez dans la section OAuth de vos réglages. En enregistrant une application, vous les acceptez, en plus des conditions d\'utilisation et des règles.',
 				],
 			},
 			{
 				title: 'Votre application',
 				blocks: [
 					'Vous êtes responsable de votre application et de tout ce qu\'elle fait avec l\'API. Gardez son secret client secret : qui le détient peut agir au nom de votre application. S\'il fuite, réinitialisez-le depuis vos réglages.',
-					'Le nom de votre application doit respecter les règles. Ne la présentez pas comme faite, gérée ou approuvée par osu!idle ou par osu!. Vous pouvez dire qu\'elle utilise l\'API d\'osu!idle.',
+					'Le nom de votre application doit respecter les règles. Ne la présentez pas comme faite, gérée ou approuvée par oss!idle ou par osu!. Vous pouvez dire qu\'elle utilise l\'API d\'oss!idle.',
 				],
 			},
 			{
@@ -88,7 +88,7 @@ export const api: Bilingual = {
 				title: 'Usage raisonnable',
 				blocks: [
 					'Restez sous les limites de requêtes indiquées dans la documentation de l\'API et gardez ce que vous pouvez plutôt que de le redemander. Ne contournez pas les limites avec plusieurs applications, comptes ou adresses.',
-					'N\'utilisez pas l\'API pour tricher, envoyer du spam, nuire aux joueurs ou les harceler, ou copier osu!idle en entier.',
+					'N\'utilisez pas l\'API pour tricher, envoyer du spam, nuire aux joueurs ou les harceler, ou copier oss!idle en entier.',
 				],
 			},
 			{

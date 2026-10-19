@@ -4,9 +4,9 @@ import Link from '../Link';
 import Pager from './Pager';
 import type { getMedalRanking } from '../../api/rankings';
 import Flag from '../Flag';
-import rank from '@osu-idle/shared/display/rank';
-import num from '@osu-idle/shared/display/num';
-import { MEDALS } from '@osu-idle/shared/achievements/catalogue';
+import rank from '@oss-idle/shared/display/rank';
+import num from '@oss-idle/shared/display/num';
+import { MEDALS } from '@oss-idle/shared/achievements/catalogue';
 import { Trans } from '@lingui/react/macro';
 
 type Players = Awaited<ReturnType<typeof getMedalRanking>>;

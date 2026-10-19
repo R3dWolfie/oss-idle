@@ -1,7 +1,7 @@
-import Synced from '@osu-idle/shared/helpers/synced';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { versionLabel } from '@osu-idle/shared/rate';
+import Synced from '@oss-idle/shared/helpers/synced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { versionLabel } from '@oss-idle/shared/rate';
 import { rpc } from '../online/client';
 import { selectedRate } from './playRate';
 import type LightBeatmap from '../osu/beatmap/LightBeatmap';

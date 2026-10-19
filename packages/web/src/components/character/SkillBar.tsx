@@ -1,9 +1,9 @@
 import './SkillBar.css';
 
-import { xpForLevel } from '@osu-idle/shared/sim/skills/xp';
-import { SkillName } from '@osu-idle/shared/skills';
-import SkillLevel from '@osu-idle/shared/display/SkillLevel';
-import { skillName } from '@osu-idle/shared/display/skills';
+import { xpForLevel } from '@oss-idle/shared/sim/skills/xp';
+import { SkillName } from '@oss-idle/shared/skills';
+import SkillLevel from '@oss-idle/shared/display/SkillLevel';
+import { skillName } from '@oss-idle/shared/display/skills';
 
 export function SkillBar({ skill, progress: {
 	level, xp, prestige, lifetimeXp,

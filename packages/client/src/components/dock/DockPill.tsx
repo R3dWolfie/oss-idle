@@ -1,6 +1,6 @@
 import RatedVersion from '../RatedVersion';
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import PlayManager from '../../online/playManager';
 import PlayQueue from '../../gameplay/playQueue';
 import { openPage } from '../../globals';

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import Synced from '@osu-idle/shared/helpers/synced';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import Synced from '@oss-idle/shared/helpers/synced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import './Slider.css';
 
 interface Props {

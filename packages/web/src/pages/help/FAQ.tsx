@@ -8,7 +8,7 @@ import {
 	UPGRADE_LEVELS,
 	UPGRADE_XP_BONUS,
 	BASE_MAX_UPGRADES,
-} from '@osu-idle/shared/upgrades';
+} from '@oss-idle/shared/upgrades';
 import Link from '../../components/Link';
 
 const upgradeBonus = UPGRADE_XP_BONUS * 100;
@@ -20,7 +20,7 @@ export default function FAQ() {
 	return (<main className='page-contents faq'>
 		<h2><Trans>The game</Trans></h2>
 		<details>
-			<summary><Trans>What is osu!idle?</Trans></summary>
+			<summary><Trans>What is oss!idle?</Trans></summary>
 			<p><Trans>
 				An idle game built on osu!mania 4K. You don't press the keys: your character plays the maps
 				for you. Every play earns experience in its skills, better skills mean better plays, and

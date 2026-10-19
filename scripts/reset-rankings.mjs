@@ -14,7 +14,7 @@ require('dotenv').config({ path: 'packages/server/.env' });
 const { default: Redis } = await import('ioredis');
 
 // mirrors packages/server/src/env.ts + rankings.ts
-const prefix = 'osu-idle:prod:';
+const prefix = 'oss-idle:prod:';
 const SCHEMA = 7;
 
 const redis = new Redis({

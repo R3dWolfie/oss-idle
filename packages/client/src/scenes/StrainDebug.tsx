@@ -8,9 +8,9 @@ import { unstableRate } from '../gameplay/hitError';
 import StrainGraph from '../gameplay/StrainGraph';
 import './StrainDebug.css';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
-import { Judgements } from '@osu-idle/shared/judgement';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import { Judgements } from '@oss-idle/shared/judgement';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import { currentSkin } from '../osu/skin/Skin';
 
 interface Props {

@@ -125,6 +125,12 @@ export const MEDALS: MedalDef[] = [
 	def('pp-5k', 'ranked', 'gold', 'rocketLaunch'),
 	def('pp-10k', 'ranked', 'platinum', 'rocketLaunch'),
 	def('pp-20k', 'ranked', 'divine', 'rocketLaunch'),
+	def('play-pp-50', 'ranked', 'bronze', 'fire'),
+	def('play-pp-100', 'ranked', 'bronze', 'fire'),
+	def('play-pp-200', 'ranked', 'silver', 'fire'),
+	def('play-pp-500', 'ranked', 'gold', 'fire'),
+	def('play-pp-750', 'ranked', 'platinum', 'fire'),
+	def('play-pp-1k', 'ranked', 'divine', 'fire'),
 	def('curator-1', 'ranked', 'bronze', 'plant'),
 	def('curator-5', 'ranked', 'silver', 'plant'),
 	def('curator-25', 'ranked', 'gold', 'plant'),
@@ -169,6 +175,7 @@ export const MEDAL_LINES: Record<MedalCategory, string[][]> = {
 	ranked: [
 		['first-1', 'first-10', 'first-100', 'first-1000'],
 		['pp-1k', 'pp-5k', 'pp-10k', 'pp-20k'],
+		['play-pp-50', 'play-pp-100', 'play-pp-200', 'play-pp-500', 'play-pp-750', 'play-pp-1k'],
 		['curator-1', 'curator-5', 'curator-25', 'curator-100'],
 	],
 	secret: [

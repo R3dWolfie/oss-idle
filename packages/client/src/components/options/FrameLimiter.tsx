@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { desktop } from '@osu-idle/shared/desktop';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { desktop } from '@oss-idle/shared/desktop';
 import {
 	type FrameLimit,
 	SETTINGS,

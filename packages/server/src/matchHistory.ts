@@ -8,13 +8,14 @@ import {
 import type {
 	MatchEvent,
 	RoundScore,
-} from '@osu-idle/shared/multiplayer';
-import { isAdmin } from '@osu-idle/shared/admin';
+} from '@oss-idle/shared/multiplayer';
+import { isAdmin } from '@oss-idle/shared/groups';
+import { groupsOf } from './groups';
 import {
 	Judgements,
 	type Grade,
 	type Judgement,
-} from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/judgement';
 import { db } from './db/client';
 import {
 	matchEvents,
@@ -108,7 +109,7 @@ export const endGame = (
 
 /** A private history is for its players (any character of theirs) and admins. */
 const canView = async (matchId: number, isPublic: boolean, userId?: number): Promise<boolean> => {
-	if (isPublic || isAdmin(userId)) return true;
+	if (isPublic || isAdmin(await groupsOf(userId))) return true;
 	if (userId === undefined) return false;
 	const [row] = await db
 		.select({ id: matchEvents.id })

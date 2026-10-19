@@ -1,6 +1,6 @@
 import './News.css';
 
-import { isAdmin } from '@osu-idle/shared/admin';
+import { isAdmin } from '@oss-idle/shared/groups';
 
 import type { listNews } from '../../api/news';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
@@ -13,7 +13,7 @@ export default function News({ articles }: { articles: Awaited<ReturnType<typeof
 
 	return (
 		<main className="page-contents">
-			{isAdmin(user?.id) && (
+			{isAdmin(user?.groups) && (
 				<div className="news-list__toolbar">
 					<Link to="/news/admin" className="news-btn">Manage news</Link>
 				</div>

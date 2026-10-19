@@ -1,0 +1,197 @@
+/* osu-web's changelog: osu-page--changelog, update-streams-v2, builds, build, changelog-entry */
+.changelog {
+	flex: 1;
+	background-color: hsl(var(--hsl-b4));
+	--stream: var(--pink);
+}
+
+.changelog__nav-sep {
+	align-self: center;
+	font-size: 10px;
+}
+
+.update-streams {
+	padding: 20px 45px;
+	background-color: hsl(var(--hsl-b5));
+}
+
+.update-streams__item {
+	display: block;
+	width: 200px;
+	padding: 5px;
+	color: #fff;
+	text-decoration: none;
+}
+
+.update-streams__bar {
+	display: block;
+	width: 100%;
+	height: 4px;
+	margin-bottom: 5px;
+	border-radius: 400px;
+	background-color: var(--stream);
+}
+
+.update-streams__row {
+	margin: 0;
+}
+
+.update-streams__row--name {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.update-streams__row--version {
+	font-size: 16px;
+	font-weight: 300;
+}
+
+.update-streams__row--users {
+	font-size: 10px;
+	color: hsl(var(--hsl-f1));
+}
+
+.builds__group {
+	padding: 0 50px;
+}
+
+.builds__group + .builds__group {
+	border-top: 2px solid #111;
+}
+
+.builds__date {
+	font-size: 24px;
+	font-weight: 300;
+	color: #fff;
+	text-align: center;
+	padding: 20px 0 0;
+}
+
+.builds__item {
+	padding: 0 0 30px;
+}
+
+.builds__item + .builds__item {
+	border-top: 1px solid hsl(var(--hsl-b6));
+}
+
+.build {
+	color: #fff;
+}
+
+.build__version {
+	display: flex;
+	justify-content: center;
+	padding: 20px 0 0;
+	font-size: 18px;
+	font-weight: 300;
+}
+
+.build--page .build__version {
+	font-size: 24px;
+}
+
+.build__version-link {
+	display: inline-block;
+	margin: 0 10px;
+	padding: 0 10px;
+	color: #fff;
+	text-align: center;
+	text-decoration: none;
+}
+
+.build__version-link--disabled {
+	opacity: 0.5;
+}
+
+.build__stream {
+	font-weight: 500;
+}
+
+.build__stream-version {
+	color: var(--stream);
+}
+
+.build__date {
+	padding-top: 5px;
+	font-size: 14px;
+	font-weight: 300;
+	color: hsl(var(--hsl-l1));
+	text-align: center;
+}
+
+.build__category {
+	padding: 35px 0 15px;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.changelog-entry {
+	padding: 5px 0;
+	font-size: 16px;
+	overflow-wrap: break-word;
+}
+
+.changelog-entry--major {
+	color: #fc2;
+}
+
+.changelog-entry__title-icon {
+	position: absolute;
+	margin-left: -1em;
+}
+
+.changelog-entry__icon {
+	font-size: 0.7em;
+	opacity: 0.5;
+}
+
+.changelog-entry code {
+	padding: 1px 4px;
+	border-radius: 4px;
+	background-color: hsl(var(--hsl-b5));
+}
+
+.page-nav {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.page-nav__item {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	padding: 20px 10px;
+}
+
+.page-nav__item--left {
+	justify-content: flex-end;
+}
+
+.page-nav__item a {
+	color: hsl(var(--hsl-l1));
+	text-decoration: none;
+}
+
+.page-nav__label {
+	padding: 0 10px;
+}
+
+@media (max-width: 760px) {
+	.update-streams {
+		padding: 20px 5px;
+	}
+
+	.builds__group {
+		padding: 0 10px;
+	}
+
+	.changelog-entry {
+		padding-left: 1em;
+	}
+
+	.page-nav__item {
+		flex: none;
+	}
+}

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
-import { SKIN_STATUS } from '@osu-idle/shared/skin';
+import { SKIN_STATUS } from '@oss-idle/shared/skin';
 import SkinIcon from './SkinIcon';
-import { skinStatusLabel } from '@osu-idle/shared/display/skin';
+import { skinStatusLabel } from '@oss-idle/shared/display/skin';
 import { Skin } from '../../online/skins';
 
 type Props = {

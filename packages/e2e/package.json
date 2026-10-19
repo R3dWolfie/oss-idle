@@ -1,5 +1,5 @@
 {
-	"name": "@osu-idle/e2e",
+	"name": "@oss-idle/e2e",
 	"private": true,
 	"type": "module",
 	"scripts": {

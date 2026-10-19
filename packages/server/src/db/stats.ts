@@ -63,7 +63,7 @@ const statsDb: MySql2Database<Record<string, never>> = drizzle(statsPool, {
 	casing: 'snake_case',
 });
 
-// Only 4K mania is playable in osu!idle, so nothing else is offered. Every osu!
+// Only 4K mania is playable in oss!idle, so nothing else is offered. Every osu!
 // status is searchable though - a graveyard map is as rankable here as a ranked
 // one, and anything the mirror doesn't carry can still be submitted by id.
 const searchable = and(

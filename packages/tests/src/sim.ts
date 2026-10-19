@@ -1,21 +1,21 @@
 
-import '@osu-idle/shared/osu/controlPointPatch'; // O(1) groupAt - SV-heavy maps decode in ms, not seconds
+import '@oss-idle/shared/osu/controlPointPatch'; // O(1) groupAt - SV-heavy maps decode in ms, not seconds
 import type { Beatmap } from 'osu-classes';
 import {
 	ManiaGame,
 	type HitRecord,
-} from '@osu-idle/shared/sim/maniaGame';
-import CharacterBot, { Strains } from '@osu-idle/shared/sim/bots/character';
+} from '@oss-idle/shared/sim/maniaGame';
+import CharacterBot, { Strains } from '@oss-idle/shared/sim/bots/character';
 import {
 	ScoreState,
 	judge,
 	maniaWindows,
-} from '@osu-idle/shared/sim/scoring';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
+} from '@oss-idle/shared/sim/scoring';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 
 /**
  * Load a hand-picked `.osu` chart and run the authoritative simulation against a

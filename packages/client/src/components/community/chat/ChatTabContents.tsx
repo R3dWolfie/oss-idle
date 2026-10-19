@@ -4,8 +4,8 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { ANNOUNCE_CHANNEL } from '@osu-idle/shared/community/wire';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { ANNOUNCE_CHANNEL } from '@oss-idle/shared/community/wire';
 import Socket from '../../../online/socket';
 import { music } from '../../../audio/MusicPlayer';
 import {
@@ -22,6 +22,8 @@ import {
 } from '../../../online/privateMessages';
 import { blocked } from '../../../online/blocks';
 import ChatText from './ChatText';
+import { mapLink } from './links';
+import { SITE_URL } from '../../../globals';
 import {
 	type MenuTarget,
 	menuFor,
@@ -76,7 +78,10 @@ export default function ChatTabContents({ channel, inputRef } : {
 		if (text === '/np') {
 			const np = music.beatmap.get();
 			if (!np) return 'Nothing is playing';
-			return `${np.set.metadata.artist} - ${np.set.metadata.title}`;
+			const { artist, title } = np.set.metadata;
+			return mapLink(SITE_URL, {
+				setId: np.set.metadata.id, beatmapId: np.metadata.id,
+			}, `${artist} - ${title} [${np.metadata.version}]`);
 		}
 		return text;
 	};
@@ -92,13 +97,13 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 	return (<>
 		<div className="chat__log" ref={logRef}>
-			{shown.map((line, i) => {
+			{shown.map(line => {
 				const d = new Date(line.at);
 				const time = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
 
 				if (line.name === undefined) {
 					return (
-						<div key={i} className="chat__line chat__line--system">
+						<div key={line.id} className="chat__line chat__line--system">
 							<span className="chat__text" style={{ color: line.color }}>{time} {line.text}</span>
 						</div>
 					);
@@ -106,7 +111,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 				const { sender } = line;
 				return (
-					<div key={i} className="chat__line">
+					<div key={line.id} className="chat__line">
 						<span className="chat__from" style={{ color: line.color }}>
 							{`${time} `}
 							<span

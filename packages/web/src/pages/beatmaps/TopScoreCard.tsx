@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/react/macro';
 import { ph } from '@lingui/core/macro';
-import num from '@osu-idle/shared/display/num';
-import accuracy from '@osu-idle/shared/display/accuracy';
-import { dateAgo } from '@osu-idle/shared/display/ago';
+import num from '@oss-idle/shared/display/num';
+import accuracy from '@oss-idle/shared/display/accuracy';
+import { dateAgo } from '@oss-idle/shared/display/ago';
 import Link from '../../components/Link';
 import Flag from '../../components/Flag';
 import ScoreLink from '../../components/score/ScoreLink';

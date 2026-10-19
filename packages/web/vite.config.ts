@@ -26,6 +26,17 @@ function plotlyAsset(): Plugin {
 	};
 }
 
+// changelog/ sits outside this package, so the dev server doesn't watch it and
+// pages/changelog/builds.ts's glob would miss builds added after it started.
+function watchChangelog(): Plugin {
+	return {
+		name: 'watch-changelog',
+		configureServer(server) {
+			server.watcher.add(new URL('../../changelog', import.meta.url).pathname);
+		},
+	};
+}
+
 // Served at /web on the same origin as the game. In dev the game's Vite server
 // proxies /web here (see packages/client/vite.config.ts); in prod this builds
 // into the game's dist so one static directory serves both at one origin.
@@ -42,6 +53,7 @@ export default defineConfig({
 		react({ babel: { plugins: ['@lingui/babel-plugin-lingui-macro'] } }),
 		lingui(),
 		plotlyAsset(),
+		watchChangelog(),
 	],
 	server: {
 		port: Number(process.env.DEV_WEB_PORT ?? 5174),

@@ -71,7 +71,7 @@ const build = (previous, target, command) => {
 	if (checkout(previous, target) && run(command)) return;
 	console.error(`\n[prod-build] failed - putting ${PROD} back on ${short(previous)}.`);
 	checkout(target, previous);
-	run('npm -w @osu-idle/shared run build');
+	run('npm -w packages/shared run build');
 	process.exit(1);
 };
 
@@ -86,7 +86,7 @@ const previous = git(PROD, ['rev-parse', 'HEAD']);
 const tip = git(ROOT, ['rev-parse', BRANCH]);
 
 if (mode === 'verify') build(previous, snapshot(), 'node scripts/staged-build.mjs');
-else if (mode === 'server') build(previous, tip, 'npm -w @osu-idle/shared run build');
+else if (mode === 'server') build(previous, tip, 'npm -w @oss-idle/shared run build');
 else if (treeOf(previous) === treeOf(tip)) {
 	git(PROD, ['checkout', '--detach', '--force', tip]);
 	console.log(`[prod-build] prod is on ${BRANCH} (${short(tip)}), same tree as the verified build.`);
@@ -95,4 +95,4 @@ else if (treeOf(previous) === treeOf(tip)) {
 	build(previous, tip, 'node scripts/staged-build.mjs');
 }
 
-console.log('[prod-build] prod checkout updated. Restart osu-idle-prod to load the server.');
+console.log('[prod-build] prod checkout updated. Restart oss-idle-prod to load the server.');

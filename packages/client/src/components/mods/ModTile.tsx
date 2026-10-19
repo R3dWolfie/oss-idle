@@ -1,5 +1,5 @@
 import Glyph from '../multiplayer/Glyph';
-import type { GlyphName } from '@osu-idle/shared/achievements/glyphs';
+import type { GlyphName } from '@oss-idle/shared/achievements/glyphs';
 
 /** One mod on the mod select screen: lit while it's on. */
 export default function ModTile({ glyph, label, on, disabled, tint, title, onClick }: {

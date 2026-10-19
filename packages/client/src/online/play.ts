@@ -1,6 +1,6 @@
-import Synced from '@osu-idle/shared/helpers/synced';
-import type { PlayState } from '@osu-idle/shared/play';
-import type { ReplayOffset } from '@osu-idle/shared/sim/maniaGame';
+import Synced from '@oss-idle/shared/helpers/synced';
+import type { PlayState } from '@oss-idle/shared/play';
+import type { ReplayOffset } from '@oss-idle/shared/sim/maniaGame';
 import type Character from '../db/schema/character';
 import { showDeltas } from '../globals';
 import Socket from './socket';
@@ -10,7 +10,7 @@ import {
 	ph,
 	t,
 } from '@lingui/core/macro';
-import { CONTACT_EMAIL } from '@osu-idle/shared/contact';
+import { CONTACT_EMAIL } from '@oss-idle/shared/contact';
 
 /** Generous: a start awaits the server-side simulation of the whole map. */
 const START_TIMEOUT_MS = 20_000;

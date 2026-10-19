@@ -24,11 +24,11 @@ import {
 	upgradeMinLevel,
 	upgradeMinSpend,
 	upgradeXPMultiplier,
-} from '@osu-idle/shared/upgrades';
+} from '@oss-idle/shared/upgrades';
 import {
 	xpForLevel,
 	xpToLevel,
-} from '@osu-idle/shared/sim/skills/xp';
+} from '@oss-idle/shared/sim/skills/xp';
 
 const fresh = {
 	upgrades: 0, overdrive: 0, prestige: 0,

@@ -3,7 +3,7 @@ import { app } from 'electron';
 // default), so import it by name - a default import resolves to `undefined`.
 import { autoUpdater } from 'electron-updater';
 // eslint-disable-next-line @stylistic/max-len
-import type { DesktopUpdateStatus } from '@osu-idle/shared/desktop' with { 'resolution-mode': 'import' };
+import type { DesktopUpdateStatus } from '@oss-idle/shared/desktop' with { 'resolution-mode': 'import' };
 import { broadcast } from './frames';
 
 /**
@@ -18,7 +18,7 @@ let status: DesktopUpdateStatus = { state: 'idle' };
 
 function emit(next: DesktopUpdateStatus): void {
 	status = next;
-	broadcast('osu-idle:update-status', status);
+	broadcast('oss-idle:update-status', status);
 }
 
 export function getUpdateStatus(): DesktopUpdateStatus {

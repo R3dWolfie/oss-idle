@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 import MatchScoreCard from './MatchScoreCard';
 import usePlayers from './usePlayers';
 import type { Ranking } from './useMatchRanking';

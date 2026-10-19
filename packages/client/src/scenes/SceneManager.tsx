@@ -1,23 +1,23 @@
-import type { MedalBatch } from '@osu-idle/shared/play';
+import type { MedalBatch } from '@oss-idle/shared/play';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import IntroScreen from './IntroScreen';
 import MainMenu from './MainMenu';
 import SongSelect, { STRAIN_DEBUG_KEY } from './SongSelect';
 import Gameplay from './Gameplay';
-import { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
+import { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
 import { Score } from '../db/schema/score';
 import Result from './Result';
 import Lobby from './Lobby';
 import MatchSetup from './MatchSetup';
 import Screensaver from './Screensaver';
-import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
+import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
 import type { Transition } from './Transition';
 import {
 	mapped,
 	ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
-import Synced from '@osu-idle/shared/helpers/synced';
-import { ScoreDTO } from '@osu-idle/shared/score';
+} from '@oss-idle/shared/helpers/mapped';
+import Synced from '@oss-idle/shared/helpers/synced';
+import { ScoreDTO } from '@oss-idle/shared/score';
 
 export const SCENE = mapped([
 	'INTRO',

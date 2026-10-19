@@ -5,7 +5,7 @@ import {
 	useMemo,
 	useState,
 } from 'react';
-import type { SkinStatus } from '@osu-idle/shared/skin';
+import type { SkinStatus } from '@oss-idle/shared/skin';
 import {
 	type AdminSkin,
 	listSkinsAdmin,

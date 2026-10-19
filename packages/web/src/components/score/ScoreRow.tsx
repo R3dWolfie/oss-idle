@@ -1,9 +1,9 @@
 import type { InferResponseType } from 'hono/client';
 import { rpc } from '../../api/client';
 import './ScoreRow.css';
-import { dateAgo } from '@osu-idle/shared/display/ago';
-import accuracy from '@osu-idle/shared/display/accuracy';
-import num from '@osu-idle/shared/display/num';
+import { dateAgo } from '@oss-idle/shared/display/ago';
+import accuracy from '@oss-idle/shared/display/accuracy';
+import num from '@oss-idle/shared/display/num';
 import ScoreLink from './ScoreLink';
 import Grade from './Grade';
 import RateBadge from './RateBadge';

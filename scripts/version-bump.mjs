@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
 import {
+	mkdir,
+	readdir,
 	readFile,
+	rm,
 	writeFile,
 } from 'node:fs/promises';
 import { createInterface } from 'node:readline/promises';
@@ -14,6 +17,7 @@ import {
 	spawn,
 } from 'node:child_process';
 import { promisify } from 'node:util';
+import { createNewsDraft } from './news-draft.mjs';
 import { fileURLToPath } from 'node:url';
 import {
 	dirname,
@@ -37,8 +41,14 @@ const PACKAGE_JSONS = [
 	'packages/discord/package.json',
 ];
 
-// Generated runtime carrier consumed via `@osu-idle/shared/version`.
+// Generated runtime carrier consumed via `@oss-idle/shared/version`.
 const VERSION_TS = 'packages/shared/src/version.ts';
+
+// Each branch drops its player-facing lines in changelog/pending/<branch>.md;
+// a bump folds them into changelog/<major>/<minor>/<patch>/<version>.md, which the
+// web's /changelog reads.
+const CHANGELOG = join(ROOT, 'changelog');
+const PENDING = join(CHANGELOG, 'pending');
 
 const PUBLIC_REMOTE = 'public';
 const PUBLIC_BRANCH = 'main';
@@ -91,6 +101,41 @@ async function restoreVersionFiles(snap) {
 	for (const [path, text] of snap) await writeFile(path, text);
 }
 
+// One entry per line: `add|fix[!] [Category] title` (`!` = major), as the web's
+// pages/changelog/builds.ts parses it.
+const ENTRY = /^(add|fix)!? \[[^\]]+\] .+$/;
+
+// Read and check the pending files before anything is bumped.
+async function readPending() {
+	const names = (await readdir(PENDING).catch(() => [])).filter(n => n.endsWith('.md')).sort();
+	const pending = await Promise.all(names.map(async n => {
+		const path = join(PENDING, n);
+		return [path, await readFile(path, 'utf8')];
+	}));
+	for (const [path, text] of pending) {
+		const bad = text.split('\n').map(l => l.trim()).filter(l => l && !ENTRY.test(l));
+		if (bad.length) throw new Error(`${path}: not \`add|fix[!] [Category] title\`:\n  ${bad.join('\n  ')}`);
+	}
+	return pending;
+}
+
+// Stamps the pending entries as this version's build, dated today. Returns the
+// undo a failed verify build runs.
+async function stampChangelog(version, pending) {
+	const lines = pending.map(([, text]) => text.trim()).filter(Boolean).join('\n')
+		|| 'fix [General] Minor fixes and improvements';
+	const dir = join(CHANGELOG, ...version.split('.').slice(0, 3));
+	const out = join(dir, `${version}.md`);
+	await mkdir(dir, { recursive: true });
+	await writeFile(out, `${new Date().toISOString().slice(0, 10)}\n\n${lines}\n`);
+	await Promise.all(pending.map(([path]) => rm(path)));
+	stdout.write(`Changelog ${version}: ${pending.length} pending file(s).\n`);
+	return async () => {
+		await rm(out, { force: true });
+		await Promise.all(pending.map(([path, text]) => writeFile(path, text)));
+	};
+}
+
 // Build the release before the version is persisted. The git commit/push/publish
 // only runs once this returns - so a broken build never reaches public history.
 // On failure the bumped files are rolled back and the deploy aborts.
@@ -104,10 +149,10 @@ function runBuild(command) {
 	});
 }
 
-async function verifyBuild(command, snap) {
+async function verifyBuild(command, rollback) {
 	stdout.write(`\nVerifying build before persisting version:\n  ${command}\n\n`);
 	if (await runBuild(command)) return;
-	if (snap) await restoreVersionFiles(snap);
+	await rollback?.();
 	stdout.write('\nBuild failed - version not persisted, working tree restored.\n');
 	process.exit(1);
 }
@@ -345,7 +390,7 @@ async function main() {
 		await writeVersion(current);
 		stdout.write(`Keeping version ${current}.\n`);
 		// Deploy still needs to build the current tree, even with no bump.
-		if (verifyCmd) await verifyBuild(verifyCmd, null);
+		if (verifyCmd) await verifyBuild(verifyCmd);
 		return;
 	}
 
@@ -364,20 +409,32 @@ async function main() {
 		}
 	}
 
+	const pending = await readPending();
+
 	// Now safe to mutate the working tree
 	const snap = verifyCmd ? await snapshotVersionFiles() : null;
 	const next = BUMPS[choice](parse(current)).join('.');
 	await writeVersion(next);
 	stdout.write(`Bumped ${current} → ${next}.\n`);
+	const undoChangelog = await stampChangelog(next, pending);
 
 	// Gate persistence on a clean build. verifyBuild exits (after rolling the
 	// bump back) if it fails, so nothing below runs and the version stays private.
-	if (verifyCmd) await verifyBuild(verifyCmd, snap);
+	if (verifyCmd) {
+		await verifyBuild(verifyCmd, async () => {
+			await restoreVersionFiles(snap);
+			await undoChangelog();
+		});
+	}
 
 	if (isGit) {
 		await commitVersion(next, release, toPublic, mergePublic);
 	} else {
 		stdout.write('Not a git repository - skipped commit.\n');
+	}
+
+	if (release) {
+		await createNewsDraft(next).catch(err => stdout.write(`News draft failed: ${err.message}\n`));
 	}
 }
 

@@ -1,4 +1,4 @@
-import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
+import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
 import type { ReactNode } from 'react';
 import SkillXPBar from '../components/SkillXPBar';
 import SkillProgression from '../components/result/SkillProgression';
@@ -9,6 +9,12 @@ import UpgradesPreview from './UpgradesPreview';
 import { sampleCharacter } from './upgradeSample';
 import PrestigeView from '../components/character/PrestigeView';
 import ConfirmMenu from '../components/ConfirmMenu';
+import '../components/community/chat/Chat.css';
+import Chat from '../components/community/chat/Chat';
+import ChannelPicker from '../components/community/chat/ChannelPicker';
+import { log } from '../logs';
+import ChatText from '../components/community/chat/ChatText';
+import LinkMenu from '../components/community/LinkMenu';
 import DockPanel from '../components/dock/DockPanel';
 import DockPill from '../components/dock/DockPill';
 import PlayQueue from '../gameplay/playQueue';
@@ -23,12 +29,15 @@ import Lobby from '../scenes/Lobby';
 import MatchSetup from '../scenes/MatchSetup';
 import MatchScoreboard from '../components/multiplayer/MatchScoreboard';
 import Result from '../scenes/Result';
-import { Judgements } from '@osu-idle/shared/judgement';
-import type { JudgementCounts } from '@osu-idle/shared/score';
-import type { Match } from '@osu-idle/shared/multiplayer';
+import { Judgements } from '@oss-idle/shared/judgement';
+import type {
+	JudgementCounts,
+	ScoreDTO,
+} from '@oss-idle/shared/score';
+import type { Match } from '@oss-idle/shared/multiplayer';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
-import Skill from '@osu-idle/shared/sim/skills/skill';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
+import Skill from '@oss-idle/shared/sim/skills/skill';
 import ShownMedals from '../components/medals/ShownMedals';
 import MedalCatalogue from './MedalCatalogue';
 import type { MedalUnlock } from '../achievements/medalUnlocks';
@@ -98,6 +107,22 @@ const fakeQueue = () => {
 	});
 	return entries;
 };
+
+const sampleScore = (): ScoreDTO => ({
+	id: 1,
+	characterId: resultPlayer(),
+	beatmapId: 1,
+	score: 912_345,
+	accuracy: 0.9734,
+	maxCombo: 412,
+	judgements: Object.fromEntries(Judgements.map(j => [j, 0])) as JudgementCounts,
+	grade: 'A',
+	pp: 123,
+	ur: 90,
+	pfc: false,
+	playedAt: Date.now(),
+	rate: 1,
+});
 
 type PlaygroundCase = {
 	id: string,
@@ -268,6 +293,27 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 		/>,
 	},
 	{
+		id: 'chat-links',
+		label: 'Chat - web addresses in messages, click one for its menu',
+		render: () => <div className="chat__log">
+			{[
+				'check https://osu.ppy.sh/beatmapsets/1#osu/2 out',
+				'(wiki: https://en.wikipedia.org/wiki/Osu!_(game)).',
+				'www.example.com, node.js and foo@bar.com',
+				'https://раураl.com/login',
+				'[https://site/web/maps/1?diff=2 Camellia - Exit This Earth\'s Atomosphere [Evolution]]',
+			].map(text => <div key={text} className="chat__line"><ChatText text={text} /></div>)}
+			<LinkMenu />
+		</div>,
+	},
+	{
+		id: 'chat-tabs',
+		label: 'Chat - tabs: #logs has a new line (light), the rest are read (dark); '
+			+ 'hover one for its close, + opens the channel list',
+		setup: () => log('A new line in #logs'),
+		render: () => <div style={{ height: 300 }}><Chat /><ChannelPicker /></div>,
+	},
+	{
 		id: 'dock-panel',
 		label: 'Play dock - open, mid-play with a queue behind it',
 		setup: fakeQueue,
@@ -350,24 +396,12 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 				},
 			});
 		},
-		render: () => <Result
-			score={{
-				id: 1,
-				characterId: resultPlayer(),
-				beatmapId: 1,
-				score: 912_345,
-				accuracy: 0.9734,
-				maxCombo: 412,
-				judgements: Object.fromEntries(Judgements.map(j => [j, 0])) as JudgementCounts,
-				grade: 'A',
-				pp: 123,
-				ur: 90,
-				pfc: false,
-				playedAt: Date.now(),
-				rate: 1,
-			}}
-			progression={spread(4, 12)}
-		/>,
+		render: () => <Result score={sampleScore()} progression={spread(4, 12)} />,
+	},
+	{
+		id: 'result-solo',
+		label: 'Result - solo play, with retry',
+		render: () => <Result score={sampleScore()} progression={spread(4, 12)} beatmap={fakeQueue()[0]} />,
 	},
 	{
 		id: 'mp-abort-confirm',

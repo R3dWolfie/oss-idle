@@ -1,5 +1,5 @@
-import rank from '@osu-idle/shared/display/rank';
-import { skillName } from '@osu-idle/shared/display/skills';
+import rank from '@oss-idle/shared/display/rank';
+import { skillName } from '@oss-idle/shared/display/skills';
 import type { getCharacterStats } from '../../api/characters';
 import { Trans } from '@lingui/react/macro';
 

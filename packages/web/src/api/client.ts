@@ -1,7 +1,7 @@
 import { hc } from 'hono/client';
 import type { ClientResponse } from 'hono/client';
-import type { AppType } from '@osu-idle/server';
-import { desktop } from '@osu-idle/shared/desktop';
+import type { AppType } from '@oss-idle/server';
+import { desktop } from '@oss-idle/shared/desktop';
 
 /** API origin; empty in dev so requests go through the Vite proxy. */
 export const API_URL = import.meta.env.VITE_API_URL ?? '';

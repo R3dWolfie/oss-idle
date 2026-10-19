@@ -1,8 +1,8 @@
 import './RestrictedNotice.css';
 import { Trans } from '@lingui/react/macro';
 import { ph } from '@lingui/core/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { CONTACT_EMAIL } from '@osu-idle/shared/contact';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { CONTACT_EMAIL } from '@oss-idle/shared/contact';
 import Auth from '../online/auth';
 import { showUsers } from './community/state';
 import SceneManager, { SCENE } from '../scenes/SceneManager';

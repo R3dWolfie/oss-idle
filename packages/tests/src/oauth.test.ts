@@ -3,7 +3,7 @@ import {
 	expect,
 	it,
 } from 'vitest';
-import { parseScopes } from '@osu-idle/shared/oauth';
+import { parseScopes } from '@oss-idle/shared/oauth';
 
 describe('oauth scopes', () => {
 	it('reads space- and plus-separated scopes, once each', () => {

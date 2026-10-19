@@ -1,8 +1,8 @@
 import './PlayerMenu.css';
 import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import Log from '@osu-idle/shared/helpers/log';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import Log from '@oss-idle/shared/helpers/log';
 import ContextMenu, { type ContextMenuOption } from '../ContextMenu';
 import PlayerCard from './PlayerCard';
 import {

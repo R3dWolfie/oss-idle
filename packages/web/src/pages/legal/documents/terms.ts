@@ -13,15 +13,15 @@ export const terms: Bilingual = {
 			{
 				title: '1. Who we are',
 				blocks: [
-					`osu!idle (${SITE}, the game, the website and the desktop app) is run by ${PUBLISHER}, an individual entrepreneur in France. The full legal details are on the Legal Notice page. Contact: ${EMAIL}.`,
-					'osu!idle is an unofficial fan game. It is not made, endorsed or supported by ppy Pty Ltd, the company behind osu!. "osu!" is their trademark.',
-					'By using osu!idle you accept these terms, the Rules and the Privacy Policy. If you do not accept them, do not use osu!idle.',
+					`oss!idle (${SITE}, the game, the website and the desktop app) is run by ${PUBLISHER}, an individual entrepreneur in France. The full legal details are on the Legal Notice page. Contact: ${EMAIL}.`,
+					'oss!idle is an unofficial fan game. It is not made, endorsed or supported by ppy Pty Ltd, the company behind osu!. "osu!" is their trademark.',
+					'By using oss!idle you accept these terms, the Rules and the Privacy Policy. If you do not accept them, do not use oss!idle.',
 				],
 			},
 			{
 				title: '2. Your account',
 				blocks: [
-					'You can play as a guest without an account. To play online you sign in with your osu! account: osu!idle only receives your osu! id, username, avatar and country, never your password.',
+					'You can play as a guest without an account. To play online you sign in with your osu! account: oss!idle only receives your osu! id, username, avatar and country, never your password.',
 					'You must be at least 13 years old to sign in. If you live in France and are under 15, a parent or guardian must agree to it. A purchase needs the agreement of whoever owns the means of payment.',
 					'You are responsible for what happens on your account. Tell us at once if you think someone else is using it.',
 					'You can ask us to delete your account at any time by writing to the contact address (see the Privacy Policy).',
@@ -30,15 +30,15 @@ export const terms: Bilingual = {
 			{
 				title: '3. The game',
 				blocks: [
-					'osu!idle is free to play. Every feature that affects the game stays free.',
+					'oss!idle is free to play. Every feature that affects the game stays free.',
 					'Scores, levels, rankings and the rest of your progression are game data, not property. We may rebalance the game, recompute or remove scores (for example when a map is unranked), and reset progression obtained through a bug or a breach of the Rules.',
-					'We try to keep osu!idle running, but we cannot promise it will always be available, error-free, or that a feature will last. We may change or stop parts of it.',
+					'We try to keep oss!idle running, but we cannot promise it will always be available, error-free, or that a feature will last. We may change or stop parts of it.',
 				],
 			},
 			{
 				title: '4. What you share',
 				blocks: [
-					'You keep the rights to what you create: character names, avatars, banners, chat messages, skins and addons. You allow us to store, display and share it inside osu!idle for as long as it is online, so that the service works (a skin you publish can be downloaded by other players, for example).',
+					'You keep the rights to what you create: character names, avatars, banners, chat messages, skins and addons. You allow us to store, display and share it inside oss!idle for as long as it is online, so that the service works (a skin you publish can be downloaded by other players, for example).',
 					'You must have the right to share what you upload. Do not upload anything that breaks the Rules or someone else\'s rights. Addons run code on other players\' devices: an addon must do what it says and nothing harmful.',
 					'We may remove content that breaks these terms or the Rules. To report content that infringes your rights, see the Copyright page.',
 				],
@@ -46,7 +46,7 @@ export const terms: Bilingual = {
 			{
 				title: '5. Rules and sanctions',
 				blocks: [
-					'Using osu!idle means following the Rules. If you break them we may delete content, mute you in chat, or restrict or close your account, depending on how serious it is. You can contest a decision by writing to the contact address.',
+					'Using oss!idle means following the Rules. If you break them we may delete content, mute you in chat, or restrict or close your account, depending on how serious it is. You can contest a decision by writing to the contact address.',
 				],
 			},
 			{
@@ -57,7 +57,7 @@ export const terms: Bilingual = {
 					'The tag belongs to the account it is bought for (yours, or another player\'s for a gift) and cannot be moved to another account once it is delivered.',
 					{ sub: 'Price and payment' },
 					'Prices are in euros, all taxes included. VAT not applicable, article 293 B of the French General Tax Code. The price and the matching duration are shown before you pay; a longer duration costs less per month.',
-					'Payment is handled by Stripe. osu!idle never sees your card details. The order is confirmed once Stripe confirms the payment.',
+					'Payment is handled by Stripe. oss!idle never sees your card details. The order is confirmed once Stripe confirms the payment.',
 					{ sub: 'Delivery' },
 					'The tag is delivered to the account right after payment. Buying while a tag is active adds the new time to the time left.',
 					{ sub: 'Automatic renewal' },
@@ -76,7 +76,7 @@ export const terms: Bilingual = {
 			{
 				title: '7. Liability',
 				blocks: [
-					'osu!idle is provided as it is. We are not liable for indirect damage, for the loss of game data, or for what other players or third-party services (osu!, Discord, Stripe) do. Nothing here limits the rights you have as a consumer, or our liability where the law does not allow it to be limited.',
+					'oss!idle is provided as it is. We are not liable for indirect damage, for the loss of game data, or for what other players or third-party services (osu!, Discord, Stripe) do. Nothing here limits the rights you have as a consumer, or our liability where the law does not allow it to be limited.',
 				],
 			},
 			{
@@ -99,15 +99,15 @@ export const terms: Bilingual = {
 			{
 				title: '1. Qui sommes-nous',
 				blocks: [
-					`osu!idle (${SITE}, le jeu, le site et l'application de bureau) est édité par ${PUBLISHER}, entrepreneur individuel en France. Les informations légales complètes sont dans les mentions légales. Contact : ${EMAIL}.`,
-					'osu!idle est un jeu de fan non officiel. Il n\'est ni réalisé, ni approuvé, ni soutenu par ppy Pty Ltd, la société derrière osu!. « osu! » est leur marque.',
-					'En utilisant osu!idle, vous acceptez ces conditions, le règlement et la politique de confidentialité. Si vous ne les acceptez pas, n\'utilisez pas osu!idle.',
+					`oss!idle (${SITE}, le jeu, le site et l'application de bureau) est édité par ${PUBLISHER}, entrepreneur individuel en France. Les informations légales complètes sont dans les mentions légales. Contact : ${EMAIL}.`,
+					'oss!idle est un jeu de fan non officiel. Il n\'est ni réalisé, ni approuvé, ni soutenu par ppy Pty Ltd, la société derrière osu!. « osu! » est leur marque.',
+					'En utilisant oss!idle, vous acceptez ces conditions, le règlement et la politique de confidentialité. Si vous ne les acceptez pas, n\'utilisez pas oss!idle.',
 				],
 			},
 			{
 				title: '2. Votre compte',
 				blocks: [
-					'Vous pouvez jouer en invité sans compte. Pour jouer en ligne, vous vous connectez avec votre compte osu! : osu!idle reçoit seulement votre identifiant osu!, votre pseudo, votre avatar et votre pays, jamais votre mot de passe.',
+					'Vous pouvez jouer en invité sans compte. Pour jouer en ligne, vous vous connectez avec votre compte osu! : oss!idle reçoit seulement votre identifiant osu!, votre pseudo, votre avatar et votre pays, jamais votre mot de passe.',
 					'Vous devez avoir au moins 13 ans pour vous connecter. En France, avant 15 ans, l\'accord d\'un parent ou tuteur est nécessaire. Un achat nécessite l\'accord du titulaire du moyen de paiement.',
 					'Vous êtes responsable de ce qui se passe sur votre compte. Prévenez-nous tout de suite si vous pensez que quelqu\'un d\'autre l\'utilise.',
 					'Vous pouvez nous demander de supprimer votre compte à tout moment en écrivant à l\'adresse de contact (voir la politique de confidentialité).',
@@ -116,15 +116,15 @@ export const terms: Bilingual = {
 			{
 				title: '3. Le jeu',
 				blocks: [
-					'osu!idle est gratuit. Toutes les fonctionnalités qui ont un effet sur le jeu restent gratuites.',
+					'oss!idle est gratuit. Toutes les fonctionnalités qui ont un effet sur le jeu restent gratuites.',
 					'Les scores, niveaux, classements et le reste de votre progression sont des données de jeu, pas une propriété. Nous pouvons rééquilibrer le jeu, recalculer ou retirer des scores (par exemple quand une map n\'est plus classée), et réinitialiser une progression obtenue grâce à un bug ou en violation du règlement.',
-					'Nous faisons de notre mieux pour qu\'osu!idle reste en ligne, mais nous ne pouvons pas garantir qu\'il soit toujours disponible, sans erreur, ni qu\'une fonctionnalité dure. Nous pouvons en modifier ou en arrêter certaines parties.',
+					'Nous faisons de notre mieux pour qu\'oss!idle reste en ligne, mais nous ne pouvons pas garantir qu\'il soit toujours disponible, sans erreur, ni qu\'une fonctionnalité dure. Nous pouvons en modifier ou en arrêter certaines parties.',
 				],
 			},
 			{
 				title: '4. Ce que vous partagez',
 				blocks: [
-					'Vous gardez vos droits sur ce que vous créez : noms de personnage, avatars, bannières, messages, skins et addons. Vous nous autorisez à les stocker, les afficher et les partager dans osu!idle tant qu\'ils sont en ligne, pour que le service fonctionne (un skin que vous publiez peut être téléchargé par d\'autres joueurs, par exemple).',
+					'Vous gardez vos droits sur ce que vous créez : noms de personnage, avatars, bannières, messages, skins et addons. Vous nous autorisez à les stocker, les afficher et les partager dans oss!idle tant qu\'ils sont en ligne, pour que le service fonctionne (un skin que vous publiez peut être téléchargé par d\'autres joueurs, par exemple).',
 					'Vous devez avoir le droit de partager ce que vous mettez en ligne. Ne publiez rien qui enfreigne le règlement ou les droits d\'autrui. Les addons exécutent du code sur les appareils des autres joueurs : un addon doit faire ce qu\'il annonce, et rien de nuisible.',
 					'Nous pouvons retirer un contenu qui enfreint ces conditions ou le règlement. Pour signaler un contenu qui porte atteinte à vos droits, voir la page droits d\'auteur.',
 				],
@@ -132,7 +132,7 @@ export const terms: Bilingual = {
 			{
 				title: '5. Règlement et sanctions',
 				blocks: [
-					'Utiliser osu!idle, c\'est respecter le règlement. En cas de manquement, nous pouvons supprimer un contenu, vous rendre muet dans le chat, ou restreindre ou fermer votre compte, selon la gravité. Vous pouvez contester une décision en écrivant à l\'adresse de contact.',
+					'Utiliser oss!idle, c\'est respecter le règlement. En cas de manquement, nous pouvons supprimer un contenu, vous rendre muet dans le chat, ou restreindre ou fermer votre compte, selon la gravité. Vous pouvez contester une décision en écrivant à l\'adresse de contact.',
 				],
 			},
 			{
@@ -143,7 +143,7 @@ export const terms: Bilingual = {
 					'Le tag appartient au compte pour lequel il est acheté (le vôtre, ou celui d\'un autre joueur pour un cadeau) et ne peut pas être transféré à un autre compte une fois livré.',
 					{ sub: 'Prix et paiement' },
 					'Les prix sont en euros, toutes taxes comprises. TVA non applicable, article 293 B du CGI. Le prix et la durée correspondante sont affichés avant le paiement ; une durée plus longue coûte moins cher par mois.',
-					'Le paiement est géré par Stripe. osu!idle n\'a jamais accès à vos données de carte. La commande est confirmée dès que Stripe confirme le paiement.',
+					'Le paiement est géré par Stripe. oss!idle n\'a jamais accès à vos données de carte. La commande est confirmée dès que Stripe confirme le paiement.',
 					{ sub: 'Livraison' },
 					'Le tag est livré sur le compte juste après le paiement. Un achat alors qu\'un tag est actif ajoute la nouvelle durée au temps restant.',
 					{ sub: 'Renouvellement automatique' },
@@ -162,7 +162,7 @@ export const terms: Bilingual = {
 			{
 				title: '7. Responsabilité',
 				blocks: [
-					'osu!idle est fourni en l\'état. Nous ne sommes pas responsables des dommages indirects, de la perte de données de jeu, ni de ce que font les autres joueurs ou les services tiers (osu!, Discord, Stripe). Rien ici ne limite vos droits de consommateur, ni notre responsabilité là où la loi interdit de la limiter.',
+					'oss!idle est fourni en l\'état. Nous ne sommes pas responsables des dommages indirects, de la perte de données de jeu, ni de ce que font les autres joueurs ou les services tiers (osu!, Discord, Stripe). Rien ici ne limite vos droits de consommateur, ni notre responsabilité là où la loi interdit de la limiter.',
 				],
 			},
 			{

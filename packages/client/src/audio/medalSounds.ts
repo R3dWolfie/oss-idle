@@ -1,4 +1,4 @@
-import type { MedalTier } from '@osu-idle/shared/achievements/medal';
+import type { MedalTier } from '@oss-idle/shared/achievements/medal';
 import { audioContext } from './audioContext';
 import { SETTINGS } from '../db/settings';
 import * as synth from './medalSynth';

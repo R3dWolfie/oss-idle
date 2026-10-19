@@ -3,27 +3,15 @@ import {
 	useState,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import type { Match } from '@osu-idle/shared/multiplayer';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import type { Match } from '@oss-idle/shared/multiplayer';
 import BeatmapCard from '../BeatmapCard';
 import type { DownloadState } from '../BeatmapCarousel';
 import BeatmapAPI from '../../osu/beatmap/beatmap_api';
 import { beatmapsVersion } from '../../osu/beatmap/beatmap_store';
-import LightBeatmapSet from '../../osu/beatmap/LightBeatmapSet';
-import PlayManager from '../../online/playManager';
+import { findCard } from '../../osu/beatmap/findCard';
 import { music } from '../../audio/MusicPlayer';
-
-/** The match's map as song select's card, from the library or the catalog. */
-const findCard = async (beatmapId: number, setId: number) => {
-	const downloaded = await PlayManager.findDownloaded(beatmapId);
-	if (downloaded) return {
-		beatmap: downloaded, set: downloaded.set,
-	};
-	const meta = (await BeatmapAPI.getManifest()).beatmaps.find(s => s.id === setId);
-	return meta && LightBeatmapSet.fromMetadata(meta).getCarouselItems()
-		.find(i => i.beatmap.metadata.id === beatmapId);
-};
 
 /** The match's map; a player without it clicks it to download. */
 export default function MatchBeatmap({ match, noMap }: { match: Match, noMap: boolean }) {

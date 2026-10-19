@@ -1,6 +1,6 @@
 import RatedVersion from '../components/RatedVersion';
 import { rateOfPlay } from '../gameplay/playRate';
-import type { MedalBatch } from '@osu-idle/shared/play';
+import type { MedalBatch } from '@oss-idle/shared/play';
 import './Gameplay.css';
 import {
 	useEffect,
@@ -16,10 +16,10 @@ import {
 import {
 	LEAD_IN_MS,
 	ManiaGame,
-} from '@osu-idle/shared/sim/maniaGame';
-import CharacterBot, { type SkillProgress } from '@osu-idle/shared/sim/bots/character';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
-import type { Bot } from '@osu-idle/shared/sim/bot';
+} from '@oss-idle/shared/sim/maniaGame';
+import CharacterBot, { type SkillProgress } from '@oss-idle/shared/sim/bots/character';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
+import type { Bot } from '@oss-idle/shared/sim/bot';
 import { DEBUG_BOT_LEVEL } from '../gameplay/strainDebug';
 import ReplayBot from '../gameplay/replayBot';
 import {
@@ -46,7 +46,7 @@ import PlayManager from '../online/playManager';
 import ContextMenu from '../components/ContextMenu';
 import Entities from '../entity/entities';
 import Character from '../db/schema/character';
-import { hasUnlock } from '@osu-idle/shared/rebirth';
+import { hasUnlock } from '@oss-idle/shared/rebirth';
 import {
 	playReducer,
 	startPlay,
@@ -54,11 +54,11 @@ import {
 	type PlayEvent,
 	type PlayScoring,
 	type PlayState,
-} from '@osu-idle/shared/sim/playLifecycle';
+} from '@oss-idle/shared/sim/playLifecycle';
 import { Score } from '../db/schema/score';
 import { ScoreXP } from '../db/schema/score_xp';
 import { logPlayFinished } from '../logs';
-import Memory from '@osu-idle/shared/sim/skills/memory';
+import Memory from '@oss-idle/shared/sim/skills/memory';
 import { Beatmap } from 'osu-classes';
 import calculatePP from '../osu/pp';
 import {
@@ -66,7 +66,6 @@ import {
 	PLAYER_MODE,
 } from '../audio/MusicPlayer';
 import {
-	preloadDefaultHitsounds,
 	preloadSamples,
 	scheduleHitsound,
 	stopScheduledHitsounds,
@@ -90,19 +89,19 @@ import {
 } from './Transition';
 import Controls from '../input/Controls';
 import { debugMode } from '../globals';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import PlayQueue from '../gameplay/playQueue';
 import SkipToEndButton from '../components/gameplay/SkipToEndButton';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
-import { skillName } from '@osu-idle/shared/display/skills';
-import { type Grade } from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/skills';
+import { skillName } from '@oss-idle/shared/display/skills';
+import { type Grade } from '@oss-idle/shared/judgement';
 import { currentSkin } from '../osu/skin/Skin';
 import { SETTINGS } from '../db/settings';
-import { scrollSpeedToMs } from '@osu-idle/shared/osu/scroll_speed';
-import sleep from '@osu-idle/shared/helpers/sleep';
+import { scrollSpeedToMs } from '@oss-idle/shared/osu/scroll_speed';
+import sleep from '@oss-idle/shared/helpers/sleep';
 import GameplayRenderer, {
 	type PlayfieldGeometry,
 	type StrainHud,
@@ -250,7 +249,6 @@ function GameplayInner({
 	// always stay in lock-step (HMR preserves both refs → seamless resume)
 	const ensureGame = () => {
 		if (gameRef.current !== null || botRef.current !== null || !character) return;
-		void preloadDefaultHitsounds();
 		// seed the memory skill with this character's prior plays of the map before
 		// any CharacterBot analyzes it (the side strain bot reads the same skills).
 		character.skills.find(s => s instanceof Memory)?.timesPlayed.set(timesPlayed);
@@ -856,6 +854,9 @@ function GameplayInner({
 			return music.gameTime();
 		};
 
+		// keysounds and storyboard samples are part of the song: pitched like its track
+		const samplePitch = SETTINGS.pitchFollowsRate.get() ? rate : 1;
+
 		// Queue hitsounds onto the audio clock up to LOOKAHEAD ahead of the song
 		// position. Because they're scheduled (not played reactively), they fire on
 		// time even while the tab is blurred, and a tab that resumes after a gap
@@ -874,13 +875,15 @@ function GameplayInner({
 				if (note.samples.length) {
 					// a keysounded note plays its own sample(s) instead of the default
 					for (const file of note.samples) {
-						effects.play(assetKey(setId, file), { atMs: effects.now() + (time - now) });
+						effects.play(assetKey(setId, file), {
+							atMs: effects.now() + (time - now), rate: samplePitch,
+						});
 					}
 				} else {
 					scheduleHitsound(time, now);
 				}
 			}
-			sampleSchedRef.current?.queue(now, HITSOUND_LOOKAHEAD_MS);
+			sampleSchedRef.current?.queue(now, HITSOUND_LOOKAHEAD_MS, 1, samplePitch);
 		};
 		// a timer (not rAF) so it keeps queueing while the tab is hidden
 		const hitsoundTimer = setInterval(queueHitsounds, HITSOUND_TICK_MS);

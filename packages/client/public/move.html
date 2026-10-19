@@ -1,0 +1,72 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>oss!idle</title>
+<script>
+	// The move between the hosts (shared/src/hostMove.ts), framed by the other one.
+	// On the new host: take what the old host hands over - the save and the settings
+	// when this host has none yet, and the session. On the old host: delete what it
+	// keeps, once the player chose to. The save's names match shared/src/save.ts.
+	const OLD_ORIGIN = 'https://osu.idle.rhythmgamers.net';
+	const NEW_ORIGIN = 'https://oss.idle.rhythmgamers.net';
+	const OLD_API = 'https://api.osu.idle.rhythmgamers.net';
+	const NEW_API = 'https://api.oss.idle.rhythmgamers.net';
+	const onOldHost = location.origin === OLD_ORIGIN;
+	const other = onOldHost ? NEW_ORIGIN : OLD_ORIGIN;
+
+	const request = req => new Promise((resolve, reject) => {
+		req.onsuccess = () => resolve(req.result);
+		req.onerror = () => reject(req.error);
+	});
+
+	const open = () => {
+		const req = indexedDB.open('oss-idle', 1);
+		req.onupgradeneeded = () => req.result.createObjectStore('kv');
+		return request(req);
+	};
+
+	const importSave = async save => {
+		const db = await open();
+		try {
+			const store = db.transaction('kv', 'readwrite').objectStore('kv');
+			if (await request(store.get('data.sqlite'))) return false;
+			await request(store.put(save, 'data.sqlite'));
+			return true;
+		} finally {
+			db.close();
+		}
+	};
+
+	const take = async ({ save, storage, code }) => {
+		const fresh = save ? await importSave(save) : localStorage.length === 0;
+		if (fresh) for (const [key, value] of Object.entries(storage)) localStorage.setItem(key, value);
+		if (save || Object.keys(storage).length) localStorage.setItem('oss-idle:old-host-data', '1');
+		if (code) {
+			await fetch(`${NEW_API}/v1/auth/move/redeem`, {
+				method: 'POST',
+				credentials: 'include',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ code }),
+			});
+		}
+	};
+
+	const clear = async () => {
+		for (const { name } of await indexedDB.databases()) await request(indexedDB.deleteDatabase(name));
+		localStorage.clear();
+		await fetch(`${OLD_API}/v1/auth/logout`, { method: 'POST', credentials: 'include' });
+	};
+
+	addEventListener('message', async e => {
+		if (e.origin !== other) return;
+		const clearing = onOldHost && e.data === 'clear';
+		if (!clearing && (onOldHost || typeof e.data !== 'object')) return;
+		try {
+			await (clearing ? clear() : take(e.data));
+		} catch (err) {
+			console.error('[move]', err);
+		}
+		parent.postMessage(clearing ? 'cleared' : 'moved', other);
+	});
+
+	parent.postMessage('ready', other);
+</script>

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import num from '@osu-idle/shared/display/num';
-import rank from '@osu-idle/shared/display/rank';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import num from '@oss-idle/shared/display/num';
+import rank from '@oss-idle/shared/display/rank';
 import { getCharacterStats } from '../api/characters';
 import { useCurrentCharacter } from '../hooks/useCurrentCharacter';
 import Link from './Link';

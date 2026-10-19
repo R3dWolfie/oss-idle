@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { BASE_MAX_UPGRADES } from '@osu-idle/shared/upgrades';
+import { BASE_MAX_UPGRADES } from '@oss-idle/shared/upgrades';
 import {
 	layerClass as colour,
 	layerOf,

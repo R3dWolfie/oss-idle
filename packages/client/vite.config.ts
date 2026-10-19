@@ -77,7 +77,7 @@ export default defineConfig({
 		serveEncodedAssets(),
 		discordRedirect(),
 	],
-	// `@osu-idle/shared` is a linked workspace package, so Vite doesn't pre-bundle
+	// `@oss-idle/shared` is a linked workspace package, so Vite doesn't pre-bundle
 	// it and won't see the deps its sim pulls (osu-classes, osu-mania-stable) until
 	// the gameplay/strain path first loads them. That late discovery triggers a dep
 	// re-optimization mid-session; if it lands on an HMR update instead of a full
@@ -95,7 +95,7 @@ export default defineConfig({
 		port: Number(process.env.DEV_CLIENT_PORT ?? 5173),
 		strictPort: true,
 		host: true,
-		// the LAN staging is reached by name (a hosts entry for e.g. osu.idle.lan)
+		// the LAN staging is reached by name (a hosts entry for e.g. oss.idle.lan)
 		allowedHosts: ['.lan'],
 		// Serve the osu! web platform at /web on the game's own origin so the
 		// in-game browser iframe is same-origin. The web app runs its own dev

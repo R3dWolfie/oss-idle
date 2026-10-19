@@ -24,8 +24,8 @@ import { zValidator } from '@hono/zod-validator';
 import {
 	reportBody,
 	socialSettingsBody,
-} from '@osu-idle/shared/social';
-import { requireAdmin } from '../auth/admin';
+} from '@oss-idle/shared/social';
+import { requireModerator } from '../auth/admin';
 import { requireActive } from '../auth/active';
 import { chatLine } from '../ws/chat';
 
@@ -83,9 +83,9 @@ export const socialRoutes = new Hono()
 		return c.json({ ok: true });
 	})
 
-	.get('/reports', requireAdmin, async c => c.json(await reports()))
+	.get('/reports', requireModerator, async c => c.json(await reports()))
 
-	.put('/reports/:id/resolve', requireAdmin, async c => {
+	.put('/reports/:id/resolve', requireModerator, async c => {
 		await resolveReport(idParam.parse(c.req.param('id')), c.get('userId'));
 		return c.json({ ok: true });
 	})

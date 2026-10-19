@@ -2,7 +2,7 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import type { CharacterDTO } from '@osu-idle/shared/character';
+import type { CharacterDTO } from '@oss-idle/shared/character';
 import { getMyCharacter } from '../api/characters';
 import { useCurrentUser } from './useCurrentUser';
 

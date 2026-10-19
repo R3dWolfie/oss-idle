@@ -3,13 +3,15 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { isCommunityOpen } from '../../globals';
 import SceneManager, { SCENE } from '../../scenes/SceneManager';
 import CommunityHeader from './CommunityHeader';
 import CommunityBody from './CommunityBody';
 import PlayerMenu from './PlayerMenu';
+import LinkMenu from './LinkMenu';
 import Chat from './chat/Chat';
+import ChannelPicker from './chat/ChannelPicker';
 import CommunityControls from './CommunityControls';
 import Ticker from './Ticker';
 import {
@@ -77,6 +79,8 @@ export default function CommunityOverlay() {
 					<Chat />
 				</div>
 				<PlayerMenu />
+				<LinkMenu />
+				<ChannelPicker />
 			</div>
 
 			{!open && ticker && <Ticker />}

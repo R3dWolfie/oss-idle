@@ -1,4 +1,4 @@
-import type { PlayState } from '@osu-idle/shared/play';
+import type { PlayState } from '@oss-idle/shared/play';
 import {
 	abortPlaySession,
 	fetchPlayResult,
@@ -7,7 +7,7 @@ import {
 	inMatchMessage,
 	startPlaySession,
 } from './play';
-import Log from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
 import Socket from './socket';
 import SceneManager, { SCENE } from '../scenes/SceneManager';
 import { launchPlay } from '../scenes/launchPlay';
@@ -21,7 +21,7 @@ import Account from './account';
 import { message } from '../globals';
 import { t } from '@lingui/core/macro';
 import { music } from '../audio/MusicPlayer';
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import PlayQueue from '../gameplay/playQueue';
 import { SETTINGS } from '../db/settings';
 import {
@@ -230,6 +230,10 @@ export default class PlayManager {
 	 * take it from there.
 	 */
 	private static async endedHere(): Promise<void> {
+		// A playfield still on screen ends on its own clock, which can run behind
+		// the server's: chaining now would replace the play mid-song. Leaving it
+		// for the result screen re-runs this from there.
+		if (SceneManager.current.get() === SCENE.GAME) return;
 		// `live` alone is not enough: a play on a map this client cannot resolve
 		// (another device, a set never downloaded) never reaches the dock, and its
 		// ending would then chain nothing.

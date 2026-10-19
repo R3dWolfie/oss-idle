@@ -10,7 +10,7 @@ export default function Logout() {
 			// game client (and any other tab) so it re-resolves and drops to guest too -
 			// the client and web session must never disagree on who's signed in.
 			void refreshCurrentUser();
-			try { localStorage.setItem('osu-idle:auth', String(Date.now())); } catch { /* ignore */ }
+			try { localStorage.setItem('oss-idle:auth', String(Date.now())); } catch { /* ignore */ }
 			// Full reload of the web home so every view re-resolves to guest.
 			window.location.assign('/web/');
 		});

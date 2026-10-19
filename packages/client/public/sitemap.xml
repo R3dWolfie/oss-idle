@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/</loc>
+		<loc>https://oss.idle.rhythmgamers.net/</loc>
 		<priority>1.0</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/</loc>
 		<priority>0.9</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/download</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/download</loc>
 		<priority>0.8</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/rankings/global</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/rankings/global</loc>
 		<priority>0.7</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/rankings/country</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/rankings/country</loc>
 		<priority>0.6</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/rankings/plays</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/rankings/plays</loc>
 		<priority>0.6</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/rankings/score</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/rankings/score</loc>
 		<priority>0.6</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/maps</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/maps</loc>
 		<priority>0.6</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/news</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/news</loc>
 		<priority>0.6</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/help/faq</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/help/faq</loc>
 		<priority>0.5</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/store</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/store</loc>
 		<priority>0.6</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/legal/rules</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/legal/rules</loc>
 		<priority>0.3</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/legal/terms</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/legal/terms</loc>
 		<priority>0.3</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/legal/privacy</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/legal/privacy</loc>
 		<priority>0.3</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/legal/copyright</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/legal/copyright</loc>
 		<priority>0.3</priority>
 	</url>
 	<url>
-		<loc>https://osu.idle.rhythmgamers.net/web/legal/notice</loc>
+		<loc>https://oss.idle.rhythmgamers.net/web/legal/notice</loc>
 		<priority>0.3</priority>
 	</url>
 </urlset>

@@ -1,5 +1,5 @@
-import Synced from '@osu-idle/shared/helpers/synced';
-import type { ClientMessage } from '@osu-idle/shared/community/wire';
+import Synced from '@oss-idle/shared/helpers/synced';
+import type { ClientMessage } from '@oss-idle/shared/community/wire';
 import {
 	isMatchChannel,
 	LOBBY_CHANNEL,
@@ -7,10 +7,10 @@ import {
 	type Match,
 	type PlayerSlot,
 	type RoundScore,
-} from '@osu-idle/shared/multiplayer';
+} from '@oss-idle/shared/multiplayer';
 import Socket from './socket';
 import { restrictedMessage } from './play';
-import Log from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
 import { t } from '@lingui/core/macro';
 import { music } from '../audio/MusicPlayer';
 import PlayManager from './playManager';

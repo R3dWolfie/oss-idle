@@ -25,7 +25,7 @@ function loadPlotly(): Promise<object> {
 	if (window.Plotly) return Promise.resolve(window.Plotly);
 	plotlyPromise ??= new Promise((resolve, reject) => {
 		const script = document.createElement('script');
-		script.src = 'https://osu.idle.rhythmgamers.net/web/assets/plotly.min.js';
+		script.src = 'https://oss.idle.rhythmgamers.net/web/assets/plotly.min.js';
 		script.async = true;
 		script.onload = () => window.Plotly ? 
 			resolve(window.Plotly) 

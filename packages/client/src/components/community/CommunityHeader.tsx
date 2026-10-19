@@ -3,8 +3,8 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { countryName } from '@osu-idle/shared/display/country';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { countryName } from '@oss-idle/shared/display/country';
 import Dropdown from '../dropdown/Dropdown';
 import Account from '../../online/account';
 import Socket from '../../online/socket';
@@ -39,7 +39,7 @@ export default function CommunityHeader() {
 	return (
 		<header className="community-header">
 			<div className="community-header__title">
-				<span className="community-header__brand">osu!idle</span>
+				<span className="community-header__brand">oss!idle</span>
 				<span className="community-header__online">{t`${online} users connected`}</span>
 			</div>
 

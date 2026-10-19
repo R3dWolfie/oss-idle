@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { rateLabel } from '@osu-idle/shared/rate';
+import { rateLabel } from '@oss-idle/shared/rate';
 
 /** Under a lit rate mod: one step at a time along its side, as far as is unlocked. */
 export default function RateStepper({ steps, unlocked, current, onPick }: {

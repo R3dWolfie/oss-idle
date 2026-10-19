@@ -3,7 +3,7 @@ import BeatmapStore from './beatmap/beatmap_store';
 import { Beatmap } from 'osu-classes';
 import rosuReady from './rosu';
 
-export { difficultyColor } from '@osu-idle/shared/display/difficulty';
+export { difficultyColor } from '@oss-idle/shared/display/difficulty';
 
 /** A downloaded difficulty's stars at a rate; undefined when its file isn't here. */
 export const starsAt = async (

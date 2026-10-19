@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GROUPS } from './groups.js';
 
 export const userDTO = z.object({
 	id: z.number().int().positive(),
@@ -10,6 +11,8 @@ export const userDTO = z.object({
 	supporter: z.boolean(),
 	// can't play or chat, hidden from everyone else
 	restricted: z.boolean(),
+	// the team groups, admin first
+	groups: z.array(z.enum(GROUPS)),
 });
 
 export type UserDTO = z.infer<typeof userDTO>;

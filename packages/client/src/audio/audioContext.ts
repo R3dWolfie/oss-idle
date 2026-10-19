@@ -13,6 +13,6 @@ const Ctx = window.AudioContext
 	|| windowAudioContext.webkitAudioContext;
 
 // HMR reuse so hot reloads don't leak contexts
-const globalStore = globalThis as unknown as { __osuIdleCtx?: AudioContext };
-export const audioContext: AudioContext = globalStore.__osuIdleCtx ?? new Ctx();
-globalStore.__osuIdleCtx = audioContext;
+const globalStore = globalThis as unknown as { __ossIdleCtx?: AudioContext };
+export const audioContext: AudioContext = globalStore.__ossIdleCtx ?? new Ctx();
+globalStore.__ossIdleCtx = audioContext;

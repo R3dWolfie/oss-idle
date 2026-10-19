@@ -1,9 +1,9 @@
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import type { ScoreDTO } from '@osu-idle/shared/score';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import type { ScoreDTO } from '@oss-idle/shared/score';
 import type {
 	LastRound,
 	RoundScore,
-} from '@osu-idle/shared/multiplayer';
+} from '@oss-idle/shared/multiplayer';
 import Multiplayer from '../../online/multiplayer';
 import SceneManager, { SCENE } from '../../scenes/SceneManager';
 import useLiveScores from './useLiveScores';

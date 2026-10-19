@@ -3,7 +3,7 @@ import {
 	rpc,
 	unwrap,
 } from './client';
-import type { SkinStatus } from '@osu-idle/shared/skin';
+import type { SkinStatus } from '@oss-idle/shared/skin';
 
 /** Admin: every pending + published add-on for the moderation queue. */
 export const listSkinsAdmin = () => unwrap(rpc.v1.skins.admin.$get());

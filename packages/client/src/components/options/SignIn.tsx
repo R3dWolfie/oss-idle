@@ -1,6 +1,6 @@
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Auth from '../../online/auth';
 import Button from './controls/Button';
 

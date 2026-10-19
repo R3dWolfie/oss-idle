@@ -1,4 +1,4 @@
-import '@osu-idle/shared/osu/controlPointPatch';
+import '@oss-idle/shared/osu/controlPointPatch';
 import { Beatmap } from 'osu-classes';
 import BeatmapAPI from './beatmap_api';
 import BeatmapStore, { SetRecord } from './beatmap_store';

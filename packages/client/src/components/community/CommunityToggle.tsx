@@ -1,5 +1,5 @@
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import type Synced from '@osu-idle/shared/helpers/synced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import type Synced from '@oss-idle/shared/helpers/synced';
 
 /** A bottom-right toggle button backed by a boolean Synced (a persisted Setting). */
 export default function CommunityToggle({

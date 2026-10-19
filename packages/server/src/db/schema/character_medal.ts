@@ -11,7 +11,7 @@ import {
 } from 'drizzle-orm';
 import { characters } from './character';
 import { db } from '../client';
-import type { MedalBatch } from '@osu-idle/shared/play';
+import type { MedalBatch } from '@oss-idle/shared/play';
 
 /** The medals a character holds. Never removed: a medal stays earned even if
  *  what earned it is lost (a #1 taken back, a map unranked). */

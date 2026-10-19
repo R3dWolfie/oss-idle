@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { rateLabel } from '@osu-idle/shared/rate';
+import { rateLabel } from '@oss-idle/shared/rate';
 import Glyph from '../multiplayer/Glyph';
 
 /** The mods a score was played with, beside its grade as on osu!'s ranking screen. */

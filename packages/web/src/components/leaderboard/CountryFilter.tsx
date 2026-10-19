@@ -1,5 +1,5 @@
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import { countryName } from '@osu-idle/shared/display/country';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import { countryName } from '@oss-idle/shared/display/country';
 import { getCountries } from '../../api/rankings';
 import { i18n } from '../../i18n';
 import LeaderboardFilters from './LeaderboardFilters';

@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-	/** Base URL of the osu! idle backend (used for the OAuth entry point). */
+	/** Base URL of the oss!idle backend (used for the OAuth entry point). */
 	readonly VITE_API_URL?: string;
 }
 

@@ -1,8 +1,8 @@
 import './WorldMap.css';
 import { useLingui } from '@lingui/react/macro';
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
 import { WORLD_COUNTRIES } from './worldCountries';
-import normalize from '@osu-idle/shared/math/normalize';
+import normalize from '@oss-idle/shared/math/normalize';
 
 // Plate carree is 360x180 (lat 90..-90). We crop the bottom band - most of
 // Antarctica - so the inhabited world fills the frame; a dot's vertical

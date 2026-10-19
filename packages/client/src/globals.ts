@@ -1,7 +1,7 @@
-import Synced from '@osu-idle/shared/helpers/synced';
-import { desktop } from '@osu-idle/shared/desktop';
-import { ScoreDTO } from '@osu-idle/shared/score';
-import type { PlayDeltas } from '@osu-idle/shared/play';
+import Synced from '@oss-idle/shared/helpers/synced';
+import { desktop } from '@oss-idle/shared/desktop';
+import { ScoreDTO } from '@oss-idle/shared/score';
+import type { PlayDeltas } from '@oss-idle/shared/play';
 import { Score } from './db/schema/score';
 
 export const debugMode = new Synced(import.meta.env.DEV);
@@ -20,6 +20,8 @@ export const isWebOpen = new Synced(false);
 export const isOptionsOpen = new Synced(false);
 export const isCommunityOpen = new Synced(false);
 export const webUrl = new Synced('/');
+/** The site as someone else can open it: the desktop app's frame runs on app://. */
+export const SITE_URL = import.meta.env.VITE_SITE_URL || location.origin;
 
 /** The full-screen page overlay (skins / add-ons / character / the play queue);
  *  undefined = closed. */

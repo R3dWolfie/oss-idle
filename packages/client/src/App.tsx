@@ -8,7 +8,8 @@ import RestrictedNotice from './components/RestrictedNotice';
 import WebBrowser from './components/WebBrowser';
 import Onboarding from './components/Onboarding';
 import Tutorial from './components/Tutorial';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import OldHostPrompt from './components/OldHostPrompt';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { isMobile } from './globals';
 import Message from './components/Message';
 import Options from './scenes/Options';
@@ -24,6 +25,7 @@ import FloatingDeltas from './components/FloatingDeltas';
 import ShownMedals from './components/medals/ShownMedals';
 import './online/versionWatch';
 import './online/characterWatch';
+import './online/mapLinks';
 import Multiplayer from './online/multiplayer';
 
 PlayManager.start();
@@ -51,6 +53,7 @@ export default function App() {
 			<VolumeOverlay />
 			<Onboarding />
 			<Tutorial />
+			<OldHostPrompt />
 			<Message />
 			<Options />
 			<WebBrowser />

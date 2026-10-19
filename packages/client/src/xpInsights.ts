@@ -1,7 +1,7 @@
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import { ScoreXP } from './db/schema/score_xp';
 import {
 	UNLOCKS,

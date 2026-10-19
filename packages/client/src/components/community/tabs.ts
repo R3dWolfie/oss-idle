@@ -1,8 +1,8 @@
 import {
 	mapped,
 	type ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
-import type { PresenceEntry } from '@osu-idle/shared/community/presence';
+} from '@oss-idle/shared/helpers/mapped';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
 
 /** The body tabs. The first four sort the player grid; `map` swaps to the world map. */
 export const TAB = mapped(['name', 'rank', 'location', 'timezone', 'map']);

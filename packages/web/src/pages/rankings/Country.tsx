@@ -1,10 +1,10 @@
 import '../../components/leaderboard/PlayerLeaderboard.css';
 import { Trans } from '@lingui/react/macro';
-import { countryName } from '@osu-idle/shared/display/country';
-import rank from '@osu-idle/shared/display/rank';
-import num from '@osu-idle/shared/display/num';
-import accuracy from '@osu-idle/shared/display/accuracy';
-import hitAccuracy from '@osu-idle/shared/osu/hitAccuracy';
+import { countryName } from '@oss-idle/shared/display/country';
+import rank from '@oss-idle/shared/display/rank';
+import num from '@oss-idle/shared/display/num';
+import accuracy from '@oss-idle/shared/display/accuracy';
+import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
 import type { getCountryRanking } from '../../api/rankings';
 import Flag from '../../components/Flag';
 import Link from '../../components/Link';

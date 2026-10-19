@@ -36,6 +36,14 @@ packages/client/public/previews
 packages/client/public/download
 graphify-out/
 screenshots/
+# stray screenshots: version-bump commits the whole tree
+/*.png
+/*.jpg
+/*.jpeg
+/*.gif
+/*.webp
+shots/
+review-shots/
 
 # tmp
 *.tsbuildinfo

@@ -5,8 +5,8 @@ import {
 	eq,
 	ne,
 } from 'drizzle-orm';
-import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
-import type { ClientMessage } from '@osu-idle/shared/community/wire';
+import { INTRO_SET_ID } from '@oss-idle/shared/beatmap';
+import type { ClientMessage } from '@oss-idle/shared/community/wire';
 import {
 	isMatchChannel,
 	matchChannel,
@@ -16,7 +16,7 @@ import {
 	type MatchSlot,
 	type PlayerSlot,
 	type RoundScore,
-} from '@osu-idle/shared/multiplayer';
+} from '@oss-idle/shared/multiplayer';
 import { redis } from '../redis';
 import { redisKeyPrefix } from '../env';
 import { db } from '../db/client';
@@ -35,11 +35,11 @@ import {
 	startPlay,
 	type PlaySample,
 } from '../play';
-import { LEAD_IN_MS } from '@osu-idle/shared/sim/maniaGame';
+import { LEAD_IN_MS } from '@oss-idle/shared/sim/maniaGame';
 import { hub } from './hub';
 import { areOnline } from './presence';
 import { BOT_COLOR } from './chat';
-import { Judgements } from '@osu-idle/shared/judgement';
+import { Judgements } from '@oss-idle/shared/judgement';
 import type { NewScoreRow } from '../db/schema/score';
 import {
 	closeMatch,

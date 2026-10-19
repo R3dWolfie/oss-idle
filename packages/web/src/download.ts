@@ -1,4 +1,4 @@
-import { VERSION } from '@osu-idle/shared/version';
+import { VERSION } from '@oss-idle/shared/version';
 
 const DOWNLOAD_URL = (import.meta.env.VITE_DOWNLOAD_URL ?? '').replace(/\/$/, '');
 

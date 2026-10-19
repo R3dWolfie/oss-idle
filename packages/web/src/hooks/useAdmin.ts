@@ -1,7 +1,14 @@
+import {
+	isAdmin,
+	isModerator,
+} from '@oss-idle/shared/groups';
 import { useCurrentUser } from './useCurrentUser';
 
 export function useAdmin(): boolean {
-	const user = useCurrentUser();
+	return isAdmin(useCurrentUser()?.groups);
+}
 
-	return !!user && user.id === 4579132;
+/** Admins and the GMT: sanctions and reports. */
+export function useModerator(): boolean {
+	return isModerator(useCurrentUser()?.groups);
 }

@@ -1,4 +1,4 @@
-import { INTRO_SET_ID } from '@osu-idle/shared/beatmap';
+import { INTRO_SET_ID } from '@oss-idle/shared/beatmap';
 import type { Nomination } from '../../api/maps';
 
 type Diff = Nomination['diffs'][number];

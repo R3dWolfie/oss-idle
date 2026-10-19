@@ -6,7 +6,7 @@ import {
 	text,
 	timestamp,
 } from 'drizzle-orm/mysql-core';
-import { BEATMAP_STATUS } from '@osu-idle/shared/beatmap';
+import { BEATMAP_STATUS } from '@oss-idle/shared/beatmap';
 import { db } from '../client';
 import { eq } from 'drizzle-orm';
 

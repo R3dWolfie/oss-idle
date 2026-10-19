@@ -12,4 +12,4 @@ Disallow: /skins/
 Disallow: /fonts/
 Disallow: /img/
 
-Sitemap: https://osu.idle.rhythmgamers.net/sitemap.xml
+Sitemap: https://oss.idle.rhythmgamers.net/sitemap.xml

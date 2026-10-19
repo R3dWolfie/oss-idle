@@ -10,7 +10,7 @@ import {
 import {
 	ADDON_STATUS,
 	type AddonStatus,
-} from '@osu-idle/shared/addon';
+} from '@oss-idle/shared/addon';
 import { users } from './user';
 
 export const addons = mysqlTable('addons', {

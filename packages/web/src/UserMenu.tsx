@@ -3,7 +3,7 @@ import {
 	useRef,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 import Link from './components/Link';
 import { Asset } from './router';
 import { useCurrentUser } from './hooks/useCurrentUser';

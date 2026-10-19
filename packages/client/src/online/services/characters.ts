@@ -1,6 +1,6 @@
 import { InferResponseType } from 'hono/client';
 import { rpc } from '../client';
-import MemCache from '@osu-idle/shared/storage/memcache';
+import MemCache from '@oss-idle/shared/storage/memcache';
 import Entities from '../../entity/entities';
 
 const endpoint = rpc.v1.characters;

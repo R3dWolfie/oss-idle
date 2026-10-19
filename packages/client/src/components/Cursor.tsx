@@ -5,7 +5,7 @@ import {
 	useRef,
 } from 'react';
 import { isWebOpen } from '../globals';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 const TRAIL = 30;
 

@@ -9,7 +9,7 @@ import {
 	or,
 	sum,
 } from 'drizzle-orm';
-import { isAdmin } from '@osu-idle/shared/admin';
+import { OWNER_ID } from '@oss-idle/shared/groups';
 import { db } from '../db/client';
 import { beatmaps } from '../db/schema/beatmap';
 import { beatmapset } from '../db/schema/beatmapset';
@@ -20,7 +20,7 @@ import { listedCondition } from './catalog';
 /** Ranked sets the account proposed. Adri also gets the ranked maps nobody proposed. */
 const curatedCondition = (userId: number) => and(
 	listedCondition,
-	isAdmin(userId)
+	userId === OWNER_ID
 		? or(eq(beatmapRequests.userId, userId), isNull(beatmapRequests.setId))
 		: eq(beatmapRequests.userId, userId),
 );

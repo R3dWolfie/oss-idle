@@ -1,4 +1,4 @@
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import {
 	DEBUG_XP_STEPS,
 	debugXpMultiplier,

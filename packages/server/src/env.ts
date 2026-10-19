@@ -15,7 +15,7 @@ const schema = z.object({
 	// Client origin, per-env (resolved below) - used for CORS and the OAuth
 	// redirect. Dev and prod differ, but share one .env, so both are declared.
 	CLIENT_URL: z.url().default('http://localhost:5173'),
-	CLIENT_URL_PROD: z.url().default('https://osu.idle.rhythmgamers.net'),
+	CLIENT_URL_PROD: z.url().default('https://oss.idle.rhythmgamers.net'),
 	// Dev only: where browsers reach this API, when not localhost - e.g. the LAN
 	// staging, which proxies /v1 through the game's dev server.
 	API_URL: z.url().optional(),
@@ -57,11 +57,13 @@ const schema = z.object({
 	REDIS_DB: z.coerce.number().int().min(0).default(0),
 	
 	MAP_FEED_WEBHOOK: z.string(),
+	/** Self-assigned Discord role pinged with each ranked map. */
+	MAP_FEED_ROLE_ID: z.string().optional(),
 	NEWS_FEED_WEBHOOK: z.string(),
 	USER_FEED_WEBHOOK: z.string(),
 	ERROR_FEED_WEBHOOK: z.string(),
 
-	// The osu!idle Discord app: OAuth links a player's Discord account so the bot
+	// The oss!idle Discord app: OAuth links a player's Discord account so the bot
 	// (packages/discord) can give them their level role. No secret, no linking.
 	DISCORD_CLIENT_ID: z.string().min(1).default('1517803750968918037'),
 	DISCORD_CLIENT_SECRET: z.string().optional(),
@@ -80,6 +82,10 @@ const schema = z.object({
 	// from the dashboard endpoint on prod, from `stripe listen` on dev.
 	STRIPE_SECRET_KEY: z.string().optional(),
 	STRIPE_WEBHOOK_SECRET: z.string().optional(),
+	// Abby (Intégrations → clé API): prod books each supporter order in its livre des recettes.
+	ABBY_API_KEY: z.string().optional(),
+	// Supporter thank-you emails go out through this mailbox, e.g. smtps://user:pass@mail.boitech.dev:465.
+	SMTP_URL: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -97,7 +103,7 @@ export const isProd = env.NODE_ENV === 'production';
 /**
  * Listening port, resolved per-environment so dev (3873) and prod (3875) never
  * collide - the prod systemd service and a local `npm run dev` can run side by
- * side. The reverse proxy for api.osu.idle.rhythmgamers.net targets the prod port.
+ * side. The reverse proxy for api.oss.idle.rhythmgamers.net targets the prod port.
  */
 export const port = isProd ? env.PORT_PROD : env.PORT;
 
@@ -125,7 +131,7 @@ export const dbName = isProd ? env.DB_NAME : env.DB_NAME_DEV;
  * per-project DB convention to slot into.
  */
 export const redisDb = env.REDIS_DB;
-export const redisKeyPrefix = isProd ? 'osu-idle:prod:' : 'osu-idle:dev:';
+export const redisKeyPrefix = isProd ? 'oss-idle:prod:' : 'oss-idle:dev:';
 
 /**
  * Public origin of this API. Fixed in prod; in dev localhost unless API_URL says
@@ -133,7 +139,7 @@ export const redisKeyPrefix = isProd ? 'osu-idle:prod:' : 'osu-idle:dev:';
  * a registered callback.
  */
 export const apiBaseUrl = isProd
-	? 'https://api.osu.idle.rhythmgamers.net'
+	? 'https://api.oss.idle.rhythmgamers.net'
 	: env.API_URL ?? `http://localhost:${port}`;
 
 /** osu! OAuth callback (both dev + prod variants are registered on the app). */
@@ -141,6 +147,10 @@ export const OSU_REDIRECT_URI = `${apiBaseUrl}/v1/auth/osu/callback`;
 
 /** Discord OAuth callback (both dev + prod variants are registered on the app). */
 export const DISCORD_REDIRECT_URI = `${apiBaseUrl}/v1/auth/discord/callback`;
+
+/** The prod site before the rename to oss!idle. Old links and desktop builds still
+ *  reach it, and its pages hand their data over from there (shared/src/hostMove.ts). */
+export const LEGACY_CLIENT_URL = 'https://osu.idle.rhythmgamers.net';
 
 /** Origin the desktop renderer reports (it loads its bundle from a registered
  *  `app://` scheme). Allowed through CORS so the Bearer-authed app can call us. */

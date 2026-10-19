@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-const SITE = 'osu!idle';
-const ORIGIN = 'https://osu.idle.rhythmgamers.net';
+const SITE = 'oss!idle';
+const ORIGIN = 'https://oss.idle.rhythmgamers.net';
 
 const canonicalLink = () => {
 	const existing = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');

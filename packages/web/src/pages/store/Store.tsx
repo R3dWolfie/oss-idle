@@ -1,6 +1,6 @@
 import './Store.css';
 import { Trans } from '@lingui/react/macro';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import Link from '../../components/Link';
 import {
 	useAuthLoaded,
@@ -21,7 +21,7 @@ export default function Store({ tab, paid }: { tab: 'products' | 'orders'; paid:
 	if (!authLoaded) return null;
 	if (!me) {
 		return <div className='page-contents'>
-			<Trans><Link to='/login'>Sign in</Link> to support osu!idle.</Trans>
+			<Trans><Link to='/login'>Sign in</Link> to support oss!idle.</Trans>
 		</div>;
 	}
 

@@ -10,7 +10,7 @@ import {
 	isNull,
 	type SQL,
 } from 'drizzle-orm';
-import type { SkillName } from '@osu-idle/shared/skills';
+import type { SkillName } from '@oss-idle/shared/skills';
 import { db } from '../db/client';
 import { users } from '../db/schema/user';
 import {

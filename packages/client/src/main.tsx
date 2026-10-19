@@ -5,14 +5,14 @@ import {
 	i18n,
 	activateLocale,
 } from './i18n';
-import '@osu-idle/shared/shared.css';
+import '@oss-idle/shared/shared.css';
 import './index.css';
 import './online/account'; // resolve the session + account, listen for login
 import { initWakeLock } from './responsive/wakeLock';
 import { initFullscreen } from './responsive/fullscreen';
 import { initFrameLimiter } from './responsive/frameLimiter';
 import { SETTINGS } from './db/settings';
-import { desktop } from '@osu-idle/shared/desktop';
+import { desktop } from '@oss-idle/shared/desktop';
 import { bootAddons } from './addons/runtime';
 import App from './App.tsx';
 

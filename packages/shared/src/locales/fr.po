@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-18 21:52\n"
+"PO-Revision-Date: 2026-10-19 20:47\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -443,6 +443,10 @@ msgid "Finish a play at exactly 727 combo"
 msgstr "Terminez avec un combo d'exactement 727"
 
 #: src/display/medals.ts
+msgid "First Spark"
+msgstr ""
+
+#: src/display/medals.ts
 msgid "First Steps"
 msgstr "Premiers pas"
 
@@ -519,6 +523,10 @@ msgid "Hbada E3 Pro"
 msgstr "Hbada E3 Pro"
 
 #: src/display/medals.ts
+msgid "Heating Up"
+msgstr ""
+
+#: src/display/medals.ts
 msgid "Hello World"
 msgstr "Bonjour !"
 
@@ -549,6 +557,10 @@ msgstr "Hush-Hush"
 #: src/display/community.ts
 msgid "Idle"
 msgstr "Idle"
+
+#: src/display/medals.ts
+msgid "Inferno"
+msgstr ""
 
 #: src/display/medals.ts
 msgid "Into the Storm"
@@ -908,8 +920,8 @@ msgid "Royalty"
 msgstr "Royauté"
 
 #: src/display/medals.ts
-msgid "Say something in #osu!idle"
-msgstr "Dites quelque chose dans #osu!idle"
+msgid "Say something in #oss!idle"
+msgstr "Dites quelque chose dans #oss!idle"
 
 #: src/skills.ts
 msgid "SDKL"
@@ -926,6 +938,10 @@ msgstr "Secretlab TITAN Evo"
 #: src/skills.ts
 msgid "Sennheiser Momentum 4"
 msgstr "Sennheiser Momentum 4"
+
+#: src/display/medals.ts
+msgid "Set a {pp} pp play"
+msgstr ""
 
 #: src/display/skills.ts
 msgid "Sharpen your note visuals to survive dense jams"
@@ -1018,6 +1034,10 @@ msgstr "Logitech G Hub d'origine"
 msgid "Stool"
 msgstr "Tabouret"
 
+#: src/display/medals.ts
+msgid "Supernova"
+msgstr ""
+
 #: src/skills.ts
 msgid "Synaptics drivers"
 msgstr "Pilotes Synaptics"
@@ -1057,6 +1077,10 @@ msgstr "Le temps file"
 #: src/display/medals.ts
 msgid "Top of the Line"
 msgstr "Top du top"
+
+#: src/display/medals.ts
+msgid "Triple Digits"
+msgstr ""
 
 #: src/display/skills.ts
 msgid "Try different layouts to increase finger independance"
@@ -1146,6 +1170,10 @@ msgstr "When You See It"
 #: src/display/medals.ts
 msgid "Where Did The Day Go"
 msgstr "J'ai fait quoi de ma journée"
+
+#: src/display/medals.ts
+msgid "Wildfire"
+msgstr ""
 
 #: src/skills.ts
 msgid "Wooden chair"

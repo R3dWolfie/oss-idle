@@ -6,7 +6,7 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import Log from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
 import Button from './controls/Button';
 import BeatmapStore from '../../osu/beatmap/beatmap_store';
 

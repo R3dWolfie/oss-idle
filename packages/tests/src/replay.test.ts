@@ -1,12 +1,12 @@
-import '@osu-idle/shared/osu/controlPointPatch';
+import '@oss-idle/shared/osu/controlPointPatch';
 import {
 	describe,
 	it,
 	expect,
 } from 'vitest';
 import { BeatmapDecoder } from 'osu-parsers';
-import { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
-import ReplayBot from '@osu-idle/client/gameplay/replayBot';
+import { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
+import ReplayBot from '@oss-idle/client/gameplay/replayBot';
 import { simulate } from './sim';
 
 // A tiny hand-written 4K mania chart - a few taps and two long notes, enough to

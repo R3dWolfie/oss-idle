@@ -4,22 +4,22 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import type Skill from '@osu-idle/shared/sim/skills/skill';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { skillName } from '@osu-idle/shared/display/skills';
+import type Skill from '@oss-idle/shared/sim/skills/skill';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { skillName } from '@oss-idle/shared/display/skills';
 import {
 	canPrestige,
 	maxUpgrades,
 	prestigeMinLevel,
 	prestigeXPMultiplier,
 	UPGRADES_PER_PRESTIGE,
-} from '@osu-idle/shared/upgrades';
-import { levelProgress } from '@osu-idle/shared/display/levelDisplay';
-import { xpToLevel } from '@osu-idle/shared/sim/skills/xp';
-import SkillLevel from '@osu-idle/shared/display/SkillLevel';
-import HoverCard from '@osu-idle/shared/display/HoverCard';
-import HoverCardRow from '@osu-idle/shared/display/HoverCardRow';
-import num from '@osu-idle/shared/display/num';
+} from '@oss-idle/shared/upgrades';
+import { levelProgress } from '@oss-idle/shared/display/levelDisplay';
+import { xpToLevel } from '@oss-idle/shared/sim/skills/xp';
+import SkillLevel from '@oss-idle/shared/display/SkillLevel';
+import HoverCard from '@oss-idle/shared/display/HoverCard';
+import HoverCardRow from '@oss-idle/shared/display/HoverCardRow';
+import num from '@oss-idle/shared/display/num';
 import ConfirmMenu, { type Confirm } from '../ConfirmMenu';
 import { prestigeSkill } from '../../online/services/prestige';
 import PrestigeDiamonds from './PrestigeDiamonds';

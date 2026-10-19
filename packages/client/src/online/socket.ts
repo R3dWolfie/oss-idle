@@ -1,18 +1,18 @@
 import type { ZodError } from 'zod';
-import Synced from '@osu-idle/shared/helpers/synced';
-import { desktop } from '@osu-idle/shared/desktop';
-import { VERSION } from '@osu-idle/shared/version';
+import Synced from '@oss-idle/shared/helpers/synced';
+import { desktop } from '@oss-idle/shared/desktop';
+import { VERSION } from '@oss-idle/shared/version';
 import {
 	type ChatLine,
 	type ClientMessage,
 	DEFAULT_CHANNEL,
 	serverMessage,
 	type ServerMessage,
-} from '@osu-idle/shared/community/wire';
+} from '@oss-idle/shared/community/wire';
 import {
 	type ClientStatus,
 	type PresenceEntry,
-} from '@osu-idle/shared/community/presence';
+} from '@oss-idle/shared/community/presence';
 import Account from './account';
 import { BASE_URL } from './client';
 

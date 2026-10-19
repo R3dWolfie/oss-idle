@@ -9,13 +9,13 @@ import {
 	max,
 	sql,
 } from 'drizzle-orm';
-import { ADMIN_USER_IDS } from '@osu-idle/shared/admin';
+import { OWNER_ID } from '@oss-idle/shared/groups';
 import {
 	MEDALS,
 	medalXPMultiplier,
-} from '@osu-idle/shared/achievements/catalogue';
-import { Skills } from '@osu-idle/shared/skills';
-import { maxUpgrades } from '@osu-idle/shared/upgrades';
+} from '@oss-idle/shared/achievements/catalogue';
+import { Skills } from '@oss-idle/shared/skills';
+import { maxUpgrades } from '@oss-idle/shared/upgrades';
 import { countCurated } from './beatmaps/curated';
 import { db } from './db/client';
 import { scores } from './db/schema/score';
@@ -43,7 +43,7 @@ import { presenceTimezone } from './ws/presence';
 import { hasChatted } from './ws/chat';
 import { hub } from './ws/hub';
 import { reindexCharacter } from './rankings';
-import type { MedalBatch } from '@osu-idle/shared/play';
+import type { MedalBatch } from '@oss-idle/shared/play';
 
 /** What a finished play adds that the database does not keep. */
 export type PlayFacts = {
@@ -65,6 +65,7 @@ const scoreFacts = async (characterId: number) => {
 	const [row] = await db.select({
 		pass: max(sql<number>`floor(${playedStars})`),
 		fc: max(sql<number>`if(${scores.MISS} = 0, floor(${playedStars}), null)`),
+		topPlay: max(scores.pp),
 		rice: max(sql<number>`${playedStars} >= 4 and ${beatmaps.rice} > 0.9 * ${beatmaps.objects}`),
 		ln: max(sql<number>`${playedStars} >= 4 and ${beatmaps.ln} > 0.5 * ${beatmaps.objects}`),
 		combo727: max(sql<number>`${scores.maxCombo} = 727`),
@@ -78,6 +79,7 @@ const scoreFacts = async (characterId: number) => {
 	return {
 		pass: Number(row?.pass ?? 0),
 		fc: Number(row?.fc ?? 0),
+		topPlay: Number(row?.topPlay ?? 0),
 		rice: Number(row?.rice) > 0,
 		ln: Number(row?.ln) > 0,
 		combo727: Number(row?.combo727) > 0,
@@ -111,14 +113,42 @@ const rebirthedPast = async (character: CharacterRow) => {
 	return (row?.n ?? 0) > 0;
 };
 
-const localHour = (tz: string) => Number(new Intl.DateTimeFormat('en-US', {
+const localHour = (tz: string, at: Date) => Number(new Intl.DateTimeFormat('en-US', {
 	hour: 'numeric', hourCycle: 'h23', timeZone: tz,
-}).format(new Date()));
+}).format(at));
+
+/** Minutes the zone is ahead of UTC right now. */
+const utcOffset = (tz: string) => {
+	const at = new Date();
+	at.setUTCSeconds(0, 0);
+	const local = new Date(`${at.toLocaleString('en-US', { timeZone: tz })} UTC`);
+	return (local.getTime() - at.getTime()) / 60000;
+};
+
+/** Any play that ended in the night owl hours, local time. Most plays end with
+ *  no result screen to award them (the queue runs in the background), so it is
+ *  read off the scores rather than the clock. The database has no timezone
+ *  tables: SQL takes an hour either side at today's offset (DST moves it), and
+ *  the exact hour is checked here. */
+const playedAtNight = async (characterId: number, tz: string) => {
+	const offset = utcOffset(tz);
+	const rows = await db.select({ at: scores.playedAt })
+		.from(scores)
+		.where(and(
+			eq(scores.characterId, characterId),
+			sql`hour(${scores.playedAt} + interval ${offset} minute) between 2 and 5`,
+		))
+		.orderBy(desc(scores.playedAt))
+		.limit(500);
+	return rows.some(r => r.at && NIGHT_OWL_HOURS.includes(localHour(tz, r.at)));
+};
 
 /** Everything the medal conditions read, as it stands now. */
 const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 	const id = character.id;
-	const [facts, firsts, replays, curatedMaps, totals, chatted, rebirthed] = await Promise.all([
+	const [
+		facts, firsts, replays, curatedMaps, totals, chatted, rebirthed, nightOwl,
+	] = await Promise.all([
 		scoreFacts(id),
 		firstPlaces(id),
 		mostReplays(id),
@@ -126,6 +156,7 @@ const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 		getCharacterTotals(id),
 		hasChatted(id),
 		rebirthedPast(character),
+		tz !== undefined && playedAtNight(id, tz),
 	]);
 	return {
 		...facts,
@@ -136,7 +167,7 @@ const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 		curatedMaps,
 		chatted,
 		rebirthed: rebirthed || character.generation > 1,
-		nightOwl: tz !== undefined && NIGHT_OWL_HOURS.includes(localHour(tz)),
+		nightOwl,
 		nearMiss: (play.failedAt ?? 0) >= FAIL_99,
 		// raw, as the game shows it ("2.4ω")
 		overdrive: Math.max(...Skills.map(s => character[`${s}Overdrive`])),
@@ -162,6 +193,7 @@ const COUNTERS: Record<string, (p: Live) => number> = {
 	prestige: p => p.prestige,
 	first: p => p.firsts,
 	pp: p => Number(p.character.pp),
+	'play-pp': p => p.topPlay,
 	curator: p => p.curatedMaps,
 };
 
@@ -283,14 +315,21 @@ const RULES: Record<string, Rule> = {
 	...series('pp', {
 		'pp-1k': 1_000, 'pp-5k': 5_000, 'pp-10k': 10_000, 'pp-20k': 20_000,
 	}, 'pp'),
+	...series('best pp of a single stored score', {
+		'play-pp-50': 50, 'play-pp-100': 100, 'play-pp-200': 200,
+		'play-pp-500': 500, 'play-pp-750': 750, 'play-pp-1k': 1_000,
+	}, 'play-pp'),
 	...series('proposed maps now ranked and live', {
 		'curator-1': 1, 'curator-5': 5, 'curator-25': 25, 'curator-100': 100,
 	}, 'curator'),
 	'combo-727': one('a stored score with max combo exactly 727', p => p.combo727),
 	'same-map-100': one('played a single map ≥ 100 times', p => p.mostReplays >= 100),
 	'fail-99': one('the shown play failed after ≥ 99% of the map', p => p.nearMiss),
-	'night-owl': one('the result is shown between 03:00 and 04:59 local time', p => p.nightOwl),
-	'first-chat': one('has sent a #osu!idle chat message (counted since medals exist)', p => p.chatted),
+	'night-owl': one(
+		'a play ended between 03:00 and 04:59 local time (the timezone the player is in now)',
+		p => p.nightOwl,
+	),
+	'first-chat': one('has sent a #oss!idle chat message (counted since medals exist)', p => p.chatted),
 	'possessed': one(`a ${amount(PERFECT_SCORE)} score on TAG underground - POSSESSION [CHALLENGE]`,
 		p => p.possessed),
 };
@@ -416,7 +455,7 @@ export const recordCurators = async (osuSetId: number | null) => {
 		.where(eq(beatmapRequests.setId, osuSetId));
 	const owners = await db.select({ id: users.currentCharacter })
 		.from(users)
-		.where(inArray(users.id, request ? [request.userId] : [...ADMIN_USER_IDS]));
+		.where(inArray(users.id, request ? [request.userId] : [OWNER_ID]));
 	for (const { id } of owners) if (id) await recordProgress(id);
 };
 

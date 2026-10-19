@@ -7,7 +7,7 @@ import { publish } from '../discord/publish';
 import {
 	mapCoverUrl,
 	type MapCover,
-} from '@osu-idle/shared/beatmap';
+} from '@oss-idle/shared/beatmap';
 
 export type AnnounceSet = MapCover & {
 	artist: string;
@@ -18,14 +18,18 @@ export type AnnounceSet = MapCover & {
 
 /** Post the "now ranked" embed to the map feed. Fires from the rank sweep when a
  *  scheduled map's date passes (not at upload), so each map announces once it's
- *  actually live. No-op outside prod or without a configured webhook. */
+ *  actually live, pinging the opt-in role. No-op outside prod or without a configured webhook. */
 export const announceRanked = async (set: AnnounceSet): Promise<void> => {
 	if (!isProd || !env.MAP_FEED_WEBHOOK) return;
 
 	const cover = mapCoverUrl(set, 'cover', apiBaseUrl);
 	const asc = [...set.difficulties].sort((a, b) => a.sr - b.sr);
+	const role = env.MAP_FEED_ROLE_ID;
 
 	await publish(env.MAP_FEED_WEBHOOK, {
+		...role && {
+			content: `<@&${role}>`, allowed_mentions: { roles: [role] }, 
+		},
 		embeds: [
 			{
 				title: `${set.artist} - ${set.title}`,

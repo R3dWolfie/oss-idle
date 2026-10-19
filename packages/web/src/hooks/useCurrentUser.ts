@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
-import type { UserDTO } from '@osu-idle/shared/user';
-import { desktop } from '@osu-idle/shared/desktop';
+import type { UserDTO } from '@oss-idle/shared/user';
+import { desktop } from '@oss-idle/shared/desktop';
 import {
 	apiUrl,
 	withAuth,
@@ -38,7 +38,7 @@ export function refreshCurrentUser(): Promise<void> {
 // that fires so the opener reflects the new session without a reload.
 if (typeof window !== 'undefined') {
 	window.addEventListener('storage', e => {
-		if (e.key === 'osu-idle:auth') void refreshCurrentUser();
+		if (e.key === 'oss-idle:auth') void refreshCurrentUser();
 	});
 	// Desktop delivers the session as a Bearer token (no cookie / storage ping),
 	// so re-read whenever the app reports it changed (sign-in or sign-out).

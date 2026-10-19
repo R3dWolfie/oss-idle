@@ -84,6 +84,7 @@ export type XPGainView = {
 export type TestBridge = {
 	finishPlay: () => boolean;
 	scene: () => Scene;
+	nowPlaying: () => number | undefined;
 	sessionReady: () => boolean;
 	character: () => CharacterView;
 	saved: () => Promise<void>;

@@ -8,17 +8,17 @@ import { i18n } from '@lingui/core';
 import {
 	effectiveLevelOf,
 	mapLevel,
-} from '@osu-idle/shared/sim/skills/levelCurve';
-import { xpForLevel } from '@osu-idle/shared/sim/skills/xp';
+} from '@oss-idle/shared/sim/skills/levelCurve';
+import { xpForLevel } from '@oss-idle/shared/sim/skills/xp';
 import {
 	REBIRTH_UNLOCKS,
 	unlocksForGeneration,
 	usesReservedOld,
-} from '@osu-idle/shared/rebirth';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
-import type Skill from '@osu-idle/shared/sim/skills/skill';
-import { upgradeLabel } from '@osu-idle/shared/display/skills';
-import { UPGRADE } from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/rebirth';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
+import type Skill from '@oss-idle/shared/sim/skills/skill';
+import { upgradeLabel } from '@oss-idle/shared/display/skills';
+import { UPGRADE } from '@oss-idle/shared/skills';
 
 describe('level → skill mapping', () => {
 	it('is the identity up to 90', () => {

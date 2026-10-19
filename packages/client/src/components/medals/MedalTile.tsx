@@ -5,8 +5,8 @@ import {
 	type MouseEvent,
 } from 'react';
 import { Trans } from '@lingui/react/macro';
-import { MEDAL_XP_BONUS } from '@osu-idle/shared/upgrades';
-import { medalTierName } from '@osu-idle/shared/display/medals';
+import { MEDAL_XP_BONUS } from '@oss-idle/shared/upgrades';
+import { medalTierName } from '@oss-idle/shared/display/medals';
 import type { MedalUnlock } from '../../achievements/medalUnlocks';
 import type { MedalSlot } from './medalLayout';
 import MedalBurst from './MedalBurst';

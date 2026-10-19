@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-18 21:52\n"
+"PO-Revision-Date: 2026-10-19 20:47\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -119,6 +119,10 @@ msgstr "{shown} sur {total} résultats"
 #: src/logs.ts
 msgid "{skill} reached level {level}!"
 msgstr "{skill} a atteint le niveau {level} !"
+
+#: src/online/mapLinks.ts
+msgid "{title} is already downloaded"
+msgstr "{title} est déjà téléchargée"
 
 #: src/components/upgrades/UpgradeTooltip.tsx
 msgid "{toGo, plural, one {# level} other {# levels}}"
@@ -275,6 +279,10 @@ msgstr "Êtes-vous sûr de vouloir quitter ?"
 #: src/components/community/CommunityControls.tsx
 msgid "Auto-hide"
 msgstr "Cacher auto."
+
+#: src/components/community/chat/ChannelPicker.tsx
+msgid "Automated announcements of stuff going on in oss!idle."
+msgstr ""
 
 #: src/components/options/AutopilotDelay.tsx
 msgid "Autopilot delay"
@@ -447,6 +455,7 @@ msgstr "Par titre"
 
 #: src/components/addons/AddonView.tsx
 #: src/components/community/chat/ReportMessageDialog.tsx
+#: src/components/community/LinkMenu.tsx
 #: src/components/ConfirmMenu.tsx
 #: src/components/multiplayer/CreateMatch.tsx
 #: src/components/multiplayer/PasswordPrompt.tsx
@@ -473,8 +482,8 @@ msgid "Change Password..."
 msgstr "Modifier le mot de passe..."
 
 #: src/scenes/Options.tsx
-msgid "Change the way osu!idle behaves"
-msgstr "Changez la façon dont osu!idle se comporte"
+msgid "Change the way oss!idle behaves"
+msgstr "Changez la façon dont oss!idle se comporte"
 
 #: src/components/multiplayer/MatchSettings.tsx
 #: src/components/multiplayer/MatchSettings.tsx
@@ -554,6 +563,7 @@ msgstr "Cliquez pour passer"
 msgid "close"
 msgstr "fermer"
 
+#: src/components/community/chat/ChannelPicker.tsx
 #: src/components/community/PlayerMenu.tsx
 #: src/components/options/DownloadAllWarning.tsx
 #: src/components/PlaylistOverlay.tsx
@@ -590,9 +600,14 @@ msgstr "CONTRÔLES"
 msgid "Copy"
 msgstr "Copier"
 
+#: src/components/community/LinkMenu.tsx
 #: src/components/WebBrowser.tsx
 msgid "Copy link"
 msgstr "Copier le lien"
+
+#: src/online/mapLinks.ts
+msgid "Could not download {title}"
+msgstr "Impossible de télécharger {title}"
 
 #: src/online/playManager.ts
 msgid "Could not start the next map - the queue is paused"
@@ -648,6 +663,10 @@ msgstr "Supprimer l'add-on"
 #: src/components/options/DeleteAllBeatmaps.tsx
 msgid "Delete all beatmaps"
 msgstr "Supprimer toutes les maps"
+
+#: src/components/OldHostPrompt.tsx
+msgid "Delete the old data"
+msgstr "Supprimer les anciennes données"
 
 #: src/components/PlaylistOverlay.tsx
 msgid "Delete the playlist"
@@ -726,6 +745,14 @@ msgstr "download|télécharger|beatmap|beatmaps|map|classé|ranked|supporter"
 msgid "Downloaded"
 msgstr "Téléchargé"
 
+#: src/online/mapLinks.ts
+msgid "Downloaded {title}"
+msgstr "{title} a été téléchargé"
+
+#: src/online/mapLinks.ts
+msgid "Downloading {title}..."
+msgstr "Téléchargement de {title}..."
+
 #: src/components/options/DownloadAllBeatmaps.tsx
 msgid "Downloading beatmaps: {done}/{total} (click to stop)"
 msgstr "Téléchargement des maps: {done}/{total} (cliquez pour annuler)"
@@ -778,8 +805,8 @@ msgid "Exit"
 msgstr "Quitter"
 
 #: src/scenes/MainMenu.tsx
-msgid "Exit osu!idle"
-msgstr "Quitter osu!idle"
+msgid "Exit oss!idle"
+msgstr "Quitter oss!idle"
 
 #: src/osu/skin/Skin.tsx
 msgid "Expected a column record like {example}"
@@ -976,6 +1003,10 @@ msgstr "Installer l'add-on"
 msgid "Installed"
 msgstr "Installé"
 
+#: src/components/community/chat/Chat.tsx
+msgid "Join a channel"
+msgstr ""
+
 #: src/scenes/Lobby.tsx
 msgid "Join Game"
 msgstr "Rejoindre la partie"
@@ -1139,6 +1170,10 @@ msgstr "Médailles débloquées"
 #: src/components/addons/AddonView.tsx
 msgid "Moderator feedback"
 msgstr "Retours de la modération"
+
+#: src/components/dock/DockModsButton.tsx
+msgid "mods"
+msgstr "mods"
 
 #: src/components/multiplayer/MatchSettings.tsx
 #: src/components/songselect/SongSelectFooter.tsx
@@ -1328,22 +1363,34 @@ msgstr "Utilisateurs en ligne"
 msgid "Open"
 msgstr "Libre"
 
+#: src/components/community/LinkMenu.tsx
+msgid "Open link"
+msgstr "Ouvrir le lien"
+
 #: src/components/songselect/UserCard.tsx
 msgid "Open osu! web"
 msgstr "Ouvrir osu! web"
+
+#: src/components/community/LinkMenu.tsx
+msgid "Open this link?"
+msgstr "Ouvrir ce lien ?"
 
 #: src/scenes/MainMenu.tsx
 #: src/scenes/Options.tsx
 msgid "Options"
 msgstr "Options"
 
+#: src/components/Tutorial.tsx
+msgid "oss!idle features <0>online leaderboards</0>, just like osu!. Sign in with your osu! account to compete and save your progression online."
+msgstr "oss!idle propose des <0>classements en ligne</0>, tout comme osu!. Connectez-vous avec votre compte osu! pour vous mesurer aux autres et sauvegarder votre progression en ligne."
+
+#: src/components/OldHostPrompt.tsx
+msgid "oss!idle moved here from {OLD_HOST}"
+msgstr "{OLD_HOST} a déménagé vers oss!idle"
+
 #: src/components/options/OsuMusicTheme.tsx
 msgid "osu! music at startup"
 msgstr "Musique osu! au lancement"
-
-#: src/components/Tutorial.tsx
-msgid "osu!idle features <0>online leaderboards</0>, just like osu!. Sign in with your osu! account to compete and save your progression online."
-msgstr "osu!idle propose des <0>classements en ligne</0>, tout comme osu!. Connectez-vous avec votre compte osu! pour vous mesurer aux autres et sauvegarder votre progression en ligne."
 
 #: src/components/multiplayer/MatchRow.tsx
 msgid "osu!mania (head-to-head)"
@@ -1673,6 +1720,10 @@ msgstr "Résultat"
 msgid "resume"
 msgstr "continuer"
 
+#: src/scenes/Result.tsx
+msgid "RETRY"
+msgstr ""
+
 #: src/components/community/PlayerMenu.tsx
 msgid "Revoke Friendship"
 msgstr "Retirer des amis"
@@ -1713,6 +1764,7 @@ msgid "Search"
 msgstr "Rechercher"
 
 #: src/components/addons/BrowseAddonsView.tsx
+#: src/components/community/chat/ChannelPicker.tsx
 #: src/components/skins/BrowseSkinsView.tsx
 #: src/scenes/Lobby.tsx
 #: src/scenes/SongSelect.tsx
@@ -1732,6 +1784,10 @@ msgstr "Choisissez une map pour voir ses scores."
 #: src/components/PlaylistOverlay.tsx
 msgid "Select a playlist or create a new one here..."
 msgstr "Sélectionnez une playlist ou créez en une nouvelle ici..."
+
+#: src/components/community/chat/ChannelPicker.tsx
+msgid "Select any channel you wish to join!"
+msgstr ""
 
 #: src/components/options/Language.tsx
 msgid "Select language"
@@ -1924,6 +1980,10 @@ msgstr "Tags"
 msgid "Take it out of the queue"
 msgstr "Retirer de la liste"
 
+#: src/components/community/chat/ChannelPicker.tsx
+msgid "Talk about multiplayer games."
+msgstr ""
+
 #: src/scenes/IntroScreen.tsx
 msgid "tap to play..."
 msgstr "touchez pour jouer..."
@@ -1939,6 +1999,10 @@ msgstr "Merci de votre générosité !"
 #: src/components/options/DownloadAllWarning.tsx
 msgid "That's why downloading them all at once is an osu!supporter perk."
 msgstr "C'est pourquoi ce téléchargement nécessite le tag supporter."
+
+#: src/components/community/chat/ChannelPicker.tsx
+msgid "The main oss!idle channel."
+msgstr ""
 
 #: src/components/community/chat/ReportMessageDialog.tsx
 msgid "The report could not be sent."
@@ -2160,8 +2224,8 @@ msgid "Website"
 msgstr "Site web"
 
 #: src/components/Tutorial.tsx
-msgid "Welcome to osu!idle"
-msgstr "Bienvenue sur osu!idle"
+msgid "Welcome to oss!idle"
+msgstr "Bienvenue sur oss!idle"
 
 #: src/components/Onboarding.tsx
 msgid "Welcome, {username}!"
@@ -2271,9 +2335,17 @@ msgstr "Votre personnage peut jouer <0>en boucle</0>, automatiquement, sur des p
 msgid "Your character is still playing another map. Abort that play to start this one?"
 msgstr "Votre personnage est encore sur une autre map. Abandonner pour démarrer celle-là ?"
 
+#: src/components/community/chat/ChannelPicker.tsx
+msgid "Your own plays and level-ups, seen only by you."
+msgstr ""
+
 #: src/components/addons/ManageAddonsView.tsx
 msgid "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{addon}\" for review?"
 msgstr "Le code publié doit l'être sous la licence AGPLv3 (ou licence compatible). Cela n'affecte pas nécessairement la licence de son code source. Soumettre \"{addon}\" pour une revue de code ?"
+
+#: src/components/OldHostPrompt.tsx
+msgid "Your save, settings and session came along. Delete everything the old address still keeps in this browser, downloaded beatmaps included?"
+msgstr "Votre sauvegarde, vos paramètres et votre session ont été enregistrés. Nettoyer tout ce que l'ancienne adresse garde toujours dans ce navigateur, maps téléchargées incluses ?"
 
 #: src/components/skins/ManageSkinsView.tsx
 msgid "Your skins"

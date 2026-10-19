@@ -62,18 +62,18 @@ async function build() {
 
 	// shared carries VERSION + the compiled catalogs; rebuild it so the staged
 	// client/web bundle the just-bumped version. server types feed RPC typing.
-	await run('npm -w @osu-idle/shared run build');
-	await run('npm -w @osu-idle/server run build:types');
+	await run('npm -w @oss-idle/shared run build');
+	await run('npm -w @oss-idle/server run build:types');
 
 	// The failure-prone bit: client/web into dist.next, never the live dir. Vite
 	// copies each package's public/ as today, so the staged tree is complete.
-	await run('npm -w @osu-idle/client run build -- --outDir dist.next --emptyOutDir');
-	await run('npm -w @osu-idle/web run build -- --outDir dist.next --emptyOutDir');
+	await run('npm -w @oss-idle/client run build -- --outDir dist.next --emptyOutDir');
+	await run('npm -w @oss-idle/web run build -- --outDir dist.next --emptyOutDir');
 
 	// Desktop reads the staged renderer (RENDERER_DIST) and publishes installers
 	// into the staged client tree (CLIENT_DIST), so a desktop failure aborts with
 	// nothing live changed, and a success rides into the swap with everything else.
-	await run('npm -w @osu-idle/desktop run dist', { RENDERER_DIST: STAGING });
+	await run('npm -w @oss-idle/desktop run dist', { RENDERER_DIST: STAGING });
 	await run('node scripts/publish-desktop.mjs', { CLIENT_DIST: `packages/client/${STAGING}` });
 }
 

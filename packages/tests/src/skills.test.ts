@@ -3,18 +3,18 @@ import {
 	it,
 	expect,
 } from 'vitest';
-import { makeOrderedSkills } from '@osu-idle/shared/sim/skills/factory';
+import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
 import {
 	LATE_LEVEL_XP,
 	lateLevelXp,
 	xpForLevel,
-} from '@osu-idle/shared/sim/skills/xp';
-import { SKILL } from '@osu-idle/shared/skills';
-import Accuracy from '@osu-idle/shared/sim/skills/accuracy';
-import Coordination from '@osu-idle/shared/sim/skills/coordination';
-import Memory from '@osu-idle/shared/sim/skills/memory';
-import Consistency from '@osu-idle/shared/sim/skills/consistency';
-import type Skill from '@osu-idle/shared/sim/skills/skill';
+} from '@oss-idle/shared/sim/skills/xp';
+import { SKILL } from '@oss-idle/shared/skills';
+import Accuracy from '@oss-idle/shared/sim/skills/accuracy';
+import Coordination from '@oss-idle/shared/sim/skills/coordination';
+import Memory from '@oss-idle/shared/sim/skills/memory';
+import Consistency from '@oss-idle/shared/sim/skills/consistency';
+import type Skill from '@oss-idle/shared/sim/skills/skill';
 
 describe('xpForLevel curve', () => {
 	it('costs exactly 100 to leave level 0', () => {

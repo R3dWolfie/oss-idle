@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import type { MedalTier } from '@osu-idle/shared/achievements/medal';
-import { MEDAL_XP_BONUS } from '@osu-idle/shared/upgrades';
+import type { MedalTier } from '@oss-idle/shared/achievements/medal';
+import { MEDAL_XP_BONUS } from '@oss-idle/shared/upgrades';
 
 type Props = {
 	icon: ReactNode,

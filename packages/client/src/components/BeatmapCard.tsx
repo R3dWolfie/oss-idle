@@ -21,8 +21,8 @@ import {
 import Entities from '../entity/entities';
 import { currentSkin } from '../osu/skin/Skin';
 import { useSelection } from './songselect/selection';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { SETTINGS } from '../db/settings';
 import BeatmapCardXP from './BeatmapCardXP';
 import type { BeatmapXPInsight } from '../xpInsights';

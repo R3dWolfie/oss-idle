@@ -6,7 +6,7 @@ import {
 import {
 	matchPlayers,
 	type Match,
-} from '@osu-idle/shared/multiplayer';
+} from '@oss-idle/shared/multiplayer';
 import Multiplayer from '../../online/multiplayer';
 import ConfirmMenu from '../ConfirmMenu';
 import OverChat from './OverChat';

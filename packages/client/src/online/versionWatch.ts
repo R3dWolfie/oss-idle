@@ -1,6 +1,6 @@
-import { VERSION } from '@osu-idle/shared/version';
-import { desktop } from '@osu-idle/shared/desktop';
-import Log, { POPUP_TYPE } from '@osu-idle/shared/helpers/log';
+import { VERSION } from '@oss-idle/shared/version';
+import { desktop } from '@oss-idle/shared/desktop';
+import Log, { POPUP_TYPE } from '@oss-idle/shared/helpers/log';
 import { t } from '@lingui/core/macro';
 import Socket from './socket';
 import { checkForDesktopUpdate } from './desktopUpdate';

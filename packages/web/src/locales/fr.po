@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-18 21:52\n"
+"PO-Revision-Date: 2026-10-19 20:47\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -38,6 +38,10 @@ msgstr "{count} sélectionnée(s)"
 msgid "{days, plural, =0 {today} one {# day ago} other {# days ago}}"
 msgstr "{days, plural, =0 {aujourd'hui} one {il y a # jour} other {il y a # jours}}"
 
+#: src/components/character/SanctionLength.tsx
+msgid "{days, plural, one {# day} other {# days}}"
+msgstr "{days, plural, one {# jour} other {# jours}}"
+
 #: src/pages/beatmaps/RequestSearchHit.tsx
 msgid "{diffs} × 4K"
 msgstr "{diffs} × 4K"
@@ -46,13 +50,37 @@ msgstr "{diffs} × 4K"
 msgid "{holders} players ({share})"
 msgstr "{holders} joueurs ({share})"
 
+#: src/components/character/SanctionLength.tsx
+msgid "{hours, plural, one {# hour} other {# hours}}"
+msgstr "{hours, plural, one {# heure} other {# heures}}"
+
+#: src/components/character/SanctionLength.tsx
+msgid "{minutes, plural, one {# minute} other {# minutes}}"
+msgstr "{minutes, plural, one {# minute} other {# minutes}}"
+
 #: src/pages/store/SupportDuration.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# mois} other {# mois}}"
 
+#: src/components/character/AccountStanding.tsx
+msgid "{name} is silenced until a moderator lifts it."
+msgstr "{name} est mute jusqu'à ce qu'un modérateur lève la sanction."
+
+#: src/components/character/AccountStanding.tsx
+msgid "{name} will be able to speak again in <0/>."
+msgstr "{name} pourra parler à nouveau dans <0/>."
+
+#: src/components/character/AccountStanding.tsx
+msgid "{name}'s account is not in a good standing."
+msgstr "Le compte de {name} ne se porte pas bien."
+
 #: src/components/character/MedalProgressBar.tsx
 msgid "{now} / {goal} (best {best})"
 msgstr "{now} / {goal} (meilleur {best})"
+
+#: src/pages/changelog/UpdateStreams.tsx
+msgid "{online, plural, one {# user online} other {# users online}}"
+msgstr ""
 
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
@@ -124,8 +152,8 @@ msgid "<0>Sign in</0> to propose a map or support someone else's."
 msgstr "<0>Connectez-vous</0> pour proposer une map ou supporter celle de quelqu'un d'autre."
 
 #: src/pages/store/Store.tsx
-msgid "<0>Sign in</0> to support osu!idle."
-msgstr "<0>Connectez-vous</0> pour supporter osu!idle."
+msgid "<0>Sign in</0> to support oss!idle."
+msgstr "<0>Connectez-vous</0> pour supporter oss!idle."
 
 #: src/pages/help/FAQ.tsx
 msgid "<0>Unranked:</0> signed in, on a map or difficulty that isn't ranked. Saved in your browser only, with no experience."
@@ -143,6 +171,10 @@ msgstr "Une médaille cachée"
 msgid "A pink heart next to your name on your profile. It grows more hearts the longer you support."
 msgstr "Un coeur rose à côté de votre pseudo sur votre profil, et d'autres en supplément en fonction de la durée."
 
+#: src/pages/store/SupporterPerks.tsx
+msgid "A pink Supporter role on our Discord server, once you link your Discord account in the options."
+msgstr "Un rôle Supporter rose sur le serveur Discord, après avoir lié votre compte dans les options."
+
 #: src/pages/matches/MatchEventLine.tsx
 msgid "a player"
 msgstr "un joueur"
@@ -159,6 +191,10 @@ msgstr "Accepter la sélection"
 #: src/pages/beatmaps/requestPhase.ts
 msgid "accepted"
 msgstr "acceptée"
+
+#: src/components/character/AccountStanding.tsx
+msgid "Account Standing"
+msgstr "État du compte"
 
 #: src/pages/matches/MatchGameScore.tsx
 msgid "accuracy"
@@ -184,6 +220,10 @@ msgstr "Atteint le {date}"
 #: src/pages/help/FAQ.tsx
 msgid "Achievements for skill levels, dedication, mastery and ranked play, plus a few secret ones. They are awarded on the result screen of a ranked play. Each medal permanently raises your experience gain, from {bronzeBonus}% for a bronze one to {divineBonus}% for a divine one, and the bonuses stack."
 msgstr "Des récompenses pour les niveaux de compétence, l'assiduité, la maîtrise et le jeu classé, plus quelques secrètes. Elles sont décernées sur l'écran de résultat d'une partie classée. Chaque médaille augmente définitivement vos gains d'expérience, de {bronzeBonus}% pour une médaille de bronze à {divineBonus}% pour une divine, et les bonus se cumulent."
+
+#: src/components/character/AccountStanding.tsx
+msgid "Action"
+msgstr "Action"
 
 #: src/pages/rankings/Country.tsx
 msgid "Active Players"
@@ -212,7 +252,7 @@ msgstr "tout"
 
 #: src/components/leaderboard/CountryFilter.tsx
 #: src/components/leaderboard/useFriendsFilter.ts
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "All"
 msgstr "Tout"
 
@@ -229,8 +269,8 @@ msgid "An idle game built on osu!mania 4K. You don't press the keys: your charac
 msgstr "Un jeu idle basé sur osu!mania 4K. Vous n'appuyez pas sur les touches : votre personnage joue les maps à votre place. Chaque partie fait gagner de l'expérience à ses compétences, de meilleures compétences donnent de meilleures parties, et de meilleures parties font grimper dans les classements."
 
 #: src/pages/beatmaps/MapRequests.tsx
-msgid "Anyone can propose a map for ranking in osu!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
-msgstr "N'importe qui peut proposer une map à classer dans osu!idle. Supportez les maps que vous voulez jouer, celles qui sont acceptées entreront dans la file de nomination."
+msgid "Anyone can propose a map for ranking in oss!idle - osu!mania 4K only. Support the ones you want to play so it shows what people are after. Accepted maps join the nomination queue and are ranked from there."
+msgstr "N'importe qui peut proposer une map à classer dans oss!idle. Supportez les maps que vous voulez jouer, celles qui sont acceptées entreront dans la file de nomination."
 
 #: src/pages/settings/OAuthSettings.tsx
 #: src/routes/docs.tsx
@@ -276,8 +316,8 @@ msgid "Avg. Performance"
 msgstr "Performance Moy."
 
 #: src/pages/DesktopDone.tsx
-msgid "Back in osu!idle already? You can close this tab."
-msgstr "Déjà de retour sur osu!idle ? Vous pouvez fermer cet onglet."
+msgid "Back in oss!idle already? You can close this tab."
+msgstr "Déjà de retour sur oss!idle ? Vous pouvez fermer cet onglet."
 
 #: src/pages/admin/AdminNav.tsx
 #: src/routes/admin/balancing.tsx
@@ -308,7 +348,7 @@ msgstr "maps"
 msgid "Beatmaps"
 msgstr "Maps"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Best for performance and idling."
 msgstr "Plus adapté pour le jeu passif et de meilleures performances."
 
@@ -360,6 +400,7 @@ msgstr "Puis-je parler aux autres joueurs ?"
 #: src/components/character/DeleteAccountDialog.tsx
 #: src/components/character/ReportDialog.tsx
 #: src/components/character/RestrictDialog.tsx
+#: src/components/character/SilenceDialog.tsx
 #: src/components/EditableCharacterName.tsx
 #: src/pages/oauth/Authorize.tsx
 #: src/pages/settings/OAuthClientDialog.tsx
@@ -374,6 +415,12 @@ msgstr "Changer la bannière"
 #: src/components/EditableCharacterName.tsx
 msgid "Change username"
 msgstr "Changer de pseudo"
+
+#: src/HeaderLinks.tsx
+#: src/routes/changelog/$version.tsx
+#: src/routes/changelog/index.tsx
+msgid "changelog"
+msgstr ""
 
 #: src/routes/c/$id.tsx
 #: src/routes/preview.tsx
@@ -441,8 +488,8 @@ msgid "Country Ranking"
 msgstr "Rang pays"
 
 #: src/pages/PublicLanding.tsx
-msgid "Create your own osu! character and watch it grow to become a<0/><1>legendary mania player</1>."
-msgstr "Créez votre joueur osu! et regardez-le s'améliorer jusqu'à devenir un <0/><1>joueur légendaire d'osu!mania</1>."
+msgid "Create your own oss! character and watch it grow to become a<0/><1>legendary mania player</1>."
+msgstr "Créez votre joueur oss! et regardez-le s'améliorer jusqu'à devenir un <0/><1>joueur légendaire d'osu!mania</1>."
 
 #: src/pages/help/FAQ.tsx
 msgid "Customisation"
@@ -453,6 +500,7 @@ msgstr "Personnalisation"
 msgid "dashboard"
 msgstr "tableau de bord"
 
+#: src/components/character/AccountStanding.tsx
 #: src/pages/store/OrderHistory.tsx
 msgid "Date"
 msgstr "Date"
@@ -471,7 +519,7 @@ msgstr "Supprimer {0} ? Cette action est irréversible."
 msgid "Delete {username}'s account?"
 msgstr "Supprimer le compte de {username} ?"
 
-#: src/components/character/ProfileMenu.tsx
+#: src/components/character/SanctionItems.tsx
 msgid "Delete account"
 msgstr "Supprimer le compte"
 
@@ -483,9 +531,17 @@ msgstr "Supprimer pour toujours"
 msgid "Delete selected"
 msgstr "Supprimer la sélection"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Description"
+msgstr "Description"
+
 #: src/routes/auth/discord.tsx
 msgid "Discord linked"
 msgstr "Discord relié"
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Discord role"
+msgstr "Rôle discord"
 
 #: src/pages/help/FAQ.tsx
 msgid "Do I have to watch my plays?"
@@ -495,19 +551,23 @@ msgstr "Dois-je regarder mes parties ?"
 msgid "Do I need an osu! account?"
 msgstr "Ai-je besoin d'un compte osu! ?"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/beatmaps/DownloadButton.tsx
+msgid "Download"
+msgstr "Télécharger"
+
+#: src/pages/PlayOssIdle.tsx
 msgid "Download for {platform} (v{version})"
 msgstr "Télécharger pour {platform} (v{version})"
 
 #: src/pages/Home.tsx
-msgid "download osu!idle"
-msgstr "télécharger osu!idle"
+msgid "download oss!idle"
+msgstr "télécharger oss!idle"
 
 #: src/pages/beatmaps/RequestActions.tsx
 msgid "Download the .osz and push it into the nomination queue"
 msgstr "Télécharger le .osz et l'ajouter à la file de nomination"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Download the desktop app"
 msgstr "Télécharger l'appli bureau"
 
@@ -619,6 +679,10 @@ msgstr "Nom doré"
 msgid "grades"
 msgstr "rangs"
 
+#: src/routes/groups/$group.tsx
+msgid "groups"
+msgstr "groupes"
+
 #: src/pages/AuthCallback.tsx
 msgid "Hello {username}!"
 msgstr "Bonjour {username} !"
@@ -665,7 +729,7 @@ msgstr "Comment gagner de l'expérience ?"
 msgid "How do I get a map ranked?"
 msgstr "Comment faire classer une map ?"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "How do you want to play?"
 msgstr "Comment souhaitez-vous jouer ?"
 
@@ -733,6 +797,7 @@ msgstr "mentions légales"
 msgid "Legal notice"
 msgstr "Mentions légales"
 
+#: src/components/character/AccountStanding.tsx
 #: src/pages/beatmaps/BeatmapsetStats.tsx
 msgid "Length"
 msgstr "Durée"
@@ -745,14 +810,23 @@ msgstr "niveau"
 msgid "lifetime"
 msgstr "cumulé"
 
-#: src/components/character/ProfileMenu.tsx
+#: src/components/character/SanctionItems.tsx
 msgid "Lift restriction"
 msgstr "Lever la restriction"
+
+#: src/components/character/SanctionItems.tsx
+msgid "Lift silence"
+msgstr "Lever le silence"
+
+#: src/pages/changelog/ChangelogNav.tsx
+msgid "listing"
+msgstr ""
 
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/MapScoreboard.tsx
 #: src/pages/characters/CharacterPage.tsx
 #: src/pages/friends/Friends.tsx
+#: src/pages/groups/GroupPage.tsx
 #: src/pages/oauth/Authorize.tsx
 #: src/pages/settings/OAuthSettings.tsx
 #: src/pages/settings/TitleSettings.tsx
@@ -857,6 +931,10 @@ msgstr "menu"
 msgid "Menu background"
 msgstr "Image de fond du menu"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Moderator"
+msgstr "Modérateur"
+
 #: src/pages/beatmaps/MapScoreboard.tsx
 msgid "Mods"
 msgstr "Mods"
@@ -916,6 +994,10 @@ msgstr "Prochaine médaille"
 msgid "No authorized clients."
 msgstr "Aucun client autorisé."
 
+#: src/pages/changelog/Changelog.tsx
+msgid "No builds yet. Check back soon!"
+msgstr ""
+
 #: src/pages/news/News.tsx
 #: src/pages/PublicLanding.tsx
 msgid "No news yet. Check back soon!"
@@ -950,7 +1032,7 @@ msgstr "Non. Sans connexion, vous jouez en invité : tout est sauvegardé unique
 msgid "Nobody yet"
 msgstr "Personne"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Not yet available for {platform}"
 msgstr "Pas encore disponible pour {platform}"
 
@@ -979,7 +1061,7 @@ msgstr "maintenant {now}"
 msgid "OAuth"
 msgstr "OAuth"
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Offline"
 msgstr "Hors ligne"
 
@@ -1000,7 +1082,7 @@ msgstr "un moment..."
 msgid "One URL per line."
 msgstr "Une URL par ligne."
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Online"
 msgstr "En ligne"
 
@@ -1021,13 +1103,13 @@ msgstr "proposé"
 msgid "order history"
 msgstr "historique des commandes"
 
+#: src/pages/store/SupporterTag.tsx
+msgid "oss!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
+msgstr "oss!idle tourne sur un serveur qui coûte de l'argent chaque mois. Un tag supporter permet aux joueurs d'aider à le financer. Cela ne change rien en jeu."
+
 #: src/pages/beatmaps/BeatmapsetHeader.tsx
 msgid "osu! page"
 msgstr "page osu!"
-
-#: src/pages/store/SupporterTag.tsx
-msgid "osu!idle runs on a server that costs money every month. A supporter tag is how players help pay for it. It changes nothing in the game."
-msgstr "osu!idle tourne sur un serveur qui coûte de l'argent chaque mois. Un tag supporter permet aux joueurs d'aider à le financer. Cela ne change rien en jeu."
 
 #: src/pages/help/FAQ.tsx
 msgid "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
@@ -1037,7 +1119,7 @@ msgstr "Uniquement les difficultés osu!mania 4K. Le classement se décide par d
 msgid "Other (type below)"
 msgstr "Autre (précisez ci-dessous)"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Other platforms:"
 msgstr "Autres plateformes :"
 
@@ -1067,6 +1149,10 @@ msgstr "Paiement reçu, merci ! Votre tag apparaîtra dès que Stripe l'aura con
 msgid "Performance"
 msgstr "Performance"
 
+#: src/components/character/SanctionLength.tsx
+msgid "Permanent"
+msgstr "Permanent"
+
 #: src/pages/store/SupporterPerks.tsx
 msgid "Pick your own main menu background: set <0>menu.background</0> to an image link in your skin."
 msgstr "Choisissez votre propre fond d'écran : modifiez <0>menu.background</0> dans votre skin vers un lien d'image."
@@ -1084,22 +1170,18 @@ msgstr "Parties"
 msgid "Play Count"
 msgstr "Parties"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Play in the browser"
 msgstr "Jouer dans le navigateur"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/pages/PlayOssIdle.tsx
 msgid "Play now"
 msgstr "Jouer maintenant"
 
 #: src/HeaderLinks.tsx
-msgid "play osu!"
-msgstr "jouer à osu!"
-
-#: src/HeaderLinks.tsx
 #: src/routes/download.tsx
-msgid "play osu!idle"
-msgstr "jouer à osu!idle"
+msgid "play oss!idle"
+msgstr "jouer à oss!idle"
 
 #: src/pages/scores/ScorePage.tsx
 msgid "Played by"
@@ -1186,8 +1268,8 @@ msgstr "Vous aviez proposé des maps classées sur Discord ? Cochez-les et sauve
 msgid "Proposed maps ranked"
 msgstr "Maps classées proposées"
 
+#: src/components/UserList.tsx
 #: src/pages/beatmaps/MapScoreboard.tsx
-#: src/pages/friends/Friends.tsx
 msgid "Rank"
 msgstr "Rang"
 
@@ -1240,6 +1322,7 @@ msgstr "Lire des données publiques à votre place."
 
 #: src/components/character/ReportDialog.tsx
 #: src/components/character/RestrictDialog.tsx
+#: src/components/character/SilenceDialog.tsx
 msgid "Reason"
 msgstr "Raison"
 
@@ -1247,11 +1330,15 @@ msgstr "Raison"
 msgid "reason (optional)"
 msgstr "raison (optionnel)"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Recent Infringements"
+msgstr "Sanctions récentes"
+
 #: src/pages/characters/CharacterPage.tsx
 msgid "Recent scores"
 msgstr "Scores récents"
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Recently active"
 msgstr "Actifs récemment"
 
@@ -1324,8 +1411,8 @@ msgstr "Réinitialiser le secret du client ? Les applications utilisant l'ancien
 msgid "Reset to osu! avatar"
 msgstr "Remettre votre avatar osu!"
 
-#: src/components/character/ProfileMenu.tsx
 #: src/components/character/RestrictDialog.tsx
+#: src/components/character/SanctionItems.tsx
 msgid "Restrict"
 msgstr "Restreindre"
 
@@ -1338,9 +1425,13 @@ msgstr "Restreindre {name} ?"
 msgid "restricted accounts"
 msgstr "comptes restreints"
 
+#: src/components/character/AccountStanding.tsx
+msgid "Restriction"
+msgstr "Restriction"
+
 #: src/pages/DesktopDone.tsx
-msgid "Return to osu!idle"
-msgstr "Retourner sur osu!idle"
+msgid "Return to oss!idle"
+msgstr "Retourner sur oss!idle"
 
 #: src/pages/settings/OAuthSettings.tsx
 msgid "Revoke Access"
@@ -1490,7 +1581,17 @@ msgstr "Déconnexion"
 msgid "signed in"
 msgstr "connecté"
 
-#: src/pages/PlayOsuIdle.tsx
+#: src/components/character/AccountStanding.tsx
+#: src/components/character/SanctionItems.tsx
+#: src/components/character/SilenceDialog.tsx
+msgid "Silence"
+msgstr "Silence"
+
+#: src/components/character/SilenceDialog.tsx
+msgid "Silence {name}?"
+msgstr "Mute {name} ?"
+
+#: src/pages/PlayOssIdle.tsx
 msgid "Simplest, nothing to install."
 msgstr "Le plus simple, rien à installer."
 
@@ -1529,9 +1630,9 @@ msgstr "Jusqu'à présent, vous avez donné <0>{amount}</0>, et avez été un su
 #: src/components/leaderboard/PlayerGradesLeaderboard.tsx
 #: src/components/leaderboard/PlayerLeaderboard.tsx
 #: src/components/leaderboard/PlayerSkillLeaderboard.tsx
+#: src/components/UserList.tsx
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/RankedMaps.tsx
-#: src/pages/friends/Friends.tsx
 msgid "Sort by"
 msgstr "Trier par"
 
@@ -1586,6 +1687,11 @@ msgstr "tag supporter"
 msgid "Supporter tag"
 msgstr "Tag supporter"
 
+#: src/pages/admin/AdminNav.tsx
+#: src/routes/admin/team.tsx
+msgid "team"
+msgstr "équipe"
+
 #: src/routes/legal/terms.tsx
 msgid "terms"
 msgstr "conditions"
@@ -1593,6 +1699,14 @@ msgstr "conditions"
 #: src/Footer.tsx
 msgid "Terms"
 msgstr "Conditions"
+
+#: src/pages/groups/GroupPage.tsx
+msgid "The <0>Administrators</0> run oss!idle: they develop the game, rank the maps and manage the team."
+msgstr "Les <0>Administrateurs</0> gèrent oss!idle: ils développent le jeu, rank les maps et gèrent l'équipe."
+
+#: src/pages/groups/GroupPage.tsx
+msgid "The <0>Global Moderation Team</0> keeps the community a fun and welcoming place: they handle reports and moderate the chat, silencing or restricting players who break the rules."
+msgstr "L'<0>Équipe Globale de Modération</0> permet à la communauté de rester bienveillante : elle gère les signalements et modère le chat, elle applique des sanctions aux joueurs qui enfreignent les règles."
 
 #: src/pages/help/FAQ.tsx
 msgid "The game"
@@ -1607,8 +1721,12 @@ msgid "The queue is the list of maps your character plays one after the other. A
 msgstr "La liste est la file de maps que votre personnage joue l'une après l'autre. Le pilote automatique la remplit depuis la sélection de musique : une playlist, les musiques suivantes, en aléatoire, ou la même map en boucle. Vous pouvez la réorganiser, passer des maps ou arrêter après la map en cours. La liste n'est pas sauvegardée quand vous fermez le jeu ; enregistrez-la en playlist pour la garder."
 
 #: src/pages/PublicLanding.tsx
-msgid "The ultimate<0/>osu!mania idle game"
-msgstr "L'ultime<0/>jeu idle osu!mania"
+msgid "The ultimate<0/>VSRG idle game"
+msgstr "L'ultime<0/>jeu idle VSRG"
+
+#: src/components/character/SilenceDialog.tsx
+msgid "They can't chat or send private messages until it ends."
+msgstr "Ils ne peuvent pas discuter ou envoyer de messages privés jusqu'à ce que la sanction se termine."
 
 #: src/components/character/RestrictDialog.tsx
 msgid "They can't play, chat or buy, and disappear from rankings until you lift it."
@@ -1684,7 +1802,7 @@ msgstr "Envoyer un avatar"
 msgid "Upload banner"
 msgstr "Envoyer une bannière"
 
-#: src/pages/friends/Friends.tsx
+#: src/components/UserList.tsx
 msgid "Username"
 msgstr "Pseudo"
 
@@ -1729,8 +1847,8 @@ msgid "What happens to my scores if a map is unranked?"
 msgstr "Que deviennent mes scores si une map est déclassée ?"
 
 #: src/pages/help/FAQ.tsx
-msgid "What is osu!idle?"
-msgstr "Qu'est-ce qu'osu!idle ?"
+msgid "What is oss!idle?"
+msgstr "Qu'est-ce qu'oss!idle ?"
 
 #: src/pages/help/FAQ.tsx
 msgid "What is prestige?"
@@ -1797,8 +1915,8 @@ msgid "Your Discord account is linked!"
 msgstr "Votre compte Discord est lié !"
 
 #: src/pages/DiscordLinked.tsx
-msgid "Your level role will show up on the osu!idle Discord server. You can close this tab."
-msgstr "Vous aurez accès à un rôle sur le serveur Discord osu!idle selon votre niveau. Vous pouvez fermer cet onglet."
+msgid "Your level role will show up on the oss!idle Discord server. You can close this tab."
+msgstr "Vous aurez accès à un rôle sur le serveur Discord oss!idle selon votre niveau. Vous pouvez fermer cet onglet."
 
 #: src/pages/store/SupporterPerks.tsx
 msgid "Your name shows in gold in chat, for everyone to see."

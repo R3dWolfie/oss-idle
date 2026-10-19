@@ -6,21 +6,21 @@ import {
 } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-import type { NewsDTO } from '@osu-idle/shared/news';
+import type { NewsDTO } from '@oss-idle/shared/news';
 
 import { Asset } from '../router';
 import { loginWithOsu } from '../auth';
 import { listNews } from '../api/news';
 import Link from '../components/Link';
 import NewsCard, { articleToCard } from '../components/NewsCard';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import { getGeneralStats } from '../api/stats';
 import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
 import Footer from '../Footer';
-import { DISCORD_URL } from '@osu-idle/shared/links';
+import { DISCORD_URL } from '@oss-idle/shared/links';
 
 function formatCount(n: number): string {
 	return n.toLocaleString('en-US');
@@ -58,7 +58,7 @@ export default function PublicLanding() {
 			<header className="landing__topbar">
 				<div className="landing__brand">
 					<span className="landing__brand-logo" />
-					<span className="landing__brand-name">osu!<b>idle</b></span>
+					<span className="landing__brand-name">oss!<b>idle</b></span>
 				</div>
 				<nav className="landing__sections">
 					<Link to='/maps'>{t`beatmaps`}</Link>
@@ -90,11 +90,11 @@ export default function PublicLanding() {
 				<div className="hero__content">
 					<div className="hero__logo">
 						<img className="hero__logo-back" src={Asset('/idle-back.png')} alt="" aria-hidden="true" />
-						<img className="hero__logo-front" src={Asset('/idle-white.png')} alt="osu!idle" />
+						<img className="hero__logo-front" src={Asset('/idle-white.png')} alt="oss!idle" />
 					</div>
-					<h1 className="hero__title"><Trans>The ultimate<br/>osu!mania idle game</Trans></h1>
+					<h1 className="hero__title"><Trans>The ultimate<br/>VSRG idle game</Trans></h1>
 					<p className="hero__tagline">
-						<Trans>Create your own osu! character and watch it grow to become a<br /><b>legendary mania player</b>.</Trans>
+						<Trans>Create your own oss! character and watch it grow to become a<br /><b>legendary mania player</b>.</Trans>
 					</p>
 					<div className="hero__cta">
 						<button type="button" className="btn-osu" onClick={loginWithOsu}>

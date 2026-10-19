@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import {
 	MAX_CHAT_LENGTH,
 	type PrivateMessage,
-} from '@osu-idle/shared/community/wire';
+} from '@oss-idle/shared/community/wire';
 import { getUserById } from '../db/schema/user';
 import {
 	blockedEitherWay,

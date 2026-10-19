@@ -1,6 +1,6 @@
-import Synced from '@osu-idle/shared/helpers/synced';
-import { MedalTiers } from '@osu-idle/shared/achievements/medal';
-import type { MedalBatch } from '@osu-idle/shared/play';
+import Synced from '@oss-idle/shared/helpers/synced';
+import { MedalTiers } from '@oss-idle/shared/achievements/medal';
+import type { MedalBatch } from '@oss-idle/shared/play';
 import {
 	medalUnlocks,
 	type MedalUnlock,

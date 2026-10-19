@@ -1,5 +1,8 @@
-# osu.idle.rhythmgamers.net/discord: the one place the invite lives
+# oss.idle.rhythmgamers.net/discord: the one place the invite lives
 Redirect 302 /discord https://discord.gg/Yd5GEaX8AJ
+
+# installer links from before the rename to oss!idle
+RedirectMatch 301 ^/download/osu-idle\.(exe|AppImage)$ /download/oss-idle.$1
 
 # security headers (no X-Frame-Options: /web/preview is embedded elsewhere)
 <IfModule mod_headers.c>

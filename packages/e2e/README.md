@@ -1,10 +1,10 @@
-# @osu-idle/e2e
+# @oss-idle/e2e
 
 The end-to-end suite: a real browser, the real dev stack, and scenarios played
 the way a player plays them.
 
 It is deliberately **not** part of `npm test`. The vitest suite
-(`@osu-idle/tests`) is node-only - it never mounts a React scene, never opens a
+(`@oss-idle/tests`) is node-only - it never mounts a React scene, never opens a
 socket and never runs the play protocol, so a green run there says nothing about
 any of that. This is where those live, and it costs minutes rather than seconds.
 

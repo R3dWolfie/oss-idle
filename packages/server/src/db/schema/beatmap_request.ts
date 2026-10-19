@@ -6,7 +6,7 @@ import {
 	text,
 	timestamp,
 } from 'drizzle-orm/mysql-core';
-import { BEATMAP_REQUEST_STATUS } from '@osu-idle/shared/beatmapRequest';
+import { BEATMAP_REQUEST_STATUS } from '@oss-idle/shared/beatmapRequest';
 
 /**
  * A player's ranking proposition - the public front of the nomination queue.

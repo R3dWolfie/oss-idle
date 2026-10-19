@@ -1,4 +1,4 @@
-import sleep from '@osu-idle/shared/helpers/sleep';
+import sleep from '@oss-idle/shared/helpers/sleep';
 
 /** First retry delay, doubled each attempt up to {@link RETRY_MAX_MS}. */
 const RETRY_BASE_MS = 1_000;

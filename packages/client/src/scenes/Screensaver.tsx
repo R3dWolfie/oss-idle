@@ -1,9 +1,9 @@
-import { versionLabel } from '@osu-idle/shared/rate';
+import { versionLabel } from '@oss-idle/shared/rate';
 import { useEffect } from 'react';
 import { Trans } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import accuracy from '@osu-idle/shared/display/accuracy';
-import { LEAD_IN_MS } from '@osu-idle/shared/sim/maniaGame';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import accuracy from '@oss-idle/shared/display/accuracy';
+import { LEAD_IN_MS } from '@oss-idle/shared/sim/maniaGame';
 import PlayManager from '../online/playManager';
 import { music } from '../audio/MusicPlayer';
 import { currentSkin } from '../osu/skin/Skin';

@@ -7,7 +7,7 @@ import {
 import { users } from '../db/schema/user';
 import { hub } from '../ws/hub';
 import { refresh as refreshPresence } from '../ws/presence';
-import type { CharacterDTO } from '@osu-idle/shared/character';
+import type { CharacterDTO } from '@oss-idle/shared/character';
 
 /**
  * Hand the character to its own devices.

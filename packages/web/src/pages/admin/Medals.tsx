@@ -1,20 +1,20 @@
 import './Medals.css';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	MedalCategories,
 	MEDAL_LINES,
 	medalById,
 	medalLook,
 	MEDALS,
-} from '@osu-idle/shared/achievements/catalogue';
-import { MedalTiers } from '@osu-idle/shared/achievements/medal';
-import { MEDAL_XP_BONUS } from '@osu-idle/shared/upgrades';
+} from '@oss-idle/shared/achievements/catalogue';
+import { MedalTiers } from '@oss-idle/shared/achievements/medal';
+import { MEDAL_XP_BONUS } from '@oss-idle/shared/upgrades';
 import {
 	medalCategoryName,
 	medalDescription,
 	medalName,
-} from '@osu-idle/shared/display/medals';
-import { dateAgo } from '@osu-idle/shared/display/ago';
+} from '@oss-idle/shared/display/medals';
+import { dateAgo } from '@oss-idle/shared/display/ago';
 import { getAdminMedals } from '../../api/admin';
 import MedalIcon from '../../components/character/MedalIcon';
 import MedalRecapRow from './MedalRecapRow';

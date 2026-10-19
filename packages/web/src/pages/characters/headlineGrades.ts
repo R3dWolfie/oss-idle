@@ -1,4 +1,4 @@
-import type { Grade } from '@osu-idle/shared/judgement';
+import type { Grade } from '@oss-idle/shared/judgement';
 
 /** Headline grades shown in the totals block (best play per beatmap). */
 const GRADE_DISPLAY = ['XX', 'X', 'SS', 'S', 'A'] as const;

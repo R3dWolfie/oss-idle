@@ -5,7 +5,7 @@ import {
 } from '@lingui/react/macro';
 import Link from '../Link';
 import Flag from '../Flag';
-import rank from '@osu-idle/shared/display/rank';
+import rank from '@oss-idle/shared/display/rank';
 import MedalLineIcon from './MedalLineIcon';
 import {
 	LINE_NAMES,

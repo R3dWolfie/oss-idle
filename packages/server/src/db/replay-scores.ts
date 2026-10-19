@@ -15,16 +15,16 @@
  * Sequential on purpose. Every play moves the levels the next one earns at, and
  * mindblock reads the plays already inserted, so the order is the point.
  *
- *   npm -w @osu-idle/server run replay:scores -- --file backups/scores.json --dry-run
+ *   npm -w @oss-idle/server run replay:scores -- --file backups/scores.json --dry-run
  */
 import { readFileSync } from 'node:fs';
 import { i18n } from '@lingui/core';
 import { BeatmapDecoder } from 'osu-parsers';
-import { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
-import CharacterBot from '@osu-idle/shared/sim/bots/character';
-import { hasUnlock } from '@osu-idle/shared/rebirth';
-import type { SkillName } from '@osu-idle/shared/skills';
-import { Skills } from '@osu-idle/shared/skills';
+import { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
+import CharacterBot from '@oss-idle/shared/sim/bots/character';
+import { hasUnlock } from '@oss-idle/shared/rebirth';
+import type { SkillName } from '@oss-idle/shared/skills';
+import { Skills } from '@oss-idle/shared/skills';
 import { eq } from 'drizzle-orm';
 import { db } from './client';
 import { characters } from './schema/character';

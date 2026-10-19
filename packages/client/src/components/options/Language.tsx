@@ -5,7 +5,7 @@ import {
 	SUPPORTED_LOCALES,
 	LOCALE_LABELS,
 	type Locale,
-} from '@osu-idle/shared/i18n/locales';
+} from '@oss-idle/shared/i18n/locales';
 
 const LANGUAGE_OPTIONS = SUPPORTED_LOCALES.map((locale) => ({
 	value: locale as Locale,

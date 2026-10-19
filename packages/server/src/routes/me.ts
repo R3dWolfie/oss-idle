@@ -9,7 +9,7 @@ import { zValidator } from '@hono/zod-validator';
 import {
 	characterNameBody,
 	onboardingBody,
-} from '@osu-idle/shared/onboarding';
+} from '@oss-idle/shared/onboarding';
 import { db } from '../db/client';
 import {
 	characters,
@@ -22,14 +22,14 @@ import { users } from '../db/schema/user';
 import { saveUploadedImage } from '../uploads';
 import { env } from '../env';
 import { publish } from '../discord/publish';
-import { GUEST_AVATAR_URL } from '@osu-idle/shared/osu/profile';
+import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
 import { reindexCharacter } from '../rankings';
 import { characterNameHistory } from '../db/schema/name_history';
 import {
 	prestigeBody,
 	upgradeBody,
-} from '@osu-idle/shared/upgrades';
-import { rebirthBody } from '@osu-idle/shared/rebirth';
+} from '@oss-idle/shared/upgrades';
+import { rebirthBody } from '@oss-idle/shared/rebirth';
 import { isPlaying } from '../play';
 import {
 	assertActionAvailable,
@@ -46,7 +46,7 @@ import { assertNameAvailable } from '../character/names';
 import { announceCharacter } from '../character/push';
 import { pushMedals } from '../medals';
 import { characterMedals } from '../db/schema/character_medal';
-import type { PendingAction } from '@osu-idle/shared/pendingAction';
+import type { PendingAction } from '@oss-idle/shared/pendingAction';
 import type { UserRow } from '../db/schema/user';
 
 const characterId = z.number().int().positive();
@@ -109,8 +109,8 @@ export const meRoutes = new Hono()
 
 		void publish(env.USER_FEED_WEBHOOK, {
 			embeds: [{
-				title: `Welcome ${row.name} to osu!idle !`,
-				url: `https://osu.idle.rhythmgamers.net/web/c/${row.id}`,
+				title: `Welcome ${row.name} to oss!idle !`,
+				url: `https://oss.idle.rhythmgamers.net/web/c/${row.id}`,
 				fields: [
 					{
 						name: `osu! user: ${user.username}`,

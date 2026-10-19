@@ -1,9 +1,9 @@
-import Synced from '@osu-idle/shared/helpers/synced';
+import Synced from '@oss-idle/shared/helpers/synced';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
-import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
+} from '@oss-idle/shared/skills';
+import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
 import {
 	Column,
 	DAO,

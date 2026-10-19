@@ -1,6 +1,6 @@
-# @osu-idle/discord
+# @oss-idle/discord
 
-The osu!idle Discord bot. It gives every member who linked their Discord account
+The oss!idle Discord bot. It gives every member who linked their Discord account
 (Options → Sign in → *Link Discord account*) a role for their current
 character's overall level: `Level 10+` .. `Level 90+` every 10 levels, then one
 per level from 100 (`Level 100`, `Level 101`, ...). Those take the site's level
@@ -8,26 +8,38 @@ colours from `shared.css`; the ones below fade from Discord gray up to the
 level 100 colour. Roles are hoisted, highest on top, made the first time someone
 reaches them and deleted once nobody holds them.
 
+Linked team members also get their group's role (`Administrators`, `Global
+Moderation Team`) and supporters a `Supporter` one, in the site's colours. They
+sit right above the level roles so their colour wins, but aren't hoisted, so the
+member list still groups by level. The bot makes them on start and takes them
+from anyone it doesn't find in the group or with an active tag. `Global
+Moderation Team` also carries moderation permissions (kick, ban, timeout,
+manage messages/threads/nicknames, voice mute/deafen/move, audit log) but not
+*Manage Roles*, so moderators can't hand out levels or Supporter.
+
 - **Live:** it listens to the server's socket hub on Redis, so a play, a rebirth
-  or a fresh link moves the role at once. A full pass every 15 minutes and on
+  or a fresh link moves the roles at once. A full pass every 15 minutes and on
   start catches the rest (unlinks, relinks, missed events).
 - **Config:** reads `packages/server/.env` - the DB/Redis settings plus
   `DISCORD_BOT_TOKEN` and `DISCORD_GUILD_ID`. The server needs
   `DISCORD_CLIENT_SECRET` for the linking itself.
 - **Discord side:** Server Members intent on, the bot invited with *Manage
-  Roles*, and its own `osu!idle` role at the top of the role list - it can only
+  Roles* plus every permission it gives the GMT role (Discord only lets it
+  grant what it holds), and its own `oss!idle` role at the top of the role list - it can only
   order roles below its own.
 
 ## Running
 
 Prod runs it as its own systemd unit from the prod checkout
-([deploy/osu-idle-discord.service](deploy/osu-idle-discord.service)):
+([deploy/oss-idle-discord.service](deploy/oss-idle-discord.service)):
 
 ```bash
-sudo cp packages/discord/deploy/osu-idle-discord.service /etc/systemd/system/
-sudo systemctl enable --now osu-idle-discord
+sudo cp packages/discord/deploy/oss-idle-discord.service /etc/systemd/system/
+sudo systemctl enable --now oss-idle-discord
 ```
+
+The deploy scripts restart it along with the API.
 
 It is not part of `npm run dev`: there is one Discord server, and a dev bot
 reading the staging database would hand out staging levels there. To try it
-locally anyway, stop the prod one first: `npm -w @osu-idle/discord start`.
+locally anyway, stop the prod one first: `npm -w @oss-idle/discord start`.

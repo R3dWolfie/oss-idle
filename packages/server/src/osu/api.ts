@@ -23,7 +23,7 @@ export const osuApi = async <T>(path: string, priority: Priority, token: string)
 			Accept: 'application/json',
 			'X-Scheduler-Token': env.OSU_SCHEDULER_TOKEN,
 			'X-Osu-Priority': priority,
-			'User-Agent': 'osu-idle/1.0',
+			'User-Agent': 'oss-idle/1.0',
 		},
 	});
 

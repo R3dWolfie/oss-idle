@@ -10,9 +10,9 @@ import { loadStoryboardAssets } from '../osu/beatmap/storyboard';
 import {
 	mapped,
 	ValueIn,
-} from '@osu-idle/shared/helpers/mapped';
-import Synced from '@osu-idle/shared/helpers/synced';
-import Listener from '@osu-idle/shared/helpers/listener';
+} from '@oss-idle/shared/helpers/mapped';
+import Synced from '@oss-idle/shared/helpers/synced';
+import Listener from '@oss-idle/shared/helpers/listener';
 import { SETTINGS } from '../db/settings';
 
 export const PLAYER_MODE = mapped(['PLAYLIST', 'LOOP', 'SINGLE']);
@@ -180,7 +180,8 @@ export class MusicPlayer {
 			if (!this.beatmap.get()) return;
 			const pos = this.time();
 			this.syncAudio(pos);
-			this.samples?.queue(pos, SAMPLE_LOOKAHEAD_MS, this.speed);
+			const pitch = this.audio.preservesPitch ? 1 : this.speed;
+			this.samples?.queue(pos, SAMPLE_LOOKAHEAD_MS, this.speed, pitch);
 			if (this.atEnd(pos) && !this.advancing) {
 				this.advancing = true;
 				this.handleEnded();
@@ -597,7 +598,7 @@ export class MusicPlayer {
 }
 
 // HMR Reuse instance
-const globalStore = globalThis as unknown as { __osuIdleMusic?: MusicPlayer };
+const globalStore = globalThis as unknown as { __ossIdleMusic?: MusicPlayer };
  
-export const music: MusicPlayer = globalStore.__osuIdleMusic ?? new MusicPlayer();
-globalStore.__osuIdleMusic = music;
+export const music: MusicPlayer = globalStore.__ossIdleMusic ?? new MusicPlayer();
+globalStore.__ossIdleMusic = music;

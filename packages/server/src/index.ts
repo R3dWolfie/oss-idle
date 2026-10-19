@@ -1,7 +1,7 @@
 import { backfillRateStars } from './beatmaps/rateStars';
 import { serve } from '@hono/node-server';
 import { appendFile } from 'node:fs/promises';
-import Logfile from '@osu-idle/shared/helpers/logfile';
+import Logfile from '@oss-idle/shared/helpers/logfile';
 import { app } from './app';
 import {
 	isProd,
@@ -23,6 +23,7 @@ import {
 	sweepPresence,
 } from './ws/presence';
 import { activateServerI18n } from './i18n';
+import { sweepAbby } from './abby';
 
 activateServerI18n();
 
@@ -35,7 +36,7 @@ hub.init();
 const server = serve({
 	fetch: app.fetch, port,
 }, info => {
-	console.log(`🎵 osu! idle API listening on http://localhost:${info.port}`);
+	console.log(`🎵 oss!idle API listening on http://localhost:${info.port}`);
 });
 
 injectWebSocket(server);
@@ -79,6 +80,10 @@ presenceSweep.unref();
 // window, so builds they've churned off stop being counted.
 const adoptionSweep = setInterval(() => void sweepAdoption(), 10 * 60_000);
 adoptionSweep.unref();
+
+// Book the supporter orders past their refund window in Abby.
+const abbySweep = setInterval(() => void sweepAbby(), 60 * 60_000);
+abbySweep.unref();
 
 /**
  * Drain on a clean shutdown (systemd stop / restart, Ctrl-C, tsx-watch reload,

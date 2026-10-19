@@ -5,7 +5,7 @@ import {
 	type CharacterRow,
 } from '../db/schema/character';
 import { users } from '../db/schema/user';
-import type { PendingAction } from '@osu-idle/shared/pendingAction';
+import type { PendingAction } from '@oss-idle/shared/pendingAction';
 import {
 	performPrestige,
 	performRebirth,

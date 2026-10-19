@@ -5,7 +5,7 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import { dateAgo } from '@osu-idle/shared/display/ago';
+import { dateAgo } from '@oss-idle/shared/display/ago';
 import Link from '../../components/Link';
 import OutLink from '../../components/OutLink';
 import {

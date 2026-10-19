@@ -16,11 +16,11 @@ import { z } from 'zod';
 import {
 	rateKey,
 	rateSchema,
-} from '@osu-idle/shared/rate';
+} from '@oss-idle/shared/rate';
 import {
 	BEATMAP_STATUS,
 	INTRO_SET_ID,
-} from '@osu-idle/shared/beatmap';
+} from '@oss-idle/shared/beatmap';
 import { existsSync } from 'node:fs';
 import { env } from '../env';
 import { throttled } from '../beatmaps/throttle';

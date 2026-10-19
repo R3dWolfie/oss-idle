@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { ADDON_STATUS } from '@osu-idle/shared/addon';
-import { addonStatusLabel } from '@osu-idle/shared/display/addon';
+import { ADDON_STATUS } from '@oss-idle/shared/addon';
+import { addonStatusLabel } from '@oss-idle/shared/display/addon';
 import type { Addon } from '../../online/addons';
 import AddonIcon from './AddonIcon';
 

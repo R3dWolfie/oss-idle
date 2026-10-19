@@ -17,7 +17,7 @@ import {
 	addonCreateBody,
 	addonModerateBody,
 	addonUpdateBody,
-} from '@osu-idle/shared/addon';
+} from '@oss-idle/shared/addon';
 import { db } from '../db/client';
 import {
 	addons,

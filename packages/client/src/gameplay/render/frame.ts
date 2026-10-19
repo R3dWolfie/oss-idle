@@ -1,13 +1,13 @@
-import type { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
-import type CharacterBot from '@osu-idle/shared/sim/bots/character';
+import type { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
+import type CharacterBot from '@oss-idle/shared/sim/bots/character';
 import type Skin from '../../osu/skin/Skin';
 import {
 	SKILL,
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
-import { skillName } from '@osu-idle/shared/display/skills';
-import { type Grade } from '@osu-idle/shared/judgement';
+} from '@oss-idle/shared/skills';
+import { skillName } from '@oss-idle/shared/display/skills';
+import { type Grade } from '@oss-idle/shared/judgement';
 
 export type Viewport = {
 	w: number,

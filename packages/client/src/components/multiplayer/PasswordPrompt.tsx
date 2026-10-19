@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import OverChat from './OverChat';
 import { Trans } from '@lingui/react/macro';
-import { MAX_MATCH_PASSWORD } from '@osu-idle/shared/multiplayer';
+import { MAX_MATCH_PASSWORD } from '@oss-idle/shared/multiplayer';
 
 /** A password field over the screen: joining a locked game, or changing one's password. */
 export default function PasswordPrompt({ title, sub, confirmLabel, onSubmit, onClose }: {

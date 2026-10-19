@@ -7,7 +7,7 @@ import {
 	supporterMonths,
 	supporterPrice,
 	supporterSaving,
-} from '@osu-idle/shared/supporter';
+} from '@oss-idle/shared/supporter';
 import SupportDuration from './SupportDuration';
 import { euros } from './euros';
 

@@ -19,7 +19,20 @@ import {
 } from '../multiplayer.js';
 
 /** The default channel every signed-in player joins. */
-export const DEFAULT_CHANNEL = '#osu!idle';
+export const DEFAULT_CHANNEL = '#oss!idle';
+
+/** {@link DEFAULT_CHANNEL} before the rename to oss!idle, as older clients still know it. */
+export const LEGACY_DEFAULT_CHANNEL = '#osu!idle';
+
+/** The last release from before the rename to oss!idle. */
+const LAST_OSU_IDLE_RELEASE = [1, 0, 1, 0];
+
+/** Whether a client of this version knows the default channel by its old name. */
+export const knowsLegacyChannel = (version: string): boolean => {
+	const v = version.split('.').map(Number);
+	const i = LAST_OSU_IDLE_RELEASE.findIndex((n, k) => v[k] !== n);
+	return i === -1 || (v[i] ?? 0) < LAST_OSU_IDLE_RELEASE[i];
+};
 
 /** Server announcements (#1 ranks, milestones); read-only for players. */
 export const ANNOUNCE_CHANNEL = '#announce';

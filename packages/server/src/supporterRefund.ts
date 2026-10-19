@@ -10,8 +10,9 @@ import {
 import { db } from './db/client';
 import { users } from './db/schema/user';
 import { supporterOrders } from './db/schema/supporter_order';
-import { refundCut } from '@osu-idle/shared/supporter';
+import { refundCut } from '@oss-idle/shared/supporter';
 import { idOf } from './stripe';
+import { warnLateRefund } from './abby';
 
 /** A refund landed, from the admin page or the Stripe dashboard: the order loses its time from
  *  the end ({@link refundCut}), and the tags bought after it move back by as much. */
@@ -28,6 +29,7 @@ export const onRefund = async (charge: Stripe.Charge): Promise<void> => {
 		const delta = charge.amount_refunded - order.refunded;
 		const refundable = order.amount - order.refunded;
 		if (delta <= 0 || refundable <= 0) return;
+		if (order.abbyId) warnLateRefund(order.id, delta);
 
 		const share = Math.min(1, delta / refundable);
 		const cut = Math.round(refundCut({

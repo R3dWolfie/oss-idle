@@ -1,7 +1,7 @@
 import {
 	SKIN_STATUS,
 	type SkinStatus,
-} from '@osu-idle/shared/skin';
+} from '@oss-idle/shared/skin';
 import {
 	skinIconUrl,
 	type AdminSkin,

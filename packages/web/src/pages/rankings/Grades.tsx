@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { GoodGrade } from '@osu-idle/shared/judgement';
+import { GoodGrade } from '@oss-idle/shared/judgement';
 import CountryFilter from '../../components/leaderboard/CountryFilter';
 import PlayerGradesLeaderboard from '../../components/leaderboard/PlayerGradesLeaderboard';
 import type { getGradesRanking } from '../../api/rankings';

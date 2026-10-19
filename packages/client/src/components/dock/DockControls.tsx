@@ -2,12 +2,13 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import PlayManager from '../../online/playManager';
 import PlayQueue from '../../gameplay/playQueue';
 import { openPage } from '../../globals';
 import DockWatchButton from './DockWatchButton';
 import DockRunButton from './DockRunButton';
+import DockModsButton from './DockModsButton';
 import SceneManager, { SCENE } from '../../scenes/SceneManager';
 import {
 	enterScreensaver,
@@ -45,6 +46,8 @@ export default function DockControls({ left, onCollapse }: Props) {
 			>
 				<Trans>upgrades</Trans>
 			</button>
+
+			<DockModsButton />
 
 			<DockWatchButton />
 

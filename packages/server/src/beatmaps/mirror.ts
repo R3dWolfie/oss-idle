@@ -15,7 +15,7 @@ export const downloadOsz = async (setId: number): Promise<Buffer> => {
 
 	const res = await fetch(url, {
 		redirect: 'follow',
-		headers: { 'User-Agent': 'osu-idle/1.0' },
+		headers: { 'User-Agent': 'oss-idle/1.0' },
 		signal: AbortSignal.timeout(TIMEOUT_MS),
 	}).catch((e: Error) => {
 		throw new Error(`Mirror unreachable: ${e.message}`);

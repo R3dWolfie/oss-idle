@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Publish the built desktop installers + auto-update feed so the website serves
-// them at /download, plus a manifest the web "Play osu!idle" page reads (latest
+// them at /download, plus a manifest the web "Play oss!idle" page reads (latest
 // version + per-platform filenames).
 //
 // The site's Apache DocumentRoot is packages/client/dist, so /download is just
@@ -49,7 +49,7 @@ try {
 	process.exit(1);
 }
 
-// installers (osu-idle.exe / osu-idle.AppImage) + the electron-updater feed
+// installers (oss-idle.exe / oss-idle.AppImage) + the electron-updater feed
 // (latest*.yml) and its delta maps. Exclude the NSIS uninstaller intermediate
 // and electron-builder's own debug yml so neither leaks into the public dir.
 const artifacts = entries.filter(f => {

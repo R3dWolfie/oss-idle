@@ -438,6 +438,10 @@ msgid "Finish a play at exactly 727 combo"
 msgstr "Finish a play at exactly 727 combo"
 
 #: src/display/medals.ts
+msgid "First Spark"
+msgstr "First Spark"
+
+#: src/display/medals.ts
 msgid "First Steps"
 msgstr "First Steps"
 
@@ -514,6 +518,10 @@ msgid "Hbada E3 Pro"
 msgstr "Hbada E3 Pro"
 
 #: src/display/medals.ts
+msgid "Heating Up"
+msgstr "Heating Up"
+
+#: src/display/medals.ts
 msgid "Hello World"
 msgstr "Hello World"
 
@@ -544,6 +552,10 @@ msgstr "Hush-Hush"
 #: src/display/community.ts
 msgid "Idle"
 msgstr "Idle"
+
+#: src/display/medals.ts
+msgid "Inferno"
+msgstr "Inferno"
 
 #: src/display/medals.ts
 msgid "Into the Storm"
@@ -903,8 +915,8 @@ msgid "Royalty"
 msgstr "Royalty"
 
 #: src/display/medals.ts
-msgid "Say something in #osu!idle"
-msgstr "Say something in #osu!idle"
+msgid "Say something in #oss!idle"
+msgstr "Say something in #oss!idle"
 
 #: src/skills.ts
 msgid "SDKL"
@@ -921,6 +933,10 @@ msgstr "Secretlab TITAN Evo"
 #: src/skills.ts
 msgid "Sennheiser Momentum 4"
 msgstr "Sennheiser Momentum 4"
+
+#: src/display/medals.ts
+msgid "Set a {pp} pp play"
+msgstr "Set a {pp} pp play"
 
 #: src/display/skills.ts
 msgid "Sharpen your note visuals to survive dense jams"
@@ -1013,6 +1029,10 @@ msgstr "Stock Logitech G Hub"
 msgid "Stool"
 msgstr "Stool"
 
+#: src/display/medals.ts
+msgid "Supernova"
+msgstr "Supernova"
+
 #: src/skills.ts
 msgid "Synaptics drivers"
 msgstr "Synaptics drivers"
@@ -1052,6 +1072,10 @@ msgstr "Time Flies"
 #: src/display/medals.ts
 msgid "Top of the Line"
 msgstr "Top of the Line"
+
+#: src/display/medals.ts
+msgid "Triple Digits"
+msgstr "Triple Digits"
 
 #: src/display/skills.ts
 msgid "Try different layouts to increase finger independance"
@@ -1141,6 +1165,10 @@ msgstr "When You See It"
 #: src/display/medals.ts
 msgid "Where Did The Day Go"
 msgstr "Where Did The Day Go"
+
+#: src/display/medals.ts
+msgid "Wildfire"
+msgstr "Wildfire"
 
 #: src/skills.ts
 msgid "Wooden chair"

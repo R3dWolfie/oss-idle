@@ -12,7 +12,7 @@ import {
 	type PlayEvent,
 	type PlayScoring,
 	type PlayState,
-} from '@osu-idle/shared/sim/playLifecycle';
+} from '@oss-idle/shared/sim/playLifecycle';
 
 /** Drive a play through a sequence, collecting everything it asked for. */
 const run = (scoring: PlayScoring, events: PlayEvent[]) => {

@@ -2,7 +2,7 @@ import ResultMods from '../components/result/ResultMods';
 import DevianceGraph from '../gameplay/DevianceGraph';
 import { Score } from '../db/schema/score';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
-import { ManiaGame } from '@osu-idle/shared/sim/maniaGame';
+import { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
 import Background from './Background';
 import './Result.css';
 import Controls from '../input/Controls';
@@ -10,7 +10,7 @@ import Multiplayer from '../online/multiplayer';
 import MatchRanking from '../components/multiplayer/MatchRanking';
 import useMatchRanking from '../components/multiplayer/useMatchRanking';
 import SceneManager from './SceneManager';
-import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
+import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
 import Character from '../db/schema/character';
 import useSmoothNumber from '../animations/useSmoothNumber';
 import { currentSkin } from '../osu/skin/Skin';
@@ -18,9 +18,9 @@ import { Trans } from '@lingui/react/macro';
 import {
 	Judgement,
 	JUDGEMENT,
-} from '@osu-idle/shared/judgement';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
-import { ScoreDTO } from '@osu-idle/shared/score';
+} from '@oss-idle/shared/judgement';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
+import { ScoreDTO } from '@oss-idle/shared/score';
 import { useEffect } from 'react';
 import { flushBeatmapScores } from '../online/services/scores';
 import {
@@ -28,15 +28,16 @@ import {
 	flushCharacterStats,
 	getCharacter,
 } from '../online/services/characters';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import num from '@osu-idle/shared/display/num';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import num from '@oss-idle/shared/display/num';
 import CountUp, { COUNT_UP_MS } from '../components/result/CountUp';
 import ResultMeta from '../components/result/ResultMeta';
 import SkillProgression from '../components/result/SkillProgression';
 import { currentScore } from '../globals';
-import { showsDivine } from '@osu-idle/shared/rebirth';
+import { showsDivine } from '@oss-idle/shared/rebirth';
 import { showMedals } from '../online/medalWatch';
-import type { MedalBatch } from '@osu-idle/shared/play';
+import type { MedalBatch } from '@oss-idle/shared/play';
+import { launchPlay } from './launchPlay';
 
 /** Two per row. Divine pairs with marvelous at the top and pushes perfect down
  *  beside great; without divine the pairing is left exactly as it was. */
@@ -104,6 +105,8 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 
 	const onBack = () => SceneManager.set(Multiplayer.afterPlay());
 	Controls.back.usePress(onBack);
+	const [match] = useSynced(Multiplayer.current);
+	const retryable = beatmap && !match;
 
 	const player = useAsync(async () => Character.isLocalId(score.characterId)
 		? Character.get({ id: score.characterId })
@@ -126,9 +129,14 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 		<div className="resultscreen">
 			<ResultMeta playerName={playerName} playedAt={playedAt} beatmap={beatmap} rate={score.rate} />
 			{ranking && <MatchRanking ranking={ranking} />}
-			<button className="result__exit" onClick={onBack}>
-				<Trans>BACK</Trans>
-			</button>
+			<div className="result__actions">
+				<button className="result__exit" onClick={onBack}>
+					<Trans>BACK</Trans>
+				</button>
+				{retryable && <button className="result__exit" onClick={() => launchPlay(beatmap)}>
+					<Trans>RETRY</Trans>
+				</button>}
+			</div>
 			<div className="result">
 				<div className="result__left">
 					<div className="result__topleft">

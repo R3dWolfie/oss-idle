@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { restrictAccount } from '../../api/restrictions';
 
-/** Admin: restrict an account, with the reason kept for the record. */
+/** Moderators: restrict an account, with the reason kept for its Account Standing. */
 export default function RestrictDialog({ userId, name, onDone, onClose }: {
 	userId: number;
 	name: string;

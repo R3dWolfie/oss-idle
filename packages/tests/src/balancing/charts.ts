@@ -9,7 +9,7 @@ import { BeatmapDecoder } from 'osu-parsers';
 import type { Beatmap } from 'osu-classes';
 
 /** Production beatmap API - the row carries the full `.osu` in its `chart` field. */
-const API = 'https://api.osu.idle.rhythmgamers.net/v1/beatmap';
+const API = 'https://api.oss.idle.rhythmgamers.net/v1/beatmap';
 const CACHE_DIR = fileURLToPath(new URL('../.charts-cache/', import.meta.url));
 const decoder = new BeatmapDecoder();
 const cache = new Map<number, Beatmap>();

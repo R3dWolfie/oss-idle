@@ -3,8 +3,8 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { bignum } from '@osu-idle/shared/display/num';
-import { skillName } from '@osu-idle/shared/display/skills';
+import { bignum } from '@oss-idle/shared/display/num';
+import { skillName } from '@oss-idle/shared/display/skills';
 import type { BeatmapXPInsight } from '../xpInsights';
 import BeatmapXPBreakdown from './BeatmapXPBreakdown';
 import { Trans } from '@lingui/react/macro';

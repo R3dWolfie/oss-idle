@@ -1,9 +1,9 @@
 import { ph } from '@lingui/core/macro';
 import './MapsetCard.css';
 import { Trans } from '@lingui/react/macro';
-import { dateAgo } from '@osu-idle/shared/display/ago';
-import { bignum } from '@osu-idle/shared/display/num';
-import type { MapCover } from '@osu-idle/shared/beatmap';
+import { dateAgo } from '@oss-idle/shared/display/ago';
+import { bignum } from '@oss-idle/shared/display/num';
+import type { MapCover } from '@oss-idle/shared/beatmap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { coverBackground } from '../api/maps';

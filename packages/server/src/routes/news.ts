@@ -10,7 +10,7 @@ import { z } from 'zod';
 import {
 	newsCreateBody,
 	newsUpdateBody,
-} from '@osu-idle/shared/news';
+} from '@oss-idle/shared/news';
 import { db } from '../db/client';
 import {
 	news,

@@ -1,4 +1,4 @@
-import { versionLabel } from '@osu-idle/shared/rate';
+import { versionLabel } from '@oss-idle/shared/rate';
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { music } from '../../audio/MusicPlayer';

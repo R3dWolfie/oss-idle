@@ -1,7 +1,7 @@
 import type {
 	NewsCreateBody,
 	NewsUpdateBody,
-} from '@osu-idle/shared/news';
+} from '@oss-idle/shared/news';
 import {
 	apiUrl,
 	json,

@@ -2,12 +2,12 @@ import {
 	ph,
 	t,
 } from '@lingui/core/macro';
-import Synced from '@osu-idle/shared/helpers/synced';
-import type { ChatLine } from '@osu-idle/shared/community/wire';
-import type { SkillProgress } from '@osu-idle/shared/sim/bots/character';
-import type { Grade } from '@osu-idle/shared/judgement';
-import { skillName } from '@osu-idle/shared/display/skills';
-import num from '@osu-idle/shared/display/num';
+import Synced from '@oss-idle/shared/helpers/synced';
+import type { ChatLine } from '@oss-idle/shared/community/wire';
+import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
+import type { Grade } from '@oss-idle/shared/judgement';
+import { skillName } from '@oss-idle/shared/display/skills';
+import num from '@oss-idle/shared/display/num';
 import type LightBeatmap from './osu/beatmap/LightBeatmap';
 import Entities from './entity/entities';
 

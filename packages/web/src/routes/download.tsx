@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { msg } from '@lingui/core/macro';
-import PlayOsuIdle from '../pages/PlayOsuIdle';
+import PlayOssIdle from '../pages/PlayOssIdle';
 
 export const Route = createFileRoute('/download')({
-	component: PlayOsuIdle,
-	staticData: { title: msg`play osu!idle` },
+	component: PlayOssIdle,
+	staticData: { title: msg`play oss!idle` },
 });

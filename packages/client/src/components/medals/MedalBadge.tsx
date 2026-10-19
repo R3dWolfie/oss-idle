@@ -2,7 +2,7 @@ import { useId } from 'react';
 import {
 	medalSvg,
 	type MedalLook,
-} from '@osu-idle/shared/achievements/medal';
+} from '@oss-idle/shared/achievements/medal';
 
 type Props = {
 	look: MedalLook,

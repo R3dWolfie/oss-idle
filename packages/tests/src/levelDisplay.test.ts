@@ -8,8 +8,8 @@ import {
 	LEVEL_COLOUR_MIN,
 	levelClass,
 	levelProgress,
-} from '@osu-idle/shared/display/levelDisplay';
-import { xpForLevel } from '@osu-idle/shared/sim/skills/xp';
+} from '@oss-idle/shared/display/levelDisplay';
+import { xpForLevel } from '@oss-idle/shared/sim/skills/xp';
 
 /** The rules every level on screen follows. They live in one helper precisely
  *  so they cannot drift apart between screens - these pin them. */

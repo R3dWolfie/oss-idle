@@ -2,7 +2,7 @@ import { expect } from 'vitest';
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import {
 	simulateXP,
 	type SkillSpec,

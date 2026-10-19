@@ -8,7 +8,7 @@ import {
 } from '@lingui/react/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import { searchPlayers } from '../../api/characters';
 import { getAllMaps } from '../../api/maps';
 import FriendChip from '../friends/FriendChip';

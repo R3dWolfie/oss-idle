@@ -1,5 +1,5 @@
 import './Ticker.css';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Socket from '../../online/socket';
 
 /** The latest chat line, shown while the overlay is closed (when enabled). */

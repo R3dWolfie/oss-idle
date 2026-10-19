@@ -1,7 +1,7 @@
 import {
 	NEWS_TAGS,
 	type NewsTag,
-} from '@osu-idle/shared/news';
+} from '@oss-idle/shared/news';
 import {
 	apiBaseUrl,
 	clientUrl,

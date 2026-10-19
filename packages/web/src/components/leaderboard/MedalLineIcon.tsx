@@ -1,8 +1,8 @@
 import {
 	medalById,
 	medalLook,
-} from '@osu-idle/shared/achievements/catalogue';
-import { medalName } from '@osu-idle/shared/display/medals';
+} from '@oss-idle/shared/achievements/catalogue';
+import { medalName } from '@oss-idle/shared/display/medals';
 import MedalIcon from '../character/MedalIcon';
 
 /** A medal of a progression line, small, dimmed until reached. */

@@ -1,11 +1,11 @@
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { bpm } from '@osu-idle/shared/display/num';
-import { length } from '@osu-idle/shared/display/length';
+import { bpm } from '@oss-idle/shared/display/num';
+import { length } from '@oss-idle/shared/display/length';
 import LightBeatmap from '../../osu/beatmap/LightBeatmap';
 import Leaderboard from '../leaderboard/Leaderboard';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import { selectedRate } from '../../gameplay/playRate';
 import { starsAt } from '../../osu/difficulty';
 import {

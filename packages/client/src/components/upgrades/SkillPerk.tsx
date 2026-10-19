@@ -1,14 +1,14 @@
 import { useLingui } from '@lingui/react/macro';
-import HoverCardRow from '@osu-idle/shared/display/HoverCardRow';
+import HoverCardRow from '@oss-idle/shared/display/HoverCardRow';
 import {
 	fastestRate,
 	rateLabel,
 	slowestRate,
-} from '@osu-idle/shared/rate';
+} from '@oss-idle/shared/rate';
 import {
 	SKILL,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 
 const Arrow = () => <span className="ladder-tip__arrow"> → </span>;
 

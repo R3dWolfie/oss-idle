@@ -3,13 +3,13 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	MEDALS,
 	medalLook,
 	type MedalDef,
-} from '@osu-idle/shared/achievements/catalogue';
-import { medalName } from '@osu-idle/shared/display/medals';
+} from '@oss-idle/shared/achievements/catalogue';
+import { medalName } from '@oss-idle/shared/display/medals';
 import {
 	getCharacter,
 	getCharacterMedals,

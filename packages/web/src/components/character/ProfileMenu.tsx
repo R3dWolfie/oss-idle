@@ -5,39 +5,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faBan,
 	faEllipsisVertical,
-	faLock,
-	faLockOpen,
-	faTrash,
 	faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
-import { isAdmin } from '@osu-idle/shared/admin';
-import { useCurrentUser } from '../../hooks/useCurrentUser';
-import { liftRestriction } from '../../api/restrictions';
-import RestrictDialog from './RestrictDialog';
-import DeleteAccountDialog from './DeleteAccountDialog';
-import useAsync from '@osu-idle/shared/hooks/useAsync';
+import { useModerator } from '../../hooks/useAdmin';
+import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	block,
 	getRelation,
 	unblock,
 } from '../../api/social';
-import ReportDialog from './ReportDialog';
+import SanctionItems from './SanctionItems';
+import ProfileMenuDialog, { type ProfileDialog } from './ProfileMenuDialog';
 
-/** osu!web's ⋮ menu on someone else's profile: block and report, and restrict for admins. */
-export default function ProfileMenu({ userId, name, restricted }: {
+/** osu!web's ⋮ menu on someone else's profile: block and report, silence and restrict for the
+ *  moderators, account deletion for admins. */
+export default function ProfileMenu({ userId, name, restricted, sanctionable }: {
 	userId: number;
 	name: string;
 	restricted: boolean;
+	/** not an admin */
+	sanctionable: boolean;
 }) {
 	const { t } = useLingui();
-	const admin = isAdmin(useCurrentUser()?.id);
-	const [restricting, setRestricting] = useState(false);
-	const [deleting, setDeleting] = useState(false);
-	const reload = () => window.location.reload();
+	const moderator = useModerator() && sanctionable;
 	const relation = useAsync(() => getRelation(userId), [userId]);
 	const [blocked, setBlocked] = useState<boolean>();
 	const [open, setOpen] = useState(false);
-	const [reporting, setReporting] = useState(false);
+	const [dialog, setDialog] = useState<ProfileDialog>();
 	const isBlocked = blocked ?? (!!relation && 'blocked' in relation && relation.blocked);
 
 	const toggleBlock = async () => {
@@ -45,6 +39,10 @@ export default function ProfileMenu({ userId, name, restricted }: {
 		if (isBlocked) await unblock(userId);
 		else await block(userId);
 		setBlocked(!isBlocked);
+	};
+	const pick = (d: ProfileDialog) => {
+		setOpen(false);
+		setDialog(d);
 	};
 
 	return (
@@ -63,48 +61,18 @@ export default function ProfileMenu({ userId, name, restricted }: {
 					<FontAwesomeIcon icon={faBan} />
 					{isBlocked ? t`Unblock` : t`Block`}
 				</button>
-				<button type='button' className='profile-menu__item' onClick={() => {
-					setOpen(false);
-					setReporting(true);
-				}}>
+				<button type='button' className='profile-menu__item' onClick={() => pick('report')}>
 					<FontAwesomeIcon icon={faTriangleExclamation} />
 					{t`Report`}
 				</button>
-				{admin && (restricted
-					? <button type='button' className='profile-menu__item' onClick={() => {
-						setOpen(false);
-						void liftRestriction(userId).then(reload);
-					}}>
-						<FontAwesomeIcon icon={faLockOpen} />
-						{t`Lift restriction`}
-					</button>
-					: <button type='button' className='profile-menu__item' onClick={() => {
-						setOpen(false);
-						setRestricting(true);
-					}}>
-						<FontAwesomeIcon icon={faLock} />
-						{t`Restrict`}
-					</button>)}
-				{admin && <button type='button' className='profile-menu__item' onClick={() => {
-					setOpen(false);
-					setDeleting(true);
-				}}>
-					<FontAwesomeIcon icon={faTrash} />
-					{t`Delete account`}
-				</button>}
+				{moderator && <SanctionItems userId={userId} restricted={restricted} onPick={pick} />}
 			</div>}
-			{deleting && <DeleteAccountDialog
-				userId={userId}
-				onDone={() => window.location.assign('/web/')}
-				onClose={() => setDeleting(false)}
-			/>}
-			{restricting && <RestrictDialog
+			{dialog && <ProfileMenuDialog
+				dialog={dialog}
 				userId={userId}
 				name={name}
-				onDone={reload}
-				onClose={() => setRestricting(false)}
+				onClose={() => setDialog(undefined)}
 			/>}
-			{reporting && <ReportDialog userId={userId} name={name} onClose={() => setReporting(false)} />}
 		</div>
 	);
 }

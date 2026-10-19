@@ -1,7 +1,7 @@
 import {
 	Skills,
 	type SkillName,
-} from '@osu-idle/shared/skills';
+} from '@oss-idle/shared/skills';
 import SceneManager, { type Scene } from '../scenes/SceneManager';
 import Entities from '../entity/entities';
 import Account from '../online/account';
@@ -17,7 +17,8 @@ import { Score } from '../db/schema/score';
 import { ScoreXP } from '../db/schema/score_xp';
 import { SETTINGS } from '../db/settings';
 import { DB } from '../db/dao';
-import type Synced from '@osu-idle/shared/helpers/synced';
+import type Synced from '@oss-idle/shared/helpers/synced';
+import { music } from '../audio/MusicPlayer';
 
 /**
  * Dev-only window handle the end-to-end suite (`packages/e2e`) drives the app
@@ -181,6 +182,8 @@ const bridge = {
 		return true;
 	},
 	scene: (): Scene => SceneManager.current.get(),
+	/** the difficulty the music player has, playing or not */
+	nowPlaying: (): number | undefined => music.beatmap.get()?.metadata.id,
 	/** The session has answered *and* the live character it decided on is in
 	 *  place - the placeholder is still there for a moment after it resolves. */
 	sessionReady: (): boolean =>

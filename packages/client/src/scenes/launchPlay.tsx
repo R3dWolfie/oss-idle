@@ -1,4 +1,4 @@
-import { versionLabel } from '@osu-idle/shared/rate';
+import { versionLabel } from '@oss-idle/shared/rate';
 import { selectedRate } from '../gameplay/playRate';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import SceneManager, { SCENE } from './SceneManager';

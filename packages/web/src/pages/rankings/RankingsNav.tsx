@@ -2,7 +2,7 @@ import Nav from '../../components/Nav';
 import Link from '../../components/Link';
 import { useLingui } from '@lingui/react/macro';
 import { SKILL_SORT } from '../../components/leaderboard/PlayerSkillLeaderboard';
-import { GOOD_GRADE } from '@osu-idle/shared/judgement';
+import { GOOD_GRADE } from '@oss-idle/shared/judgement';
 
 export default function RankingsNav({ current }: {
 	current: string,

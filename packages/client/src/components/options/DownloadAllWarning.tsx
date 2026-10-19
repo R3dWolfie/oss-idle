@@ -1,9 +1,9 @@
 import './DownloadAllWarning.css';
 import { createPortal } from 'react-dom';
 import { useLingui } from '@lingui/react/macro';
-import Log from '@osu-idle/shared/helpers/log';
-import useSynced from '@osu-idle/shared/hooks/useSynced';
-import { desktop } from '@osu-idle/shared/desktop';
+import Log from '@oss-idle/shared/helpers/log';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { desktop } from '@oss-idle/shared/desktop';
 import ConfirmMenu from '../ConfirmMenu';
 import ContextMenu from '../ContextMenu';
 import Auth from '../../online/auth';

@@ -71,3 +71,23 @@
 	color: hsl(var(--hsl-red-1, 0, 70%, 65%));
 	font-size: 13px;
 }
+
+.report-dialog__lengths {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 6px;
+}
+.report-dialog__lengths button {
+	padding: 6px 12px;
+	border: none;
+	border-radius: 999px;
+	background: hsl(var(--hsl-b6));
+	color: #fff;
+	font-family: inherit;
+	font-size: 13px;
+	cursor: pointer;
+}
+.report-dialog__lengths button.current {
+	background: hsl(var(--hsl-h1));
+}

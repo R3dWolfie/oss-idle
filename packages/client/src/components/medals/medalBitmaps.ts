@@ -1,7 +1,7 @@
 import {
 	medalSvg,
 	type MedalLook,
-} from '@osu-idle/shared/achievements/medal';
+} from '@oss-idle/shared/achievements/medal';
 
 /** px of the cached bitmap: crisp at the biggest a medal is shown */
 const SIZE = 320;

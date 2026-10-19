@@ -3,7 +3,7 @@ import 'prism-themes/themes/prism-vsc-dark-plus.css';
 import {
 	DiffLine,
 	diffLines,
-} from '@osu-idle/shared/helpers/diff';
+} from '@oss-idle/shared/helpers/diff';
 
 const SIGIL = {
 	same: ' ', add: '+', remove: '-', 

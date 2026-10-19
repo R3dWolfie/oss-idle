@@ -1,4 +1,4 @@
-import Listener from '@osu-idle/shared/helpers/listener';
+import Listener from '@oss-idle/shared/helpers/listener';
 
 export default class Device {
 

@@ -3,8 +3,8 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import Log from '@osu-idle/shared/helpers/log';
-import type { Popup } from '@osu-idle/shared/helpers/log';
+import Log from '@oss-idle/shared/helpers/log';
+import type { Popup } from '@oss-idle/shared/helpers/log';
 import './Popups.css';
 
 // how long a popup lingers before it starts sliding away

@@ -2,7 +2,7 @@ import {
 	arc,
 	pie,
 } from 'd3-shape';
-import type { Grade as GradeName } from '@osu-idle/shared/judgement';
+import type { Grade as GradeName } from '@oss-idle/shared/judgement';
 import Grade from './Grade';
 
 // osu!web's mania cutoffs, D to SS clockwise; SS from 0.99 so its slice shows

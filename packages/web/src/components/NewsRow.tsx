@@ -1,4 +1,4 @@
-import type { NewsDTO } from '@osu-idle/shared/news';
+import type { NewsDTO } from '@oss-idle/shared/news';
 import Link from './Link';
 import { i18n } from '../i18n';
 

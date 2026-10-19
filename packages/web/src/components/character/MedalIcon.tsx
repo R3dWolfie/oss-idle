@@ -2,7 +2,7 @@ import { useId } from 'react';
 import {
 	medalSvg,
 	type MedalLook,
-} from '@osu-idle/shared/achievements/medal';
+} from '@oss-idle/shared/achievements/medal';
 import './MedalIcon.css';
 
 // the svg string is generated from our own medal data, never from user input
