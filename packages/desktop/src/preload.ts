@@ -8,6 +8,7 @@ import {
 // ESM preload has extra Electron caveats we don't need on the auth path).
 // eslint-disable-next-line object-curly-newline -- false positive from the import attribute
 import type {
+	DesktopMoveResult,
 	DesktopPresence,
 	DesktopUpdateStatus,
 	OssIdleDesktop,
@@ -20,10 +21,17 @@ import type {
  * very first API call already carries it, then kept live via a push from main.
  */
 
-const boot = ipcRenderer.sendSync('oss-idle:bootstrap') as { 
-	token: string | null; 
+type Boot = {
+	token: string | null;
 	version: string;
 	uncapped: boolean;
+	canMoveInstall: boolean;
+};
+
+// undefined in a frame that is not the game's own: no bridge there
+const sent = ipcRenderer.sendSync('oss-idle:bootstrap') as Boot | undefined;
+const boot: Boot = sent ?? {
+	token: null, version: '', uncapped: false, canMoveInstall: false,
 };
 
 let token: string | null = boot.token;
@@ -92,7 +100,11 @@ const bridge: OssIdleDesktop = {
 		uncapped: boot.uncapped,
 		setUncapped: on => ipcRenderer.send('oss-idle:set-uncapped', on),
 	},
+	...boot.canMoveInstall ? {
+		moveInstall: (dialogTitle: string) =>
+			ipcRenderer.invoke('oss-idle:move-install', dialogTitle) as Promise<DesktopMoveResult>,
+	} : {},
 	steam: { available: false },
 };
 
-contextBridge.exposeInMainWorld('ossIdleDesktop', bridge);
+if (sent) contextBridge.exposeInMainWorld('ossIdleDesktop', bridge);

@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-19 20:47\n"
+"PO-Revision-Date: 2026-10-21 10:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -80,7 +80,7 @@ msgstr "{now} / {goal} (meilleur {best})"
 
 #: src/pages/changelog/UpdateStreams.tsx
 msgid "{online, plural, one {# user online} other {# users online}}"
-msgstr ""
+msgstr "{online, plural, one {# joueur en ligne} other {# joueurs en ligne}}"
 
 #: src/components/character/CharacterRanks.tsx
 msgid "{skill} Ranking"
@@ -90,7 +90,7 @@ msgstr "Rang en {skill}"
 msgid "{step}/{total} · {current} · {spent} elapsed · ~{left} left"
 msgstr "{step}/{total} · {current} · {spent} écoulé · ~{left} restant"
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/components/character/CharacterHistorical.tsx
 msgid "{title} [{version}] by {artist}"
 msgstr "{title} [{version}] par {artist}"
 
@@ -352,13 +352,17 @@ msgstr "Maps"
 msgid "Best for performance and idling."
 msgstr "Plus adapté pour le jeu passif et de meilleures performances."
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/components/character/CharacterTopRanks.tsx
 msgid "Best Performance"
 msgstr "Meilleure performance"
 
 #: src/components/character/ProfileMenu.tsx
 msgid "Block"
 msgstr "Bloquer"
+
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Bold"
+msgstr ""
 
 #: src/pages/beatmaps/BeatmapsetStats.tsx
 msgid "BPM"
@@ -400,7 +404,9 @@ msgstr "Puis-je parler aux autres joueurs ?"
 #: src/components/character/DeleteAccountDialog.tsx
 #: src/components/character/ReportDialog.tsx
 #: src/components/character/RestrictDialog.tsx
+#: src/components/character/RollbackUpgradeDialog.tsx
 #: src/components/character/SilenceDialog.tsx
+#: src/components/character/UserPageEditor.tsx
 #: src/components/EditableCharacterName.tsx
 #: src/pages/oauth/Authorize.tsx
 #: src/pages/settings/OAuthClientDialog.tsx
@@ -420,7 +426,7 @@ msgstr "Changer de pseudo"
 #: src/routes/changelog/$version.tsx
 #: src/routes/changelog/index.tsx
 msgid "changelog"
-msgstr ""
+msgstr "changelog"
 
 #: src/routes/c/$id.tsx
 #: src/routes/preview.tsx
@@ -451,6 +457,10 @@ msgstr "réclamez vos propositions"
 #: src/pages/beatmaps/RequestBulkBar.tsx
 msgid "Clear"
 msgstr "Désélectionner"
+
+#: src/components/character/UserPage.tsx
+msgid "Click here to write your me! page."
+msgstr ""
 
 #: src/pages/settings/OAuthClientSecret.tsx
 msgid "Client ID"
@@ -555,6 +565,10 @@ msgstr "Ai-je besoin d'un compte osu! ?"
 msgid "Download"
 msgstr "Télécharger"
 
+#: src/pages/store/SupporterPerks.tsx
+msgid "Download every map"
+msgstr ""
+
 #: src/pages/PlayOssIdle.tsx
 msgid "Download for {platform} (v{version})"
 msgstr "Télécharger pour {platform} (v{version})"
@@ -570,6 +584,10 @@ msgstr "Télécharger le .osz et l'ajouter à la file de nomination"
 #: src/pages/PlayOssIdle.tsx
 msgid "Download the desktop app"
 msgstr "Télécharger l'appli bureau"
+
+#: src/components/character/ProfileSection.tsx
+msgid "Drag to reorder"
+msgstr ""
 
 #: src/pages/beatmaps/MapRequests.tsx
 msgid "Drop {count} requests?"
@@ -587,6 +605,8 @@ msgstr "Chaque score classé vaut un certain nombre de pp. Votre total additionn
 msgid "Each skill has a gear ladder of {BASE_MAX_UPGRADES} upgrades. Each one costs {UPGRADE_LEVELS} levels of that skill and permanently adds {upgradeBonus}% experience gain to it. The more levels you have above the price, the more overdrive the purchase builds, which multiplies that bonus."
 msgstr "Chaque compétence a une échelle de {BASE_MAX_UPGRADES} améliorations. Chacune coûte {UPGRADE_LEVELS} niveaux de cette compétence et lui ajoute définitivement {upgradeBonus}% de gain d'expérience. Plus vous avez de niveaux au-dessus du prix, plus l'achat génère d'overdrive, ce qui multiplie ce bonus."
 
+#: src/components/character/UserPage.tsx
+#: src/components/character/UserPageEditor.tsx
 #: src/pages/settings/OAuthSettings.tsx
 msgid "Edit"
 msgstr "Éditer"
@@ -615,9 +635,13 @@ msgstr "Filtrer par artiste, titre ou mappeur"
 msgid "find"
 msgstr "trouver"
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/components/character/CharacterTopRanks.tsx
 msgid "First Place Ranks"
 msgstr "Premières places"
+
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Font Size"
+msgstr ""
 
 #: src/pages/store/OrderHistory.tsx
 msgid "For"
@@ -643,6 +667,10 @@ msgstr "amis"
 #: src/UserMenu.tsx
 msgid "Friends"
 msgstr "Amis"
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Get every ranked beatmap in one go from the game's options."
+msgstr ""
 
 #: src/pages/store/RecipientPicker.tsx
 msgid "gift"
@@ -683,6 +711,10 @@ msgstr "rangs"
 msgid "groups"
 msgstr "groupes"
 
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Heading"
+msgstr ""
+
 #: src/pages/AuthCallback.tsx
 msgid "Hello {username}!"
 msgstr "Bonjour {username} !"
@@ -704,7 +736,7 @@ msgstr "Plus haut overdrive"
 msgid "Highest Score"
 msgstr "Meilleur score"
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/components/character/CharacterHistorical.tsx
 msgid "Historical"
 msgstr "Historique"
 
@@ -749,6 +781,10 @@ msgstr "J'accepte les <0>Conditions d'utilisation de l'API</0>"
 msgid "Identify you and read your public profile."
 msgstr "Vous identifier et lire votre profil public."
 
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Image"
+msgstr ""
+
 #: src/pages/beatmaps/requestPhase.ts
 msgid "in nomination"
 msgstr "en nomination"
@@ -773,6 +809,10 @@ msgstr "Importer la sélection"
 msgid "Invalid authorization request."
 msgstr "Demande d'autorisation invalide."
 
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Italic"
+msgstr ""
+
 #: src/pages/help/FAQ.tsx
 msgid "Its scores, pp and ranking progress are removed. The experience your skills earned on it stays."
 msgstr "Ses scores, ses pp et la progression de classement associée sont retirés. L'expérience gagnée dessus par vos compétences est conservée."
@@ -784,6 +824,10 @@ msgstr "Rejoindre la communauté"
 #: src/pages/beatmaps/BeatmapsetStats.tsx
 msgid "Keys"
 msgstr "Clés"
+
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Large"
+msgstr ""
 
 #: src/pages/PublicLanding.tsx
 msgid "Latest news"
@@ -818,9 +862,17 @@ msgstr "Lever la restriction"
 msgid "Lift silence"
 msgstr "Lever le silence"
 
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Link"
+msgstr ""
+
+#: src/components/character/BBCodeToolbar.tsx
+msgid "List"
+msgstr ""
+
 #: src/pages/changelog/ChangelogNav.tsx
 msgid "listing"
-msgstr ""
+msgstr "listing"
 
 #: src/pages/beatmaps/MapRequests.tsx
 #: src/pages/beatmaps/MapScoreboard.tsx
@@ -880,8 +932,8 @@ msgstr "propositions"
 msgid "mapped by {creator}"
 msgstr "mappé par {creator}"
 
+#: src/components/character/CharacterHistorical.tsx
 #: src/pages/beatmaps/BeatmapsetHeader.tsx
-#: src/pages/characters/CharacterPage.tsx
 #: src/pages/scores/ScorePage.tsx
 msgid "mapped by <0>{creator}</0>"
 msgstr "créée par <0>{creator}</0>"
@@ -906,6 +958,10 @@ msgstr "Combo max"
 #: src/pages/scores/ScorePage.tsx
 msgid "Max Combo"
 msgstr "Combo Max"
+
+#: src/components/character/UserPage.tsx
+msgid "me!"
+msgstr ""
 
 #: src/components/leaderboard/PlayerMedalLeaderboard.tsx
 msgid "Medal Score"
@@ -947,7 +1003,11 @@ msgstr "mois"
 msgid "more"
 msgstr "plus d'options"
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/pages/store/SupporterPerks.tsx
+msgid "More map requests"
+msgstr ""
+
+#: src/components/character/CharacterHistorical.tsx
 msgid "Most Played Beatmaps"
 msgstr "Maps les plus jouées"
 
@@ -996,7 +1056,7 @@ msgstr "Aucun client autorisé."
 
 #: src/pages/changelog/Changelog.tsx
 msgid "No builds yet. Check back soon!"
-msgstr ""
+msgstr "Pas encore de mise à jour. Revenez bientôt !"
 
 #: src/pages/news/News.tsx
 #: src/pages/PublicLanding.tsx
@@ -1032,6 +1092,10 @@ msgstr "Non. Sans connexion, vous jouez en invité : tout est sauvegardé unique
 msgid "Nobody yet"
 msgstr "Personne"
 
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Normal"
+msgstr ""
+
 #: src/pages/PlayOssIdle.tsx
 msgid "Not yet available for {platform}"
 msgstr "Pas encore disponible pour {platform}"
@@ -1056,6 +1120,10 @@ msgstr "Rien ici pour le moment."
 #: src/pages/rankings/MedalProgressLine.tsx
 msgid "now {now}"
 msgstr "maintenant {now}"
+
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Numbered List"
+msgstr ""
 
 #: src/pages/settings/Settings.tsx
 msgid "OAuth"
@@ -1228,6 +1296,10 @@ msgstr "prestige"
 msgid "preview"
 msgstr "prévisualiser"
 
+#: src/components/character/UserPageEditor.tsx
+msgid "Preview"
+msgstr ""
+
 #: src/components/leaderboard/Pager.tsx
 msgid "previous"
 msgstr "précédent"
@@ -1259,6 +1331,10 @@ msgstr "Progression"
 #: src/pages/help/FAQ.tsx
 msgid "Propose it on the <0>map requests</0> page. Any 4K map from osu! can be proposed, even a graveyarded one. Other players can back your request, and the team reviews the queue: an accepted map goes through nomination before it is ranked."
 msgstr "Proposez-la sur la page des <0>propositions de maps</0>. N'importe quelle map 4K d'osu! peut être proposée, même une map au cimetière (graveyard). Les autres joueurs peuvent soutenir votre proposition, et l'équipe examine la file : une map acceptée passe par la nomination avant d'être classée."
+
+#: src/pages/store/SupporterPerks.tsx
+msgid "Propose up to {supporterMax} maps for ranking at once, instead of {max}."
+msgstr ""
 
 #: src/pages/beatmaps/MapClaims.tsx
 msgid "Proposed maps for ranking on Discord? Tick the ones you proposed and save, and they will count for your curator medals once an admin confirms."
@@ -1312,7 +1388,7 @@ msgstr "Score classé"
 msgid "rankings"
 msgstr "classements"
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/components/character/CharacterTopRanks.tsx
 msgid "Ranks"
 msgstr "Rangs"
 
@@ -1334,7 +1410,7 @@ msgstr "raison (optionnel)"
 msgid "Recent Infringements"
 msgstr "Sanctions récentes"
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/components/character/CharacterTopRanks.tsx
 msgid "Recent scores"
 msgstr "Scores récents"
 
@@ -1442,6 +1518,18 @@ msgstr "Révoquer l'accès"
 msgid "Revoke access for {0}?"
 msgstr "Révoquer l'accès de {0} ?"
 
+#: src/components/character/RollbackUpgradeDialog.tsx
+msgid "Roll back"
+msgstr "Annuler"
+
+#: src/components/character/RollbackUpgradeDialog.tsx
+msgid "Roll back an upgrade of {name}?"
+msgstr "Annuler l'upgrade de {name} ?"
+
+#: src/components/character/ProfileMenu.tsx
+msgid "Roll back upgrade"
+msgstr "Annuler une amélioration"
+
 #: src/routes/legal/rules.tsx
 msgid "rules"
 msgstr "règles"
@@ -1450,6 +1538,7 @@ msgstr "règles"
 msgid "Rules"
 msgstr "Règles"
 
+#: src/components/character/UserPageEditor.tsx
 #: src/components/EditableCharacterName.tsx
 msgid "Save"
 msgstr "Sauvegarder"
@@ -1604,7 +1693,7 @@ msgstr "Rang compétence"
 msgid "skills"
 msgstr "compétences"
 
-#: src/pages/characters/CharacterPage.tsx
+#: src/components/character/CharacterSkills.tsx
 #: src/pages/characters/CharacterPreview.tsx
 msgid "Skills"
 msgstr "Compétences"
@@ -1617,6 +1706,10 @@ msgstr "Compétences améliorées au maximum"
 #: src/routes/admin/skins.tsx
 msgid "skins"
 msgstr "skins"
+
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Small"
+msgstr ""
 
 #: src/pages/help/FAQ.tsx
 msgid "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
@@ -1644,6 +1737,10 @@ msgstr "Code source"
 msgid "Spending levels lowers your skill and overall levels, so it can drop you in the rankings. That is the trade: a lower level now for faster progress later."
 msgstr "Dépenser des niveaux baisse vos niveaux de compétence et votre niveau global, ce qui peut vous faire descendre dans les classements. C'est le compromis : un niveau plus bas maintenant pour progresser plus vite ensuite."
 
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Spoiler Box"
+msgstr ""
+
 #: src/pages/beatmaps/BeatmapsetStats.tsx
 msgid "Star rating"
 msgstr "Star rating"
@@ -1652,6 +1749,10 @@ msgstr "Star rating"
 #: src/routes/store.tsx
 msgid "store"
 msgstr "boutique"
+
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Strikethrough"
+msgstr ""
 
 #: src/pages/scores/ScorePage.tsx
 msgid "Submitted on"
@@ -1752,6 +1853,10 @@ msgstr "Cette proposition a été traitée"
 msgid "Time"
 msgstr "Temps"
 
+#: src/components/character/BBCodeToolbar.tsx
+msgid "Tiny"
+msgstr ""
+
 #: src/pages/settings/Settings.tsx
 msgid "Title"
 msgstr "Titre"
@@ -1809,6 +1914,11 @@ msgstr "Pseudo"
 #: src/components/character/ReportDialog.tsx
 msgid "Using multiple accounts"
 msgstr "Multicompte"
+
+#: src/pages/admin/AdminNav.tsx
+#: src/routes/admin/versions.tsx
+msgid "version adoption"
+msgstr "version adoption"
 
 #: src/pages/PublicLanding.tsx
 msgid "View all"
@@ -1878,6 +1988,22 @@ msgstr "Pourquoi mon jeu s'arrête-t-il en arrière-plan ?"
 msgid "Withdraw"
 msgstr "Retirer"
 
+#: src/components/character/UserPageEditor.tsx
+msgid "Write something about yourself, in BBCode."
+msgstr ""
+
+#: src/components/character/UserPage.tsx
+msgid "Writing a me! page is an <0>osu!supporter</0> perk."
+msgstr ""
+
+#: src/components/character/RollbackUpgradeDialog.tsx
+msgid "XP level right after the upgrade was bought"
+msgstr "Le niveau d'XP juste après que l'amélioration a été achetée"
+
+#: src/components/character/RollbackUpgradeDialog.tsx
+msgid "XP Lv{level} → XP Lv{nextLevel}"
+msgstr "XP Lv{level} → XP Lv{nextLevel}"
+
 #: src/pages/help/FAQ.tsx
 msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
 msgstr "Oui. Le résultat et l'expérience d'une partie sont décidés à son lancement : tout ce que vous achetez pendant qu'elle tourne est appliqué dès qu'elle se termine, dans l'ordre de vos achats."
@@ -1887,8 +2013,8 @@ msgid "Yes. Skins change the playfield, notes and gameplay interface, and you ca
 msgstr "Oui. Les skins changent le terrain de jeu, les notes et l'interface de jeu, et vous pouvez créer le vôtre dans l'éditeur de skin avec un aperçu en direct. Les joueurs peuvent partager leurs skins avec tout le monde."
 
 #: src/pages/beatmaps/RequestForm.tsx
-msgid "You already have {MAX_PENDING_REQUESTS} requests waiting. Wait for one to be answered before proposing another."
-msgstr "Vous avez déjà {MAX_PENDING_REQUESTS} propositions en attente. Attendez que l'une d'entre-elles soit traitée avant d'en envoyer une autre."
+msgid "You already have {max} requests waiting. Wait for one to be answered before proposing another."
+msgstr "Vous avez déjà {max} propositions en attente. Attendez que l'une d'entre-elles soit traitée avant d'en envoyer une autre."
 
 #: src/pages/store/SupporterStatus.tsx
 msgid "You don't have a supporter tag right now."

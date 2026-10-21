@@ -3,7 +3,10 @@ import { HTTPException } from 'hono/http-exception';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { eq } from 'drizzle-orm';
-import { DEFAULT_CHANNEL } from '@oss-idle/shared/community/wire';
+import {
+	DEFAULT_CHANNEL,
+	TEAM_CHANNEL,
+} from '@oss-idle/shared/community/wire';
 import { isAdmin } from '@oss-idle/shared/groups';
 import { requireModerator } from '../auth/admin';
 import { groupsOf } from '../groups';
@@ -119,6 +122,8 @@ export const chatRoutes = new Hono()
 		const prefix = '/announce ';
 		if (text.startsWith(prefix)) {
 			if (!isAdmin(await groupsOf(c.get('userId')))) throw new HTTPException(403, { message: 'Forbidden' });
+			// an announcement reaches everyone
+			if (channel === TEAM_CHANNEL) throw new HTTPException(400, { message: 'Cannot announce in #team' });
 			adminAnnounce(channel, text.slice(prefix.length).trim());
 			return c.json({ ok: true });
 		}

@@ -9,6 +9,8 @@ export type Thanks = {
 	/** Set when the tag went to someone else. */
 	giftTo: string | undefined;
 	months: number;
+	/** How long the donation keeps the server running. */
+	serverSeconds: number | undefined;
 	recurring: boolean;
 	tagEndsAt: Date | undefined;
 	storeUrl: string;
@@ -25,6 +27,17 @@ const day = new Intl.DateTimeFormat('en-GB', {
 	dateStyle: 'long', timeZone: 'UTC',
 });
 const plural = (n: number, word: string) => `${n} ${word}${n > 1 ? 's' : ''}`;
+const UNITS: [string, number][] = [['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]];
+
+/** 93784 → "1 day, 2 hours, 3 minutes and 4 seconds" */
+const duration = (seconds: number) => {
+	const parts = UNITS.flatMap(([unit, size]) => {
+		const n = Math.floor(seconds / size);
+		seconds %= size;
+		return n ? [plural(n, unit)] : [];
+	});
+	return parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0];
+};
 
 // the text part's copy of supporterSignature.html; "-- " sets it apart in mail clients
 const SIGNATURE = [
@@ -53,15 +66,21 @@ export const supporterThanks = (r: Thanks): { subject: string; text: string; htm
 	const subject = 'Thank you for supporting oss!idle !';
 
 	const until = r.tagEndsAt ?
-		` You supporter tag will now last until ${day.format(r.tagEndsAt)}.`
+		` Your supporter tag will now last until ${day.format(r.tagEndsAt)}.`
 		: '';
 
 	const what = r.giftTo
 		? `${r.giftTo} has received ${tag} of supporter thanks to you.${r.firstTag ? ' It\'s their first ever !' : ''}`
 		: `We added ${tag} of supporter tag to your account.${until}`;
 
+	const running = r.serverSeconds
+		? `
+Your support keeps the server running for ${duration(r.serverSeconds)} !
+`
+		: '';
+
 	const hearts = (r.heartsBefore !== r.heartsAfter) ?
-		`Your profile now has ${r.heartsAfter} hearts !`
+		`Your profile now has ${plural(r.heartsAfter, 'heart')} !`
 		: '';
 
 	const renews = r.recurring
@@ -73,7 +92,7 @@ export const supporterThanks = (r: Thanks): { subject: string; text: string; htm
 Thank you so much for supporting oss!idle!
 
 ${what}
-
+${running}
 ${hearts}
 
 ${renews}

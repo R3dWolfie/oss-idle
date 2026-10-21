@@ -8,10 +8,6 @@ import {
  *  cap, so a cap above the refresh rate (or none) can actually be reached. */
 export const wantsUncapped = (limit: FrameLimit) => limit !== 'vsync';
 
-/** Below this, the remaining wait is spun on native frames rather than a timer,
- *  whose resolution is too coarse for high caps. */
-const TIMER_SLACK_MS = 4;
-
 /**
  * Caps every requestAnimationFrame loop in the app to the frame limiter: callbacks
  * queue up and run together on the first native frame once the cap's interval
@@ -28,12 +24,10 @@ export function initFrameLimiter(): void {
 		const limit = SETTINGS.frameLimiter.get();
 		const interval = typeof limit === 'number' ? 1000 / limit : 0;
 		const wait = interval - (now - last);
-		if (wait > TIMER_SLACK_MS) {
-			setTimeout(() => nativeRaf(pump), wait - TIMER_SLACK_MS);
-			return;
-		}
+		// waited on a timer: with vsync lifted a native frame comes back at once,
+		// so spinning on them renders the page flat out between capped frames
 		if (wait > 1) {
-			nativeRaf(pump);
+			setTimeout(() => nativeRaf(pump), wait);
 			return;
 		}
 		// keep the cap's cadence through jitter, without bursting after a stall

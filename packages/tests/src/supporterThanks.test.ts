@@ -9,6 +9,7 @@ const base = {
 	buyerName: 'peppy',
 	giftTo: undefined,
 	months: 1,
+	serverSeconds: undefined,
 	recurring: false,
 	tagEndsAt: new Date('2027-01-19T12:00:00Z'),
 	storeUrl: 'https://store',
@@ -24,7 +25,7 @@ describe('supporter thank-you', () => {
 		expect(text).toContain('Hi peppy,');
 		expect(text).toContain('We added 1 month of supporter tag to your account.');
 		expect(text).toContain('will now last until 19 January 2027.');
-		expect(text).toContain('now has 1 heart');
+		expect(text).toContain('now has 1 heart !');
 		expect(text).not.toContain('renew');
 		expect(text).toContain('\n-- \nAdrien Boitelle');
 	});
@@ -46,5 +47,15 @@ describe('supporter thank-you', () => {
 		expect(html).toContain('Hi &lt;b&gt;x&lt;/b&gt;,');
 		expect(html).toContain('<a href="https://store"');
 		expect(html).toContain('signature-images');
+	});
+
+	it('says how long the server runs on it', () => {
+		expect(supporterThanks({
+			...base, serverSeconds: 93784, 
+		}).text).toContain('running for 1 day, 2 hours, 3 minutes and 4 seconds !');
+		expect(supporterThanks({
+			...base, serverSeconds: 7200, 
+		}).text).toContain('running for 2 hours !');
+		expect(supporterThanks(base).text).not.toContain('running for');
 	});
 });

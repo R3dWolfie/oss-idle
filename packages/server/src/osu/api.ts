@@ -1,7 +1,8 @@
 import { env } from '../env';
 
 /**
- * Every osu! API call goes through the scheduler (`OSU_API_URL`), never
+ * Every osu! API call goes through the scheduler (`OSU_API_URL`, else
+ * `OSU_API_FALLBACK_URL`), never
  * osu.ppy.sh directly: the rate limit is per IP and this host runs several osu!
  * projects, so one shared budget is scheduled in one place.
  *
@@ -15,24 +16,46 @@ const TOKEN_URL = 'https://osu.ppy.sh/oauth/token';
 
 export class SchedulerError extends Error {}
 
-/** Call an osu! API path (e.g. `api/v2/me`) with an osu! access token. */
+const SCHEDULERS = [
+	{
+		url: env.OSU_API_URL, token: env.OSU_SCHEDULER_TOKEN,
+	},
+	...env.OSU_API_FALLBACK_URL && env.OSU_SCHEDULER_FALLBACK_TOKEN
+		? [{
+			url: env.OSU_API_FALLBACK_URL, token: env.OSU_SCHEDULER_FALLBACK_TOKEN,
+		}]
+		: [],
+];
+
+/** Call an osu! API path (e.g. `api/v2/me`) with an osu! access token, through the
+ *  first scheduler that answers: the next one only gets requests that never reached osu!. */
 export const osuApi = async <T>(path: string, priority: Priority, token: string): Promise<T> => {
-	const res = await fetch(`${env.OSU_API_URL}/${path.replace(/^\//, '')}`, {
-		headers: {
-			Authorization: `Bearer ${token}`,
-			Accept: 'application/json',
-			'X-Scheduler-Token': env.OSU_SCHEDULER_TOKEN,
-			'X-Osu-Priority': priority,
-			'User-Agent': 'oss-idle/1.0',
-		},
-	});
-
-	// Set only when the request never reached osu!, so it is safe to retry.
-	const failed = res.headers.get('x-scheduler-error');
-	if (failed) throw new SchedulerError(failed);
-
-	if (!res.ok) throw new Error(`osu! returned ${res.status}`);
-	return await res.json() as T;
+	let error: Error = new SchedulerError('no scheduler');
+	for (const scheduler of SCHEDULERS) {
+		const res = await fetch(`${scheduler.url}/${path.replace(/^\//, '')}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+				Accept: 'application/json',
+				'X-Scheduler-Token': scheduler.token,
+				'X-Osu-Priority': priority,
+				'User-Agent': 'oss-idle/1.0',
+			},
+		}).catch((e: Error) => e);
+		if (res instanceof Error) {
+			error = new SchedulerError(res.message);
+			continue;
+		}
+		// Set only when the request never reached osu!, so it is safe to retry.
+		const failed = res.headers.get('x-scheduler-error');
+		// the scheduler itself is down behind its proxy
+		if (failed || res.status === 502 || res.status === 503) {
+			error = new SchedulerError(failed ?? `scheduler returned ${res.status}`);
+			continue;
+		}
+		if (!res.ok) throw new Error(`osu! returned ${res.status}`);
+		return await res.json() as T;
+	}
+	throw error;
 };
 
 let appToken: { value: string; expiresAt: number } | undefined;

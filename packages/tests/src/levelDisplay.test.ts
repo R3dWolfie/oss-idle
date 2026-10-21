@@ -10,6 +10,7 @@ import {
 	levelProgress,
 } from '@oss-idle/shared/display/levelDisplay';
 import { xpForLevel } from '@oss-idle/shared/sim/skills/xp';
+import { levelPercent } from '../../server/src/api/levelPercent';
 
 /** The rules every level on screen follows. They live in one helper precisely
  *  so they cannot drift apart between screens - these pin them. */
@@ -40,5 +41,17 @@ describe('how a level is drawn', () => {
 	it('never lets progress leave [0, 1]', () => {
 		expect(levelProgress(105, -50)).toBe(0);
 		expect(levelProgress(105, xpForLevel(105) * 10)).toBe(1);
+	});
+});
+
+describe('levelPercent', () => {
+	it('is the share of the next level banked, floored to a whole percent', () => {
+		expect(levelPercent(100, 0)).toBe(0);
+		expect(levelPercent(100, xpForLevel(100) * 0.185)).toBe(18);
+		expect(levelPercent(5, xpForLevel(5) / 2)).toBe(50);
+	});
+	it('stays within 0 to 99', () => {
+		expect(levelPercent(100, xpForLevel(100))).toBe(99);
+		expect(levelPercent(100, -5)).toBe(0);
 	});
 });

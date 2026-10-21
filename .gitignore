@@ -51,6 +51,13 @@ review-shots/
 .npm-cache
 packages/client/dist.next/
 packages/web/dist.next/
+# the frame profiler's uploaded reports
+profiles/
+# the staging desktop app's build (idle dev)
+packages/client/dist.staging/
+packages/web/dist.staging/
+packages/desktop/release-staging/
+packages/desktop/electron-builder.staging.yml
 
 # Uploaded media (news cover images)
 /packages/server/uploads

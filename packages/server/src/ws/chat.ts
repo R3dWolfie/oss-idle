@@ -3,14 +3,19 @@ import {
 	DEFAULT_CHANNEL,
 	LEGACY_DEFAULT_CHANNEL,
 	MAX_CHAT_LENGTH,
+	TEAM_CHANNEL,
 	type ChatLine,
 } from '@oss-idle/shared/community/wire';
+import { count } from '../metrics';
 import {
 	type Group,
 	GROUP_BADGE,
 	isAdmin,
 } from '@oss-idle/shared/groups';
-import { groupsOf } from '../groups';
+import {
+	groupsOf,
+	teamCharacters,
+} from '../groups';
 import { isSupporter } from '../supporter';
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
@@ -35,7 +40,7 @@ import { rollMax } from '@oss-idle/shared/community/roll';
  */
 
 // Channels a client may post to / the console may browse. Extend as more land.
-const CHANNELS = new Set([DEFAULT_CHANNEL, ANNOUNCE_CHANNEL, LOBBY_CHANNEL]);
+const CHANNELS = new Set([DEFAULT_CHANNEL, ANNOUNCE_CHANNEL, LOBBY_CHANNEL, TEAM_CHANNEL]);
 
 /** The browsable channel list (for the admin console). */
 export const chatChannels = (): string[] => [...CHANNELS];
@@ -115,9 +120,12 @@ export const chatLine = async (channel: string, id: string): Promise<ChatLine | 
 	return v ? JSON.parse(v) as ChatLine : undefined;
 };
 
-/** Every retained line in a channel, oldest first. */
-export const chatHistory = async (channel: string): Promise<ChatLine[]> => {
-	const ids = await redis.zrangebyscore(idxKey(channel), Date.now() - HISTORY_MS, '+inf');
+/** Every retained line in a channel (or the latest `limit`), oldest first. */
+export const chatHistory = async (channel: string, limit?: number): Promise<ChatLine[]> => {
+	const since = Date.now() - HISTORY_MS;
+	const ids = limit
+		? (await redis.zrevrangebyscore(idxKey(channel), '+inf', since, 'LIMIT', 0, limit)).reverse()
+		: await redis.zrangebyscore(idxKey(channel), since, '+inf');
 	if (!ids.length) return [];
 	const raw = await redis.hmget(logKey(channel), ...ids);
 	return raw.filter((v): v is string => !!v).map(v => JSON.parse(v) as ChatLine);
@@ -176,8 +184,8 @@ export const handleChat = async (
 	if (!trimmed) return;
 	if (channel === LEGACY_DEFAULT_CHANNEL) channel = DEFAULT_CHANNEL;
 
-	// a match's channel reaches its players only
-	const members = await channelMembers(channel);
+	// a match's channel reaches its players only, #team the team's
+	const members = channel === TEAM_CHANNEL ? await teamCharacters() : await channelMembers(channel);
 	if (members ? !members.includes(from.characterId) : !CHANNELS.has(channel)) {
 		hub.sendTo(from.characterId, {
 			type: 'error', message: `Unknown channel: ${channel}`,
@@ -233,6 +241,7 @@ export const handleChat = async (
 
 /** Send a line to a match's players, or everyone. */
 const relay = (line: ChatLine, members: number[] | undefined): void => {
+	count('activity', 'chat');
 	if (members) {
 		for (const id of members) {
 			hub.sendTo(id, {

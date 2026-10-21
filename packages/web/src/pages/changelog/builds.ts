@@ -1,6 +1,6 @@
 import compareVersions from '@oss-idle/shared/helpers/compareVersions';
 
-// changelog/<major>/<minor>/<patch>/<version>.md, written by scripts/version-bump.mjs:
+// changelog/<major>/<minor>/<patch>/<version>.md, written at each version bump:
 // the date, a blank line, then one `add|fix[!] [Category] title` line per entry
 // (`!` = major).
 const files = import.meta.glob<string>([

@@ -3,6 +3,7 @@ import {
 	asc,
 	eq,
 	inArray,
+	or,
 } from 'drizzle-orm';
 import {
 	type Group,
@@ -53,6 +54,16 @@ export const teamMembers = async () => {
 	return rows.map(({ userAvatarUrl, ...row }) => ({
 		...row, avatarUrl: resolveAvatarUrl(row.avatarUrl, userAvatarUrl),
 	}));
+};
+
+/** The current characters of every member of any group, the owner included: #team's audience. */
+export const teamCharacters = async (): Promise<number[]> => {
+	const rows = await db
+		.selectDistinct({ id: users.currentCharacter })
+		.from(users)
+		.leftJoin(userGroups, eq(userGroups.userId, users.id))
+		.where(or(eq(users.id, OWNER_ID), eq(userGroups.userId, users.id)));
+	return rows.flatMap(r => r.id ?? []);
 };
 
 export const addToGroup = async (userId: number, group: Group): Promise<void> => {

@@ -510,6 +510,10 @@ msgstr "chat|message|private|pm|friends"
 msgid "Cheating"
 msgstr "Cheating"
 
+#: src/components/options/MoveInstall.tsx
+msgid "Choose where to move oss!idle (the game will restart)"
+msgstr "Choose where to move oss!idle (the game will restart)"
+
 #: src/components/dock/DockControls.tsx
 msgid "clear"
 msgstr "clear"
@@ -1055,6 +1059,7 @@ msgid "Length: {totalLength} BPM: {bpmText} Objects: {objects}"
 msgstr "Length: {totalLength} BPM: {bpmText} Objects: {objects}"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "Let this play finish, then wait"
 msgstr "Let this play finish, then wait"
 
@@ -1184,6 +1189,10 @@ msgstr "Mods change how a map plays. A faster rate usually makes the map harder,
 msgid "Most downloaded"
 msgstr "Most downloaded"
 
+#: src/components/options/MoveInstall.tsx
+msgid "Move installation..."
+msgstr "Move installation..."
+
 #: src/components/dock/DockQueue.tsx
 msgid "Move it down"
 msgstr "Move it down"
@@ -1191,6 +1200,10 @@ msgstr "Move it down"
 #: src/components/dock/DockQueue.tsx
 msgid "Move up"
 msgstr "Move up"
+
+#: src/scenes/Options.tsx
+msgid "move|install|installation|folder|location|portable"
+msgstr "move|install|installation|folder|location|portable"
 
 #: src/scenes/MainMenu.tsx
 msgid "Multi"
@@ -1258,7 +1271,7 @@ msgstr "Next rebirth unlocks: {next}"
 msgid "Next song"
 msgstr "Next song"
 
-#: src/scenes/Gameplay.tsx
+#: src/components/gameplay/QueueNextUp.tsx
 msgid "Next up:"
 msgstr "Next up:"
 
@@ -1375,6 +1388,10 @@ msgstr "Open this link?"
 msgid "Options"
 msgstr "Options"
 
+#: src/components/options/MoveInstall.tsx
+msgid "oss!idle can't write to that folder."
+msgstr "oss!idle can't write to that folder."
+
 #: src/components/Tutorial.tsx
 msgid "oss!idle features <0>online leaderboards</0>, just like osu!. Sign in with your osu! account to compete and save your progression online."
 msgstr "oss!idle features <0>online leaderboards</0>, just like osu!. Sign in with your osu! account to compete and save your progression online."
@@ -1441,6 +1458,7 @@ msgid "Password:"
 msgstr "Password:"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "pause"
 msgstr "pause"
 
@@ -1449,6 +1467,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: src/components/dock/DockNowPlaying.tsx
+#: src/components/gameplay/QueueNextUp.tsx
 msgid "Paused, next:"
 msgstr "Paused, next:"
 
@@ -1468,6 +1487,10 @@ msgstr "Permanently delete \"{addon}\"? This cannot be undone."
 #: src/components/leaderboard/PersonalBest.tsx
 msgid "Personal best"
 msgstr "Personal best"
+
+#: src/components/options/MoveInstall.tsx
+msgid "Pick a folder outside the current installation."
+msgstr "Pick a folder outside the current installation."
 
 #: src/components/Tutorial.tsx
 msgid "Pick a song"
@@ -1712,6 +1735,7 @@ msgid "Result"
 msgstr "Result"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "resume"
 msgstr "resume"
 
@@ -1937,6 +1961,7 @@ msgid "Start playing the queue"
 msgstr "Start playing the queue"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "Start playing the queue again"
 msgstr "Start playing the queue again"
 
@@ -1991,9 +2016,17 @@ msgstr "Team Mode:"
 msgid "Thanks for your generosity!"
 msgstr "Thanks for your generosity!"
 
+#: src/components/options/MoveInstall.tsx
+msgid "That folder already has an oss!idle folder with files in it."
+msgstr "That folder already has an oss!idle folder with files in it."
+
 #: src/components/options/DownloadAllWarning.tsx
 msgid "That's why downloading them all at once is an osu!supporter perk."
 msgstr "That's why downloading them all at once is an osu!supporter perk."
+
+#: src/components/community/chat/ChannelPicker.tsx
+msgid "The Administrators' and Global Moderation Team's channel."
+msgstr "The Administrators' and Global Moderation Team's channel."
 
 #: src/components/community/chat/ChannelPicker.tsx
 msgid "The main oss!idle channel."

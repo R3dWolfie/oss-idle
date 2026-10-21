@@ -3,6 +3,7 @@ import {
 	useStarsOf,
 } from '../gameplay/rateStars';
 import {
+	memo,
 	useEffect,
 	useRef,
 	useState,
@@ -58,7 +59,7 @@ type Props = {
 	xpInsight?: BeatmapXPInsight
 };
 
-export default function BeatmapCard({
+function BeatmapCard({
 	beatmap, set,
 	onCardClick, onCardDoubleClick,
 	downloads, xpInsight,
@@ -166,3 +167,6 @@ export default function BeatmapCard({
 		</div>
 	);
 }
+
+// a card scrolling into the carousel re-renders the carousel, not every other card
+export default memo(BeatmapCard);

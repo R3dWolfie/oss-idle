@@ -89,6 +89,11 @@ class WsHub {
 		});
 	}
 
+	/** Close every socket of this worker as restarting: its clients reconnect to another. */
+	public closeAll(): void {
+		for (const ws of this.owner.keys()) ws.close(1012, 'restarting');
+	}
+
 	public add(characterId: number, ws: WSContext): void {
 		let set = this.conns.get(characterId);
 		if (!set) this.conns.set(characterId, set = new Set());

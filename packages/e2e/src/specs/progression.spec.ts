@@ -55,7 +55,7 @@ test.describe('progression', () => {
 		await game.waitForPlay();
 		await game.skipToEnd();
 		await game.waitForScores();
-		await page.locator('.result__exit').click();
+		await page.locator('.result__exit', { hasText: 'BACK' }).click();
 		await game.expectScene('SELECT');
 
 		const before = await game.character();
@@ -100,7 +100,7 @@ test.describe('progression', () => {
 		await game.waitForPlay();
 		await game.skipToEnd();
 		await game.waitForScores();
-		await page.locator('.result__exit').click();
+		await page.locator('.result__exit', { hasText: 'BACK' }).click();
 
 		await game.expectScene('SELECT');
 		await page.locator('.dock__btn--upgrades').first().click();

@@ -90,8 +90,9 @@ import {
 import Controls from '../input/Controls';
 import { debugMode } from '../globals';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
-import PlayQueue from '../gameplay/playQueue';
 import SkipToEndButton from '../components/gameplay/SkipToEndButton';
+import QueuePauseButton from '../components/gameplay/QueuePauseButton';
+import QueueNextUp from '../components/gameplay/QueueNextUp';
 import {
 	Skills,
 	type SkillName,
@@ -211,10 +212,6 @@ function GameplayInner({
 	const scrollMsRef = useRef(SCROLL_MS);
 	scrollMsRef.current = SCROLL_MS;
 	const [character] = useSynced(Entities.character);
-
-	// playlist autopilot HUD: what plays next
-	const [queue] = useSynced(PlayQueue.state);
-	const nextUp = queue ? PlayQueue.next() : undefined;
 
 	// every play but the debug one is owned by someone (the server, or the local
 	// session) and keeps running whether or not this scene is watching it
@@ -1081,24 +1078,14 @@ function GameplayInner({
 						<Trans>quit</Trans>
 					</button>
 				)}
+				{owned && <QueuePauseButton />}
 			</div>
 			<div className="play__title">
 				{beatmap.metadata.artist} - {beatmap.metadata.title}
 				<RatedVersion version={beatmap.metadata.version} rate={rate} />
 			</div>
 
-			{queue && (
-				<div className="play__autopilot">
-					<div className="play__autopilot-next">
-						<Trans>Next up:</Trans> {nextUp
-							? <>
-								{nextUp.set.metadata.artist} - {nextUp.set.metadata.title}
-								<RatedVersion version={nextUp.metadata.version} rate={nextUp.lockedRate} />
-							</>
-							: '-'}
-					</div>
-				</div>
-			)}
+			<QueueNextUp />
 
 			<SkipToEndButton shown={debug && !done} onSkip={skipToEnd} />
 			<MatchScoreboard beatmapId={beatmapInfo.metadata.id} />

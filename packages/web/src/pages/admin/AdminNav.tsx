@@ -13,6 +13,7 @@ export default function AdminNav() {
 
 	return <Nav>
 		{admin && <Link to='/admin' activeOptions={{ exact: true }} {...tab}>{t`dashboard`}</Link>}
+		{admin && <Link to='/admin/versions' {...tab}>{t`version adoption`}</Link>}
 		<Link to='/admin/chat' {...tab}>{t`chat console`}</Link>
 		{admin && <>
 			<Link to='/admin/balancing' {...tab}>{t`balancing`}</Link>

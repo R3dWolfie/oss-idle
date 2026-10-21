@@ -50,6 +50,9 @@ export const test = base.extend<Fixtures>({
 		await use(errors);
 	},
 	game: async ({ page }, use) => {
+		// the guest wizard opens once the menu lingers past its delay, then
+		// swallows song select's keys
+		await page.addInitScript(() => localStorage.setItem('tutorial', '99'));
 		await use(new Game(page));
 	},
 	playerAs: async ({ browser, baseURL }, use) => {

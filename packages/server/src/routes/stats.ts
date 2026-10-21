@@ -14,6 +14,30 @@ import {
 	adoptionBreakdown,
 	presenceCount,
 } from '../ws/presence';
+import { z } from 'zod';
+import { zValidator } from '@hono/zod-validator';
+import {
+	apiBaseUrl,
+	env,
+} from '../env';
+import { timing } from '../metrics';
+import {
+	clientIp,
+	continentOf,
+} from '../geo';
+import { rateLimit } from '../rateLimit';
+import { dashboard } from '../dashboard';
+
+/** The API origins players can be on: the API itself and its edges. */
+const apiHosts = () => [apiBaseUrl, ...env.API_EDGES].map(url => new URL(url).host);
+
+/** Round trips the game measured to each origin while picking the nearest. */
+const rttBody = z.object({
+	samples: z.array(z.object({
+		host: z.string().max(100),
+		ms: z.number().min(0).max(60_000),
+	})).max(8),
+});
 
 export const statsRoutes = new Hono()
 	.get('/general', async c => c.json({
@@ -32,4 +56,13 @@ export const statsRoutes = new Hono()
 		scores: (await db.select({ nb: max(scores.id) }).from(scores))[0].nb ?? 0,
 		adoption: await adoptionBreakdown(),
 	}))
+	.get('/admin/metrics', requireAdmin, async c => c.json(await dashboard(apiHosts())))
+	.post('/rtt', rateLimit('rtt', 20), zValidator('json', rttBody), async c => {
+		const hosts = apiHosts();
+		const continent = await continentOf(clientIp(c)) ?? '??';
+		for (const { host, ms } of c.req.valid('json').samples) {
+			if (hosts.includes(host)) timing(`rtt:${host}`, ms, `${continent}:`);
+		}
+		return c.body(null, 204);
+	})
 ;

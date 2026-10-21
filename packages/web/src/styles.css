@@ -201,6 +201,10 @@ body {
 	pointer-events: none;
 }
 
+.page.page--wide {
+	max-width: none;
+}
+
 .page {
 	min-height: calc(100% - 110px);
 	display: flex;

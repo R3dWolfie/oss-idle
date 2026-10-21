@@ -75,6 +75,10 @@ export const geoLookup = async (ip?: string, country?: string): Promise<GeoResul
 	return centroid ? { loc: project(centroid.lat, centroid.lng) } : {};
 };
 
+/** The continent code (EU, NA, ...) of an IP, for the dashboard's latency by region. */
+export const continentOf = async (ip?: string): Promise<string | undefined> =>
+	ip ? (await loadReader())?.get(ip)?.continent?.code : undefined;
+
 /** A client-sent IANA timezone, if the runtime knows it. */
 export const validTimezone = (tz?: string): string | undefined => {
 	if (!tz) return undefined;

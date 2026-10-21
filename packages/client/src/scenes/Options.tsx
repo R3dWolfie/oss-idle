@@ -32,6 +32,7 @@ import MusicVolume from '../components/options/MusicVolume';
 import EffectVolume from '../components/options/EffectVolume';
 import DeleteAllBeatmaps from '../components/options/DeleteAllBeatmaps';
 import DownloadAllBeatmaps from '../components/options/DownloadAllBeatmaps';
+import MoveInstall from '../components/options/MoveInstall';
 import AutopilotDelay from '../components/options/AutopilotDelay';
 import AutopilotMode from '../components/options/AutopilotMode';
 import RightClickHold from '../components/options/RightClickHold';
@@ -277,6 +278,10 @@ export default function Options() {
 						{
 							search: t`delete|beatmap|beatmaps`,
 							component: () => DeleteAllBeatmaps,
+						},
+						{
+							search: t`move|install|installation|folder|location|portable`,
+							component: () => MoveInstall,
 						},
 					],
 				},

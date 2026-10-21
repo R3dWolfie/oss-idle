@@ -81,25 +81,36 @@ const colorError = (iss: { input: unknown }) =>
 export const ColorSchema = z.union([RGBColorSchema, HexColorSchema], { error: colorError });
 export type Color = z.infer<typeof ColorSchema>;
 
-export const parseColor = (str: Color): RawRGBColor => {
-	if (isZod(RGBColorSchema, str)) return parseRGBA(str);
-	if (isZod(HexColorSchema, str)) return parseHexColor(str);
-	return [0,0,0,1];
+// Renderers ask for the same skin colours every frame, and a failed safeParse
+// builds a translated error, so each colour is parsed once. Bounded, since
+// faded colours (any alpha) come back in through colorDim(colorA(...)).
+const parsed = new Map<string, Readonly<RawRGBColor>>();
+
+export const parseColor = (str: Color): Readonly<RawRGBColor> => {
+	const known = parsed.get(str);
+	if (known) return known;
+	let rgba: RawRGBColor = [0, 0, 0, 1];
+	if (isZod(RGBColorSchema, str)) rgba = parseRGBA(str);
+	else if (isZod(HexColorSchema, str)) rgba = parseHexColor(str);
+	if (parsed.size >= 1000) parsed.clear();
+	parsed.set(str, Object.freeze(rgba));
+	return rgba;
 };
 
 // Format alpha as a plain decimal: tiny floats (e.g. fade animations) would otherwise
 // serialize as exponential notation ("1e-7") which is not valid CSS / fails the regex.
 const alpha = (a: number): string => clamp(a, 0, 1).toFixed(4).replace(/\.?0+$/, '');
 
+// whole channels and a plain-decimal alpha always match RGBColorSchema
 /** apply alpha to a colour */
 export const colorA = (c: Color, a: number): RGBColor => {
 	const [r, g, b] = parseColor(c);
-	return RGBColorSchema.parse(`rgba(${r}, ${g}, ${b}, ${alpha(a)})`);
+	return `rgba(${r}, ${g}, ${b}, ${alpha(a)})` as RGBColor;
 };
 
 /** dim/brighten a colour by a factor. <1 to dimm >1 to brighten */
 export const colorDim = (c: Color, dim: number): RGBColor => {
 	const [r, g, b, a] = parseColor(c);
 	const dimm = (c: number) => clamp(Math.floor(c * dim), 0, 255);
-	return RGBColorSchema.parse(`rgba(${dimm(r)}, ${dimm(g)}, ${dimm(b)}, ${alpha(a)})`);
+	return `rgba(${dimm(r)}, ${dimm(g)}, ${dimm(b)}, ${alpha(a)})` as RGBColor;
 };

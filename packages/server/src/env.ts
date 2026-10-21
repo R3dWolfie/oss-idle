@@ -12,6 +12,9 @@ const schema = z.object({
 	// service holds the port a local `npm run dev` needs. Resolved per-env below.
 	PORT: z.coerce.number().int().positive().default(3873),
 	PORT_PROD: z.coerce.number().int().positive().default(3875),
+	// Where the API listens: every interface unless set (127.0.0.1 behind a proxy on
+	// a host whose firewall lets everything in).
+	LISTEN_HOST: z.string().min(1).optional(),
 	// Client origin, per-env (resolved below) - used for CORS and the OAuth
 	// redirect. Dev and prod differ, but share one .env, so both are declared.
 	CLIENT_URL: z.url().default('http://localhost:5173'),
@@ -27,8 +30,10 @@ const schema = z.object({
 	DB_NAME: z.string().min(1).default('idle'),
 	DB_NAME_DEV: z.string().min(1).default('idle_test'),
 	// The farm's `stats` database, read-only: it mirrors every ranked/loved
-	// beatmap and backs the map-request search box. Same host/credentials.
+	// beatmap and backs the map-request search box. Same credentials; its host is
+	// DB_HOST unless prod runs away from the farm (STATS_DB_HOST, over WireGuard).
 	STATS_DB_NAME: z.string().min(1).default('stats'),
+	STATS_DB_HOST: z.string().min(1).optional(),
 
 	// osu! OAuth application (https://osu.ppy.sh/home/account/edit → OAuth)
 	OSU_CLIENT_ID: z.string().min(1),
@@ -39,6 +44,9 @@ const schema = z.object({
 	// shared across projects. Nothing here talks to osu.ppy.sh/api directly.
 	OSU_API_URL: z.url().default('https://osu.api.rhythmgamers.net'),
 	OSU_SCHEDULER_TOKEN: z.string().min(1),
+	// Another scheduler (its own token) for when that one can't be reached.
+	OSU_API_FALLBACK_URL: z.url().optional(),
+	OSU_SCHEDULER_FALLBACK_TOKEN: z.string().min(1).optional(),
 
 	// Where an accepted request's .osz is pulled from when ingesting it straight
 	// from the queue. `{setId}` is substituted; osu! itself has no download API
@@ -72,6 +80,11 @@ const schema = z.object({
 	// download can't take the uplink from players. Tune to the host's upload.
 	BULK_DOWNLOAD_RATE: z.coerce.number().int().positive().default(100_000_000 / 8), // 100 Mbps
 
+	// API edges nearer some players (the game picks by latency: VITE_API_EDGES); the
+	// dashboard checks them every minute.
+	API_EDGES: z.string().default('')
+		.transform(s => s.split(',').map(url => url.trim().replace(/\/$/, '')).filter(Boolean)),
+
 	// MaxMind GeoLite2-City database, used to place online players on the world
 	// map (anonymous, coarse) and derive their timezone. Optional: without it the
 	// map/timezone features degrade to country-level. The file is provisioned out
@@ -86,6 +99,10 @@ const schema = z.object({
 	ABBY_API_KEY: z.string().optional(),
 	// Supporter thank-you emails go out through this mailbox, e.g. smtps://user:pass@mail.boitech.dev:465.
 	SMTP_URL: z.string().optional(),
+	// What the server costs a month in euros
+	SERVER_MONTHLY_COST: z.coerce.number().positive().optional(),
+	SUPPORTER_TAXES: z.string().default('')
+		.transform(s => s.split(',').filter(Boolean).map(Number)),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -158,3 +175,7 @@ export const DESKTOP_ORIGIN = 'app://idle';
 
 /** Session cookie is Secure only over https (prod). */
 export const cookieSecure = isProd;
+
+/** The session cookie covers every oss!idle host (the API and its edges, like
+ *  na.oss.idle) in prod; the old osu.idle hosts can't set it, so theirs stay their own. */
+export const SESSION_COOKIE_DOMAIN = 'oss.idle.rhythmgamers.net';

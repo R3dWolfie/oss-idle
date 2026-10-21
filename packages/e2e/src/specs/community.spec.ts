@@ -69,6 +69,8 @@ test.describe('community overlay', () => {
 		await expect(autoHide).toHaveAttribute('data-on', 'true');
 
 		const users = page.locator('.community-controls button', { hasText: 'Online users' });
+		// opening the overlay put the keyboard in the chat input
+		await page.locator('.chat__compose input').blur();
 		await game.playSelected();
 		// auto-hide: the playfield is not the place for it - and the buttons say so
 		await expect(panel).not.toHaveClass(/is-enabled/);

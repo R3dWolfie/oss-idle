@@ -13,6 +13,14 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/userPage.ts
+msgid "{name} wrote:"
+msgstr "{name} wrote:"
+
 #: src/app.ts
 msgid "Not found"
 msgstr "Not found"
+
+#: src/userPage.ts
+msgid "SPOILER"
+msgstr "SPOILER"

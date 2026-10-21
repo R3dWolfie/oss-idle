@@ -1,16 +1,22 @@
 import { backfillRateStars } from './beatmaps/rateStars';
 import { serve } from '@hono/node-server';
+import type { Server } from 'node:http';
 import { appendFile } from 'node:fs/promises';
 import Logfile from '@oss-idle/shared/helpers/logfile';
 import { app } from './app';
+import { closeOnDrain } from './drain';
 import {
+	env,
 	isProd,
 	port,
 } from './env';
 import { separateStagingMapIds } from './beatmaps/storage';
 import { redis } from './redis';
 import { sweepDuePlays } from './play';
-import { sweepMatches } from './ws/multiplayer';
+import {
+	roundsStarted,
+	sweepMatches,
+} from './ws/multiplayer';
 import { sweepRankedMaps } from './beatmaps/sweep';
 import {
 	ensureRankings,
@@ -18,6 +24,8 @@ import {
 } from './rankings';
 import { registerWs } from './ws/routes';
 import { hub } from './ws/hub';
+import { countLoggedErrors } from './metrics';
+import { startMonitor } from './monitor';
 import {
 	sweepAdoption,
 	sweepPresence,
@@ -27,18 +35,27 @@ import { sweepAbby } from './abby';
 
 activateServerI18n();
 
+// the sweeps and socket heartbeats are fire-and-forget: a database or Redis blip in
+// one must not end the worker, and every socket it holds with it
+process.on('unhandledRejection', e => console.error('[unhandled]', e));
+
 Logfile.setWriter(lines => appendFile('runtime.log', lines.join('\n') + '\n'));
 
 // Community WebSocket: mount the route on the app and start the pub/sub fan-out.
 const { injectWebSocket } = registerWs(app);
+countLoggedErrors();
 hub.init();
 
 const server = serve({
-	fetch: app.fetch, port,
+	fetch: app.fetch, port, hostname: env.LISTEN_HOST,
 }, info => {
 	console.log(`🎵 oss!idle API listening on http://localhost:${info.port}`);
 });
 
+// outlives Apache's pooled backend connections (ProxyPass ttl=60): otherwise Node closes an
+// idle one just as Apache reuses it, and that request is a 502
+(server as Server).keepAliveTimeout = 65_000;
+const drain = closeOnDrain(server as Server);
 injectWebSocket(server);
 
 // Staging shares prod's beatmap files: its new maps count from 2e9, prod's from 1e9.
@@ -85,18 +102,27 @@ adoptionSweep.unref();
 const abbySweep = setInterval(() => void sweepAbby(), 60 * 60_000);
 abbySweep.unref();
 
+// The dashboard's minute checks of every service prod depends on.
+const monitor = startMonitor();
+
 /**
  * Drain on a clean shutdown (systemd stop / restart, Ctrl-C, tsx-watch reload,
- * pm2 reload). In-flight plays now live in Redis, so there's nothing to snapshot
- * here - just close the HTTP server and the Redis connection.
+ * pm2 reload): stop taking requests, send the sockets to another worker, and close
+ * Redis only once the requests in flight and the sockets' goodbyes are done.
  */
-function shutdown(signal: string): void {
+const shutdown = (signal: string): void => {
 	console.log(`\n${signal} received - shutting down.`);
-	redis.quit();
-	server.close(() => process.exit(0));
+	[sweep, matchSweep, rankSweep, rankHistorySweep, presenceSweep, adoptionSweep, abbySweep, monitor]
+		.forEach(clearInterval);
+	hub.closeAll();
+	drain();
+	server.close(() => void roundsStarted().then(() => {
+		setTimeout(() => void redis.quit().finally(() => process.exit(0)), 1000);
+	}));
+	if ('closeIdleConnections' in server) server.closeIdleConnections();
 	// Don't hang forever if a connection refuses to drain.
-	setTimeout(() => process.exit(0), 5000).unref();
-}
+	setTimeout(() => process.exit(0), 6000).unref();
+};
 
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));

@@ -111,7 +111,7 @@ test.describe('guest play', () => {
 		await game.expectScene('RESULT');
 		await game.waitForScores();
 
-		await page.locator('.result__exit').click();
+		await page.locator('.result__exit', { hasText: 'BACK' }).click();
 		await game.expectScene('SELECT');
 
 		// the card now carries the grade the play earned

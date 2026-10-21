@@ -17,6 +17,9 @@ Moderation Team` also carries moderation permissions (kick, ban, timeout,
 manage messages/threads/nicknames, voice mute/deafen/move, audit log) but not
 *Manage Roles*, so moderators can't hand out levels or Supporter.
 
+It also sets each linked member's server nickname to their current character's
+name (not the owner's, or anyone ranked above the bot: Discord forbids it).
+
 - **Live:** it listens to the server's socket hub on Redis, so a play, a rebirth
   or a fresh link moves the roles at once. A full pass every 15 minutes and on
   start catches the rest (unlinks, relinks, missed events).
@@ -24,21 +27,14 @@ manage messages/threads/nicknames, voice mute/deafen/move, audit log) but not
   `DISCORD_BOT_TOKEN` and `DISCORD_GUILD_ID`. The server needs
   `DISCORD_CLIENT_SECRET` for the linking itself.
 - **Discord side:** Server Members intent on, the bot invited with *Manage
-  Roles* plus every permission it gives the GMT role (Discord only lets it
+  Roles*, *Manage Nicknames* plus every permission it gives the GMT role (Discord only lets it
   grant what it holds), and its own `oss!idle` role at the top of the role list - it can only
   order roles below its own.
 
 ## Running
 
-Prod runs it as its own systemd unit from the prod checkout
-([deploy/oss-idle-discord.service](deploy/oss-idle-discord.service)):
-
-```bash
-sudo cp packages/discord/deploy/oss-idle-discord.service /etc/systemd/system/
-sudo systemctl enable --now oss-idle-discord
-```
-
-The deploy scripts restart it along with the API.
+Prod runs it as its own long-lived service (`node --import tsx src/index.ts` from this
+package, `NODE_ENV=production`), restarted along with the API on each deploy.
 
 It is not part of `npm run dev`: there is one Discord server, and a dev bot
 reading the staging database would hand out staging levels there. To try it

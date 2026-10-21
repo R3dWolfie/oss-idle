@@ -182,6 +182,10 @@ msgstr "Bar skin notes"
 msgid "Basic plastic chair"
 msgstr "Basic plastic chair"
 
+#: src/display/medals.ts
+msgid "Be in the top {percent}% of players by pp"
+msgstr "Be in the top {percent}% of players by pp"
+
 #: src/display/skills.ts
 msgid "Better audio and less noise to stay locked in"
 msgstr "Better audio and less noise to stay locked in"
@@ -401,6 +405,10 @@ msgstr "Dynamic sight focus"
 msgid "Eight Stars Up"
 msgstr "Eight Stars Up"
 
+#: src/display/medals.ts
+msgid "Elite"
+msgstr "Elite"
+
 #: src/skills.ts
 msgid "Embedded keyboard firmware"
 msgstr "Embedded keyboard firmware"
@@ -552,6 +560,10 @@ msgstr "Hush-Hush"
 #: src/display/community.ts
 msgid "Idle"
 msgstr "Idle"
+
+#: src/display/medals.ts
+msgid "In the Running"
+msgstr "In the Running"
 
 #: src/display/medals.ts
 msgid "Inferno"
@@ -726,6 +738,10 @@ msgstr "Number One"
 #: src/display/addon.ts
 msgid "On Hold"
 msgstr "On Hold"
+
+#: src/display/medals.ts
+msgid "One Percent"
+msgstr "One Percent"
 
 #: src/skills.ts
 msgid "Optimized MasterPlus+"
@@ -1074,6 +1090,10 @@ msgid "Top of the Line"
 msgstr "Top of the Line"
 
 #: src/display/medals.ts
+msgid "Top Quarter"
+msgstr "Top Quarter"
+
+#: src/display/medals.ts
 msgid "Triple Digits"
 msgstr "Triple Digits"
 
@@ -1117,6 +1137,10 @@ msgstr "Upgrade your keyboard to increase your synergy"
 #: src/display/skills.ts
 msgid "Upgrade your monitor to see the notes more clearly"
 msgstr "Upgrade your monitor to see the notes more clearly"
+
+#: src/display/medals.ts
+msgid "Upper Half"
+msgstr "Upper Half"
 
 #: src/skills.ts
 msgid "Used earbuds"

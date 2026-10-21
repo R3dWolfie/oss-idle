@@ -7,6 +7,7 @@ import Background from './Background';
 import './Result.css';
 import Controls from '../input/Controls';
 import Multiplayer from '../online/multiplayer';
+import PlayManager from '../online/playManager';
 import MatchRanking from '../components/multiplayer/MatchRanking';
 import useMatchRanking from '../components/multiplayer/useMatchRanking';
 import SceneManager from './SceneManager';
@@ -107,6 +108,10 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 	Controls.back.usePress(onBack);
 	const [match] = useSynced(Multiplayer.current);
 	const retryable = beatmap && !match;
+	// the queue's countdown would otherwise replace the retry once it is on screen
+	const retry = () => {
+		if (beatmap && launchPlay(beatmap)) PlayManager.cancelChain();
+	};
 
 	const player = useAsync(async () => Character.isLocalId(score.characterId)
 		? Character.get({ id: score.characterId })
@@ -133,7 +138,7 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 				<button className="result__exit" onClick={onBack}>
 					<Trans>BACK</Trans>
 				</button>
-				{retryable && <button className="result__exit" onClick={() => launchPlay(beatmap)}>
+				{retryable && <button className="result__exit" onClick={retry}>
 					<Trans>RETRY</Trans>
 				</button>}
 			</div>

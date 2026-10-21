@@ -26,8 +26,8 @@ import { music } from '../audio/MusicPlayer';
  * a browser cannot do from the outside: end a local play now instead of waiting
  * the song out. Everything else a test does, it does by clicking.
  *
- * Loaded from main.tsx behind `import.meta.env.DEV`, so a production build never
- * contains it.
+ * Loaded from main.tsx behind `DEV_TOOLS` (dev, or a staging build's menu), so a
+ * release build never contains it.
  */
 
 type SkillView = {

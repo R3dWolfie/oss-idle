@@ -1,14 +1,17 @@
 import Background from '../../scenes/Background';
 import Triangles from '../Triangles';
-
-type Props = { parallax: { x: number, y: number } };
+import { useParallax } from '@oss-idle/shared/hooks/useParallax';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import { SETTINGS } from '../../db/settings';
 
 /**
  * The scene's own scenery: the beatmap backdrop, the triangles and the scrim.
  * Mounted as an overlay, song select draws none of it - whatever is underneath
  * stays visible, and only the carousel and the queue are on screen.
  */
-export default function SongSelectBackdrop({ parallax }: Props) {
+export default function SongSelectBackdrop() {
+	const [parallaxOn] = useSynced(SETTINGS.parallax);
+	const parallax = useParallax(0.12, parallaxOn);
 	return (<>
 		<Background />
 		<div

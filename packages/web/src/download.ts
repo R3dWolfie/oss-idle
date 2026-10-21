@@ -11,8 +11,8 @@ export const PLATFORM_LABEL: Record<Platform, string> = {
 	other: 'desktop',
 };
 
-/** Per-deploy publish manifest written next to the installers (see
- *  scripts/publish-desktop.mjs): the live version and each platform's filename. */
+/** Per-deploy publish manifest written next to the installers by the deploy:
+ *  the live version and each platform's filename. */
 export interface DownloadManifest {
 	version: string;
 	files: Partial<Record<'windows' | 'linux', string | null>>;

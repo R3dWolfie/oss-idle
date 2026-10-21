@@ -42,7 +42,10 @@ import {
 import { presenceTimezone } from './ws/presence';
 import { hasChatted } from './ws/chat';
 import { hub } from './ws/hub';
-import { reindexCharacter } from './rankings';
+import {
+	ppTopPercent,
+	reindexCharacter,
+} from './rankings';
 import type { MedalBatch } from '@oss-idle/shared/play';
 
 /** What a finished play adds that the database does not keep. */
@@ -147,7 +150,7 @@ const playedAtNight = async (characterId: number, tz: string) => {
 const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 	const id = character.id;
 	const [
-		facts, firsts, replays, curatedMaps, totals, chatted, rebirthed, nightOwl,
+		facts, firsts, replays, curatedMaps, totals, chatted, rebirthed, nightOwl, topPercent,
 	] = await Promise.all([
 		scoreFacts(id),
 		firstPlaces(id),
@@ -157,6 +160,7 @@ const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 		hasChatted(id),
 		rebirthedPast(character),
 		tz !== undefined && playedAtNight(id, tz),
+		Number(character.pp) > 0 ? ppTopPercent(id) : undefined,
 	]);
 	return {
 		...facts,
@@ -168,6 +172,7 @@ const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 		chatted,
 		rebirthed: rebirthed || character.generation > 1,
 		nightOwl,
+		topPercent,
 		nearMiss: (play.failedAt ?? 0) >= FAIL_99,
 		// raw, as the game shows it ("2.4ω")
 		overdrive: Math.max(...Skills.map(s => character[`${s}Overdrive`])),
@@ -315,6 +320,10 @@ const RULES: Record<string, Rule> = {
 	...series('pp', {
 		'pp-1k': 1_000, 'pp-5k': 5_000, 'pp-10k': 10_000, 'pp-20k': 20_000,
 	}, 'pp'),
+	...Object.fromEntries([75, 50, 25, 10, 1].map(n => [`top-${n}`, one(
+		`global pp rank in the top ${n}% of players with pp`,
+		p => p.topPercent !== undefined && p.topPercent <= n,
+	)])),
 	...series('best pp of a single stored score', {
 		'play-pp-50': 50, 'play-pp-100': 100, 'play-pp-200': 200,
 		'play-pp-500': 500, 'play-pp-750': 750, 'play-pp-1k': 1_000,

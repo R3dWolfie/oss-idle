@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import fs from 'node:fs';
 import path from 'node:path';
 
 /** Custom scheme the OS routes back to the running app (`oss-idle://<action>`) -
@@ -28,24 +29,22 @@ export const DISCORD_LARGE_IMAGE = 'idle-white';
  *  Prod: the public API and the bundled app:// origin. */
 export const IS_DEV = !app.isPackaged;
 
+/** A staging build: packaged like prod, but its package.json (written by the build)
+ *  names a staging server for the API and the website. */
+export const STAGING = (JSON.parse(
+	fs.readFileSync(path.join(app.getAppPath(), 'package.json'), 'utf8'),
+) as { staging?: { api: string; site: string } }).staging;
+
 /** Backend API base (absolute - the renderer loads from app://, not the API). */
 export const API_BASE = IS_DEV
 	? 'http://localhost:3873'
-	: 'https://api.oss.idle.rhythmgamers.net';
+	: STAGING?.api ?? 'https://api.oss.idle.rhythmgamers.net';
 
 /** What the main window loads: the live Vite dev server, or the bundled origin. */
 export const RENDERER_URL = IS_DEV ? 'http://localhost:5173/' : `${APP_ORIGIN}/`;
 
-/** The website origin. The bundle ships only the app shell - the large on-demand
- *  static library (beatmaps, previews) is streamed from here instead of being
- *  packed into the installer (it's ~2.4 GB). Only used by the app:// handler,
- *  which runs in packaged builds, so the prod origin is always right here. */
-export const SITE_BASE = 'https://oss.idle.rhythmgamers.net';
-
-/** Bundle path prefixes served from the website instead of the local files, so a
- *  prod build stays small. The client requests these as root-relative URLs (see
- *  beatmap_api.ts), so under app:// they arrive here and we proxy them. */
-export const REMOTE_PREFIXES = ['/beatmaps/', '/previews/'];
+/** The website origin (the signed-in page after a desktop login). */
+export const SITE_BASE = STAGING?.site ?? 'https://oss.idle.rhythmgamers.net';
 
 /** On-disk root of a bundled renderer ('client' or 'web'). Packaged: copied under
  *  resources/renderer (see electron-builder `extraResources`). Unpackaged: each

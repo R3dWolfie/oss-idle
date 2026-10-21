@@ -32,7 +32,7 @@ import {
 } from '@oss-idle/shared/skin';
 
 
-// skins publish without review: new ones and their icons are capped per account
+// skins publish without review: publishes and icon uploads are capped per account
 const SKINS_PER_DAY = 5;
 const idParam = z.coerce.number().int().positive();
 
@@ -99,7 +99,7 @@ export const skinsRoutes = new Hono()
 		return c.json(await Promise.all(rows.map(withAuthor)));
 	})
 
-	.post('/', requireActive, dailyLimit('skins', SKINS_PER_DAY), jsonBody(skinCreateBody), async c => {
+	.post('/', requireActive, jsonBody(skinCreateBody), async c => {
 		const body = c.req.valid('json');
 		const [created] = await db.insert(skins).values({
 			name: body.name,
@@ -146,7 +146,7 @@ export const skinsRoutes = new Hono()
 		return c.json(await withAuthor(row!));
 	})
 
-	.post('/:id/submit', requireActive, async c => {
+	.post('/:id/submit', requireActive, dailyLimit('skins', SKINS_PER_DAY), async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const existing = await ownedBy(id, c.get('userId'));
 		if (existing.status === SKIN_STATUS.PUBLISHED) {

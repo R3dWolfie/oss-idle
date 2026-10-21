@@ -1,10 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
 import { eq } from 'drizzle-orm';
-import type { RowDataPacket } from 'mysql2/promise';
-import {
-	db,
-	pool,
-} from '../db/client';
+import { db } from '../db/client';
+import { farmQuery } from '../db/stats';
 import { characters } from '../db/schema/character';
 import {
 	OLD_SUFFIX,
@@ -48,15 +45,15 @@ export const assertNameAvailable = async (
 		throw new HTTPException(409, { message: 'Name already taken' });
 	}
 
-	const [results1] = await pool.promise().query<RowDataPacket[]>(
-		// latin1 / utf8mb3 columns: a name outside them (kana, emoji) must not error
-		'SELECT * FROM stats.osu_user WHERE osu_id != ? AND CONVERT(username USING utf8mb4) = ?',
+	// latin1 / utf8mb3 columns: a name outside them (kana, emoji) must not error
+	const results1 = await farmQuery(
+		'SELECT 1 FROM stats.osu_user WHERE osu_id != ? AND CONVERT(username USING utf8mb4) = ? LIMIT 1',
 		[userId, name]);
-	const [results2] = await pool.promise().query<RowDataPacket[]>(
-		'SELECT * FROM farm.user WHERE osu_id != ? AND CONVERT(username USING utf8mb4) = ?',
+	const results2 = await farmQuery(
+		'SELECT 1 FROM farm.user WHERE osu_id != ? AND CONVERT(username USING utf8mb4) = ? LIMIT 1',
 		[userId, name]);
 
-	if ((results1 && results1.length) || (results2 && results2.length)) {
+	if (results1.length || results2.length) {
 		throw new HTTPException(403, { message: 'Name is reserved' });
 	}
 };

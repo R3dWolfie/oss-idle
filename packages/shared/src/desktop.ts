@@ -7,6 +7,10 @@ export type DesktopUpdateStatus =
 	| { state: 'downloading'; percent: number }
 	| { state: 'error'; message: string };
 
+/** Why moving the install didn't start (`moving` means the app is about to quit). */
+export type DesktopMoveResult =
+	'moving' | 'cancelled' | 'inside' | 'not-empty' | 'not-writable' | 'unavailable';
+
 /** A Discord Rich Presence snapshot the renderer pushes to the desktop shell.
  *  Desktop-only: ignored in a browser, and a no-op unless the app was built with
  *  a Discord client id and Discord is actually running. */
@@ -45,8 +49,8 @@ export interface OssIdleDesktop {
 	readonly version: string;
 	/** In-app self-update controls. */
 	readonly update: DesktopUpdater;
-	/** Current session token to send as a Bearer header, or null when signed out.
-	 *  Synchronous and cached - safe to read per request. */
+	/** Current session token for the socket handshake, or null when signed out (the
+	 *  app adds it to API requests itself). Synchronous and cached. */
 	getToken(): string | null;
 	/** Begin osu! sign-in: opens the system browser to the OAuth flow. Resolves
 	 *  once the round-trip completes (token stored) or rejects on failure/cancel. */
@@ -79,6 +83,9 @@ export interface OssIdleDesktop {
 		/** Persist whether the next launch is uncapped. */
 		setUncapped(on: boolean): void;
 	};
+	/** Reinstall into `<picked folder>/oss!idle` and relaunch from there. Absent where the
+	 *  install is already portable (AppImage, macOS) and on builds older than the option. */
+	moveInstall?(dialogTitle: string): Promise<DesktopMoveResult>;
 	/** Steam integration - inert until wired up, exposed so callers can feature-detect. */
 	readonly steam: { readonly available: boolean };
 }

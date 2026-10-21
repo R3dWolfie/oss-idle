@@ -12,12 +12,13 @@ import { z } from 'zod';
 import {
 	beatmapRequestBody,
 	beatmapRequestPatch,
-	MAX_PENDING_REQUESTS,
+	maxPendingRequests,
 	parseBeatmapsetId,
 } from '@oss-idle/shared/beatmapRequest';
 import { INTRO_SET_ID } from '@oss-idle/shared/beatmap';
 import { isAdmin } from '@oss-idle/shared/groups';
 import { groupsOf } from '../groups';
+import { isSupporter } from '../supporter';
 import { db } from '../db/client';
 import {
 	beatmapRequests,
@@ -193,8 +194,9 @@ export const beatmapRequestRoutes = new Hono()
 			.select({ pending: count() })
 			.from(beatmapRequests)
 			.where(and(eq(beatmapRequests.userId, userId), eq(beatmapRequests.status, 'pending')));
-		if (open.pending >= MAX_PENDING_REQUESTS) {
-			throw new HTTPException(429, { message: `You already have ${MAX_PENDING_REQUESTS} requests waiting - wait for one to be resolved` });
+		const max = maxPendingRequests(await isSupporter(userId));
+		if (open.pending >= max) {
+			throw new HTTPException(429, { message: `You already have ${max} requests waiting - wait for one to be resolved` });
 		}
 
 		const set = await resolveSet(setId);

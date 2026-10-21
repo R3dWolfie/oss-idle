@@ -69,6 +69,8 @@ const ROUND_TTL_S = 60 * 60;
 const AWAY = `${redisKeyPrefix}mp:away`;
 const AWAY_GRACE_MS = 60 * 1000;
 const FEED_TICK_MS = 250;
+/** A round not started by then lost its worker (crash, deploy): it is dropped. */
+const START_TIMEOUT_MS = 60 * 1000;
 
 const LOCK_MS = 5000;
 const UNLOCK = `
@@ -128,8 +130,10 @@ const liveScores = async (round: Round): Promise<RoundScore[]> => {
 /** A round is over once none of its plays is still running. */
 const roundOver = async (m: Stored, round: Round | undefined): Promise<boolean> => {
 	if (!m.playing) return false;
-	// the plays are still being started
-	if (round?.startedAt !== m.roundStartedAt) return m.endsAt !== undefined && m.endsAt <= Date.now();
+	// still starting, or its worker died
+	if (round?.startedAt !== m.roundStartedAt) {
+		return (m.endsAt ?? (m.roundStartedAt ?? 0) + START_TIMEOUT_MS) <= Date.now();
+	}
 	const ends = await playEnds(round!.players.map(p => p.characterId));
 	return ends.every(e => e === undefined);
 };
@@ -208,8 +212,9 @@ const memberOf = async (characterId: number): Promise<number | undefined> => {
 
 const withLock = async <T>(id: number, fn: () => Promise<T>): Promise<T> => {
 	const token = randomUUID();
+	// long enough to outlast a dead worker's lock
 	for (let tries = 0; await redis.set(lockKey(id), token, 'PX', LOCK_MS, 'NX') !== 'OK'; tries++) {
-		if (tries > 100) throw new Error(`match ${id} stayed locked`);
+		if (tries > LOCK_MS / 20) throw new Error(`match ${id} stayed locked`);
 		await new Promise(r => setTimeout(r, 20));
 	}
 	try {
@@ -481,6 +486,8 @@ const start = async (characterId: number): Promise<void> => {
 		beatmapId, gameId, startedAt, players: timelines.filter(p => p !== undefined),
 	} satisfies Round), 'EX', ROUND_TTL_S);
 	await change(matchId, m => {
+		// dropped, and a new round started since
+		if (m.roundStartedAt !== startedAt) return false;
 		for (const s of players(m)) {
 			const i = round.indexOf(s.characterId);
 			s.playing = i >= 0 && started[i] !== undefined;
@@ -512,8 +519,10 @@ export const sweepMatches = async (): Promise<void> => {
 	const raw = await redis.hvals(MATCHES);
 	for (const m of raw.map(r => JSON.parse(r) as Stored)) {
 		const ids = players(m).map(s => s.characterId);
-		const round = m.playing ? await readRound(m.id) : undefined;
-		const over = await roundOver(m, round);
+		const stored = m.playing ? await readRound(m.id) : undefined;
+		const over = await roundOver(m, stored);
+		// not the previous round's record
+		const round = stored?.startedAt === m.roundStartedAt ? stored : undefined;
 		const members = ids.length ? await redis.hmget(MEMBERS, ...ids.map(String)) : [];
 		const away = await awayTooLong(ids);
 		const gone = ids.filter((_, i) => away[i] || members[i] !== String(m.id));
@@ -559,6 +568,11 @@ export const ownMatch = async (characterId: number): Promise<Match | undefined> 
 	return m && slotOf(m, characterId) ? toDTO(m) : undefined;
 };
 
+const starting = new Set<Promise<void>>();
+
+/** A shutdown waits for the rounds this worker is starting. */
+export const roundsStarted = (): Promise<unknown> => Promise.allSettled(starting);
+
 /** The host's commands. Returns false for anything else. */
 const handleHostCommand = async (msg: ClientMessage, characterId: number): Promise<boolean> => {
 	switch (msg.type) {
@@ -584,9 +598,12 @@ const handleHostCommand = async (msg: ClientMessage, characterId: number): Promi
 				m.slots[msg.slot] = { state: slot?.state === 'open' ? 'locked' : 'open' };
 			});
 			return true;
-		case 'mp:start':
-			await start(characterId);
+		case 'mp:start': {
+			const started = start(characterId);
+			starting.add(started);
+			await started.finally(() => starting.delete(started));
 			return true;
+		}
 		case 'mp:host':
 			await giveHost(characterId, msg.characterId);
 			return true;

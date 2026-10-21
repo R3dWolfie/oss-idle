@@ -226,6 +226,13 @@ const rankIn = async (key: string, id: number): Promise<number | undefined> => {
 
 export const globalRank = (m: GlobalMetric, id: number) => rankIn(globalKey(m), id);
 
+/** The share of players with pp that rank at or above this character, in percent. */
+export const ppTopPercent = async (id: number): Promise<number | undefined> => {
+	const key = globalKey('pp');
+	const [rank, players] = await Promise.all([rankIn(key, id), redis.zcount(key, '(0', '+inf')]);
+	return rank && players ? 100 * rank / players : undefined;
+};
+
 /** {@link globalRank} for many characters in one round trip, in order. */
 export const globalRanks = async (
 	m: GlobalMetric,

@@ -42,7 +42,11 @@ export default function AddonRow({ row, busy, onModerate }: {
 					<span className='addons-admin__title'>
 						{row.name} <span className='addons-admin__ver'>v{row.version}</span>
 					</span>
-					<span className='addons-admin__creator'>by {row.authorName} · game v{row.gameVersion}</span>
+					<span className='addons-admin__creator'>
+						by {row.authorName} · game v{row.gameVersion}
+						{row.publishedVersion && row.status !== ADDON_STATUS.published
+							&& ` · live v${row.publishedVersion}`}
+					</span>
 					{row.tags.length > 0 && <span className='addons-admin__tags'>{row.tags.join(', ')}</span>}
 				</div>
 
@@ -88,7 +92,7 @@ export default function AddonRow({ row, busy, onModerate }: {
 						Deny
 					</button>
 				)}
-				{row.status === ADDON_STATUS.published && (
+				{row.publishedVersion && (
 					<button 
 						className='addons-admin__btn addons-admin__btn--warn'
 						disabled={busy} 

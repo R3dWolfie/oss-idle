@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-19 16:01\n"
+"PO-Revision-Date: 2026-10-21 10:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -18,7 +18,15 @@ msgstr ""
 "X-Crowdin-File: /packages/server/src/locales/en.po\n"
 "X-Crowdin-File-ID: 31\n"
 
+#: src/userPage.ts
+msgid "{name} wrote:"
+msgstr ""
+
 #: src/app.ts
 msgid "Not found"
 msgstr "Introuvable"
+
+#: src/userPage.ts
+msgid "SPOILER"
+msgstr ""
 

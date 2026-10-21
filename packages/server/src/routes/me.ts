@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { count } from '../metrics';
 import { HTTPException } from 'hono/http-exception';
 import {
 	and,
@@ -48,6 +49,16 @@ import { pushMedals } from '../medals';
 import { characterMedals } from '../db/schema/character_medal';
 import type { PendingAction } from '@oss-idle/shared/pendingAction';
 import type { UserRow } from '../db/schema/user';
+import {
+	profileOrderBody,
+	USER_PAGE_MAX,
+	userPageBody,
+} from '@oss-idle/shared/profile';
+import { isSupporter } from '../supporter';
+import {
+	renderUserPage,
+	userPageOf,
+} from '../userPage';
 
 const characterId = z.number().int().positive();
 const characterRenameBody = characterNameBody.extend({ characterId: characterId.optional() });
@@ -55,6 +66,20 @@ const characterRenameBody = characterNameBody.extend({ characterId: characterId.
 const characterSelectBody = z.object({ characterId });
 
 const titleBody = z.object({ medalId: z.string().max(32).optional() });
+
+const previewBody = z.object({ raw: z.string().max(USER_PAGE_MAX) });
+
+/** Profile customisation is a supporter perk; what was set stays up after the tag ends. */
+const requireSupporter = async (userId: number) => {
+	if (!await isSupporter(userId)) throw new HTTPException(403, { message: 'This needs an osu!supporter tag' });
+};
+
+const assertOwnCharacter = async (userId: number, characterId: number) => {
+	const [row] = await db.select({ id: characters.id }).from(characters)
+		.where(and(eq(characters.id, characterId), eq(characters.userId, userId)))
+		.limit(1);
+	if (!row) throw new HTTPException(404, { message: 'Character not found' });
+};
 
 // Re-throw the ZodError so the app's onError returns the standard shape.
 const jsonBody = <T extends z.ZodType>(schema: T) =>
@@ -124,6 +149,7 @@ export const meRoutes = new Hono()
 			}],
 		});
 
+		count('activity', 'signups');
 		return c.json(characterToDTO(row!, user.avatarUrl, user.country), 201);
 	})
 
@@ -199,6 +225,32 @@ export const meRoutes = new Hono()
 		}
 		await db.update(characters).set({ title: medalId ?? null }).where(eq(characters.id, id));
 		return c.json({ title: medalId });
+	})
+
+	// Save a character's me! page (osu! BBCode); returns it rendered.
+	.put('/page', requireActive, jsonBody(userPageBody), async c => {
+		const userId = c.get('userId');
+		const { characterId, raw } = c.req.valid('json');
+		await requireSupporter(userId);
+		await assertOwnCharacter(userId, characterId);
+		await db.update(characters).set({ userPage: raw }).where(eq(characters.id, characterId));
+		return c.json({ userPage: await userPageOf(raw) });
+	})
+
+	// Render a me! page draft without saving it.
+	.post('/page/preview', requireActive, jsonBody(previewBody), async c => {
+		await requireSupporter(c.get('userId'));
+		return c.json({ html: await renderUserPage(c.req.valid('json').raw) });
+	})
+
+	// The order of a character's profile blocks, as its owner arranged them.
+	.put('/profile-order', requireActive, jsonBody(profileOrderBody), async c => {
+		const userId = c.get('userId');
+		const { characterId, order } = c.req.valid('json');
+		await requireSupporter(userId);
+		await assertOwnCharacter(userId, characterId);
+		await db.update(characters).set({ profileOrder: order }).where(eq(characters.id, characterId));
+		return c.json({ order });
 	})
 
 	// Buy the current character's next upgrade for a skill: spends levels

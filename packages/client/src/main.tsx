@@ -15,6 +15,10 @@ import { SETTINGS } from './db/settings';
 import { desktop } from '@oss-idle/shared/desktop';
 import { bootAddons } from './addons/runtime';
 import App from './App.tsx';
+import {
+	DEV_TOOLS,
+	devTools,
+} from './dev/devTools';
 
 initWakeLock(); // keep mobile screens awake while playing
 initFullscreen(); // keep the fullscreen setting in sync with Esc/F11
@@ -22,9 +26,10 @@ initFrameLimiter(); // cap every rAF loop to the frame limiter setting
 void bootAddons(); // mount enabled installed add-ons
 SETTINGS.uiScale.forceSync(scale => desktop()?.setZoomFactor?.(scale));
 
-// dev-only handle the end-to-end suite drives the app through; the static
-// condition drops the whole module from a production build.
-if (import.meta.env.DEV) void import('./dev/testBridge');
+// dev tools; the static DEV_TOOLS drops them from a release build. The profiler
+// loads after the frame limiter so it times every rAF.
+if (DEV_TOOLS && devTools.testBridge) void import('./dev/testBridge');
+if (DEV_TOOLS && devTools.profiler) void import('./dev/profiler');
 
 // Load the saved language's catalog before first render so the UI never flashes
 // message keys, and re-activate whenever the picker changes it. `sync` fires

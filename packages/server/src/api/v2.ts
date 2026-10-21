@@ -7,10 +7,12 @@ import {
 	asc,
 	desc,
 	eq,
+	inArray,
 	isNull,
 	type SQL,
 } from 'drizzle-orm';
 import type { SkillName } from '@oss-idle/shared/skills';
+import { batchIds } from '@oss-idle/shared/oauth';
 import { db } from '../db/client';
 import { users } from '../db/schema/user';
 import {
@@ -222,6 +224,19 @@ export const apiV2Routes = new Hono()
 		const { limit, offset } = c.req.valid('query');
 		const type = scoreType.parse(c.req.param('type'));
 		return c.json(await characterScores(character.id, type, offset, limit));
+	})
+
+	.get('/characters', needs('public'), async c => {
+		const ids = batchIds.parse(c.req.queries('ids[]') ?? []);
+		if (!ids.length) return c.json({ characters: [] });
+		const rows = await db
+			.select({
+				user: users, character: characters,
+			})
+			.from(users)
+			.innerJoin(characters, eq(characters.userId, users.id))
+			.where(and(inArray(characters.id, ids), isNull(users.restrictedAt)));
+		return c.json({ characters: await Promise.all(rows.map(fullUser)) });
 	})
 
 	.get('/characters/:id', needs('public'), async c =>

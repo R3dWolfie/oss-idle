@@ -18,7 +18,7 @@ export default function ProfileTabs({ blocks }: { blocks: RefObject<HTMLElement>
 	useEffect(() => {
 		const root = blocks.current;
 		if (!root) return;
-		// blocks load on their own, so watch them appear
+		// blocks load on their own inside their sections, so watch them appear
 		const collect = () => setTabs([...root.children].flatMap(el => {
 			const title = el.querySelector('.character__block-title')?.textContent;
 			return el instanceof HTMLElement && title ? [{
@@ -27,7 +27,9 @@ export default function ProfileTabs({ blocks }: { blocks: RefObject<HTMLElement>
 		}));
 		collect();
 		const observer = new MutationObserver(collect);
-		observer.observe(root, { childList: true });
+		observer.observe(root, {
+			childList: true, subtree: true,
+		});
 		return () => observer.disconnect();
 	}, [blocks]);
 

@@ -1,15 +1,11 @@
-import {
-	net,
-	protocol,
-} from 'electron';
+import { protocol } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import {
 	APP_HOST,
 	APP_SCHEME,
-	REMOTE_PREFIXES,
 	rendererDir,
-	SITE_BASE,
+	STAGING,
 } from './config';
 
 const MIME: Record<string, string> = {
@@ -51,6 +47,16 @@ export function registerAppSchemePrivileges(): void {
 
 const notFound = () => new Response('Not found', { status: 404 });
 
+function headersFor(file: string): Record<string, string> {
+	const type = MIME[path.extname(file).toLowerCase()] ?? 'application/octet-stream';
+	// a staging build's frame profiler runs Chromium's JS sampler
+	return STAGING && type === 'text/html'
+		? {
+			'content-type': type, 'document-policy': 'js-profiling',
+		}
+		: { 'content-type': type };
+}
+
 async function fileInfo(file: string): Promise<{ isFile: boolean; isDir: boolean }> {
 	try {
 		const s = await fs.stat(file);
@@ -73,12 +79,6 @@ export function registerAppProtocol(): void {
 		if (url.host !== APP_HOST) return notFound();
 
 		let pathname = decodeURIComponent(url.pathname);
-
-		// the large on-demand static library isn't bundled - stream it from the
-		// website (same paths the browser uses), so the installer stays small.
-		if (REMOTE_PREFIXES.some(p => pathname.startsWith(p))) {
-			return net.fetch(`${SITE_BASE}${url.pathname}${url.search}`);
-		}
 
 		let kind: 'client' | 'web' = 'client';
 		if (pathname === '/web' || pathname.startsWith('/web/')) {
@@ -104,8 +104,7 @@ export function registerAppProtocol(): void {
 
 		try {
 			const data = await fs.readFile(file);
-			const type = MIME[path.extname(file).toLowerCase()] ?? 'application/octet-stream';
-			return new Response(data, { headers: { 'content-type': type } });
+			return new Response(data, { headers: headersFor(file) });
 		} catch {
 			return notFound();
 		}

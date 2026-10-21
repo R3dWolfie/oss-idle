@@ -1,113 +1,124 @@
 import './Dashboard.css';
+import './dashboard/TimeChart.css';
 
 import {
 	useEffect,
 	useState,
 } from 'react';
 import {
+	type AdminMetrics,
 	type AdminStats,
+	getAdminMetrics,
 	getAdminStats,
 } from '../../api/admin';
+import PlayerLatency from './dashboard/PlayerLatency';
+import ApiTraffic from './dashboard/ApiTraffic';
+import ServiceHealth from './dashboard/ServiceHealth';
+import Activity from './dashboard/Activity';
+import SystemLoad from './dashboard/SystemLoad';
+import {
+	ms,
+	pct,
+} from './dashboard/format';
+import { serverName } from './dashboard/hosts';
 
-/** Live dashboard: refresh the stats on a gentle interval. */
-const REFRESH_MS = 10_000;
+const STATS_MS = 10_000;
+const METRICS_MS = 30_000;
 
-export default function Dashboard() {
-	const [stats, setStats] = useState<AdminStats | null>(null);
-	const [error, setError] = useState<string | null>(null);
-
+/** Poll `load` every `every` ms while mounted. */
+const usePolled = <T,>(load: () => Promise<T>, every: number) => {
+	const [value, setValue] = useState<T>();
+	const [error, setError] = useState<string>();
 	useEffect(() => {
 		let alive = true;
-		const load = () => getAdminStats()
-			.then(s => { if (alive) { setStats(s); setError(null); } })
-			.catch(e => { if (alive) setError(String(e.message ?? e)); });
-		void load();
-		const id = setInterval(load, REFRESH_MS);
+		const run = () => load()
+			.then(v => { if (alive) { setValue(v); setError(undefined); } })
+			.catch((e: Error) => { if (alive) setError(e.message); });
+		void run();
+		const id = setInterval(run, every);
 		return () => { alive = false; clearInterval(id); };
 	}, []);
+	return [value, error] as const;
+};
 
-	if (error) return <main className='admin-dashboard'>
-		<p className='admin-dashboard__error'>{error}</p>
-	</main>;
-	if (!stats) return <main className='admin-dashboard'>
-		<p className='admin-dashboard__muted'>Loading…</p>
-	</main>;
-
-	const cards = [
+const tiles = (stats: AdminStats, metrics: AdminMetrics | undefined) => {
+	const now = [
 		{
-			label: 'Server version', value: stats.serverVersion, 
+			label: 'Server version', value: stats.serverVersion,
 		},
 		{
-			label: 'Online now', value: stats.online.toLocaleString(), 
+			label: 'Online now', value: stats.online.toLocaleString(),
 		},
 		{
-			label: 'Playing now', value: stats.playing.toLocaleString(), 
+			label: 'Playing now', value: stats.playing.toLocaleString(),
 		},
 		{
-			label: 'Players', value: stats.players.toLocaleString(), 
+			label: 'Players', value: stats.players.toLocaleString(),
 		},
 		{
-			label: 'Scores', value: stats.scores.toLocaleString(), 
+			label: 'Scores', value: stats.scores.toLocaleString(),
 		},
 	];
-	const total = stats.adoption.reduce((n, v) => n + v.count, 0);
+	if (!metrics) return now;
+	const days = Object.values(metrics.http).map(h => h.day);
+	const requests = days.reduce((n, d) => n + d.n, 0);
+	const fives = days.reduce((n, d) => n + d.s5, 0);
+	const up = metrics.probes.filter(p => p.last.ok).length;
+	return [
+		...now,
+		{
+			label: 'API requests, 24 h', value: requests.toLocaleString(),
+		},
+		{
+			label: 'Server errors, 24 h', value: pct(requests ? fives / requests : undefined, 2),
+		},
+		{
+			label: 'API p95 (direct), 24 h', value: ms(metrics.http.direct?.day.p95),
+		},
+		{
+			label: 'Services up', value: `${up} / ${metrics.probes.length}`,
+		},
+		...Object.entries(metrics.rtt).map(([host, r], i) => ({
+			label: `Players' round trip, ${serverName(host, i).split(' (')[0]}`,
+			value: ms(r.overall.day.p50),
+		})),
+	];
+};
+
+/** Everything about prod over the last day: players' latency, the API, every service, activity, load. */
+export default function Dashboard() {
+	const [stats, statsError] = usePolled(getAdminStats, STATS_MS);
+	const [metrics, metricsError] = usePolled(getAdminMetrics, METRICS_MS);
+
+	if (statsError) {
+		return <main className='admin-dashboard'>
+			<p className='admin-dashboard__error'>{statsError}</p>
+		</main>;
+	}
+	if (!stats) {
+		return <main className='admin-dashboard'>
+			<p className='admin-dashboard__muted'>Loading…</p>
+		</main>;
+	}
 
 	return (
 		<main className='admin-dashboard'>
 			<div className='admin-dashboard__cards'>
-				{cards.map(card => (
+				{tiles(stats, metrics).map(card => (
 					<div key={card.label} className='admin-dashboard__card'>
 						<span className='admin-dashboard__card-value'>{card.value}</span>
 						<span className='admin-dashboard__card-label'>{card.label}</span>
 					</div>
 				))}
 			</div>
-
-			<section className='admin-dashboard__section'>
-				<h2 className='admin-dashboard__subtitle'>Version adoption</h2>
-				<span className='admin-dashboard__muted'>
-					Across {total.toLocaleString()} players active in the last 7 days
-				</span>
-				{total === 0
-					? <p className='admin-dashboard__muted'>No version reports yet.</p>
-					: <div className='admin-dashboard__adoption'>
-						{stats.adoption.map(v => {
-							const pct = Math.round((v.count / total) * 100);
-							const current = v.version === stats.serverVersion;
-							const webPct = (v.web / v.count) * 100;
-							return (
-								<div key={v.version} className='admin-dashboard__adoption-row'>
-									<span className={`admin-dashboard__version ${current ? 'current' : ''}`}>
-										{v.version}{current && ' (current)'}
-									</span>
-									<div className='admin-dashboard__bar'>
-										<div
-											className={`admin-dashboard__bar-fill ${current ? 'current' : ''}`}
-											style={{ width: `${pct}%` }}
-										>
-											<div
-												className='admin-dashboard__bar-seg web'
-												style={{ width: `${webPct}%` }}
-												title={`Web: ${v.web.toLocaleString()}`}
-											/>
-											<div
-												className='admin-dashboard__bar-seg desktop'
-												style={{ width: `${100 - webPct}%` }}
-												title={`Desktop: ${v.desktop.toLocaleString()}`}
-											/>
-										</div>
-									</div>
-									<span className='admin-dashboard__adoption-count'>
-										{v.count.toLocaleString()} · {pct}%
-										<span className='admin-dashboard__adoption-split'>
-											{v.web.toLocaleString()} web · {v.desktop.toLocaleString()} desktop
-										</span>
-									</span>
-								</div>
-							);
-						})}
-					</div>}
-			</section>
+			{metricsError && <p className='admin-dashboard__error'>Metrics: {metricsError}</p>}
+			{metrics && <>
+				<ServiceHealth metrics={metrics} />
+				<PlayerLatency metrics={metrics} />
+				<ApiTraffic metrics={metrics} />
+				<Activity metrics={metrics} />
+				<SystemLoad metrics={metrics} />
+			</>}
 		</main>
 	);
 }

@@ -3,6 +3,7 @@ import {
 	decimal,
 	double,
 	int,
+	mediumtext,
 	mysqlTable,
 	varchar,
 } from 'drizzle-orm/mysql-core';
@@ -68,6 +69,10 @@ export const characters = mysqlTable('character', {
 	bannerUrl: varchar({ length: 512 }),
 	/** A held medal's id, its name shown under the character's name. */
 	title: varchar({ length: 32 }),
+	/** The me! page, raw osu! BBCode. */
+	userPage: mediumtext(),
+	/** The supporter's order for the profile blocks (`PROFILE_SECTIONS`). */
+	profileOrder: jsonColumn<string[]>(),
 	...skillColumns,
 	overallLevel: skillColumn(),
 	overallXp: xpColumn(),

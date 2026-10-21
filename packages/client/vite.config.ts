@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
 	defineConfig,
 	type Plugin,
@@ -67,6 +68,38 @@ const discordRedirect = (): Plugin => ({
 	},
 });
 
+const MAX_PROFILE_BYTES = 5 << 20;
+
+/** The frame profiler's reports (src/dev/profiler.ts), kept in profiles/ at the repo root. */
+const profileReports = (): Plugin => ({
+	name: 'profile-reports',
+	configureServer(server) {
+		const dir = fileURLToPath(new URL('../../profiles/', import.meta.url));
+		server.middlewares.use('/__profile', (req, res) => {
+			const chunks: Buffer[] = [];
+			let size = 0;
+			req.on('data', (chunk: Buffer) => {
+				size += chunk.length;
+				if (size <= MAX_PROFILE_BYTES) chunks.push(chunk);
+			});
+			req.on('end', () => {
+				const body = Buffer.concat(chunks).toString('utf8');
+				try {
+					if (req.method !== 'POST' || size > MAX_PROFILE_BYTES) throw new Error();
+					JSON.parse(body);
+				} catch {
+					res.statusCode = 400;
+					return void res.end();
+				}
+				fs.mkdirSync(dir, { recursive: true });
+				const name = `${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+				fs.writeFileSync(path.join(dir, name), body);
+				res.end();
+			});
+		});
+	},
+});
+
 export default defineConfig({
 	// `@vitejs/plugin-react` already runs Babel, so Lingui's macros transform
 	// through its babel plugin here - no separate SWC/Babel toolchain. The lingui
@@ -76,6 +109,7 @@ export default defineConfig({
 		lingui(),
 		serveEncodedAssets(),
 		discordRedirect(),
+		profileReports(),
 	],
 	// `@oss-idle/shared` is a linked workspace package, so Vite doesn't pre-bundle
 	// it and won't see the deps its sim pulls (osu-classes, osu-mania-stable) until
@@ -97,6 +131,8 @@ export default defineConfig({
 		host: true,
 		// the LAN staging is reached by name (a hosts entry for e.g. oss.idle.lan)
 		allowedHosts: ['.lan'],
+		// lets the frame profiler run Chromium's JS sampler (src/dev/sampler.ts)
+		headers: { 'Document-Policy': 'js-profiling' },
 		// Serve the osu! web platform at /web on the game's own origin so the
 		// in-game browser iframe is same-origin. The web app runs its own dev
 		// server (packages/web, :5174) with base '/web/'; we proxy to it.

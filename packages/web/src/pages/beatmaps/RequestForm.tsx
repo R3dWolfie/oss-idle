@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	useEffect,
 	useState,
@@ -9,7 +10,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import {
-	MAX_PENDING_REQUESTS,
+	maxPendingRequests,
 	parseBeatmapsetId,
 } from '@oss-idle/shared/beatmapRequest';
 import {
@@ -23,8 +24,9 @@ const DEBOUNCE_MS = 250;
 
 /** Propose a map: search the beatmap mirror by name, or paste the link of one it
  *  doesn't carry. Both paths end in the same submit, keyed by beatmapset id. */
-export default function RequestForm({ pending, onSubmitted }: {
+export default function RequestForm({ pending, supporter, onSubmitted }: {
 	pending: number,
+	supporter: boolean,
 	onSubmitted: () => Promise<void> | void,
 }) {
 	const { t } = useLingui();
@@ -36,7 +38,8 @@ export default function RequestForm({ pending, onSubmitted }: {
 
 	// A link or an id is submitted as typed - searching for it would find nothing.
 	const pasted = parseBeatmapsetId(text);
-	const full = pending >= MAX_PENDING_REQUESTS;
+	const max = maxPendingRequests(supporter);
+	const full = pending >= max;
 
 	useEffect(() => {
 		const query = text.trim();
@@ -97,7 +100,7 @@ export default function RequestForm({ pending, onSubmitted }: {
 
 			{full && <p className='request-form__note'>
 				<Trans>
-					You already have {MAX_PENDING_REQUESTS} requests waiting. Wait for one to
+					You already have {ph({ max })} requests waiting. Wait for one to
 					be answered before proposing another.
 				</Trans>
 			</p>}

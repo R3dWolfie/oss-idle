@@ -1,4 +1,6 @@
 import { Hono } from 'hono';
+import { httpMetrics } from './metrics';
+import { closeUnread } from './closeUnread';
 import { compress } from 'hono/compress';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
@@ -27,6 +29,7 @@ import {
 import { usersRoutes } from './routes/users';
 import { authRoutes } from './routes/auth';
 import { meRoutes } from './routes/me';
+import { proxyRoutes } from './routes/proxy';
 import { newsRoutes } from './routes/news';
 import { scoresRoutes } from './routes/scores';
 import { medalsRoutes } from './routes/medals';
@@ -101,19 +104,25 @@ const v1 = new Hono()
 	.route('/groups', groupsRoutes)
 	.route('/accounts', accountsRoutes)
 	.route('/oauth', oauthRoutes)
+	.route('/proxy', proxyRoutes)
 ;
 
 // Built as one chained expression so the route schema is captured in the type
 // of `app`; `AppType` is then consumed by the client's typed RPC client to
 // match the API's exact request/response types with no duplication.
 const app = new Hono()
+	// the admin dashboard's request volume, status and timing (metrics.ts)
+	.use('*', httpMetrics)
+	.use('*', closeUnread)
 	// the desktop app's websocket carries its session in the query
 	.use('*', logger((line, ...rest) => console.log(line.replace(TOKEN_QUERY, '$1-'), ...rest)))
 	// Apache only deflates text/html-ish types, so JSON left uncompressed: the
 	// catalog was 441 KB a load (64 KB gzipped). Binary payloads are skipped.
 	.use('*', compress())
 	.use('*', cors({
-		origin: allowedOrigins, credentials: true, 
+		origin: allowedOrigins, credentials: true,
+		// a browser asks again for every call otherwise: a whole round trip far from the API
+		maxAge: 86400,
 	}))
 	// uploads and previews are loaded from the game's other origins (and the desktop app)
 	.use('*', secureHeaders({ crossOriginResourcePolicy: 'cross-origin' }))

@@ -42,11 +42,13 @@ export const rateLimit = (
 export const dailyLimit = (name: string, perDay: number) =>
 	createMiddleware<{ Variables: { userId: number } }>(async (c, next) => {
 		const key = `${redisKeyPrefix}daily:${name}:${c.get('userId')}:${Math.floor(Date.now() / 86_400_000)}`;
-		if (Number(await redis.get(key)) >= perDay) {
+		// counted up front so parallel requests can't all pass, handed back on failure
+		const count = await redis.incr(key);
+		if (count === 1) await redis.expire(key, 86_400);
+		if (count > perDay) {
+			await redis.decr(key);
 			return c.json({ error: `You can only do this ${perDay} times a day` }, 429);
 		}
 		await next();
-		if (!c.res.ok) return;
-		const count = await redis.incr(key);
-		if (count === 1) await redis.expire(key, 86_400);
+		if (!c.res.ok) await redis.decr(key);
 	});

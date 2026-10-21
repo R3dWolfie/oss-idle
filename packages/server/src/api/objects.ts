@@ -1,4 +1,5 @@
 import { Skills } from '@oss-idle/shared/skills';
+import { levelPercent } from './levelPercent';
 import {
 	GoodGrades,
 	Judgements,
@@ -67,7 +68,11 @@ export const userStatistics = (
 	play_count: totals.playCount,
 	play_time: totals.playTime,
 	total_hits: totals.hits,
-	level: { current: character.overallLevel },
+	level: {
+		current: character.overallLevel,
+		progress: levelPercent(character.overallLevel, character.overallXp),
+		total_xp: character.overallTotalXp,
+	},
 	grade_counts: gradeCounts(totals),
 	statistics: statistics(totals),
 });
@@ -96,6 +101,8 @@ export const apiUser = (
 		statistics: userStatistics(character, totals, ranks),
 		skills: Object.fromEntries(Skills.map(s => [s, {
 			level: character[`${s}Level`],
+			progress: levelPercent(character[`${s}Level`], character[`${s}Xp`]),
+			total_xp: character[`${s}TotalXp`],
 			prestige: character[`${s}Prestige`],
 			upgrades: character[`${s}Upgrades`],
 		}])),

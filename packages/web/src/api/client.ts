@@ -2,29 +2,37 @@ import { hc } from 'hono/client';
 import type { ClientResponse } from 'hono/client';
 import type { AppType } from '@oss-idle/server';
 import { desktop } from '@oss-idle/shared/desktop';
+import {
+	edgeList,
+	failoverFetch,
+	onApiBaseChange,
+	pickApiBase,
+} from '@oss-idle/shared/apiBase';
 
-/** API origin; empty in dev so requests go through the Vite proxy. */
-export const API_URL = import.meta.env.VITE_API_URL ?? '';
+/** API origin (or the edge measured nearest on an earlier load); empty in dev so
+ *  requests go through the Vite proxy. Follows the page onto another origin when
+ *  this one fails (a live binding). */
+export let API_URL = pickApiBase(
+	import.meta.env.VITE_API_URL ?? '',
+	edgeList(import.meta.env.VITE_API_EDGES),
+);
+onApiBaseChange(base => {
+	API_URL = base;
+});
 
 /** Resolve an API path (e.g. /v1/news) or stored media path to a full URL. */
 export const apiUrl = (path: string): string =>
 	/^https?:\/\//.test(path) ? path : `${API_URL}${path}`;
 
 /**
- * Apply the live session auth, mirroring the game client: the browser rides the
- * HttpOnly cookie (`credentials: 'include'`), while the desktop app - loaded from
- * an `app://` origin the cookie can't reach - sends its held token as a `Bearer`
- * header instead. Same session JWT either way.
+ * Apply the live session auth to an outgoing API request:
+ *  - browser: the session is an HttpOnly cookie, sent via `credentials: 'include'`.
+ *  - desktop: the app loads from an `app://` origin the API cookie can't ride, so
+ *    its main process adds the token as a `Bearer` header (no cookie).
  */
 export function withAuth(init?: RequestInit): RequestInit {
-	const token = desktop()?.getToken();
-	if (!token) return {
-		...init, credentials: 'include', 
-	};
-	const headers = new Headers(init?.headers);
-	headers.set('Authorization', `Bearer ${token}`);
 	return {
-		...init, headers, credentials: 'omit', 
+		...init, credentials: desktop() ? 'omit' : 'include',
 	};
 }
 
@@ -56,10 +64,8 @@ export const request = <T>(method: string, path: string, body?: unknown): Promis
  * `online/client.ts`; `AppType` is a type-only import, so no server runtime is
  * bundled.
  */
-export const rpc = hc<AppType>(API_URL, {
-	fetch: (input: RequestInfo | URL, init?: RequestInit) =>
-		fetch(input, withAuth(init)),
-});
+const apiFetch = failoverFetch((input, init) => fetch(input, withAuth(init)));
+export const rpc = hc<AppType>(API_URL, { fetch: apiFetch });
 
 /** Await a typed RPC response, throwing the server's error message on failure. */
 export async function unwrap<T>(p: Promise<ClientResponse<T>>): Promise<T> {

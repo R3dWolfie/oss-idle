@@ -24,6 +24,7 @@ import {
 	canRebirth,
 	canUpgrade,
 	maxUpgrades,
+	revertUpgrade,
 	type UpgradeState,
 } from '@oss-idle/shared/upgrades';
 import { xpGivesLevel } from '@oss-idle/shared/sim/skills/xp';
@@ -205,6 +206,44 @@ export const performUpgrade = async (
 
 	await reindexCharacter(row.id);
 	return purchase;
+};
+
+/** Admin: undo a skill's last upgrade, refunding its levels and their xp as
+ *  they were worth at `anchor` (see revertUpgrade). The caller keeps it away
+ *  from a running play. */
+export const performUpgradeRevert = async (
+	characterId: number,
+	skill: SkillName,
+	anchor?: number,
+): Promise<void> => {
+	// same lock, same reason as performUpgrade
+	await db.transaction(async tx => {
+		const current = await lockCharacter(tx, characterId);
+		const state = skillState(current, skill);
+		if (state.upgrades === 0) {
+			throw new HTTPException(409, { message: 'No upgrade to roll back' });
+		}
+		if (anchor !== undefined && anchor > state.level) {
+			throw new HTTPException(400, { message: 'Anchor is above the current level' });
+		}
+		const prev = revertUpgrade(state, anchor);
+
+		const updates = {
+			[`${skill}Level`]: prev.level,
+			[`${skill}Xp`]: Math.round(prev.xp),
+			[`${skill}Upgrades`]: prev.upgrades,
+			[`${skill}Overdrive`]: prev.overdrive,
+			...spendTotals(current, skill, -Math.round(prev.refund)),
+			upgradesBought: Math.max(0, current.upgradesBought - 1),
+			laddersCompleted: Math.max(0, current.laddersCompleted
+				- (state.upgrades >= maxUpgrades(state.prestige) ? 1 : 0)),
+		} as Record<`${SkillName}${'Level' | 'Xp' | 'TotalXp' | 'Upgrades' | 'Overdrive'}`
+		| `overall${'Level' | 'Xp' | 'TotalXp'}` | 'upgradesBought' | 'laddersCompleted', number>;
+
+		await tx.update(characters).set(updates).where(eq(characters.id, characterId));
+	});
+
+	await reindexCharacter(characterId);
 };
 
 /** Prestige one skill: its level, xp, upgrades and overdrive go, and it keeps a

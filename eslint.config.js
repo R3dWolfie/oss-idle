@@ -27,6 +27,9 @@ export default tseslint.config(
 			'**/out/**',
 			'**/build/**',
 			'**/release/**',
+			// the staging desktop app's build (idle dev)
+			'**/dist.staging/**',
+			'**/release-staging/**',
 			'**/coverage/**',
 			'**/*.min.js',
 			'packages/client/public/**',

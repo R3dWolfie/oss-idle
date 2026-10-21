@@ -335,7 +335,7 @@ export default class PlayManager {
 		}, delay * 1000);
 	}
 
-	private static cancelChain(): void {
+	public static cancelChain(): void {
 		if (this.chainTimer !== undefined) window.clearTimeout(this.chainTimer);
 		if (this.tickTimer !== undefined) window.clearInterval(this.tickTimer);
 		this.chainTimer = undefined;

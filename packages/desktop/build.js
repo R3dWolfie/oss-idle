@@ -16,7 +16,7 @@ pkg.version =
 
 fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
 
-// The staged deploy (scripts/staged-build.mjs) builds the renderer into
+// A staged deploy builds the renderer into
 // `dist.next` and only swaps it live if everything - including this installer -
 // compiles. Point extraResources at that staged tree instead of the live dist.
 const ebPath = join(__dirname, 'electron-builder.yml');
@@ -31,7 +31,7 @@ if (rendererDist) {
 let failed = false;
 try {
 	// Clear prior outputs so a failed build can't leave stale installers for
-	// publish-desktop to pick up.
+	// a deploy to pick up.
 	fs.rmSync(join(__dirname, 'out'), {
 		recursive: true, force: true, 
 	});

@@ -1,5 +1,6 @@
 import {
 	apiBaseUrl,
+	clientUrl,
 	env,
 	isProd,
 } from '../env';
@@ -33,6 +34,7 @@ export const announceRanked = async (set: AnnounceSet): Promise<void> => {
 		embeds: [
 			{
 				title: `${set.artist} - ${set.title}`,
+				url: `${clientUrl}/web/maps/${set.id}`,
 				description: asc.map(d => `\`${d.sr.toFixed(2)}☆\` \`${d.version}\``).join('\n'),
 				color: 5814783,
 				author: { name: `New ranked map by ${set.creator}` },

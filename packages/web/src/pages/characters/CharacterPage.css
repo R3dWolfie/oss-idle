@@ -379,3 +379,20 @@
 .mostplayed__bminfo {
 	min-width: 0;
 }
+
+.character__section {
+	position: relative;
+}
+
+.character__section:empty {
+	display: none;
+}
+
+.character__section-handle {
+	position: absolute;
+	top: 20px;
+	right: 40px;
+	z-index: 1;
+	color: hsl(var(--hsl-c2));
+	cursor: grab;
+}

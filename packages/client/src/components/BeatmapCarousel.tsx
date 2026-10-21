@@ -171,12 +171,27 @@ export default function BeatmapCarousel({
 		return scroller ? parseFloat(getComputedStyle(scroller).paddingTop) || 0 : 0;
 	}, []);
 
+	// Scrolling runs the window and arc every frame. Reading the padding, the height or
+	// a card's offset there forces a style + layout pass right after the arc's writes,
+	// and none of them move while scrolling: they're read again only after a resize or
+	// a change of rows (forget()).
+	const geometryRef = useRef<{ padTop: number; height: number } | undefined>(undefined);
+	const centresRef = useRef(new WeakMap<HTMLElement, number>());
+	const geometry = useCallback((scroller: HTMLElement) => geometryRef.current ??= {
+		padTop: padTop(), height: scroller.clientHeight,
+	}, [padTop]);
+	const forget = useCallback(() => {
+		geometryRef.current = undefined;
+		centresRef.current = new WeakMap();
+	}, []);
+
 	/** Which cards should be mounted for the current scroll position. */
 	const syncWindow = useCallback(() => {
 		const scroller = scrollRef.current;
 		if (!scroller) return;
-		const first = Math.floor((scroller.scrollTop - padTop()) / STRIDE);
-		const visible = Math.ceil(scroller.clientHeight / STRIDE);
+		const { padTop: top, height } = geometry(scroller);
+		const first = Math.floor((scroller.scrollTop - top) / STRIDE);
+		const visible = Math.ceil(height / STRIDE);
 		const start = Math.max(0, first - OVERSCAN);
 		const end = Math.min(rows.length, Math.max(start, first + visible + OVERSCAN));
 		if (start !== rangeRef.current.start || end !== rangeRef.current.end) {
@@ -187,26 +202,35 @@ export default function BeatmapCarousel({
 				start, end, 
 			});
 		}
-	}, [rows.length, padTop]);
+	}, [rows.length, geometry]);
 
 	/**
-	 * Re-apply the circular-arc offset to every mounted card. Pure DOM, no state.
+	 * Re-apply the circular-arc offset to every mounted card (and the counter-shift
+	 * of its XP section). Pure DOM, no state.
 	 */
 	const updateCurve = useCallback(() => {
 		const scroller = scrollRef.current;
 		if (!scroller) return;
-		const halfHeight = scroller.clientHeight / 2;
+		const halfHeight = geometry(scroller).height / 2;
 		if (halfHeight <= 0) return;
 		const scrollTop = scroller.scrollTop;
-		const cards = scroller.querySelectorAll<HTMLElement>('.bm-card');
-		for (const card of cards) {
+		const cards = [...scroller.querySelectorAll<HTMLElement>('.bm-card')];
+		const known = centresRef.current;
+		// all reads before any write: interleaving them forces a layout per card
+		const centres = cards.map(card => known.get(card)
+			?? known.set(card, card.offsetTop + card.offsetHeight / 2).get(card)!);
+		cards.forEach((card, i) => {
 			// panel centre relative to the top of the viewport
-			const drawY = card.offsetTop + card.offsetHeight / 2 - scrollTop;
+			const drawY = centres[i] - scrollTop;
 			// 0 at centre, 1 at the top/bottom edges (clamped beyond)
 			const dist = Math.abs(1 - drawY / halfHeight);
-			card.style.setProperty('--bow', `${offsetX(dist, halfHeight)}px`);
-		}
-	}, []);
+			const bow = offsetX(dist, halfHeight);
+			// a glide frame bows the arc twice (the step, then its scroll event)
+			if (card.style.translate !== `${bow}px`) card.style.translate = `${bow}px`;
+			const xp = card.querySelector<HTMLElement>('.bm-card__xp');
+			if (xp && xp.style.translate !== `${-bow}px`) xp.style.translate = `${-bow}px`;
+		});
+	}, [geometry]);
 
 	/**
 	 * Ease scrollTop toward `targetRef`. The smoothing is *time-based* (the rate
@@ -404,13 +428,15 @@ export default function BeatmapCarousel({
 
 	// Re-bow the newly-mounted cards the instant the window changes (before paint),
 	// so cards scrolling into view never flash un-curved. Arc only, never setState.
-	useLayoutEffect(() => { updateCurve(); }, [range, updateCurve]);
+	// An XP section mounts when its insight arrives, and needs the arc's counter-shift.
+	useLayoutEffect(() => { updateCurve(); }, [range, xpInsights, updateCurve]);
 
 	// On mount / when the library changes / on resize: fit the window, draw the
 	// arc, and re-aim the centering glide. The selected-beatmap subscription fires
 	// once on mount, which can race ahead of the library loading, so re-center here
 	// too once the items are in.
 	useLayoutEffect(() => {
+		forget();
 		syncWindow();
 		updateCurve();
 		// center only when the selection itself is new (initial load / re-entry),
@@ -421,10 +447,14 @@ export default function BeatmapCarousel({
 
 		const scroller = scrollRef.current;
 		if (!scroller) return;
-		const ro = new ResizeObserver(() => { syncWindow(); updateCurve(); });
+		const ro = new ResizeObserver(() => {
+			forget();
+			syncWindow();
+			updateCurve();
+		});
 		ro.observe(scroller);
 		return () => ro.disconnect();
-	}, [syncWindow, updateCurve, centerOnActive, rows]);
+	}, [syncWindow, updateCurve, centerOnActive, rows, forget]);
 
 	// Cancel any in-flight animation frames on unmount.
 	useEffect(

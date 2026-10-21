@@ -11,6 +11,7 @@ import {
 	DESKTOP_SCHEME,
 	IS_DEV,
 	RENDERER_URL,
+	STAGING,
 	iconPath,
 } from './config';
 import {
@@ -18,18 +19,24 @@ import {
 	registerAppSchemePrivileges,
 } from './protocol';
 import {
+	authorizeApiRequests,
 	getToken,
 	loadToken,
 	logout,
 	startLogin,
 } from './auth';
 import { handleDeepLink } from './deeplink';
+import { isAppFrame } from './frames';
 import {
 	checkForUpdate,
 	downloadUpdate,
 	initUpdater,
 	installUpdate,
 } from './update';
+import {
+	canMoveInstall,
+	moveInstall,
+} from './install';
 import {
 	destroyPresence,
 	initPresence,
@@ -40,9 +47,10 @@ import type { DesktopPresence } from '@oss-idle/shared/desktop' with { 'resoluti
 
 // The data folder was named after the package before the rename to oss!idle. It
 // holds the save and the session, so it moves over once, before anything opens it.
-const USER_DATA = path.join(app.getPath('appData'), 'oss!idle');
+// A staging build keeps its own, beside the real game's.
+const USER_DATA = path.join(app.getPath('appData'), STAGING ? 'oss!idle staging' : 'oss!idle');
 const LEGACY_USER_DATA = path.join(app.getPath('appData'), '@osu-idle', 'desktop');
-if (!fs.existsSync(USER_DATA) && fs.existsSync(LEGACY_USER_DATA)) {
+if (!STAGING && !fs.existsSync(USER_DATA) && fs.existsSync(LEGACY_USER_DATA)) {
 	try {
 		fs.renameSync(LEGACY_USER_DATA, USER_DATA);
 		fs.rmdirSync(path.dirname(LEGACY_USER_DATA));
@@ -50,11 +58,18 @@ if (!fs.existsSync(USER_DATA) && fs.existsSync(LEGACY_USER_DATA)) {
 		console.error('[userData] move from the old folder failed', e);
 	}
 }
-const stillLegacy = !fs.existsSync(USER_DATA) && fs.existsSync(LEGACY_USER_DATA);
+const stillLegacy = !STAGING && !fs.existsSync(USER_DATA) && fs.existsSync(LEGACY_USER_DATA);
 app.setPath('userData', stillLegacy ? LEGACY_USER_DATA : USER_DATA);
 
 // Privileges must be declared before the app is ready.
 registerAppSchemePrivileges();
+
+// a staging server is plain http on the LAN: let the secure app:// page reach it
+if (STAGING) {
+	const api = new URL(STAGING.api).origin;
+	app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure',
+		`${api},${api.replace(/^http/, 'ws')}`);
+}
 
 // The frame limiter's caps above the refresh rate (and Unlimited) need Chromium's
 // vsync lifted, which only works as a launch switch: the renderer persists it here.
@@ -172,20 +187,27 @@ if (!app.requestSingleInstanceLock()) {
 
 	void app.whenReady().then(() => {
 		loadToken();
-		registerProtocolClient();
+		authorizeApiRequests();
+		// the oss-idle:// links stay the real game's
+		if (!STAGING) registerProtocolClient();
 		registerAppProtocol();
 
 		// Bridge IPC. `bootstrap` is synchronous so the preload can seed the token
 		// before the renderer's first API call (no signed-out flash on launch).
 		ipcMain.on('oss-idle:bootstrap', event => {
-			event.returnValue = {
-				token: getToken(), version: app.getVersion(), uncapped,
-			};
+			event.returnValue = isAppFrame(event.senderFrame)
+				? {
+					token: getToken(), version: app.getVersion(), uncapped, canMoveInstall,
+				}
+				: undefined;
 		});
 		ipcMain.handle('oss-idle:login', () => startLogin());
 		ipcMain.handle('oss-idle:logout', () => { logout(); });
 		ipcMain.on('oss-idle:set-fullscreen', (_event, on: boolean) => mainWindow?.setFullScreen(!!on));
 		ipcMain.on('oss-idle:quit', () => app.quit());
+		ipcMain.handle('oss-idle:move-install',
+			(_event, title: string) => moveInstall(mainWindow ?? undefined, String(title)),
+		);
 		ipcMain.on('oss-idle:set-uncapped', (_event, on: boolean) => {
 			if (on) fs.writeFileSync(UNCAPPED_FLAG, '');
 			else fs.rmSync(UNCAPPED_FLAG, { force: true });

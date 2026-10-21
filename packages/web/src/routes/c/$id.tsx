@@ -15,5 +15,5 @@ export const Route = createFileRoute('/c/$id')({
 function CharacterRoute() {
 	const { id } = Route.useParams();
 	const [character, stats] = Route.useLoaderData();
-	return <CharacterPage id={id} character={character} stats={stats} />;
+	return <CharacterPage key={id} id={id} character={character} stats={stats} />;
 }

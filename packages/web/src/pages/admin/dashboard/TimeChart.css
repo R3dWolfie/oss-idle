@@ -1,0 +1,132 @@
+/* the dashboard's chart roles; slots validated against the cards' dark surface */
+.admin-dashboard {
+	--series-1: #3987e5;
+	--series-2: #d95926;
+	--series-3: #199e70;
+	--status-good: #0ca30c;
+	--status-critical: #d03b3b;
+	--chart-grid: hsl(var(--hsl-b3));
+	--chart-ink: hsl(var(--hsl-c1));
+	--chart-muted: hsl(var(--hsl-f1));
+}
+
+.time-chart {
+	margin: 0;
+	padding: 0.8rem 0.9rem 0.4rem;
+	background-color: hsl(var(--hsl-b4));
+	border-radius: 8px;
+	min-width: 0;
+}
+.time-chart__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.3rem 0.8rem;
+	margin-bottom: 0.4rem;
+}
+.time-chart__title {
+	font-weight: 700;
+	color: var(--chart-ink);
+}
+.time-chart__note {
+	color: var(--chart-muted);
+	font-size: 0.8rem;
+}
+.time-chart__legend {
+	display: flex;
+	gap: 0.8rem;
+	margin-left: auto;
+	font-size: 0.8rem;
+	color: var(--chart-ink);
+}
+.time-chart__key {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+.time-chart__swatch {
+	display: inline-block;
+	width: 10px;
+	height: 3px;
+	border-radius: 2px;
+}
+.time-chart__plot {
+	position: relative;
+	width: 100%;
+}
+.time-chart__tip {
+	max-width: min(320px, 100%);
+}
+.time-chart__plot svg {
+	display: block;
+	touch-action: none;
+}
+.time-chart__grid {
+	stroke: var(--chart-grid);
+	stroke-width: 1;
+}
+.time-chart__tick {
+	fill: var(--chart-muted);
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+}
+.time-chart__line {
+	fill: none;
+	stroke-width: 2;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+}
+.time-chart__cursor {
+	stroke: var(--chart-muted);
+	stroke-width: 1;
+}
+.time-chart__dot {
+	stroke: hsl(var(--hsl-b4));
+	stroke-width: 2;
+}
+.time-chart__tip {
+	position: absolute;
+	top: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	min-width: 150px;
+	padding: 0.45rem 0.6rem;
+	background-color: hsl(var(--hsl-b5));
+	border-radius: 6px;
+	font-size: 0.8rem;
+	color: var(--chart-ink);
+	pointer-events: none;
+	box-shadow: 0 2px 8px rgb(0 0 0 / 0.4);
+}
+.time-chart__tip-time {
+	color: var(--chart-muted);
+}
+.time-chart__tip-row {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 0.4rem;
+}
+.time-chart__tip-row b {
+	font-variant-numeric: tabular-nums;
+}
+
+.slot-1 {
+	--slot: var(--series-1);
+}
+.slot-2 {
+	--slot: var(--series-2);
+}
+.slot-3 {
+	--slot: var(--series-3);
+}
+.time-chart__line {
+	stroke: var(--slot);
+}
+.time-chart__dot {
+	fill: var(--slot);
+}
+.time-chart__swatch {
+	background-color: var(--slot);
+}

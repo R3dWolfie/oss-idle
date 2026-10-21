@@ -23,7 +23,7 @@ const RECONNECT_MAX_MS = 15_000;
 /** Mark ourselves AFK after this long without input. */
 const AFK_MS = 60_000;
 
-/** Keep at most this many chat lines in memory (no server history anyway). */
+/** Keep at most this many chat lines in memory. */
 const CHAT_LIMIT = 200;
 
 const WS_OPEN = 1;
@@ -227,6 +227,7 @@ export default class Socket {
 
 		// feature consumers (play, ...) subscribe by type; community is below
 		this.listeners.get(msg.type)?.forEach(h => h(msg));
+		this.receiveChat(msg);
 
 		switch (msg.type) {
 			case 'presence:init':
@@ -249,9 +250,24 @@ export default class Socket {
 			case 'version':
 				void this.serverVersion.set(msg.version);
 				break;
+			case 'error':
+				console.warn('Community:', msg.message);
+				break;
+		}
+	}
+
+	private static receiveChat(msg: ServerMessage): void {
+		switch (msg.type) {
 			case 'chat':
 				void this.chat.set([...this.chat.get(), msg.line].slice(-CHAT_LIMIT));
 				break;
+			case 'chat:history': {
+				const ids = new Set(msg.lines.map(l => l.id));
+				void this.chat.set([...this.chat.get().filter(l => !ids.has(l.id)), ...msg.lines]
+					.sort((a, b) => a.at - b.at)
+					.slice(-CHAT_LIMIT));
+				break;
+			}
 			case 'chat:delete': {
 				const ids = new Set(msg.ids);
 				void this.chat.set(this.chat.get().map(l =>
@@ -262,9 +278,6 @@ export default class Socket {
 						: l));
 				break;
 			}
-			case 'error':
-				console.warn('Community:', msg.message);
-				break;
 		}
 	}
 

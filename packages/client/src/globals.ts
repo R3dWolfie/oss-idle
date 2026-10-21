@@ -3,8 +3,11 @@ import { desktop } from '@oss-idle/shared/desktop';
 import { ScoreDTO } from '@oss-idle/shared/score';
 import type { PlayDeltas } from '@oss-idle/shared/play';
 import { Score } from './db/schema/score';
+import { devTools } from './dev/devTools';
 
-export const debugMode = new Synced(import.meta.env.DEV);
+// spelled out rather than DEV_TOOLS, so a release build folds it to a literal
+export const debugMode = new Synced(import.meta.env.DEV
+	|| (import.meta.env.MODE === 'staging' && devTools.debug));
 
 /** Debug: scales the xp a play awards, so the long progression thresholds are
  *  reachable while testing. The server refuses it outside development. */

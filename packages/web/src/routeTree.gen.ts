@@ -50,6 +50,7 @@ import { Route as AuthErrorRouteImport } from './routes/auth/error'
 import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
 import { Route as AuthDesktopRouteImport } from './routes/auth/desktop'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as AdminVersionsRouteImport } from './routes/admin/versions'
 import { Route as AdminTeamRouteImport } from './routes/admin/team'
 import { Route as AdminSkinsRouteImport } from './routes/admin/skins'
 import { Route as AdminRestrictionsRouteImport } from './routes/admin/restrictions'
@@ -273,6 +274,11 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminVersionsRoute = AdminVersionsRouteImport.update({
+  id: '/versions',
+  path: '/versions',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminTeamRoute = AdminTeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -383,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/admin/team': typeof AdminTeamRoute
+  '/admin/versions': typeof AdminVersionsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
   '/auth/discord': typeof AuthDiscordRoute
@@ -442,6 +449,7 @@ export interface FileRoutesByTo {
   '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/admin/team': typeof AdminTeamRoute
+  '/admin/versions': typeof AdminVersionsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
   '/auth/discord': typeof AuthDiscordRoute
@@ -503,6 +511,7 @@ export interface FileRoutesById {
   '/admin/restrictions': typeof AdminRestrictionsRoute
   '/admin/skins': typeof AdminSkinsRoute
   '/admin/team': typeof AdminTeamRoute
+  '/admin/versions': typeof AdminVersionsRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/desktop': typeof AuthDesktopRoute
   '/auth/discord': typeof AuthDiscordRoute
@@ -565,6 +574,7 @@ export interface FileRouteTypes {
     | '/admin/restrictions'
     | '/admin/skins'
     | '/admin/team'
+    | '/admin/versions'
     | '/auth/callback'
     | '/auth/desktop'
     | '/auth/discord'
@@ -624,6 +634,7 @@ export interface FileRouteTypes {
     | '/admin/restrictions'
     | '/admin/skins'
     | '/admin/team'
+    | '/admin/versions'
     | '/auth/callback'
     | '/auth/desktop'
     | '/auth/discord'
@@ -684,6 +695,7 @@ export interface FileRouteTypes {
     | '/admin/restrictions'
     | '/admin/skins'
     | '/admin/team'
+    | '/admin/versions'
     | '/auth/callback'
     | '/auth/desktop'
     | '/auth/discord'
@@ -1062,6 +1074,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/versions': {
+      id: '/admin/versions'
+      path: '/versions'
+      fullPath: '/admin/versions'
+      preLoaderRoute: typeof AdminVersionsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/team': {
       id: '/admin/team'
       path: '/team'
@@ -1195,6 +1214,7 @@ interface AdminRouteRouteChildren {
   AdminRestrictionsRoute: typeof AdminRestrictionsRoute
   AdminSkinsRoute: typeof AdminSkinsRoute
   AdminTeamRoute: typeof AdminTeamRoute
+  AdminVersionsRoute: typeof AdminVersionsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1209,6 +1229,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminRestrictionsRoute: AdminRestrictionsRoute,
   AdminSkinsRoute: AdminSkinsRoute,
   AdminTeamRoute: AdminTeamRoute,
+  AdminVersionsRoute: AdminVersionsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

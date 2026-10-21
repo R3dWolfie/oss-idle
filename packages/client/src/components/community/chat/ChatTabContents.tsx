@@ -72,7 +72,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 	useEffect(() => {
 		const el = logRef.current;
 		if (el) el.scrollTop = el.scrollHeight;
-	}, [shown.length]);
+	}, [shown[shown.length - 1]?.id]);
 
 	const handleCommand = (text: string) => {
 		if (text === '/np') {

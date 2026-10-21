@@ -21,11 +21,12 @@ import {
 	BEATMAP_STATUS,
 	INTRO_SET_ID,
 } from '@oss-idle/shared/beatmap';
-import { existsSync } from 'node:fs';
-import { env } from '../env';
-import { throttled } from '../beatmaps/throttle';
 import {
-	readFile,
+	checkPreviewName,
+	oszResponse,
+	previewResponse,
+} from '../beatmaps/serve';
+import {
 	readdir,
 	rm,
 } from 'node:fs/promises';
@@ -64,13 +65,6 @@ import {
 const invalidateCatalog = () => hub.broadcast({ type: 'catalog:invalidate' });
 
 const idParam = z.coerce.number().int().positive();
-
-const PREVIEW_MIME: Record<string, string> = {
-	mp3: 'audio/mpeg',
-	jpg: 'image/jpeg',
-	jpeg: 'image/jpeg',
-	png: 'image/png',
-};
 
 // Re-throw zValidator failures so the app's onError returns our standard 400.
 const jsonBody = <T extends z.ZodType>(schema: T) =>
@@ -153,49 +147,22 @@ export const beatmapsRoutes = new Hono()
 		);
 	})
 
-	// Stream a live set's .osz (404 until it's ranked + due). Returns a raw
-	// Response: the client fetches this URL directly, not via the typed RPC.
+	// A live set's .osz (404 until it's ranked + due).
+	// The client fetches this URL directly, not via the typed RPC.
 	// `?bulk` (download every ranked map) is rate-capped, a double-click isn't.
 	.get('/osz/:setId', async c => {
 		const id = idParam.parse(c.req.param('setId'));
 		if (!await isSetLive(id)) throw new HTTPException(404, { message: 'Beatmap not available' });
-
-		const path = oszPath(id);
-		if (!existsSync(path)) throw new HTTPException(404, { message: 'Beatmap file missing' });
-
-		const buf = await readFile(path);
-		const bulk = c.req.query('bulk') !== undefined;
-		return new Response(bulk ? throttled(buf, env.BULK_DOWNLOAD_RATE) : buf, {
-			headers: {
-				'Content-Type': 'application/octet-stream',
-				'Content-Length': String(buf.length),
-				'Content-Disposition': `attachment; filename="${id}.osz"`,
-				'Cache-Control': 'public, max-age=31536000, immutable',
-			},
-		});
+		return oszResponse(id, c.req.query('bulk') !== undefined);
 	})
 
-	// Stream a live set's preview audio/background. File names are set-id prefixed.
+	// A live set's preview audio/background. File names are set-id prefixed.
 	.get('/preview/:setId/:file', async c => {
 		const id = idParam.parse(c.req.param('setId'));
 		const file = c.req.param('file');
-		if (file.includes('/') || file.includes('..') || !file.startsWith(String(id))) {
-			throw new HTTPException(400, { message: 'Bad preview path' });
-		}
+		checkPreviewName(id, file);
 		if (!await isSetLive(id)) throw new HTTPException(404, { message: 'Beatmap not available' });
-
-		const path = previewPath(file);
-		if (!existsSync(path)) throw new HTTPException(404, { message: 'Preview missing' });
-
-		const ext = file.split('.').pop()?.toLowerCase() ?? '';
-		const buf = await readFile(path);
-		return new Response(buf, {
-			headers: {
-				'Content-Type': PREVIEW_MIME[ext] ?? 'application/octet-stream',
-				'Content-Length': String(buf.length),
-				'Cache-Control': 'public, max-age=31536000, immutable',
-			},
-		});
+		return previewResponse(file);
 	})
 
 	// --- Beatmap nomination (admin): manage the queue + ranked dates. ---

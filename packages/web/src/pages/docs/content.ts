@@ -6,7 +6,7 @@ import { MATCH_EVENT } from '@oss-idle/shared/multiplayer';
 
 export type Param = {
 	name: string;
-	type: 'integer' | 'string';
+	type: 'integer' | 'integer[]' | 'string';
 	optional?: boolean;
 	about: string;
 };
@@ -59,7 +59,9 @@ const STATISTICS = {
 	play_count: 8698,
 	play_time: 1703259,
 	total_hits: 22214916,
-	level: { current: 100 },
+	level: {
+		current: 100, progress: 18, total_xp: 2870299,
+	},
 	grade_counts: {
 		xx: 0, x: 0, ss: 84, s: 347, a: 1,
 	},
@@ -77,7 +79,7 @@ const USER = {
 	statistics: STATISTICS,
 	skills: {
 		stamina: {
-			level: 100, prestige: 0, upgrades: 4,
+			level: 100, progress: 42, total_xp: 5294299, prestige: 0, upgrades: 4,
 		},
 	},
 	rank_history: {
@@ -480,6 +482,21 @@ export const ENDPOINTS: EndpointSection[] = [
 				format: 'See Get User.',
 			},
 			{
+				id: 'get-characters',
+				title: 'Get Characters',
+				path: '/characters',
+				scope: 'public',
+				about: 'Returns up to 10 characters in one request, as User objects. Unknown or hidden ids are left out.',
+				query: [{
+					name: 'ids[]', type: 'integer[]', about: 'Ids of the characters, up to 10. More is refused with 400.',
+				}],
+				example: {
+					path: '/characters', query: { 'ids[]': '13' },
+				},
+				response: { characters: [USER] },
+				format: 'Field characters, User[], in no particular order.',
+			},
+			{
 				id: 'get-character-scores',
 				title: 'Get Character Scores',
 				path: '/characters/{character}/scores/{type}',
@@ -601,7 +618,9 @@ export const OBJECTS: ObjectDoc[] = [
 			['support_level', 'integer', '0 to 3: the hearts on the profile.'],
 			['join_date', 'Timestamp', ''],
 			['statistics', 'UserStatistics', ''],
-			['skills', 'object', 'Each skill with its level, prestige and upgrades.'],
+			['skills', 'object', 'Each skill with its level, progress, total_xp, prestige and upgrades.'
+				+ ' The level shown in game is level + progress / 100 + prestige; total_xp counts'
+				+ ' from the last prestige.'],
 			['rank_history', 'object', 'mode, and data: the global rank of each of the last 90 days.'],
 		],
 	},
@@ -631,7 +650,9 @@ export const OBJECTS: ObjectDoc[] = [
 			['play_count', 'integer', ''],
 			['play_time', 'integer', 'In seconds.'],
 			['total_hits', 'integer', ''],
-			['level', 'object', 'current: the overall level.'],
+			['level', 'object',
+				'current: the overall level. progress: how far into the next one, in percent (0 to 99).'
+				+ ' total_xp: every xp the level and its progress stand for.'],
 			['grade_counts', 'object', 'xx, x, ss, s and a.'],
 			['statistics', 'object', `Judgement counts over the best scores: ${JUDGEMENTS}.`],
 		],

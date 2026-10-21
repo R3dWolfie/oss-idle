@@ -7,10 +7,10 @@ export const ADDRESS = '20bis rue Maladrerie 76000 Rouen';
 export const SIRET = '93386128800019';
 export const VAT_NUMBER = 'FR00933861288';
 export const EMAIL = CONTACT_EMAIL;
-export const HOST = 'BoiTech (Adrien Boitelle)';
+export const HOST = 'OVH SAS, 2 rue Kellermann, 59100 Roubaix, France - +33 9 72 10 10 07';
 // the consumer mediator (name, website); the terms mention it once it is set
 export const MEDIATOR: string | undefined = undefined;
 export const SITE = 'https://oss.idle.rhythmgamers.net';
 export const UPDATED = {
-	en: '19 October 2026', fr: '19 octobre 2026', 
+	en: '21 October 2026', fr: '21 octobre 2026', 
 };

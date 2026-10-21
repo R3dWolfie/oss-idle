@@ -13,8 +13,8 @@ import { z } from 'zod';
 export const BEATMAP_REQUEST_STATUS = ['pending', 'accepted', 'rejected'] as const;
 export type BeatmapRequestStatus = (typeof BEATMAP_REQUEST_STATUS)[number];
 
-/** How many open requests one player may hold at once. */
-export const MAX_PENDING_REQUESTS = 5;
+/** How many open requests one player may hold at once; supporters get twice as many. */
+export const maxPendingRequests = (supporter: boolean) => supporter ? 10 : 5;
 
 export const REQUEST_REASON_MAX = 500;
 

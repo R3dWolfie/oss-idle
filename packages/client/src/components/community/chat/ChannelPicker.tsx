@@ -5,8 +5,10 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 import {
 	ANNOUNCE_CHANNEL,
 	DEFAULT_CHANNEL,
+	TEAM_CHANNEL,
 } from '@oss-idle/shared/community/wire';
 import { LOBBY_CHANNEL } from '@oss-idle/shared/multiplayer';
+import Auth from '../../../online/auth';
 import ContextMenu from '../../ContextMenu';
 import { LOGS_CHANNEL } from '../../../logs';
 import {
@@ -22,6 +24,7 @@ export default function ChannelPicker() {
 	const { t } = useLingui();
 	const [open] = useSynced(channelPickerOpen);
 	const [tabs = []] = useSynced(chatTabs);
+	const [user] = useSynced(Auth.user);
 	const [search, setSearch] = useState('');
 	if (!open) return null;
 
@@ -30,9 +33,11 @@ export default function ChannelPicker() {
 		[ANNOUNCE_CHANNEL]: t`Automated announcements of stuff going on in oss!idle.`,
 		[LOBBY_CHANNEL]: t`Talk about multiplayer games.`,
 		[LOGS_CHANNEL]: t`Your own plays and level-ups, seen only by you.`,
+		[TEAM_CHANNEL]: t`The Administrators' and Global Moderation Team's channel.`,
 	};
 	const query = search.toLowerCase();
-	const shown = CHANNELS.filter(c => `${c} ${topics[c]}`.toLowerCase().includes(query));
+	const channels = user?.groups?.length ? [...CHANNELS, TEAM_CHANNEL] : CHANNELS;
+	const shown = channels.filter(c => `${c} ${topics[c]}`.toLowerCase().includes(query));
 
 	const close = () => {
 		void channelPickerOpen.set(false);

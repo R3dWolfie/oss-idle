@@ -103,6 +103,11 @@ const NAMES = defineMessages({
 	'pp-5k': 'High Orbit',
 	'pp-10k': 'Escape Velocity',
 	'pp-20k': 'Beyond the Stars',
+	'top-75': 'In the Running',
+	'top-50': 'Upper Half',
+	'top-25': 'Top Quarter',
+	'top-10': 'Elite',
+	'top-1': 'One Percent',
 	'play-pp-50': 'First Spark',
 	'play-pp-100': 'Triple Digits',
 	'play-pp-200': 'Heating Up',
@@ -157,6 +162,7 @@ const SERIES_DESCRIPTIONS = defineMessages({
 	first: 'Hold #1 on {count} ranked maps',
 	pp: 'Reach {pp} pp',
 	'play-pp': 'Set a {pp} pp play',
+	top: 'Be in the top {percent}% of players by pp',
 	curator: 'Have {count} of your proposed maps ranked',
 });
 
@@ -219,6 +225,6 @@ export const medalDescription = (id: string): string => {
 		});
 	}
 	return __(SERIES_DESCRIPTIONS[name as keyof typeof SERIES_DESCRIPTIONS], undefined, {
-		stars: n, count: num(n), hours: num(n), level: n, omega: n, pp: num(n),
+		stars: n, count: num(n), hours: num(n), level: n, omega: n, pp: num(n), percent: n,
 	});
 };

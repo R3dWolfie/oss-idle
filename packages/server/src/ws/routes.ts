@@ -1,4 +1,5 @@
 import type { ZodError } from 'zod';
+import { count } from '../metrics';
 import type { Hono } from 'hono';
 import type { Context } from 'hono';
 import { getCookie } from 'hono/cookie';
@@ -6,7 +7,10 @@ import {
 	createNodeWebSocket,
 	type NodeWebSocket,
 } from '@hono/node-ws';
-import { clientMessage } from '@oss-idle/shared/community/wire';
+import {
+	clientMessage,
+	DEFAULT_CHANNEL,
+} from '@oss-idle/shared/community/wire';
 import { VERSION } from '@oss-idle/shared/version';
 import { eq } from 'drizzle-orm';
 import { db } from '../db/client';
@@ -43,6 +47,7 @@ import {
 	update,
 } from './presence';
 import {
+	chatHistory,
 	handleChat,
 	nameColor,
 } from './chat';
@@ -66,6 +71,9 @@ import {
 /** How often a live connection refreshes its presence last-seen (well under the
  *  sweep TTL) so a clean session is never pruned. */
 const TOUCH_MS = 30 * 1000;
+
+/** Lines of the default channel a client gets on connect. */
+const CHAT_HISTORY = 100;
 
 /** The session JWT for a WS upgrade: Bearer / cookie like REST, plus a `?token=`
  *  fallback because a browser can't set headers on a WebSocket and the desktop
@@ -169,6 +177,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 
 		return {
 			onOpen: async (_e, ws) => {
+				count('activity', 'sockets');
 				hub.add(character.id, ws);
 				feed = new PlayFeed(() => bound(ws), ws);
 				scores = new MatchFeed(() => bound(ws), ws);
@@ -186,6 +195,9 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 				hub.sendLocal(ws, {
 					type: 'character',
 					character: characterToDTO(character, user.avatarUrl, user.country),
+				});
+				hub.sendLocal(ws, {
+					type: 'chat:history', lines: await chatHistory(DEFAULT_CHANNEL, CHAT_HISTORY),
 				});
 				// what (if anything) the character is playing, for resume/spectate
 				hub.sendLocal(ws, {

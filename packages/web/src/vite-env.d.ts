@@ -2,7 +2,9 @@
 
 interface ImportMetaEnv {
 	/** Base URL of the oss!idle backend (used for the OAuth entry point). */
-	readonly VITE_API_URL?: string;
+	readonly VITE_API_URL?: string
+	/** Edges nearer some players, comma-separated: the game measures and picks. */
+	readonly VITE_API_EDGES?: string;
 }
 
 interface ImportMeta {

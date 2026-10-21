@@ -19,6 +19,9 @@ import useDocumentHead from '../hooks/useDocumentHead';
 import useRouteTitle from '../hooks/useRouteTitle';
 import { sectionOf } from '../sections';
 
+/** Pages that use the whole window: the admin dashboard's charts. */
+const WIDE = new Set(['/admin/']);
+
 export const Route = createRootRoute({ component: RootLayout });
 
 function RootLayout() {
@@ -53,7 +56,7 @@ function RootLayout() {
 		<RouteProgress />
 		<Blackout />
 		<Header />
-		<div className='page'>
+		<div className={WIDE.has(leafId) ? 'page page--wide' : 'page'}>
 			<RestrictedBanner />
 			<h1 className='page-title'>
 				<FontAwesomeIcon icon={icon} className='page-title__icon' />

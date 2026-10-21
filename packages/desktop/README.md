@@ -66,6 +66,13 @@ npm run dist:desktop
 
 Dev talks to the local server (`localhost:3873`) and loads the live Vite client;
 packaged builds talk to the public API and load the bundled `app://idle` origin.
+
+A **staging build** is packaged too, but its `package.json` carries
+`staging: { api, site }` (set through electron-builder's `extraMetadata`): it talks
+to that server instead, keeps its own data folder beside the real game's, and leaves
+the `oss-idle://` scheme alone. Its renderer is built with `vite build --mode
+staging`: release code plus the dev tools menu (`client/src/dev/devMenu.ts`).
+Release builds drop all of it at compile time.
 Deep links in dev require the protocol to point back at the dev Electron binary -
 `main.ts` handles that automatically. The `oss-idle://` scheme is registered and
 routed (see deeplink.ts) but currently carries no actions - it's kept as the
@@ -88,6 +95,21 @@ is **user-initiated**, reusing the client's existing version poll:
 the next quit. Auto-update only runs in packaged builds. **Signing note:** macOS
 auto-update requires a signed + notarized app; Windows NSIS updates work unsigned
 (with a SmartScreen prompt) - sign for production.
+
+## Moving the install (Windows)
+
+The NSIS install is per-user in `%LOCALAPPDATA%\Programs`; AppImage and the macOS
+app are already portable, so only Windows gets *Move installation...*
+(Options → Maintenance). Every NSIS install copies its own installer to
+`%LOCALAPPDATA%\<updaterCacheDirName>\installer.exe` (the name comes from the
+bundled `app-update.yml`); `install.ts` re-runs it as
+`--updated /S --force-run /D=<picked>\oss!idle`, the same args electron-updater
+uses. The installer uninstalls the old folder first (registry `InstallLocation`),
+then installs, rewrites the registry and shortcuts, and relaunches, so later
+updates follow the new folder. Because the old install is gone before the new one
+is written, the app refuses a target inside the current install, a non-empty
+`oss!idle` folder (a later uninstall wipes it whole), or one it can't write to.
+The option is absent when the stored installer is missing.
 
 ## Discord Rich Presence
 
@@ -112,9 +134,9 @@ in the client's `presence.ts`; the Discord plumbing here never changes.
 
 ## Publishing (part of a full deploy)
 
-`deploy:prod` ends with `npm run publish:desktop`, which builds the Linux
-(AppImage) + Windows (NSIS, via Wine) installers, then `scripts/publish-desktop.mjs`
-copies `oss-idle.exe` / `oss-idle.AppImage` + the `latest*.yml` feed and a
+A deploy (the maintainers' own setup, outside this repo) builds the Linux
+(AppImage) + Windows (NSIS, via Wine) installers with `npm -w @oss-idle/desktop run dist`,
+then copies `oss-idle.exe` / `oss-idle.AppImage` + the `latest*.yml` feed and a
 `manifest.json` (version + filenames, read by the web *Play oss!idle* page) into
 the download dir. Stable filenames + a single `latest` channel
 (`detectUpdateChannel: false`), so the URL never changes and auto-update always

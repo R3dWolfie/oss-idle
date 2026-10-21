@@ -1,15 +1,10 @@
-import { ph } from '@lingui/core/macro';
 import './CharacterPage.css';
 
 import {
 	getCharacter,
-	getCharacterBestPP,
 	getCharacterCountPlayed,
-	getCharacterFirstPlaces,
-	getCharacterMostPlayed,
-	getCharacterNbFirstPlaces,
-	getCharacterRecent,
 	getCharacterStats,
+	saveProfileOrder,
 } from '../../api/characters';
 import { getUser } from '../../api/users';
 import Flag from '../../components/Flag';
@@ -28,11 +23,10 @@ import {
 	useCurrentUser,
 } from '../../hooks/useCurrentUser';
 import {
+	type ReactNode,
 	useRef,
 	useState,
 } from 'react';
-import { useShowMore } from '../../hooks/useShowMore';
-import ShowMoreLink from '../../components/ShowMoreLink';
 import {
 	JUDGEMENT,
 	Judgements,
@@ -42,24 +36,23 @@ import useAsync from '@oss-idle/shared/hooks/useAsync';
 import num from '@oss-idle/shared/display/num';
 import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
 import accuracy from '@oss-idle/shared/display/accuracy';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import ScoreRow from '../../components/score/ScoreRow';
 import Grade from '../../components/score/Grade';
 import { headlineGrades } from './headlineGrades';
-import { SkillBar } from '../../components/character/SkillBar';
 import { CharacterRanks } from '../../components/character/CharacterRanks';
 import RankGraph from '../../components/character/RankGraph';
 import CharacterMedals from '../../components/character/CharacterMedals';
 import CharacterBeatmaps from '../../components/character/CharacterBeatmaps';
+import CharacterSkills from '../../components/character/CharacterSkills';
+import CharacterTopRanks from '../../components/character/CharacterTopRanks';
+import CharacterHistorical from '../../components/character/CharacterHistorical';
 import ProfileSocialBar from '../../components/character/ProfileSocialBar';
 import ProfileTabs from '../../components/character/ProfileTabs';
-import { SkillName } from '@oss-idle/shared/skills';
-import { extractSkills } from '@oss-idle/shared/osu/level';
+import ProfileSection from '../../components/character/ProfileSection';
+import UserPage from '../../components/character/UserPage';
+import type { ProfileSection as Section } from '@oss-idle/shared/profile';
 import { Trans } from '@lingui/react/macro';
 import { countryName } from '@oss-idle/shared/display/country';
 import { i18n } from '../../i18n';
-import { coverBackground } from '../../api/maps';
 
 
 type Character = Awaited<ReturnType<typeof getCharacter>>;
@@ -79,16 +72,32 @@ export default function CharacterPage({ id, character, stats }: {
 	const blocks = useRef<HTMLDivElement>(null);
 
 	const countplayed = useAsync(() => getCharacterCountPlayed(id), [id]);
-	const mostplayed = useShowMore(page => getCharacterMostPlayed(id, page), [id]);
 
-	const bestpp = useShowMore(page => getCharacterBestPP(id, page), [id]);
-
-	const countfirstplaces = useAsync(() => getCharacterNbFirstPlaces(id), [id]);
-	const firstplaces = useShowMore(page => getCharacterFirstPlaces(id, page), [id]);
-
-	const recentscores = useShowMore(page => getCharacterRecent(id, page), [id]);
+	const [order, setOrder] = useState(character.profileOrder);
+	const supporter = Boolean(me?.supporter);
+	const movable = isSelf && supporter;
+	const move = (from: Section, to: Section) => {
+		const next = order.filter(s => s !== from);
+		next.splice(next.indexOf(to) + (order.indexOf(from) < order.indexOf(to) ? 1 : 0), 0, from);
+		setOrder(next);
+		void saveProfileOrder(character.id, next);
+	};
 
 	if (!user) return <main><Trans>Loading…</Trans></main>;
+
+	const sections: Record<Section, ReactNode> = {
+		me: <UserPage
+			characterId={character.id}
+			page={character.userPage}
+			isSelf={isSelf}
+			supporter={supporter}
+		/>,
+		skills: <CharacterSkills character={character} />,
+		ranks: <CharacterTopRanks id={id} countplayed={countplayed} />,
+		historical: <CharacterHistorical id={id} countplayed={countplayed} />,
+		beatmaps: <CharacterBeatmaps id={id} />,
+		medals: <CharacterMedals id={id} />,
+	};
 
 	return (
 		<main>
@@ -185,111 +194,21 @@ export default function CharacterPage({ id, character, stats }: {
 			</div>
 			<ProfileSocialBar
 				userId={character.userId}
+				characterId={character.id}
 				name={character.name}
 				restricted={character.restricted}
 				groups={character.groups}
 			/>
 			<ProfileTabs blocks={blocks} />
 			<div className='character__blocks' ref={blocks}>
-				<div className='character__block character__block-skills'>
-					<div className='character__block-title'><Trans>Skills</Trans></div>
-					<div className='main-skill'><SkillBar skill={'overall' as SkillName} progress={{
-						level: character.overallLevel, xp: character.overallXp,
-						lifetimeXp: character.overallLifetimeXp,
-					}} /></div>
-					<ul className='skills'>
-						{Object.entries(extractSkills(character))
-							.map(([skill, progress]) => <SkillBar
-								key={skill}
-								skill={skill as SkillName}
-								progress={progress}
-							/>)}
-					</ul>
-				</div>
-				<div className='character__block character__block-skills'>
-					<div className='character__block-title'><Trans>Ranks</Trans></div>
-					<div className='character__block-section'>
-						<div className='character__block-section-title'>
-							<Trans>Best Performance</Trans>
-							<div className='character__block-section-title-count'>
-								{num(Math.min(200, countplayed ?? 0))}
-							</div>
-						</div>
-						<div className='character__best_pp'>
-							{bestpp.items?.map(score => (
-								<ScoreRow key={score.best_pp.id} score={score.best_pp} beatmap={score.beatmap} />
-							))}
-						</div>
-						<ShowMoreLink {...bestpp} onClick={bestpp.more} />
-					</div>
-					<div className='character__block-section'>
-						<div className='character__block-section-title'>
-							<Trans>First Place Ranks</Trans>
-							<div className='character__block-section-title-count'
-							>{num(countfirstplaces)}
-							</div>
-						</div>
-						<div className='character__first_places'>
-							{firstplaces.items?.map(score => (
-								<ScoreRow key={score.first_place.id} score={score.first_place} beatmap={score.beatmap} />
-							))}
-						</div>
-						<ShowMoreLink {...firstplaces} onClick={firstplaces.more} />
-					</div>
-					<div className='character__block-section'>
-						<div className='character__block-section-title'>
-							<Trans>Recent scores</Trans>
-							<div className='character__block-section-title-count'>
-								{num(recentscores.items?.length)}
-							</div>
-						</div>
-						<div className='character__first_places'>
-							{recentscores.items?.map(score => (
-								<ScoreRow key={score.score.id} score={score.score} beatmap={score.beatmap} />
-							))}
-						</div>
-						<ShowMoreLink {...recentscores} onClick={recentscores.more} />
-					</div>
-				</div>
-				<div className='character__block character__block-skills'>
-					<div className='character__block-title'><Trans>Historical</Trans></div>
-					<div className='character__block-section'>
-						<div className='character__block-section-title'>
-							<Trans>Most Played Beatmaps</Trans>
-							<div className='character__block-section-title-count'>{num(countplayed)}
-							</div>
-						</div>
-						<div className='character__mostplayed'>
-							{mostplayed.items?.map(mp => <div key={mp.beatmap.id} className='mostplayed__container'>
-								<div
-									className='mostplayed__bg'
-									style={{
-										backgroundImage: coverBackground({
-											...mp.beatmapset, background: mp.beatmap.background,
-										}, 'list'), 
-									}}
-								></div>
-								<div className='mostplayed__bm'>
-									<div className='mostplayed__bminfo'>
-										<div className='mostplayed__bmt'>
-											<Trans>{ph({ title: mp.beatmap.title })} [{ph({ version: mp.beatmap.version })}] by {ph({ artist: mp.beatmap.artist })}</Trans>
-										</div>
-										<div className='mostplayed__bmc'>
-											<Trans>mapped by <b>{ph({ creator: mp.beatmapset.creator })}</b></Trans>
-										</div>
-									</div>
-									<div className='mostplayed__pl'>
-										<FontAwesomeIcon icon={faPlay} />
-										<span>{mp.beatmaps_played.plays}</span>
-									</div>
-								</div>
-							</div>)}
-						</div>
-						<ShowMoreLink {...mostplayed} onClick={mostplayed.more} />
-					</div>
-				</div>
-				<CharacterBeatmaps id={id} />
-				<CharacterMedals id={id} />
+				{order.map(section => <ProfileSection
+					key={section}
+					section={section}
+					movable={movable}
+					onMove={move}
+				>
+					{sections[section]}
+				</ProfileSection>)}
 				<AccountStanding userId={character.userId} name={character.name} />
 			</div>
 		</main>

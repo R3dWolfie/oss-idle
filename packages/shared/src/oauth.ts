@@ -13,6 +13,9 @@ export const parseScopes = (raw: string | undefined): Scope[] | undefined => {
 
 export const MAX_REDIRECTS = 10;
 
+/** `GET /api/v2/characters?ids[]=`: up to 10 character ids, like osu!'s `/users?ids[]=`. */
+export const batchIds = z.array(z.coerce.number().int().positive()).max(10);
+
 /** A developer's OAuth application: its name and the callback URLs it may send users back to. */
 export const oauthClientBody = z.object({
 	name: z.string().trim().min(1).max(100),

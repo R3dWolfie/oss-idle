@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import {
+	useRef,
+	useState,
+} from 'react';
 import { useLingui } from '@lingui/react/macro';
 import { ph } from '@lingui/core/macro';
 import type Skill from '@oss-idle/shared/sim/skills/skill';
@@ -29,6 +32,8 @@ export const useUpgrade = (skill: Skill, locked: boolean) => {
 	const [overdrive] = useSynced(skill.overdrive);
 	const [prestige] = useSynced(skill.prestige);
 	const [busy, setBusy] = useState(false);
+	// state lags a render: a double click would read busy as false twice and buy twice
+	const inFlight = useRef(false);
 	const [confirming, setConfirming] = useState<Confirm | undefined>(undefined);
 
 	const state = {
@@ -41,11 +46,13 @@ export const useUpgrade = (skill: Skill, locked: boolean) => {
 	const multiplier = upgradeXPMultiplier(upgrades, overdrive);
 
 	const buy = async () => {
-		if (busy) return;
+		if (inFlight.current) return;
+		inFlight.current = true;
 		setBusy(true);
 		try {
 			await purchaseUpgrade(skill.name);
 		} finally {
+			inFlight.current = false;
 			setBusy(false);
 		}
 	};

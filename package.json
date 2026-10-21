@@ -1,7 +1,7 @@
 {
   "name": "oss-idle",
   "private": true,
-  "version": "1.0.2.0",
+  "version": "1.0.3.0",
   "type": "module",
   "description": "oss!idle - a replica of the osu! startup experience (React client + Hono backend)",
   "workspaces": [
@@ -26,11 +26,6 @@
     "build": "npm run i18n:extract && npm run i18n:compile && npm -w @oss-idle/shared run build && npm -w @oss-idle/server run build:types && npm -w @oss-idle/client run build && npm -w @oss-idle/web run build",
     "build:deploy": "npm -w @oss-idle/server run build:types && npm -w @oss-idle/client run build && npm -w @oss-idle/web run build",
     "build:nodeploy": "npm run build:shared && npm run build:types",
-    "deploy:prod": "sudo echo 'starting' && npm run backup:prod && node scripts/version-bump.mjs --verify \"npm run i18n:upload && npm run i18n:download && node scripts/prod-build.mjs\" && node scripts/prod-build.mjs --follow && node scripts/migrate-oss-rename.mjs prod && sudo systemctl restart oss-idle-prod oss-idle-discord",
-    "deploy:prod:migrate": "sudo echo 'starting' && npm run backup:prod && node scripts/version-bump.mjs --verify \"npm run i18n:upload && npm run i18n:download && node scripts/prod-build.mjs\" && node scripts/prod-build.mjs --follow && node scripts/migrate-oss-rename.mjs prod && sudo systemctl stop oss-idle-prod && npm run migrate:prod && sudo systemctl start oss-idle-prod && sudo systemctl restart oss-idle-discord",
-    "publish:desktop": "npm -w @oss-idle/desktop run dist && node scripts/publish-desktop.mjs",
-    "version:bump": "node scripts/version-bump.mjs",
-    "deploy:server:prod": "sudo echo 'starting' && node scripts/prod-build.mjs --server && node scripts/migrate-oss-rename.mjs prod && sudo systemctl restart oss-idle-prod oss-idle-discord",
     "build:shared": "npm -w @oss-idle/shared run build",
     "build:web": "npm -w @oss-idle/shared run build && npm -w @oss-idle/web run build",
     "dev:desktop": "npm -w @oss-idle/desktop run build && npm -w @oss-idle/desktop run start",
@@ -61,8 +56,7 @@
     "test:watch": "npm -w @oss-idle/tests run test:watch",
     "testplay": "npm -w @oss-idle/tests run testplay",
     "testxp": "npm -w @oss-idle/tests run testxp",
-    "benchmark": "npm -w @oss-idle/tests run benchmark",
-    "backup:prod": "node scripts/backup-db.mjs"
+    "benchmark": "npm -w @oss-idle/tests run benchmark"
   },
   "overrides": {
     "zod": "^4.4.3"

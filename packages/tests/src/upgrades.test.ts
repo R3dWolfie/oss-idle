@@ -20,6 +20,7 @@ import {
 	overdriveMultiplier,
 	prestigeMinLevel,
 	prestigeXPMultiplier,
+	revertUpgrade,
 	skillXPMultiplier,
 	upgradeMinLevel,
 	upgradeMinSpend,
@@ -228,5 +229,40 @@ describe('overdrive & XP multiplier', () => {
 			.toBeCloseTo(1 + UPGRADE_XP_BONUS * overdriveMultiplier(5), 10);
 		expect(upgradeXPMultiplier(2, 5))
 			.toBeCloseTo(1 + 2 * UPGRADE_XP_BONUS * overdriveMultiplier(5), 10);
+	});
+});
+
+describe('upgrade rollback', () => {
+	it('undoes two upgrades bought in a row', () => {
+		const start = {
+			level: 104, xp: 1234, upgrades: 7, overdrive: 0.5, prestige: 0,
+		};
+		const once = applyUpgrade(start);
+		const twice = applyUpgrade(once);
+		const back = revertUpgrade(revertUpgrade(twice));
+		expect(twice.level).toBe(84);
+		expect(back.level).toBe(104);
+		expect(back.upgrades).toBe(7);
+		expect(back.xp).toBeCloseTo(1234);
+		expect(back.overdrive).toBeCloseTo(0.5);
+		expect(revertUpgrade(once).refund).toBeCloseTo(once.spent);
+	});
+
+	it('refunds the levels as they were worth at the anchor', () => {
+		const state = {
+			level: 100, xp: 0, upgrades: 8, overdrive: 0, prestige: 0,
+		};
+		const prev = revertUpgrade(state, 84);
+		expect(prev.refund).toBeCloseTo(xpToLevel(94) - xpToLevel(84));
+		expect(prev.level).toBe(100);
+		expect(prev.xp).toBeCloseTo(xpToLevel(94) - xpToLevel(84));
+		expect(revertUpgrade(state).level).toBe(110);
+	});
+
+	it('refunds a gear tier its single level', () => {
+		const state = {
+			level: 102, xp: 0, upgrades: BASE_MAX_UPGRADES + 1, overdrive: 0, prestige: 2,
+		};
+		expect(revertUpgrade(state).level).toBe(102 + GEAR_TIER_LEVELS);
 	});
 });

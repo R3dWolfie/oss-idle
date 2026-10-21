@@ -4,6 +4,7 @@ import {
 	desc,
 	eq,
 	gt,
+	lte,
 	ne,
 	or,
 	sql,
@@ -16,6 +17,7 @@ import {
 import { alias } from 'drizzle-orm/mysql-core';
 import { HTTPException } from 'hono/http-exception';
 import { createTransport } from 'nodemailer';
+import MailComposer from 'nodemailer/lib/mail-composer';
 import { CONTACT_EMAIL } from '@oss-idle/shared/contact';
 import {
 	supporterMonths,
@@ -23,6 +25,7 @@ import {
 	unusedRefund,
 	type CheckoutBody,
 } from '@oss-idle/shared/supporter';
+import { received } from './abby';
 import { db } from './db/client';
 import { users } from './db/schema/user';
 import {
@@ -42,6 +45,7 @@ import { onRefund } from './supporterRefund';
 import { onDispute } from './restrictions';
 import { warn } from './discord/error';
 import { supporterThanks } from './supporterThanks';
+import { fileSent } from './mailSent';
 
 const storeUrl = `${clientUrl}/web/store`;
 
@@ -97,14 +101,19 @@ type Before = {
 	active: boolean;
 };
 
-const sendThanks = async (orderId: number, to: string, before: Before): Promise<void> => {
-	if (!mailer) return;
+/** How many seconds a donation pays the server for */
+export const serverSeconds = (cents: number): number | undefined => env.SERVER_MONTHLY_COST
+	&& Math.floor(env.SUPPORTER_TAXES.reduce((net, tax) => net * (1 - tax / 100), cents / 100)
+		/ env.SERVER_MONTHLY_COST * 365.25 / 12 * 86400);
+
+export const sendThanks = async (orderId: number, to: string, before: Before): Promise<void> => {
+	if (!mailer || !env.SMTP_URL) return;
 	const [order] = await orderRows(eq(supporterOrders.id, orderId));
 	if (!order?.buyerId) return;
 	const [bought] = await db
 		.select({ n: count() })
 		.from(supporterOrders)
-		.where(eq(supporterOrders.buyerId, order.buyerId));
+		.where(and(eq(supporterOrders.buyerId, order.buyerId), lte(supporterOrders.id, orderId)));
 	const {
 		subject, text, html,
 	} = supporterThanks({
@@ -115,14 +124,23 @@ const sendThanks = async (orderId: number, to: string, before: Before): Promise<
 		buyerName: order.buyerName ?? undefined,
 		giftTo: order.recipientId === order.buyerId ? undefined : order.recipientName ?? 'another player',
 		months: order.months,
+		serverSeconds: serverSeconds(await received(order).catch(() => 0)),
 		recurring: order.recurring,
 		tagEndsAt: order.endsAt ?? undefined,
 		storeUrl,
 	});
-	await mailer.sendMail({
+	const raw = await new MailComposer({
 		from: {
 			name: 'oss!idle', address: CONTACT_EMAIL,
 		}, to, subject, text, html,
+	}).compile().build();
+	await mailer.sendMail({
+		envelope: {
+			from: CONTACT_EMAIL, to,
+		}, raw,
+	});
+	await fileSent(env.SMTP_URL, raw).catch((e: Error) => {
+		warn(`Supporter order ${orderId}: thank-you sent, but not filed in Sent: ${e.message}`);
 	});
 };
 

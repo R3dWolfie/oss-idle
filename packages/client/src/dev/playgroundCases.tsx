@@ -87,6 +87,7 @@ const fakeQueue = () => {
 				artist, title, 
 			}, 
 		},
+		getBackgroundUri: async () => undefined,
 	} as unknown as LightBeatmap);
 
 	const entries = [

@@ -37,6 +37,9 @@ export const knowsLegacyChannel = (version: string): boolean => {
 /** Server announcements (#1 ranks, milestones); read-only for players. */
 export const ANNOUNCE_CHANNEL = '#announce';
 
+/** The admins' and GMT's own channel, reaching only them. */
+export const TEAM_CHANNEL = '#team';
+
 /** Server-enforced cap on a chat line. */
 export const MAX_CHAT_LENGTH = 2000;
 
@@ -157,6 +160,11 @@ export const serverMessage = z.discriminatedUnion('type', [
 	z.object({
 		type: z.literal('chat'),
 		line: chatLineDTO,
+	}),
+	// The default channel's latest lines, on connect.
+	z.object({
+		type: z.literal('chat:history'),
+		lines: z.array(chatLineDTO),
 	}),
 	// Moderation: replace these lines' text with a deleted marker, live. Sent when
 	// an admin deletes messages (or times out / bans, which also deletes).

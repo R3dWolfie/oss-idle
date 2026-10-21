@@ -107,13 +107,13 @@ const db = mysql.createPool({
 	connectionLimit: 2,
 });
 
-type Linked = { level?: number; badges: string[] };
+type Linked = { name?: string; level?: number; badges: string[] };
 
-/** Discord id → overall level of the account's current character and its badge role names,
+/** Discord id → name and overall level of the account's current character and its badge role names,
  *  for linked accounts. */
 const linkedMembers = async (filter = '', args: unknown[] = []) => {
 	const [rows] = await db.query<RowDataPacket[]>(
-		`SELECT u.id, u.discord_id AS discordId, c.overall_level AS level,
+		`SELECT u.id, u.discord_id AS discordId, c.name, c.overall_level AS level,
 			u.supporter_until > UTC_TIMESTAMP() AS supporter,
 			(SELECT GROUP_CONCAT(g.\`group\`) FROM user_group g WHERE g.user_id = u.id) AS \`groups\`
 		FROM user u LEFT JOIN \`character\` c ON c.id = u.current_character
@@ -125,6 +125,7 @@ const linkedMembers = async (filter = '', args: unknown[] = []) => {
 		if (row.id === OWNER_ID) keys.add('admin');
 		if (row.supporter) keys.add('supporter');
 		const linked: Linked = {
+			name: row.name ?? undefined,
 			level: row.level ?? undefined,
 			badges: BADGES.filter(badge => keys.has(badge.key)).map(badge => badge.name),
 		};
@@ -207,6 +208,11 @@ const syncMember = async (member: GuildMember, linked: Linked | undefined) => {
 	const stale = member.roles.cache.filter(role => tierOfRole(role) !== undefined
 		? role !== want
 		: isBadge(role) && !badges.has(role.id));
+	if (linked?.name && member.nickname !== linked.name) {
+		// Discord never lets a bot rename the server owner or anyone ranked above it
+		await member.setNickname(linked.name)
+			.catch(err => console.error(`[discord] nickname of ${member.id}:`, err.message));
+	}
 	if (add.length) await member.roles.add(add);
 	if (stale.size) {
 		await member.roles.remove(stale);

@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-19 20:47\n"
+"PO-Revision-Date: 2026-10-21 10:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -282,7 +282,7 @@ msgstr "Cacher auto."
 
 #: src/components/community/chat/ChannelPicker.tsx
 msgid "Automated announcements of stuff going on in oss!idle."
-msgstr ""
+msgstr "Annonce automatique de choses qui se passent dans oss!idle."
 
 #: src/components/options/AutopilotDelay.tsx
 msgid "Autopilot delay"
@@ -514,6 +514,10 @@ msgstr "chat|message|privé|pm|amis"
 #: src/components/community/chat/ReportMessageDialog.tsx
 msgid "Cheating"
 msgstr "Triche"
+
+#: src/components/options/MoveInstall.tsx
+msgid "Choose where to move oss!idle (the game will restart)"
+msgstr "Choisissez le nouveau dossier de oss!idle (le jeu va redémarrer)"
 
 #: src/components/dock/DockControls.tsx
 msgid "clear"
@@ -1005,7 +1009,7 @@ msgstr "Installé"
 
 #: src/components/community/chat/Chat.tsx
 msgid "Join a channel"
-msgstr ""
+msgstr "Rejoindre un salon"
 
 #: src/scenes/Lobby.tsx
 msgid "Join Game"
@@ -1060,6 +1064,7 @@ msgid "Length: {totalLength} BPM: {bpmText} Objects: {objects}"
 msgstr "Durée : {totalLength} BPM : {bpmText} Objets : {objects}"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "Let this play finish, then wait"
 msgstr "Laisser le play se finir puis attendre"
 
@@ -1189,6 +1194,10 @@ msgstr "Les mods changent comment la map se joue. Un rate plus rapide rend gén�
 msgid "Most downloaded"
 msgstr "Les plus téléchargés"
 
+#: src/components/options/MoveInstall.tsx
+msgid "Move installation..."
+msgstr "Déplacer l'installation..."
+
 #: src/components/dock/DockQueue.tsx
 msgid "Move it down"
 msgstr "Déplacer en bas"
@@ -1196,6 +1205,10 @@ msgstr "Déplacer en bas"
 #: src/components/dock/DockQueue.tsx
 msgid "Move up"
 msgstr "Déplacer vers le haut"
+
+#: src/scenes/Options.tsx
+msgid "move|install|installation|folder|location|portable"
+msgstr "move|install|installation|folder|location|portable"
 
 #: src/scenes/MainMenu.tsx
 msgid "Multi"
@@ -1263,7 +1276,7 @@ msgstr "La prochaine renaissance débloquera : {next}"
 msgid "Next song"
 msgstr "Chanson suivante"
 
-#: src/scenes/Gameplay.tsx
+#: src/components/gameplay/QueueNextUp.tsx
 msgid "Next up:"
 msgstr "Suivant:"
 
@@ -1380,6 +1393,10 @@ msgstr "Ouvrir ce lien ?"
 msgid "Options"
 msgstr "Options"
 
+#: src/components/options/MoveInstall.tsx
+msgid "oss!idle can't write to that folder."
+msgstr "oss!idle n'a pas l'autorisation d'écrire dans ce dossier."
+
 #: src/components/Tutorial.tsx
 msgid "oss!idle features <0>online leaderboards</0>, just like osu!. Sign in with your osu! account to compete and save your progression online."
 msgstr "oss!idle propose des <0>classements en ligne</0>, tout comme osu!. Connectez-vous avec votre compte osu! pour vous mesurer aux autres et sauvegarder votre progression en ligne."
@@ -1446,6 +1463,7 @@ msgid "Password:"
 msgstr "Mot de passe :"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "pause"
 msgstr "pause"
 
@@ -1454,6 +1472,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: src/components/dock/DockNowPlaying.tsx
+#: src/components/gameplay/QueueNextUp.tsx
 msgid "Paused, next:"
 msgstr "En pause, suivante :"
 
@@ -1473,6 +1492,10 @@ msgstr "Supprimer {addon} définitivement ? Cette action ne peut être annulée.
 #: src/components/leaderboard/PersonalBest.tsx
 msgid "Personal best"
 msgstr "Record personnel"
+
+#: src/components/options/MoveInstall.tsx
+msgid "Pick a folder outside the current installation."
+msgstr "Choisissez un dossier en dehors de l'installation actuelle."
 
 #: src/components/Tutorial.tsx
 msgid "Pick a song"
@@ -1717,12 +1740,13 @@ msgid "Result"
 msgstr "Résultat"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "resume"
 msgstr "continuer"
 
 #: src/scenes/Result.tsx
 msgid "RETRY"
-msgstr ""
+msgstr "ENCORE"
 
 #: src/components/community/PlayerMenu.tsx
 msgid "Revoke Friendship"
@@ -1787,7 +1811,7 @@ msgstr "Sélectionnez une playlist ou créez en une nouvelle ici..."
 
 #: src/components/community/chat/ChannelPicker.tsx
 msgid "Select any channel you wish to join!"
-msgstr ""
+msgstr "Sélectionnez le salon que vous souhaitez rejoindre !"
 
 #: src/components/options/Language.tsx
 msgid "Select language"
@@ -1942,6 +1966,7 @@ msgid "Start playing the queue"
 msgstr "Démarrer la lecture de la liste"
 
 #: src/components/dock/DockRunButton.tsx
+#: src/components/gameplay/QueuePauseButton.tsx
 msgid "Start playing the queue again"
 msgstr "Redémarrer la lecture de la liste"
 
@@ -1982,7 +2007,7 @@ msgstr "Retirer de la liste"
 
 #: src/components/community/chat/ChannelPicker.tsx
 msgid "Talk about multiplayer games."
-msgstr ""
+msgstr "Discutez des parties en multijoueur."
 
 #: src/scenes/IntroScreen.tsx
 msgid "tap to play..."
@@ -1996,13 +2021,21 @@ msgstr "Mode d'équipe :"
 msgid "Thanks for your generosity!"
 msgstr "Merci de votre générosité !"
 
+#: src/components/options/MoveInstall.tsx
+msgid "That folder already has an oss!idle folder with files in it."
+msgstr "Ce dossier contient déjà une installation oss!idle avec des fichiers à l'intérieur."
+
 #: src/components/options/DownloadAllWarning.tsx
 msgid "That's why downloading them all at once is an osu!supporter perk."
 msgstr "C'est pourquoi ce téléchargement nécessite le tag supporter."
 
 #: src/components/community/chat/ChannelPicker.tsx
+msgid "The Administrators' and Global Moderation Team's channel."
+msgstr "Le salon des Administrateurs et de la GMT"
+
+#: src/components/community/chat/ChannelPicker.tsx
 msgid "The main oss!idle channel."
-msgstr ""
+msgstr "Le salon principal de oss!idle."
 
 #: src/components/community/chat/ReportMessageDialog.tsx
 msgid "The report could not be sent."
@@ -2337,7 +2370,7 @@ msgstr "Votre personnage est encore sur une autre map. Abandonner pour démarrer
 
 #: src/components/community/chat/ChannelPicker.tsx
 msgid "Your own plays and level-ups, seen only by you."
-msgstr ""
+msgstr "Vos propres résultats et gains de niveau, vus seulement par vous."
 
 #: src/components/addons/ManageAddonsView.tsx
 msgid "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{addon}\" for review?"

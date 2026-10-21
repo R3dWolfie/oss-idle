@@ -61,7 +61,6 @@ import {
 	isCommunityOpen,
 	openPage,
 } from '../globals';
-import { useParallax } from '@oss-idle/shared/hooks/useParallax';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
@@ -271,8 +270,6 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 
 	Controls.back.usePress(onBack);
 
-	const [parallaxOn] = useSynced(SETTINGS.parallax);
-	const parallax = useParallax(0.12, parallaxOn);
 	const [scrollSpeed] = useSynced(SETTINGS.scrollspeed);
 	const [library] = useSynced(beatmapsVersion);
 	const [character] = useSynced(Entities.character);
@@ -697,7 +694,7 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 				{/* mounted over another scene it draws no scenery, so what is behind
 				    stays visible; queueing swaps the metadata and the leaderboard for
 				    the grouping controls, which are how you find what to queue */}
-				{!overlay && <SongSelectBackdrop parallax={parallax} />}
+				{!overlay && <SongSelectBackdrop />}
 				<TopBar
 					version={version}
 					scrollSpeed={scrollSpeed}

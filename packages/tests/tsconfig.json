@@ -9,9 +9,10 @@
     "noEmit": true,
     "esModuleInterop": true,
     "types": ["node"],
-    // Mirror the vitest alias so `tsc` typechecks against shared's source too.
+    // Mirror the vitest aliases so `tsc` typechecks against their source too.
     "paths": {
-      "@oss-idle/shared/*": ["../shared/src/*"]
+      "@oss-idle/shared/*": ["../shared/src/*"],
+      "@oss-idle/client/*": ["../client/src/*"]
     }
   },
   "include": ["src", "vitest.config.ts"]

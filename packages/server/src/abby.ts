@@ -25,7 +25,9 @@ const CARD = 3;
 type Order = typeof supporterOrders.$inferSelect;
 
 /** What reached the bank, in euro cents: the payment less Stripe's fee and the refunds. */
-const received = async (order: Order): Promise<number> => {
+export const received = async (
+	order: Pick<Order, 'paymentIntent' | 'refunded'>,
+): Promise<number> => {
 	if (!order.paymentIntent) throw new Error('no payment intent');
 	const intent = await needStripe().paymentIntents.retrieve(
 		order.paymentIntent,

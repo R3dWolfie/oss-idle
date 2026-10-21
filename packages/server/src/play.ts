@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { count } from './metrics';
 import '@oss-idle/shared/osu/controlPointPatch';
 import { BeatmapDecoder } from 'osu-parsers';
 import {
@@ -591,6 +592,7 @@ async function simulateAndStore(
 
 	// Promote the provisional lock to the real end time (drives the sweep + count).
 	await redis.zadd(PLAYING_KEY, endsAt, String(character.id));
+	count('activity', 'plays_started');
 
 	// Reflect the play on the community overlay (no-op if they have no live socket).
 	void updatePresence(character.id, {
@@ -743,6 +745,7 @@ export async function finalizePlay(
 		},
 	});
 
+	count('activity', 'plays_finished');
 	console.log(characterId, 'finished. playing users:', await getPlaying());
 	return result;
 }

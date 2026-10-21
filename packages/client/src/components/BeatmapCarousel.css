@@ -38,13 +38,14 @@
 }
 
 /*
- * Each panel rides a circular arc: `--bow` is set per-frame from JS (how far
- * the panel is pushed back toward the right edge based on its distance from the
- * vertical centre); `--pop` is the extra leftward protrusion on hover/select.
+ * Each panel rides a circular arc: its `translate` is set per-frame from JS (how
+ * far the panel is pushed back toward the right edge based on its distance from
+ * the vertical centre); `--pop` is the extra leftward protrusion on hover/select.
  * Positive translateX = toward the right edge, negative = out toward the player.
+ * The arc is not a custom property: those inherit, and a per-frame change would
+ * restyle every element inside every card.
  */
 .bm-card {
-	--bow: 0px;
 	--pop: 0px;
 	--scale: 1;
 	position: relative;
@@ -64,10 +65,10 @@
 	align-items: stretch;
 	cursor: pointer;
 	transform-origin: right center;
-	transform: translateX(calc(var(--bow) + var(--pop) + 40px))
-		scale(var(--scale));
+	transform: translateX(calc(var(--pop) + 40px)) scale(var(--scale));
 	transition:
 		transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1),
+		translate 0.18s cubic-bezier(0.2, 0.8, 0.3, 1),
 		box-shadow 0.18s ease,
 		opacity 0.18s ease,
 		filter 0.18s ease;
@@ -244,18 +245,20 @@
 	text-overflow: ellipsis;
 }
 /* the XP section, top-right: main skill + total. The card is translated
-   toward (and past) the screen's right edge by --bow/--pop, so the section
-   counter-shifts by the same amount to stay visible; the matching transition
-   keeps it glued to the card's own transform animation. */
+   toward (and past) the screen's right edge by its arc and --pop, so the section
+   counter-shifts by the same amount to stay visible (the arc's share from JS);
+   the matching transitions keep it glued to the card's own animation. */
 .bm-card__xp {
 	position: absolute;
 	top: 7px;
-	right: calc(var(--bow) + var(--pop) + 49px);
+	right: 49px;
+	transform: translateX(calc(-1 * var(--pop)));
 	z-index: 2;
 	display: flex;
 	gap: 5px;
 	transition:
-		right 0.18s cubic-bezier(0.2, 0.8, 0.3, 1),
+		transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1),
+		translate 0.18s cubic-bezier(0.2, 0.8, 0.3, 1),
 		opacity 0.18s ease;
 }
 .bm-card__xp-chip {

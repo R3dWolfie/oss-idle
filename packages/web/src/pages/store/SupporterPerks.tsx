@@ -1,9 +1,13 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
 import { faHeartPulse } from '@fortawesome/free-solid-svg-icons/faHeartPulse';
 import { faImage } from '@fortawesome/free-solid-svg-icons/faImage';
+import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload';
+import { faMusic } from '@fortawesome/free-solid-svg-icons/faMusic';
+import { maxPendingRequests } from '@oss-idle/shared/beatmapRequest';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord';
 
 /** What a supporter tag gives. */
@@ -32,6 +36,19 @@ export default function SupporterPerks() {
 				<p>
 					<Trans>Pick your own main menu background: set <code>menu.background</code> to an image link in your skin.</Trans>
 				</p>
+			</div>
+			<div className='store__perk'>
+				<div className='store__perk-icon'><FontAwesomeIcon icon={faDownload} /></div>
+				<h3><Trans>Download every map</Trans></h3>
+				<p><Trans>Get every ranked beatmap in one go from the game's options.</Trans></p>
+			</div>
+			<div className='store__perk'>
+				<div className='store__perk-icon'><FontAwesomeIcon icon={faMusic} /></div>
+				<h3><Trans>More map requests</Trans></h3>
+				<p><Trans>
+					Propose up to {ph({ supporterMax: maxPendingRequests(true) })} maps for ranking at
+					once, instead of {ph({ max: maxPendingRequests(false) })}.
+				</Trans></p>
 			</div>
 			<div className='store__perk'>
 				<div className='store__perk-icon'><FontAwesomeIcon icon={faDiscord} /></div>

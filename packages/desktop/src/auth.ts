@@ -1,6 +1,7 @@
 import {
 	app,
 	safeStorage,
+	session,
 	shell,
 } from 'electron';
 import path from 'node:path';
@@ -23,7 +24,8 @@ import { broadcast } from './frames';
  * sends that browser to `127.0.0.1:<port>` with a one-time code, which only the
  * machine that signed in can receive, and the app swaps it for the session. The
  * token is then held here (encrypted on disk via {@link safeStorage}) and pushed
- * to every renderer frame, which sends it as a `Bearer` header on each API call.
+ * to every renderer frame for its socket; API requests get it as a `Bearer` header
+ * here ({@link authorizeApiRequests}).
  */
 
 const LOGIN_TIMEOUT_MS = 5 * 60_000;
@@ -62,6 +64,21 @@ function persist(): void {
 
 export function getToken(): string | null {
 	return token;
+}
+
+/** Adds the session to the renderer's API requests here rather than in the page: a
+ *  header the page sets makes Chromium preflight every new URL, one more round trip
+ *  far from the API. Covers the API and its edges: the session cookie's domain. */
+export function authorizeApiRequests(): void {
+	const { origin, hostname } = new URL(API_BASE);
+	const parent = hostname.split('.').slice(1).join('.');
+	const urls = [`${origin}/*`, ...(parent.includes('.') ? [`https://*.${parent}/*`] : [])];
+	session.defaultSession.webRequest.onBeforeSendHeaders({ urls }, (details, callback) => {
+		const headers = details.requestHeaders;
+		const set = Object.keys(headers).some(name => name.toLowerCase() === 'authorization');
+		if (token && !set) headers.Authorization = `Bearer ${token}`;
+		callback({ requestHeaders: headers });
+	});
 }
 
 function setToken(next: string | null): void {

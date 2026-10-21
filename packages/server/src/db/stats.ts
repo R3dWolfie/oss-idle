@@ -5,6 +5,7 @@ import {
 import {
 	createPool,
 	type Pool,
+	type RowDataPacket,
 } from 'mysql2';
 import {
 	and,
@@ -47,7 +48,7 @@ export const osuAllBeatmaps = mysqlTable('osu_allbeatmaps', {
 });
 
 const statsPool: Pool = createPool({
-	host: env.DB_HOST,
+	host: env.STATS_DB_HOST ?? env.DB_HOST,
 	port: env.DB_PORT,
 	user: env.DB_USER,
 	password: env.DB_PASSWORD,
@@ -57,6 +58,11 @@ const statsPool: Pool = createPool({
 	maxIdle: 1,
 	idleTimeout: 60_000,
 });
+
+/** A raw query on the farm's server (the `stats` and `farm` databases), which is not
+ *  always the one holding oss!idle's own. */
+export const farmQuery = async (query: string, args: unknown[]): Promise<RowDataPacket[]> =>
+	(await statsPool.promise().query<RowDataPacket[]>(query, args))[0];
 
 const statsDb: MySql2Database<Record<string, never>> = drizzle(statsPool, {
 	mode: 'default',

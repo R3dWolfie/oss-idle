@@ -1,3 +1,5 @@
+import type { SkillName } from '@oss-idle/shared/skills';
+import type { ProfileSection } from '@oss-idle/shared/profile';
 import {
 	rpc,
 	unwrap,
@@ -62,3 +64,31 @@ export const getCharacterRankedMaps = (id: number | string, page: number | strin
 /** Players whose name holds `q`. */
 export const searchPlayers = (q: string) =>
 	unwrap(rpc.v1.characters.search.$get({ query: { q } }));
+
+/** Admin: undo a skill's last upgrade. */
+export const rollbackUpgrade = (id: number, skill: SkillName, anchor: number) =>
+	unwrap(rpc.v1.characters[':id'].upgrade.rollback.$post({
+		param: { id: String(id) }, json: {
+			skill, anchor, 
+		},
+	}));
+
+/** Save a character's me! page (osu! BBCode); returns it rendered, absent when blank. */
+export const saveUserPage = (characterId: number, raw: string) =>
+	unwrap(rpc.v1.me.page.$put({
+		json: {
+			characterId, raw,
+		},
+	}));
+
+/** Render a me! page draft without saving it. */
+export const previewUserPage = (raw: string) =>
+	unwrap(rpc.v1.me.page.preview.$post({ json: { raw } }));
+
+/** Save the order of a character's profile blocks. */
+export const saveProfileOrder = (characterId: number, order: ProfileSection[]) =>
+	unwrap(rpc.v1.me['profile-order'].$put({
+		json: {
+			characterId, order,
+		},
+	}));

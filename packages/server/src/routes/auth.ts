@@ -2,6 +2,7 @@ import {
 	type Context,
 	Hono,
 } from 'hono';
+import { count } from '../metrics';
 import {
 	getCookie,
 	setCookie,
@@ -24,6 +25,8 @@ import {
 import {
 	clientUrl,
 	cookieSecure,
+	isProd,
+	SESSION_COOKIE_DOMAIN,
 } from '../env';
 import {
 	authorizeUrl,
@@ -57,13 +60,25 @@ import {
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 days, seconds
 
-const setSession = (c: Context, session: string) => setCookie(c, SESSION_COOKIE, session, {
-	httpOnly: true,
-	sameSite: 'Lax',
-	secure: cookieSecure,
-	path: '/',
-	maxAge: SESSION_MAX_AGE,
-});
+/** The cookie's domain for this request: every oss!idle host in prod, else this host. */
+const cookieDomain = (c: Context): string | undefined => {
+	const host = c.req.header('host')?.split(':')[0];
+	return isProd && host?.endsWith(SESSION_COOKIE_DOMAIN) ? SESSION_COOKIE_DOMAIN : undefined;
+};
+
+const setSession = (c: Context, session: string) => {
+	const domain = cookieDomain(c);
+	// the host-only cookie from before the edges, which would shadow this one
+	if (domain) deleteCookie(c, SESSION_COOKIE, { path: '/' });
+	setCookie(c, SESSION_COOKIE, session, {
+		httpOnly: true,
+		sameSite: 'Lax',
+		secure: cookieSecure,
+		path: '/',
+		maxAge: SESSION_MAX_AGE,
+		domain,
+	});
+};
 
 /** A move's code outlives a background tab's throttled timers. */
 const MOVE_TTL_MS = 10 * 60_000;
@@ -116,6 +131,7 @@ export const authRoutes = new Hono()
 
 		const accessToken = await exchangeCode(code);
 		const osu = await fetchOsuUser(accessToken);
+		count('activity', 'logins');
 
 		await db
 			.insert(users)
@@ -183,6 +199,9 @@ export const authRoutes = new Hono()
 	.get('/me', requireAuth, async c => {
 		const [row] = await db.select().from(users).where(eq(users.id, c.get('userId'))).limit(1);
 		if (!row) throw new HTTPException(401, { message: 'User not found' });
+		// a session from before the edges moves onto the cookie they can read too
+		const cookie = getCookie(c, SESSION_COOKIE);
+		if (cookie && !c.req.header('Authorization') && cookieDomain(c)) setSession(c, cookie);
 		return c.json(toUserDTO(row, await groupsOf(row.id)));
 	})
 
@@ -227,5 +246,9 @@ export const authRoutes = new Hono()
 
 	.post('/logout', c => {
 		deleteCookie(c, SESSION_COOKIE, { path: '/' });
+		const domain = cookieDomain(c);
+		if (domain) deleteCookie(c, SESSION_COOKIE, {
+			path: '/', domain, 
+		});
 		return c.json({ ok: true });
 	});

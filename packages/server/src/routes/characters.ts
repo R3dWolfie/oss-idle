@@ -43,12 +43,20 @@ import {
 	medalProgress,
 } from '../medals';
 import { supportLevel } from '@oss-idle/shared/supporter';
+import { profileOrder } from '@oss-idle/shared/profile';
+import { userPageOf } from '../userPage';
 import { isModerator } from '@oss-idle/shared/groups';
 import {
 	groupsByUser,
 	groupsOf,
 } from '../groups';
 import { createMiddleware } from 'hono/factory';
+import { zValidator } from '@hono/zod-validator';
+import { rollbackBody } from '@oss-idle/shared/upgrades';
+import { requireAdmin } from '../auth/admin';
+import { performUpgradeRevert } from '../character/actions';
+import { pushCharacter } from '../character/push';
+import { isPlaying } from '../play';
 import { sessionUserId } from '../auth/middleware';
 import {
 	countCurated,
@@ -115,8 +123,11 @@ export const charactersRoutes = new Hono()
 
 		const formerNames = (await getFormerNames(id)).filter(n => n !== row.name);
 
+		const { userPage, ...rest } = row;
 		return c.json({
-			...row,
+			...rest,
+			userPage: await userPageOf(userPage),
+			profileOrder: profileOrder(row.profileOrder ?? undefined),
 			avatarUrl: resolveAvatarUrl(row.avatarUrl, user?.avatarUrl),
 			bannerUrl: resolveBannerUrl(row.bannerUrl),
 			formerNames,
@@ -249,5 +260,16 @@ export const charactersRoutes = new Hono()
 		if (!character) throw new HTTPException(404, { message: 'Character not found' });
 
 		return c.json(await getCurated(character.userId, page));
+	})
+	// Admin: undo a skill's last upgrade - a misclick that bought one too many.
+	.post('/:id/upgrade/rollback', requireAdmin, zValidator('json', rollbackBody, r => {
+		if (!r.success) throw r.error;
+	}), async c => {
+		const id = numberParam.parse(c.req.param('id'));
+		if (await isPlaying(id)) throw new HTTPException(409, { message: 'A play is in progress' });
+		const { skill, anchor } = c.req.valid('json');
+		await performUpgradeRevert(id, skill, anchor);
+		await pushCharacter(id);
+		return c.json({ ok: true });
 	})
 ;

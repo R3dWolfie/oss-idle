@@ -5,9 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faBan,
 	faEllipsisVertical,
+	faRotateLeft,
 	faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
-import { useModerator } from '../../hooks/useAdmin';
+import {
+	useAdmin,
+	useModerator,
+} from '../../hooks/useAdmin';
 import useAsync from '@oss-idle/shared/hooks/useAsync';
 import {
 	block,
@@ -18,15 +22,17 @@ import SanctionItems from './SanctionItems';
 import ProfileMenuDialog, { type ProfileDialog } from './ProfileMenuDialog';
 
 /** osu!web's ⋮ menu on someone else's profile: block and report, silence and restrict for the
- *  moderators, account deletion for admins. */
-export default function ProfileMenu({ userId, name, restricted, sanctionable }: {
+ *  moderators, account deletion and upgrade rollback for admins. */
+export default function ProfileMenu({ userId, characterId, name, restricted, sanctionable }: {
 	userId: number;
+	characterId: number;
 	name: string;
 	restricted: boolean;
 	/** not an admin */
 	sanctionable: boolean;
 }) {
 	const { t } = useLingui();
+	const admin = useAdmin();
 	const moderator = useModerator() && sanctionable;
 	const relation = useAsync(() => getRelation(userId), [userId]);
 	const [blocked, setBlocked] = useState<boolean>();
@@ -66,10 +72,15 @@ export default function ProfileMenu({ userId, name, restricted, sanctionable }: 
 					{t`Report`}
 				</button>
 				{moderator && <SanctionItems userId={userId} restricted={restricted} onPick={pick} />}
+				{admin && <button type='button' className='profile-menu__item' onClick={() => pick('rollback')}>
+					<FontAwesomeIcon icon={faRotateLeft} />
+					{t`Roll back upgrade`}
+				</button>}
 			</div>}
 			{dialog && <ProfileMenuDialog
 				dialog={dialog}
 				userId={userId}
+				characterId={characterId}
 				name={name}
 				onClose={() => setDialog(undefined)}
 			/>}

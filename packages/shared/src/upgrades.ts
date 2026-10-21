@@ -94,6 +94,42 @@ export const applyUpgrade = (state: UpgradeState): UpgradePurchase => {
 	};
 };
 
+/** Admin: undo the last upgrade - applyUpgrade run backwards. `anchor` is the
+ *  level the skill sat at right after the purchase: the refund is what those
+ *  levels cost there, added to where the skill stands now. Left out, it is the
+ *  current level, which is exact while the skill has not gained xp since. */
+export const revertUpgrade = (
+	state: UpgradeState,
+	anchor = state.level,
+): UpgradeState & { refund: number } => {
+	if (state.upgrades === 0) throw new Error('no upgrade to revert');
+
+	const upgrades = state.upgrades - 1;
+	const top = anchor + upgradeCost(upgrades);
+	const fraction = state.xp / xpForLevel(state.level);
+	const refund = xpToLevel(top) + fraction * xpForLevel(top)
+		- xpToLevel(anchor) - fraction * xpForLevel(anchor);
+	const ratio = refund / upgradeMinSpend(upgrades);
+
+	let level = state.level;
+	let xp = state.xp + refund;
+	// the refund is summed in another order than this walk, so a level it
+	// lands exactly on can come out a hair short
+	while (xp + 1e-3 >= xpForLevel(level)) {
+		xp = Math.max(0, xp - xpForLevel(level));
+		level++;
+	}
+
+	return {
+		level,
+		xp,
+		upgrades,
+		overdrive: Math.max(0, state.overdrive - (ratio > 1 ? ratio : 0)),
+		prestige: state.prestige,
+		refund,
+	};
+};
+
 /** The real level a skill needs to prestige again. Bonus levels never count. */
 export const prestigeMinLevel = (prestige: number): number =>
 	PRESTIGE_MIN_LEVEL + prestige * PRESTIGE_LEVEL_STEP;
@@ -151,6 +187,8 @@ export const skillXPMultiplier = (
 
 export const upgradeBody = z.object({ skill: z.enum(Skills) });
 export type UpgradeBody = z.infer<typeof upgradeBody>;
+
+export const rollbackBody = upgradeBody.extend({ anchor: z.int().min(0).optional() });
 
 export const prestigeBody = z.object({ skill: z.enum(Skills) });
 export type PrestigeBody = z.infer<typeof prestigeBody>;

@@ -25,6 +25,10 @@ export const addons = mysqlTable('addons', {
 	gameVersion: varchar({ length: 20 }).notNull(),
 	source: longtext().notNull(),
 	reviewedSource: longtext(), // source as it was at the last moderation, null → never reviewed
+	// the approved release players get while edits await review, null → not live
+	publishedSource: longtext(),
+	publishedVersion: varchar({ length: 20 }),
+	publishedGameVersion: varchar({ length: 20 }),
 	status: varchar({ length: 20 }).notNull().default(ADDON_STATUS.unpublished),
 	feedback: text(), // admin moderation note, null → none
 	downloads: int().notNull().default(0), // unique installs, one per player
@@ -67,6 +71,7 @@ export const toAddonDTO = (row: AddonRow, authorName: string) => {
 		gameVersion: row.gameVersion,
 		source: row.source,
 		reviewedSource: row.reviewedSource ?? null,
+		publishedVersion: row.publishedVersion ?? null,
 		status: row.status as AddonStatus,
 		feedback: row.feedback ?? null,
 		downloads: row.downloads,
@@ -77,3 +82,13 @@ export const toAddonDTO = (row: AddonRow, authorName: string) => {
 };
 
 export type AddonDTO = ReturnType<typeof toAddonDTO>;
+
+/** The public face of a live add-on: its approved release, not the edits under review. */
+export const toLiveAddonDTO = (row: AddonRow, authorName: string): AddonDTO => ({
+	...toAddonDTO(row, authorName),
+	source: row.publishedSource!,
+	version: row.publishedVersion!,
+	gameVersion: row.publishedGameVersion!,
+	reviewedSource: null,
+	status: ADDON_STATUS.published,
+});

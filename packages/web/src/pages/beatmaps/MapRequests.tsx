@@ -147,7 +147,7 @@ export default function MapRequests({ filter, sort, page }: {
 				</p>
 
 				{user
-					? <RequestForm pending={pending} onSubmitted={refresh} />
+					? <RequestForm pending={pending} supporter={user.supporter} onSubmitted={refresh} />
 					: <p className='requests__signed-out'>
 						<Trans>
 							<Link to='/login'>Sign in</Link> to propose a map or support someone else's.
