@@ -100,6 +100,10 @@ const defaults = [
 	 */
 	option<number>()('news', 0),
 	/**
+	 * Last client version run, for the "updated" notice in the main menu
+	 */
+	option<string>()('lastVersion', ''),
+	/**
 	 * The current song select search
 	 */
 	option<string>()('search', ''),

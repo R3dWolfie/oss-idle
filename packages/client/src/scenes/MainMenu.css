@@ -62,7 +62,8 @@
 }
 
 .menu__discord {
-	align-self: center;
+	/* on the text's baseline: centring in the row put it above the letters */
+	align-self: baseline;
 	margin-left: 0.4rem;
 	font-size: 1.1rem;
 	color: var(--text);

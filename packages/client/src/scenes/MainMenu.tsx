@@ -35,6 +35,7 @@ import { SETTINGS } from '../db/settings';
 import { VERSION } from '@oss-idle/shared/version';
 import DesktopUpdate from '../components/DesktopUpdate';
 import SupporterHeart from '../components/SupporterHeart';
+import Changelog from '../components/Changelog';
 import DirectTab from '../components/direct/DirectTab';
 import { currentSkin } from '../osu/skin/Skin';
 import Auth from '../online/auth';
@@ -340,6 +341,7 @@ export default function MainMenu({ flash = false }: Props) {
 				>
 					<FontAwesomeIcon icon={faDiscord} />
 				</a>
+				<Changelog />
 			</div>
 
 			<SupporterHeart />

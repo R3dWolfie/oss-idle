@@ -765,6 +765,10 @@ msgstr "Change the way oss!idle behaves"
 msgid "Change..."
 msgstr "Change..."
 
+#: src/components/Changelog.tsx
+msgid "Changelog"
+msgstr "Changelog"
+
 #: src/components/multiplayer/MatchRow.tsx
 msgid "Changing beatmap..."
 msgstr "Changing beatmap..."
@@ -2351,6 +2355,10 @@ msgstr "oss!idle features <0>online leaderboards</0>, just like osu!. Sign in wi
 msgid "oss!idle moved here from {OLD_HOST}"
 msgstr "oss!idle moved here from {OLD_HOST}"
 
+#: src/components/Changelog.tsx
+msgid "oss!idle updated to v{VERSION}, see what's new"
+msgstr "oss!idle updated to v{VERSION}, see what's new"
+
 #: src/components/options/OsuMusicTheme.tsx
 msgid "osu! music at startup"
 msgstr "osu! music at startup"
@@ -3788,6 +3796,10 @@ msgstr "What do you want to do with this beatmap?"
 #: src/scenes/Character.tsx
 msgid "What each skill does and what multiplies its XP"
 msgstr "What each skill does and what multiplies its XP"
+
+#: src/components/Changelog.tsx
+msgid "What's new"
+msgstr "What's new"
 
 #: src/editor/EditorShortcuts.tsx
 msgid "Wheel"
