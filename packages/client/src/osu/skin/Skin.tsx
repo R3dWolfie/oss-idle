@@ -47,6 +47,15 @@ const judgementStyle = (j: Judgement, own: IdleIni, fallback: IdleIni) => {
 	}];
 };
 
+/** A sound's URL from the skin, else the default skin. */
+const soundUrl = async (osu: OsuSkin, fallback: OsuSkin, name: string) => {
+	for (const skin of osu === fallback ? [osu] : [osu, fallback]) {
+		const found = skin.sound(name);
+		if (found) return skin.url(found);
+	}
+	return undefined;
+};
+
 /** An image's URL from the skin, else the default skin; trimmed to what it shows when asked. */
 const imageUrl = async (osu: OsuSkin, fallback: OsuSkin, names: string[], trimmed = false) => {
 	for (const skin of [osu, fallback]) {
@@ -75,7 +84,7 @@ export default class Skin {
 		readonly fallback: OsuSkin | undefined,
 		readonly data: Omit<typeof BUILTIN, 'judgements'> & {
 			judgements: typeof BUILTIN.judgements,
-			menu: { background?: string },
+			menu: { background?: string, seeya?: string },
 		},
 	) {}
 
@@ -92,10 +101,12 @@ export default class Skin {
 		const fallback = await loadDefaultSkin();
 		const own = osu ?? fallback;
 		const background = osu && !preview ? await imageUrl(osu, osu, ['menu-background']) : undefined;
+		// the sound played when the game exits (osu!'s seeya): the skin's, else the default skin's
+		const seeya = preview ? undefined : await soundUrl(own, fallback, 'seeya');
 		return new Skin(own, fallback, {
 			...BUILTIN,
 			judgements: judgementStyles(own.idle, fallback.idle),
-			menu: background ? { background } : {},
+			menu: { ...(background ? { background } : {}), ...(seeya ? { seeya } : {}) },
 		});
 	}
 
