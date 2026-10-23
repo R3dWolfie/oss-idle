@@ -37,6 +37,20 @@
 .dock--above-bar {
 	bottom: 120px;
 }
+/* the open chat (z 9500) covers the bottom third, at least 150px
+   (CommunityOverlay.css): the floating dock sits just above it. The docked
+   column (.dock--left) keeps its own top and bottom. */
+.dock {
+	transition: bottom 0.3s ease;
+}
+html.is-chat-open .dock:not(.dock--left) {
+	bottom: calc(max(33.33vh, 150px) + 10px);
+}
+@media (max-height: 500px) {
+	html.is-chat-open .dock:not(.dock--left) {
+		bottom: calc(max(33.33vh, 110px) + 10px);
+	}
+}
 
 /* --- the pill: over gameplay ------------------------------------------- */
 
