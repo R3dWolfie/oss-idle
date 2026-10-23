@@ -40,8 +40,8 @@ export default function Changelog() {
 		className='changelog-button'
 		onClick={openChangelog}
 		aria-label={t`Changelog`}
-		title={t`What's new`}
 	>
 		<FontAwesomeIcon icon={faFileLines} />
+		<span className='changelog-button__tip'>{t`What's new`}</span>
 	</button>;
 }

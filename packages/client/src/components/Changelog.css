@@ -1,5 +1,6 @@
 .changelog-button {
 	/* next to the Discord logo in .menu__brand, and styled like it */
+	position: relative;
 	align-self: baseline;
 	margin-left: 0.4rem;
 	padding: 0;
@@ -17,6 +18,27 @@
 
 .changelog-button:hover {
 	color: var(--osu-pink);
+	opacity: 1;
+}
+
+.changelog-button__tip {
+	position: absolute;
+	top: 130%;
+	left: 0;
+	padding: 3px 6px;
+	border: 1px solid #ffffff60;
+	border-radius: 4px;
+	background: #000000c0;
+	color: #fff;
+	font-size: 0.85rem;
+	line-height: 1.3;
+	white-space: nowrap;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.1s;
+}
+
+.changelog-button:hover .changelog-button__tip {
 	opacity: 1;
 }
 

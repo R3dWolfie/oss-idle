@@ -6,7 +6,7 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 import Auth from '../online/auth';
 import { SITE_URL } from '../globals';
 
-/** osu!'s main menu heart: full for supporters, empty and struck (a link to the store) for anyone else. */
+/** osu!'s main menu heart: full for supporters, empty (a link to the store) for anyone else. */
 export default function SupporterHeart() {
 	const [user] = useSynced(Auth.user);
 	if (user?.supporter) return <div className='supporter-heart'>
