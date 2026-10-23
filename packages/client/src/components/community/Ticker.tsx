@@ -1,4 +1,8 @@
 import './Ticker.css';
+import {
+	useEffect,
+	useRef,
+} from 'react';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 import clock from '@oss-idle/shared/display/clock';
 import Socket from '../../online/socket';
@@ -10,13 +14,30 @@ export default function Ticker() {
 	const [lines = []] = useSynced(Socket.chat);
 	const [idle] = useSynced(menuIdle);
 	const latest = lines[lines.length - 1];
+	const ref = useRef<HTMLDivElement>(null);
+
+	// pages keep their bottom bar above it (page.css), so Back is never under a line of chat
+	useEffect(() => {
+		const el = ref.current;
+		if (!el) return;
+		const root = document.documentElement.style;
+		const ro = new ResizeObserver(() => {
+			root.setProperty('--community-ticker-height', `${el.offsetHeight}px`);
+		});
+		ro.observe(el);
+		return () => {
+			ro.disconnect();
+			root.removeProperty('--community-ticker-height');
+		};
+	}, [!!latest]);
+
 	if (!latest) return null;
 	
 	const time = clock(latest.at);
 
 	if (latest.kind === 'system') {
 		return (
-			<div className={`community-ticker ${idle ? 'is-idle' : ''}`}>
+			<div ref={ref} className={`community-ticker ${idle ? 'is-idle' : ''}`}>
 				<div className="chat__line">
 					<span className="chat__text" style={{ color: latest.color }}>{time} {latest.text}</span>
 				</div>
@@ -25,7 +46,7 @@ export default function Ticker() {
 	}
 
 	return (
-		<div className={`community-ticker ${idle ? 'is-idle' : ''}`}>
+		<div ref={ref} className={`community-ticker ${idle ? 'is-idle' : ''}`}>
 			<div className="chat__line">
 				<span
 					className="chat__from"

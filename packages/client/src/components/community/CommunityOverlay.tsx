@@ -83,6 +83,13 @@ export default function CommunityOverlay() {
 		setVisible(true);
 	});
 
+	// pages lift their bottom bar over the open chat (page.css)
+	const chatUp = visible && open && chat;
+	useEffect(() => {
+		document.documentElement.classList.toggle('is-chat-open', chatUp);
+		return () => document.documentElement.classList.remove('is-chat-open');
+	}, [chatUp]);
+
 	if (!visible) return null;
 
 	return (
