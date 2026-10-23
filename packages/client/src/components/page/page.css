@@ -120,18 +120,12 @@
 	height: 74px;
 	display: flex;
 	background: rgba(0, 0, 0, 0.55);
-	/* clear of the community ticker, or of the chat while it is open
-	   (CommunityOverlay.css: the bottom third, at least 150px) */
+	/* clear of the community ticker, or of the chat while it is open */
 	margin-bottom: var(--community-ticker-height, 0px);
 	transition: margin-bottom 0.3s ease;
 }
 html.is-chat-open .page__bottombar {
-	margin-bottom: max(33.33vh, 150px);
-}
-@media (max-height: 500px) {
-	html.is-chat-open .page__bottombar {
-		margin-bottom: max(33.33vh, 110px);
-	}
+	margin-bottom: var(--community-chat-height);
 }
 .page__bottombar::before {
 	content: "";

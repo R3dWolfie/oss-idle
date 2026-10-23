@@ -1,6 +1,11 @@
 /* osu!stable F9 overlay shell: a heavy black dim over the dimmed game, no
    panels - everything floats directly on it. */
 
+/* the chat's share of the screen; pages and the multiplayer scenes stop above it */
+:root {
+	--community-chat-height: max(33.33vh, 150px);
+}
+
 .community {
 	position: fixed;
 	inset: 0;
@@ -37,8 +42,8 @@
 }
 
 .community-chat-container {
-	height: 33.33%;
-	min-height: 150px;
+	flex: none;
+	height: var(--community-chat-height);
 	width: 100%;
 	background: rgba(0, 0, 0, 0.9);
 	opacity: 0;
@@ -57,9 +62,8 @@
 	pointer-events: all;
 }
 
-/* the multiplayer scenes stop above it (Multiplayer.css) */
 @media (max-height: 500px) {
-	.community-chat-container {
-		min-height: 110px;
+	:root {
+		--community-chat-height: max(33.33vh, 110px);
 	}
 }

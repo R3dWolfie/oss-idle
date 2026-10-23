@@ -12,7 +12,7 @@
 	inset: 0;
 	display: flex;
 	flex-direction: column;
-	padding-bottom: max(33.33vh, 150px);
+	padding-bottom: var(--community-chat-height);
 	overflow: hidden;
 	color: #fff;
 }
@@ -646,11 +646,8 @@
 	}
 }
 
-/* phones held sideways: the chat keeps a smaller share (CommunityOverlay.css) */
+/* phones held sideways */
 @media (max-height: 500px) {
-	.mp {
-		padding-bottom: max(33.33vh, 110px);
-	}
 	.mp__top .community-music {
 		display: none;
 	}
