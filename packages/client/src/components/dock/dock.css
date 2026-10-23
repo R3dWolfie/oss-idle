@@ -23,6 +23,8 @@
 	border: 1px solid var(--dock-line);
 	backdrop-filter: blur(4px);
 	animation: dock-in 0.16s ease both;
+	/* rides up over the open chat (below) */
+	transition: bottom 0.3s ease;
 }
 @keyframes dock-in {
 	from {
@@ -40,9 +42,6 @@
 /* the open chat (z 9500) covers the bottom third, at least 150px
    (CommunityOverlay.css): the floating dock sits just above it. The docked
    column (.dock--left) keeps its own top and bottom. */
-.dock {
-	transition: bottom 0.3s ease;
-}
 html.is-chat-open .dock:not(.dock--left) {
 	bottom: calc(max(33.33vh, 150px) + 10px);
 }
