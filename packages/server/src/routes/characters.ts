@@ -27,6 +27,7 @@ import {
 	bestSkillRank,
 	countryRank,
 	globalRank,
+	ppTopPercent,
 } from '../rankings';
 import {
 	getMostPlayed,
@@ -165,18 +166,21 @@ export const charactersRoutes = new Hono()
 		const user = await getUserById(character.userId);
 		const totals = await getCharacterTotals(character.id);
 
-		const [globalRk, countryRk, scoreRk, overallRk, bestSkill] = await Promise.all([
+		const [globalRk, countryRk, scoreRk, overallRk, bestSkill, topPercent] = await Promise.all([
 			globalRank('pp', character.id),
 			countryRank('pp', user.country, character.id),
 			globalRank('score', character.id),
 			globalRank('overall', character.id),
 			bestSkillRank(character.id),
+			ppTopPercent(character.id),
 		]);
 
 		const stats = {
 			pp: Number(character.pp),
 			totalHits: totals.hits,
 			globalRank: globalRk,
+			/** the share of players with pp at or above this rank, 0..1 (osu!'s global_rank_percent) */
+			globalRankPercent: topPercent === undefined ? undefined : topPercent / 100,
 			rankHistory: character.rankHistory?.ranks ?? [],
 			highestRanks: character.rankHistory?.highest ?? {},
 			countryRank: countryRk,

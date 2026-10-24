@@ -10,7 +10,12 @@ export function CharacterRanks({ stats }: { stats: Stats }) {
 	const highest = stats.highestRanks;
 	return (
 		<div className='character__ranks'>
-			<RankArea label={<Trans>Global Ranking</Trans>} current={stats.globalRank} highest={highest.pp} />
+			<RankArea
+				label={<Trans>Global Ranking</Trans>}
+				current={stats.globalRank}
+				highest={highest.pp}
+				percent={stats.globalRankPercent}
+			/>
 			<RankArea
 				label={<Trans>Country Ranking</Trans>}
 				current={stats.countryRank}

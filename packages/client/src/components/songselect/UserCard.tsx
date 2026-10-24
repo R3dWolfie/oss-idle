@@ -17,6 +17,30 @@ import accuracyText from '@oss-idle/shared/display/accuracy';
 import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
 import { xpForLevel } from '@oss-idle/shared/sim/skills/xp';
 import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
+import rank from '@oss-idle/shared/display/rank';
+import {
+	isFirst,
+	rankTier,
+	rankTierGradient,
+} from '@oss-idle/shared/display/rankTier';
+
+/** The global rank, big and faint at the right as osu!'s panel has it, in its tier. */
+function GlobalRank({ globalRank, percent }: { globalRank?: number; percent?: number }) {
+	if (!globalRank) return null;
+	const tier = rankTier(globalRank, percent);
+	const first = !!tier && isFirst(globalRank);
+	const className = [
+		'game__user-rank', tier && 'is-tiered', tier && `is-${tier}`, first && 'is-first',
+	].filter(Boolean).join(' ');
+	return (
+		<span
+			className={className}
+			style={tier && !first ? { backgroundImage: rankTierGradient(tier) } : undefined}
+		>
+			{rank(globalRank)}
+		</span>
+	);
+}
 
 /** Profile card: avatar + online stats, clicking through to oss! web
  *  (or the login flow for a guest). Online stats only show once loaded. */
@@ -36,6 +60,7 @@ export default function UserCard({
 	const pp = num(online_character?.pp);
 	const accuracy = online_stats && accuracyText(hitAccuracy(online_stats));
 	const level = num(online_character?.overallLevel);
+
 	return (
 		<div
 			className="game__user"
@@ -63,6 +88,7 @@ export default function UserCard({
 				{!online_character && (
 					<span className="game__user-pp"><Trans>Click here to login!</Trans></span>
 				)}
+				<GlobalRank globalRank={online_stats?.globalRank} percent={online_stats?.globalRankPercent} />
 				<div className="game__user-level-bar">
 					<div
 						className="game__user-level-bar-fill"
