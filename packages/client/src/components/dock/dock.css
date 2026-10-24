@@ -176,6 +176,28 @@ html.is-chat-open .dock:not(.dock--left) {
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
 }
+/* the queue's playlist changed since it was queued */
+.dock__source-refresh {
+	flex: none;
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	margin-left: auto;
+	padding: 0.15rem 0.5rem;
+	border: 1px solid var(--osu-pink-light);
+	background: rgba(255, 102, 171, 0.14);
+	color: #fff;
+	font: inherit;
+	font-size: 0.8rem;
+	cursor: pointer;
+}
+.dock__source-refresh:hover {
+	background: rgba(255, 102, 171, 0.3);
+}
+/* the refresh takes the free space; the length sits right after it */
+.dock__source-refresh + .dock__length {
+	margin-left: 0;
+}
 
 /* what is playing: the grade beside the map, how it goes, how far */
 .dock__now {

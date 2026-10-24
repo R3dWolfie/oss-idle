@@ -15,6 +15,10 @@ import {
 import Socket from '../online/socket';
 import Entities from '../entity/entities';
 import { canPlayAt } from './playRate';
+import {
+	Playlist,
+	PlaylistEntry,
+} from '../db/schema/playlist';
 
 export {
 	AUTOPILOT_MODE,
@@ -87,6 +91,22 @@ const playable = (entries: LightBeatmap[]): LightBeatmap[] =>
 const toEntry = (b: LightBeatmap): QueueEntry => ({
 	beatmapId: b.metadata.id, rate: b.lockedRate,
 });
+
+type PlaylistDrift = { playlist: Playlist, pool: LightBeatmap[] };
+
+const entryKey = (b: LightBeatmap): string => `${b.metadata.id}@${b.lockedRate ?? 0}`;
+
+/** The playlist a queue was started from. Song select keys a playlist group
+ *  `p<id>`; a playlist rebuilt under the same name (a tool rewriting it) has a new
+ *  id, so its name - the queue's label - is the fallback. */
+const sourcePlaylist = async (s: QueueSource): Promise<Playlist | undefined> => {
+	if (!s.groupKey?.startsWith('p')) return undefined;
+	const id = Number(s.groupKey.slice(1));
+	const byId = Number.isInteger(id)
+		? await Playlist.first('SELECT * FROM playlist WHERE id = ?', [id])
+		: undefined;
+	return byId ?? (s.label ? await Playlist.byName(s.label) : undefined);
+};
 
 /** A signed-in character's queue is the server's; a guest's lives here. */
 const online = (): boolean => {
@@ -172,6 +192,54 @@ export default class PlayQueue {
 		// the launched map comes round again at the back, so a single-map queue
 		// (LOOP) repeats and a playlist wraps
 		const entries = launched?.metadata.runtime ? [...ordered, launched] : ordered;
+		void this.state.set({
+			...source, entries,
+		});
+		if (online()) {
+			void Socket.sendSoon({
+				type: 'queue:set', source, entries: entries.map(toEntry),
+			});
+		}
+	}
+
+	/**
+	 * The maps the queue's playlist holds now, when they are no longer the maps
+	 * the queue holds: the queue is a copy taken at launch, so an edited playlist
+	 * leaves it playing the old list (and cycling back through played maps).
+	 * Undefined when it still matches, or the queue did not come from a playlist.
+	 */
+	public static async playlistDrift(): Promise<PlaylistDrift | undefined> {
+		const s = this.state.get();
+		const fromList = s?.mode === AUTOPILOT_MODE.PLAYLIST || s?.mode === AUTOPILOT_MODE.SHUFFLE;
+		if (!s || !fromList) return undefined;
+		const playlist = await sourcePlaylist(s);
+		if (!playlist) return undefined;
+		const rows = await PlaylistEntry.query(
+			'SELECT * FROM playlist_entry WHERE playlistId = ? ORDER BY rowid', [playlist.id],
+		);
+		const pool = playable(await resolve(rows.map(r => ({
+			beatmapId: r.beatmapId, rate: r.rate,
+		})))).filter(b => canPlayAt(b.lockedRate));
+		const have = new Set(s.entries.map(entryKey));
+		const same = pool.length === have.size && pool.every(b => have.has(entryKey(b)));
+		return same || !pool.length ? undefined : {
+			playlist, pool,
+		};
+	}
+
+	/** Rebuild the queue from its playlist as it is now, in the queue's own mode.
+	 *  The map at the back - the one that just started - stays there. */
+	public static async refreshFromPlaylist(): Promise<void> {
+		const drift = await this.playlistDrift();
+		const s = this.state.get();
+		if (!drift || !s) return;
+		const current = s.entries.at(-1);
+		const rest = drift.pool.filter(b => !current?.is(b));
+		const ordered = s.mode === AUTOPILOT_MODE.SHUFFLE ? shuffled(rest) : rest;
+		const entries = current && drift.pool.some(b => b.is(current)) ? [...ordered, current] : ordered;
+		const source: QueueSource = {
+			label: drift.playlist.name, mode: s.mode, groupKey: `p${drift.playlist.id}`,
+		};
 		void this.state.set({
 			...source, entries,
 		});
