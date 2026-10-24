@@ -39,6 +39,8 @@ export const presenceEntryDTO = characterDTO
 		userId: z.number().int().positive(),
 		country: z.string(),
 		rank: z.number().int().min(0).optional(),
+		/** 0..1: the share of players with pp at or above `rank`, for its tier */
+		rankPercent: z.number().min(0).max(1).optional(),
 		status: z.enum(values(STATUS)),
 		nowPlaying: z.string().optional(),
 		loc: mapPointDTO.optional(),
