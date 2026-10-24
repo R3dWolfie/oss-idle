@@ -14,13 +14,12 @@ export default function RankArea({ label, current, highest, percent }: {
 	label: ReactNode;
 	current?: number;
 	highest?: { rank: number; at: number };
-	/** the global board's share of players at or above `current` (0..1): gives it a tier */
+	/** share of players at or above `current` (0..1), colours it by tier */
 	percent?: number;
 }) {
 	const { t, i18n } = useLingui();
 	const date = highest ? i18n.date(new Date(highest.at), { dateStyle: 'long' }) : '';
 	const tier = rankTier(current, percent);
-	// #1 paints its own two layers (RankArea.css); every other tier its gradient
 	const first = tier && isFirst(current);
 	const tint = tier && !first ? { backgroundImage: rankTierGradient(tier) } : undefined;
 	const classes = [

@@ -293,7 +293,7 @@
 }
 .game__user-meta {
 	position: relative;
-	/* a stacking context of its own: the rank's z-index -1 stays inside the card */
+	/* keeps .game__user-rank's z-index -1 inside the card */
 	isolation: isolate;
 	display: flex;
 	flex-direction: column;
@@ -304,10 +304,6 @@
 	font-weight: 100;
 	font-size: 25px;
 }
-/* the global rank, huge, thin and faint at the right behind the text and the
-   level bar, as stable's panel has it; a ranked tier paints it in its gradient
-   (shared/display/rankTier.ts). .game__user-meta isolates its layers, so the rank
-   sits under its children without repositioning any of them. */
 .game__user-rank {
 	position: absolute;
 	right: 4px;
@@ -325,7 +321,7 @@
 	color: transparent;
 	opacity: 0.5;
 }
-/* #1 alone: lustrous with a light sweeping across it, and a glow */
+/* #1: lustrous with a sweeping shine and a glow */
 .game__user-rank.is-first {
 	background-image:
 		linear-gradient(
@@ -352,11 +348,6 @@
 		background-position:
 			-50% 0,
 			0 0;
-	}
-}
-@media (prefers-reduced-motion: reduce) {
-	.game__user-rank.is-first {
-		animation: none;
 	}
 }
 .game__user-pp,

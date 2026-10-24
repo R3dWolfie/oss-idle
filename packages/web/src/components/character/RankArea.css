@@ -2,8 +2,7 @@
 	position: relative;
 }
 
-/* a global rank in an osu! tier: its gradient as the text, bold but for iron
-   (osu-web resources/css/bem/rank-value.less) */
+/* osu-web resources/css/bem/rank-value.less */
 .character__ranks-num[class*="rank-area__num--"] {
 	background-clip: text;
 	-webkit-background-clip: text;
@@ -13,7 +12,7 @@
 .character__ranks-num.rank-area__num--iron {
 	font-weight: 400;
 }
-/* #1 alone: lustrous with a light sweeping across it, and a glow */
+/* #1: lustrous with a sweeping shine and a glow */
 .character__ranks-num.rank-area__num--first {
 	background-image:
 		linear-gradient(
@@ -39,11 +38,6 @@
 		background-position:
 			-50% 0,
 			0 0;
-	}
-}
-@media (prefers-reduced-motion: reduce) {
-	.character__ranks-num.rank-area__num--first {
-		animation: none;
 	}
 }
 
