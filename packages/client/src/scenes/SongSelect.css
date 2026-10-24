@@ -293,6 +293,8 @@
 }
 .game__user-meta {
 	position: relative;
+	/* a stacking context of its own: the rank's z-index -1 stays inside the card */
+	isolation: isolate;
 	display: flex;
 	flex-direction: column;
 	padding: 5px;
@@ -304,11 +306,8 @@
 }
 /* the global rank, huge, thin and faint at the right behind the text and the
    level bar, as stable's panel has it; a ranked tier paints it in its gradient
-   (shared/display/rankTier.ts). The meta block isolates its layers so the rank
-   can sit under its children without repositioning any of them. */
-.game__user-meta {
-	isolation: isolate;
-}
+   (shared/display/rankTier.ts). .game__user-meta isolates its layers, so the rank
+   sits under its children without repositioning any of them. */
 .game__user-rank {
 	position: absolute;
 	right: 4px;
