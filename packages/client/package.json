@@ -20,6 +20,7 @@
     "@lingui/react": "^5.9.5",
     "@oss-idle/shared": "*",
     "adm-zip": "^0.5.17",
+    "emojibase-data": "^18.0.0",
     "fflate": "^0.8.3",
     "hono": "^4.6.14",
     "osu-classes": "^3.1.0",

@@ -1241,6 +1241,11 @@ msgstr "Editor"
 msgid "Effect"
 msgstr "Effect"
 
+#. placeholder {0}: emoji.query
+#: src/components/community/chat/ChatTabContents.tsx
+msgid "Emoji matching <0>:{0}</0>"
+msgstr "Emoji matching <0>:{0}</0>"
+
 #: src/editor/EditorChecks.tsx
 msgid "Empty metadata: {fields}"
 msgstr "Empty metadata: {fields}"

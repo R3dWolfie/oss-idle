@@ -4,6 +4,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
+import { Trans } from '@lingui/react/macro';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 import clock from '@oss-idle/shared/display/clock';
 import { ANNOUNCE_CHANNEL } from '@oss-idle/shared/community/wire';
@@ -24,6 +25,7 @@ import {
 } from '../../../online/privateMessages';
 import { blocked } from '../../../online/blocks';
 import ChatText from './ChatText';
+import useEmojiSuggest from './useEmojiSuggest';
 import { mapLink } from './links';
 import {
 	MENTION_COLOR,
@@ -57,6 +59,9 @@ export default function ChatTabContents({ channel, inputRef } : {
 	const [draft, setDraft] = useState('');
 	const logRef = useRef<HTMLDivElement>(null);
 	const completion = useRef<{ start: number, matches: string[], index: number }>(undefined);
+	const emoji = useEmojiSuggest(draft, setDraft, inputRef);
+	// lines go out in the order typed, even when the first waits for the emoji to load
+	const sending = useRef(Promise.resolve());
 	const [user] = useSynced(Auth.user);
 	const me = user?.id;
 
@@ -101,6 +106,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 	// Tab completes an online player's name; pressing it again cycles
 	const complete = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (emoji.onKeyDown(e)) return;
 		if (e.key !== 'Tab') return;
 		e.preventDefault();
 		if (!completion.current) {
@@ -121,11 +127,13 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 	const submit = (e: React.FormEvent) => {
 		e.preventDefault();
-		const text = draft.trim();
-		if (!text || !chatTabs.get()?.includes(channel)) return;
-		if (contact === undefined) Socket.sendChat(handleCommand(text), channel);
-		else sendPm(contact, handleCommand(text));
+		const typed = draft.trim();
+		if (!typed || !chatTabs.get()?.includes(channel)) return;
 		setDraft('');
+		sending.current = sending.current.then(() => emoji.expand(typed)).then(text => {
+			if (contact === undefined) Socket.sendChat(handleCommand(text), channel);
+			else sendPm(contact, handleCommand(text));
+		}).catch(() => {});
 	};
 
 	return (<>
@@ -162,6 +170,26 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 		{channel !== LOGS_CHANNEL && channel !== ANNOUNCE_CHANNEL && (
 			<form className="chat__compose" onSubmit={submit}>
+				{emoji.suggestions.length > 0 && (
+					<div className="chat__emoji">
+						<div className="chat__emoji-title">
+							<Trans>Emoji matching <b>:{emoji.query}</b></Trans>
+						</div>
+						{emoji.suggestions.map((s, i) => (
+							<button
+								key={s.name}
+								type="button"
+								className={`chat__emoji-option ${i === emoji.picked ? 'is-picked' : ''}`}
+								onMouseEnter={() => emoji.setPicked(i)}
+								onMouseDown={e => e.preventDefault()}
+								onClick={() => emoji.insert(s)}
+							>
+								<span className="chat__emoji-char">{s.char}</span>
+								:{s.name}:
+							</button>
+						))}
+					</div>
+				)}
 				<span>
 					{'>'}
 				</span>
