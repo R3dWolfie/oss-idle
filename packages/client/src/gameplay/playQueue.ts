@@ -154,6 +154,18 @@ export default class PlayQueue {
 	/** Each push resolves on its own; an older one landing late must not win. */
 	private static received = 0;
 
+	/** The playlist's maps when it was queued, so the queue's own edits (added,
+	 *  removed, played) never read as the playlist changing. */
+	private static queued: { groupKey: string, keys: Set<string> } | undefined;
+
+	private static remember(source: QueueSource, pool: LightBeatmap[]): void {
+		this.queued = source.groupKey
+			? {
+				groupKey: source.groupKey, keys: new Set(pool.map(entryKey)),
+			}
+			: undefined;
+	}
+
 	/** Another identity took over: its queue arrives with its own push. */
 	public static reset(): void {
 		this.received++;
@@ -189,6 +201,7 @@ export default class PlayQueue {
 			...pool.slice(0, index),
 		]);
 		const ordered = source.mode === AUTOPILOT_MODE.SHUFFLE ? shuffled(rest) : rest;
+		this.remember(source, playable(pool));
 		// the launched map comes round again at the back, so a single-map queue
 		// (LOOP) repeats and a playlist wraps
 		const entries = launched?.metadata.runtime ? [...ordered, launched] : ordered;
@@ -204,9 +217,11 @@ export default class PlayQueue {
 
 	/**
 	 * The maps the queue's playlist holds now, when they are no longer the maps
-	 * the queue holds: the queue is a copy taken at launch, so an edited playlist
-	 * leaves it playing the old list (and cycling back through played maps).
-	 * Undefined when it still matches, or the queue did not come from a playlist.
+	 * it held when queued: the queue is a copy taken at launch, so an edited
+	 * playlist leaves it playing the old list (and cycling back through played maps).
+	 * Without that snapshot (a queue from before a restart) it falls back to maps
+	 * the playlist gained that the queue lacks. Undefined when it still matches, or
+	 * the queue did not come from a playlist.
 	 */
 	public static async playlistDrift(): Promise<PlaylistDrift | undefined> {
 		const s = this.state.get();
@@ -220,8 +235,9 @@ export default class PlayQueue {
 		const pool = playable(await resolve(rows.map(r => ({
 			beatmapId: r.beatmapId, rate: r.rate,
 		})))).filter(b => canPlayAt(b.lockedRate));
-		const have = new Set(s.entries.map(entryKey));
-		const same = pool.length === have.size && pool.every(b => have.has(entryKey(b)));
+		const was = this.queued?.groupKey === s.groupKey ? this.queued.keys : undefined;
+		const have = was ?? new Set(s.entries.map(entryKey));
+		const same = pool.every(b => have.has(entryKey(b))) && (!was || pool.length === was.size);
 		return same || !pool.length ? undefined : {
 			playlist, pool,
 		};
@@ -249,6 +265,7 @@ export default class PlayQueue {
 		const source: QueueSource = {
 			label: drift.playlist.name, mode: s.mode, groupKey: `p${drift.playlist.id}`,
 		};
+		this.remember(source, drift.pool);
 		void this.state.set({
 			...source, entries,
 		});
