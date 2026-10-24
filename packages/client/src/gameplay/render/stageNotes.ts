@@ -62,8 +62,9 @@ const drawBody = (f: F, body: Sprite, c: number, top: number, bottom: number, t:
 	fillBody(f.ctx, body, f.L.assets.config.noteBodyStyle[c], f.L.colX[c], f.L.colW[c], top, bottom, t);
 
 /** A hold from its head (at `yHead`) to its end (at `yTail`): the body runs from the middle
- *  of the head to the end, the tail cap (turned over) just past it, so a skin whose body image
- *  carries its own end keeps it in sight. */
+ *  of the head to the middle of the tail cap (turned over) just past the end, as osu! has it, so
+ *  a cap drawn in half its image (a dome) meets the body, and a skin whose body image carries
+ *  its own end keeps it in sight. */
 const drawHold = (
 	f: F, col: ColumnAssets, c: number, yHead: number, yTail: number, dim: boolean, bodyT: number,
 ) => {
@@ -74,7 +75,7 @@ const drawHold = (
 	const body = dim && col.body ? dimmed(col.body) : col.body;
 	const hh = head ? heightOf(f, head) : 0;
 	const th = tail ? heightOf(f, tail) : 0;
-	if (body) drawBody(f, body, c, yTail, yHead - hh / 2, bodyT);
+	if (body) drawBody(f, body, c, yTail - th / 2, yHead - hh / 2, bodyT);
 	if (tail) {
 		const img = frameAt(tail, f.now);
 		const v = L.assets.version >= 2.5;
