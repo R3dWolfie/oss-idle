@@ -2556,7 +2556,7 @@ msgstr "Playing"
 msgid "Playlist"
 msgstr "Playlist"
 
-#: src/components/dock/DockSource.tsx
+#: src/components/dock/DockRefresh.tsx
 msgid "Playlist changed · refresh"
 msgstr "Playlist changed · refresh"
 
