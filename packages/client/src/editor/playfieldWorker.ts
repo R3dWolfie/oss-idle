@@ -1,6 +1,5 @@
-import { i18n } from '@lingui/core';
 import type { Note } from '@oss-idle/shared/editor/chart';
-import type { SkinData } from '../gameplay/render/frame';
+import type { EditorSkins } from './editorSkins';
 import EditorPainter, {
 	type Overlay,
 	type PaintState,
@@ -19,17 +18,12 @@ import type {
  * back. The page sends what changed; the worker runs the song's clock on its own frames.
  */
 
-// skin colours are checked with zod, and a failed check builds a translated message
-i18n.loadAndActivate({
-	locale: 'en', messages: {}, 
-});
-
 let ctx: OffscreenCanvasRenderingContext2D | undefined;
 let painter: EditorPainter | undefined;
 let dpr = 1;
 let w = 0;
 let h = 0;
-let skin: SkinData | undefined;
+let skins: EditorSkins | undefined;
 let overlay: Overlay = {};
 const visuals = new SongVisuals();
 let clock: PlayfieldClock = {
@@ -59,10 +53,11 @@ const fit = () => {
 };
 
 const loop = (frame: number) => {
-	if (ctx && skin && state.chart && state.doc) {
+	// the skins come decoded for the chart's key count; another one waits for its own
+	if (ctx && skins && state.chart && state.doc && skins.field.keys === state.chart.keys) {
 		const ready = state as PaintState;
-		painter ??= new EditorPainter(ctx, ready, new EditorPreview(ready), visuals);
-		painter.draw(skin, w, h, overlay, nowAt(frame));
+		painter ??= new EditorPainter(ctx, ready, new EditorPreview(ready, dpr), visuals);
+		painter.draw(skins, w, h, overlay, nowAt(frame));
 	}
 	requestAnimationFrame(loop);
 };
@@ -79,8 +74,8 @@ const handle = (message: ToPlayfield) => {
 			({ w, h } = message);
 			fit();
 			return;
-		case 'skin':
-			skin = { data: message.skin };
+		case 'skins':
+			({ skins } = message);
 			return;
 		case 'chart':
 			state.chart = message.chart;

@@ -2,7 +2,7 @@ import { parse } from 'acorn';
 
 /**
  * What an add-on's shipped code may not contain: every direct way to run code that
- * was not reviewed and built by us (text turned into code, code loaded from
+ * is not in it for players to read (text turned into code, code loaded from
  * elsewhere). Checked on the parsed code, so strings and comments never trip it.
  * The SDK template's ESLint rules mirror this list for authors.
  */
@@ -75,7 +75,7 @@ const RULES: [string, (node: Node) => boolean][] = [
 	['a script element loads or runs code',
 		node => isCall(node) && ELEMENT_FACTORIES.has(calleeName(node) ?? '')
 			&& args(node).some(arg => stringValue(arg)?.trim().toLowerCase() === 'script')],
-	// a handler written out in the code is reviewed like the rest (React tests support so)
+	// a handler written out in the code is readable like the rest (React tests support so)
 	['an on… attribute runs its text as code',
 		node => isCall(node) && ATTRIBUTE_SETTERS.has(calleeName(node) ?? '')
 			&& /^on/i.test(stringValue(args(node).at(-2))?.trim() ?? '')

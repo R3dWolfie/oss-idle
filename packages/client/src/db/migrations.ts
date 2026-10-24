@@ -364,6 +364,33 @@ const playlistEntryRate: Migration = db => {
 	db.run('DROP TABLE playlist_entry_old;');
 };
 
+/** Playlists play in their own order, and a map can sit in one more than
+ *  once, each copy with how many times it plays in a row. */
+const playlistEntryOrder: Migration = db => {
+	if (hasColumn(db, 'playlist_entry', 'position')) return;
+	db.run('ALTER TABLE playlist_entry RENAME TO playlist_entry_old;');
+	db.run('DROP INDEX IF EXISTS idx_playlist_entry_beatmap;');
+	db.run(`CREATE TABLE playlist_entry (
+		id         INTEGER PRIMARY KEY AUTOINCREMENT,
+		playlistId INTEGER NOT NULL,
+		beatmapId  INTEGER NOT NULL,
+		rate       REAL NOT NULL DEFAULT 0,
+		position   INTEGER NOT NULL,
+		repeat     INTEGER NOT NULL DEFAULT 1
+	);`);
+	db.run('CREATE INDEX idx_playlist_entry_beatmap ON playlist_entry(beatmapId);');
+	db.run(`INSERT INTO playlist_entry (playlistId, beatmapId, rate, position)
+		SELECT playlistId, beatmapId, rate, rowid FROM playlist_entry_old;`);
+	db.run('DROP TABLE playlist_entry_old;');
+};
+
+/** Skins are osu! skins now, their files kept in IndexedDB: the old JSON ones go. */
+const osuSkins: Migration = db => {
+	if (!hasColumn(db, 'skin', 'definition')) return;
+	db.run('DELETE FROM skin;');
+	db.run('ALTER TABLE skin DROP COLUMN definition;');
+};
+
 const migrations: Migration[] = [
 	recomputeBests,
 	addOnlineId,
@@ -384,6 +411,8 @@ const migrations: Migration[] = [
 	addScoreMods,
 	addMemoryForget,
 	addAddonTypes,
+	playlistEntryOrder,
+	osuSkins,
 ];
 
 /**

@@ -14,10 +14,17 @@ import { dailyLimit } from '../rateLimit';
 import { requireAdmin } from '../auth/admin';
 import { saveUploadedImage } from '../uploads';
 import {
+	skinFiles,
 	skins,
 	skinDownloads,
 	toSkinDTO,
+	type SkinRow,
 } from '../db/schema/skin';
+import {
+	dropUnused,
+	SkinRefused,
+	storeOsk,
+} from '../skins/storage';
 import {
 	SKIN_STATUS,
 	skinCreateBody,
@@ -38,6 +45,20 @@ import {
 
 // skins publish without review: publishes and icon uploads are capped per account
 const SKINS_PER_DAY = 5;
+const SKIN_UPLOADS_PER_DAY = 20;
+
+const filesOf = (id: number) => db
+	.select({
+		path: skinFiles.path, hash: skinFiles.hash, size: skinFiles.size,
+	})
+	.from(skinFiles)
+	.where(eq(skinFiles.skinId, id));
+
+/** A skin with its files, for viewing and installing it. */
+const withFiles = async (row: SkinRow) => ({
+	...await withAuthor(row, toSkinDTO),
+	files: await filesOf(row.id),
+});
 
 const ownedBy = async (id: number, userId: number) => {
 	const [row] = await db.select().from(skins).where(eq(skins.id, id)).limit(1);
@@ -71,7 +92,6 @@ export const skinsRoutes = new Hono()
 			tags: csv(body.tags),
 			version: body.version,
 			icon: body.icon,
-			definition: body.definition,
 			authorId: c.get('userId'),
 		});
 		const [row] = await db.select().from(skins).where(eq(skins.id, created.insertId)).limit(1);
@@ -150,10 +170,43 @@ export const skinsRoutes = new Hono()
 		return c.json(await withAuthor(row!, toSkinDTO));
 	})
 
+	// Owner: replace the skin's files with an .osk's
+	.put('/:id/files', requireActive, dailyLimit('skin-files', SKIN_UPLOADS_PER_DAY), async c => {
+		const id = idParam.parse(c.req.param('id'));
+		await ownedBy(id, c.get('userId'));
+		const file = (await c.req.parseBody())['file'];
+		if (!(file instanceof File)) throw new HTTPException(400, { message: 'No .osk file provided' });
+		let files;
+		try {
+			files = await storeOsk(Buffer.from(await file.arrayBuffer()));
+		} catch (e) {
+			if (e instanceof SkinRefused) throw new HTTPException(422, { message: e.message });
+			throw e;
+		}
+		const before = await filesOf(id);
+		await db.transaction(async tx => {
+			await tx.delete(skinFiles).where(eq(skinFiles.skinId, id));
+			for (let i = 0; i < files.length; i += 500) {
+				await tx.insert(skinFiles).values(files.slice(i, i + 500).map(f => ({
+					...f, skinId: id,
+				})));
+			}
+			await tx.update(skins).set({
+				size: files.reduce((total, f) => total + f.size, 0),
+				fileCount: files.length,
+			}).where(eq(skins.id, id));
+		});
+		await dropUnused(before);
+		const [row] = await db.select().from(skins).where(eq(skins.id, id)).limit(1);
+		return c.json(await withFiles(row!));
+	})
+
 	.delete('/:id', requireAuth, async c => {
 		const id = idParam.parse(c.req.param('id'));
 		await ownedBy(id, c.get('userId'));
+		const before = await filesOf(id);
 		await db.delete(skins).where(eq(skins.id, id));
+		await dropUnused(before);
 		return c.json({ ok: true });
 	})
 
@@ -171,5 +224,5 @@ export const skinsRoutes = new Hono()
 			)
 			.limit(1);
 		if (!row) throw new HTTPException(404, { message: 'Skin not found' });
-		return c.json(await withAuthor(row, toSkinDTO));
+		return c.json(await withFiles(row));
 	});

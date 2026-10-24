@@ -10,12 +10,20 @@ import {
 	SkinCreateBody,
 	SkinUpdateBody,
 } from '@oss-idle/shared/skin';
+import { skinFileName } from '@oss-idle/shared/osuSkin/files';
 
-/** One catalog/own skin as it crosses the wire, inferred from the route. */
-export type Skin = InferResponseType<typeof rpc.v1.skins[':id']['$get']>;
+/** One catalog/own skin as listed, inferred from the route. */
+export type Skin = InferResponseType<typeof rpc.v1.skins.$get>[number];
+
+/** A skin with its files, to view or install it. */
+export type SkinWithFiles = InferResponseType<typeof rpc.v1.skins[':id']['$get']>;
 
 /** A skin for display/editing, minus the catalog-only stats a local skin lacks. */
 export type SkinDetail = Omit<Skin, 'downloads'>;
+
+/** Where a catalog skin's file is served: by its content, so it caches forever. */
+export const skinFileUrl = (hash: string, path: string): string =>
+	`${BASE_URL}/skin-files/${skinFileName(hash, path)}`;
 
 export const skinIconUrl = (
 	icon: string | null | undefined,
@@ -38,9 +46,19 @@ export const recordSkinDownload = (id: number) =>
 	unwrap<{ downloads: number }>(
 		rpc.v1.skins[':id'].download.$post({ param: { id: String(id) } }));
 
-/** Public: a single published skin (incl source, for install). */
+/** A single published (or own) skin, with its files. */
 export const getSkin = (id: number) =>
-	unwrap<Skin>(rpc.v1.skins[':id'].$get({ param: { id: String(id) } }));
+	unwrap<SkinWithFiles>(rpc.v1.skins[':id'].$get({ param: { id: String(id) } }));
+
+/** Owner: replace a skin's files with an .osk. */
+export const uploadSkinFiles = async (id: number, osk: Blob): Promise<SkinWithFiles> => {
+	const form = new FormData();
+	form.append('file', osk, 'skin.osk');
+	const res = fetch(`${BASE_URL}/v1/skins/${id}/files`, withAuth({
+		method: 'PUT', body: form,
+	}));
+	return unwrap<SkinWithFiles>(res);
+};
 
 /** Auth: the caller's own skins (any status). */
 export const mySkins = () =>

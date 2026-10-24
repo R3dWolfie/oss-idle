@@ -39,7 +39,7 @@ export const terms: Bilingual = {
 				title: '4. What you share',
 				blocks: [
 					'You keep the rights to what you create: character names, avatars, banners, chat messages, skins and addons. You allow us to store, display and share it inside oss!idle for as long as it is online, so that the service works (a skin you publish can be downloaded by other players, for example).',
-					'You must have the right to share what you upload. Do not upload anything that breaks the Rules or someone else\'s rights. Addons run code on other players\' devices: an addon must do what it says and nothing harmful.',
+					'You must have the right to share what you upload. Do not upload anything that breaks the Rules or someone else\'s rights. Addons run code on other players\' devices: an addon must do what it says and nothing harmful. We do not review addons before they are published: whoever publishes an addon is responsible for what it does.',
 					'We may remove content that breaks these terms or the Rules. To report content that infringes your rights, see the Copyright page.',
 				],
 			},
@@ -125,7 +125,7 @@ export const terms: Bilingual = {
 				title: '4. Ce que vous partagez',
 				blocks: [
 					'Vous gardez vos droits sur ce que vous créez : noms de personnage, avatars, bannières, messages, skins et addons. Vous nous autorisez à les stocker, les afficher et les partager dans oss!idle tant qu\'ils sont en ligne, pour que le service fonctionne (un skin que vous publiez peut être téléchargé par d\'autres joueurs, par exemple).',
-					'Vous devez avoir le droit de partager ce que vous mettez en ligne. Ne publiez rien qui enfreigne le règlement ou les droits d\'autrui. Les addons exécutent du code sur les appareils des autres joueurs : un addon doit faire ce qu\'il annonce, et rien de nuisible.',
+					'Vous devez avoir le droit de partager ce que vous mettez en ligne. Ne publiez rien qui enfreigne le règlement ou les droits d\'autrui. Les addons exécutent du code sur les appareils des autres joueurs : un addon doit faire ce qu\'il annonce, et rien de nuisible. Nous ne vérifions pas les addons avant leur publication : celui qui publie un addon est responsable de ce qu\'il fait.',
 					'Nous pouvons retirer un contenu qui enfreint ces conditions ou le règlement. Pour signaler un contenu qui porte atteinte à vos droits, voir la page droits d\'auteur.',
 				],
 			},

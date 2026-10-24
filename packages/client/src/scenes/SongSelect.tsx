@@ -202,9 +202,15 @@ function buildCarouselRows(
 			if (!bucket) buckets.set(g.key, bucket = {
 				group: g, items: [], 
 			});
-			bucket.items.push(g.rate === undefined ? item : {
-				...item, beatmap: item.beatmap.at(g.rate),
-			});
+			bucket.items.push(g.entry ? {
+				...item, beatmap: item.beatmap.at(g.rate), entry: g.entry,
+			} : item);
+		}
+	}
+	// a playlist lists (and plays) in its own order
+	if (group === 'By Playlist') {
+		for (const b of buckets.values()) {
+			b.items.sort((x, y) => (x.entry?.position ?? 0) - (y.entry?.position ?? 0));
 		}
 	}
 	const ordered = [...buckets.values()].sort(
@@ -319,7 +325,9 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 			const all = Array.from(sets
 				.values())
 				.map(item => ({
-					...item, tags: tags.get(item.beatmap.metadata.id),
+					...item,
+					tags: tags.get(item.beatmap.metadata.id),
+					ranked: tags.has(item.beatmap.metadata.id),
 				}))
 				.sort((a, b) =>
 					a.beatmap.metadata.difficulty - b.beatmap.metadata.difficulty,
@@ -551,7 +559,9 @@ export default function SongSelect({ mode = 'launch' }: Props) {
 				groupKey,
 				label: expanded?.group.label ?? '',
 				playlists: group === 'By Playlist',
-				pool: (expanded ? expanded.items : orderedItems).map((i) => i.beatmap),
+				pool: (expanded ? expanded.items : orderedItems).map((i) => ({
+					beatmap: i.beatmap, repeat: i.entry?.repeat,
+				})),
 			});
 		}
 		launchPlay(beatmap, debug);

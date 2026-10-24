@@ -5,6 +5,7 @@ import {
 } from 'vitest';
 import {
 	afterPlay,
+	coolingDown,
 	fatigueLevel,
 	restedFatigue,
 	tireSkill,
@@ -33,6 +34,16 @@ const loop = (share: number, hours: number) =>
 	Array(Math.round(hours * 60 / (GAP + MAP))).fill(share);
 
 describe('fatigue', () => {
+	it('rests through an unranked play as through idle time', () => {
+		const tired = session(loop(1, 6));
+		const now = tired.at + 10 * 60_000;
+		// an unranked play adds no fatigue: the next play sees only its wall-clock rest
+		const idle = afterPlay(tired, MAP, MAP, now + MAP * 60_000);
+		const unstrained = afterPlay(afterPlay(tired, MAP, 0, now), MAP, MAP, now + MAP * 60_000);
+		expect(idle.minutes).toBeCloseTo(unstrained.minutes);
+		expect(restedFatigue(tired, now)).toBeLessThan(tired.minutes);
+	});
+
 	it('rests a fully strained map off with 2 or 3 easy ones', () => {
 		const strained = session([1], session(loop(1, 1)));
 		expect(session([0, 0], strained).minutes).toBeGreaterThan(strained.minutes - MAP);
@@ -77,6 +88,8 @@ describe('fatigue', () => {
 		expect(warmup(45, 10)).toBe(1);
 		expect(warmup(120, 10)).toBe(1);
 		expect(warmup(121, 10)).toBeLessThan(1);
+		expect(coolingDown(120, 10)).toBe(false);
+		expect(coolingDown(121, 10)).toBe(true);
 		expect(warmup(330, 10)).toBe(0.5);
 		expect(warmup(390, 10)).toBe(0);
 	});

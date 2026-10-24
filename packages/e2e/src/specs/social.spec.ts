@@ -156,6 +156,10 @@ test.describe('social', () => {
 		await game.say('/np');
 		const link = a.locator('.chat__line .chat__link', { hasText: version.version });
 		await expect(link).toBeVisible();
+		// bob's popup reads like the chat line, not the link's markup
+		const popup = b.locator('.popup', { hasText: alice.name });
+		await expect(popup).toContainText(version.version);
+		await expect(popup).not.toContainText('http');
 
 		// song select: away from the map, then the link brings it back
 		await a.keyboard.press('Escape');

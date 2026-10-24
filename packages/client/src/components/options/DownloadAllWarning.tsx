@@ -10,9 +10,10 @@ import Auth from '../../online/auth';
 import type { Metadata } from '../../osu/beatmap/beatmap_api';
 import { downloadAll } from '../../osu/beatmap/downloadAll';
 
-/** The size warning before downloading every ranked beatmap. Shown to everyone,
- *  since the size is why it's a supporter perk; only supporters can go on. */
-export default function DownloadAllWarning({ sets, onClose }: {
+/** The size warning before downloading every bundled or ranked beatmap. Shown to
+ *  everyone, since the size is why it's a supporter perk; only supporters can go on. */
+export default function DownloadAllWarning({ bundled, sets, onClose }: {
+	bundled: boolean;
 	sets: Metadata[];
 	onClose: () => void;
 }) {
@@ -26,7 +27,7 @@ export default function DownloadAllWarning({ sets, onClose }: {
 	}).format(bytes / (gb ? 1e9 : 1e6));
 	const count = sets.length;
 
-	const title = t`Download every ranked beatmap?`;
+	const title = bundled ? t`Download every bundled beatmap?` : t`Download every ranked beatmap?`;
 	const sub = [
 		t`This is a very big download: ${count} beatmap sets, taking about ${size} of disk space.`,
 		...user?.supporter ? [] : [t`That's why downloading them all at once is an oss!supporter perk.`],
@@ -36,7 +37,9 @@ export default function DownloadAllWarning({ sets, onClose }: {
 	].join(' ');
 
 	const start = () => downloadAll(sets)
-		.then(finished => Log.popup(finished ? t`All ranked beatmaps downloaded.` : t`Download stopped.`))
+		.then(finished => Log.popup(!finished
+			? t`Download stopped.`
+			: bundled ? t`All bundled beatmaps downloaded.` : t`All ranked beatmaps downloaded.`))
 		.catch(e => Log.errorPopup(String(e)));
 
 	// out of the options panel, which would clip it, and above it
@@ -46,7 +49,7 @@ export default function DownloadAllWarning({ sets, onClose }: {
 				title={title}
 				sub={sub}
 				confirmLabel={t`Download all`}
-				color="#2f5f9a"
+				color={bundled ? '#2f5f9a' : '#d64045'}
 				onConfirm={() => void start()}
 				onClose={onClose}
 			/>

@@ -1,15 +1,7 @@
 /* Skin-only styles; the rest is shared with add-ons in listing.css. */
 @import "../listing/listing.css";
 
-/* fills the column and grows the page when the code is taller; long lines
-   still scroll horizontally */
-.skin-code {
-	flex: 1 0 auto;
-	overflow-x: auto;
-	overflow-y: hidden;
-}
-
-/* looping gameplay preview of the current beatmap, drawn with the edited skin */
+/* looping gameplay preview of the current beatmap, drawn with the shown skin */
 .skin-view__preview {
 	display: flex;
 	flex-direction: column;
@@ -48,18 +40,10 @@
 }
 .skin-preview__grade {
 	position: absolute;
-	top: 8px;
-	left: 8px;
-	height: 40px;
-	width: auto;
 }
-.skin-preview--empty {
-	display: grid;
-	place-items: center;
-	padding: 0 1rem;
-	text-align: center;
-	color: var(--text-dim);
-	font-size: 0.88rem;
+.skin-preview__grade img {
+	height: 100%;
+	width: auto;
 }
 
 .skin-view__validation {
@@ -84,4 +68,117 @@
 	word-break: break-word;
 	max-height: 220px;
 	overflow: auto;
+}
+
+.skin-view__replace {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+/* what the skin holds: a summary, then folded groups of files */
+.skin-view__contents {
+	flex: 1 1 0;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+}
+.skin-contents {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+.skin-contents__summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem 1.2rem;
+	color: var(--text-dim);
+	font-size: 0.85rem;
+	margin-bottom: 0.3rem;
+}
+.skin-contents__group {
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.skin-contents__group > summary {
+	cursor: pointer;
+	padding: 0.5rem 0.75rem;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+.skin-contents__count {
+	color: var(--text-dim);
+	font-weight: 400;
+	font-size: 0.8rem;
+}
+.skin-contents__files {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem 0.75rem;
+	max-height: 480px;
+	overflow-y: auto;
+}
+.skin-contents__ini {
+	margin: 0;
+	padding: 0.6rem 0.85rem;
+	font-size: 0.8rem;
+	white-space: pre-wrap;
+	word-break: break-word;
+	max-height: 480px;
+	overflow: auto;
+}
+
+.skin-file {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	min-width: 0;
+}
+/* a checkerboard behind the image, so its transparent parts show */
+.skin-file__image {
+	height: 90px;
+	overflow: hidden;
+	display: grid;
+	place-items: center;
+	background: repeating-conic-gradient(#2a2a35 0% 25%, #1c1c24 0% 50%) 50% /
+		16px 16px;
+}
+.skin-file__image img {
+	max-width: 100%;
+	max-height: 90px;
+	object-fit: contain;
+}
+.skin-file__play {
+	height: 90px;
+	font-size: 1.4rem;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	color: inherit;
+	cursor: pointer;
+}
+.skin-file__name {
+	font-size: 0.75rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.skin-file__folder {
+	font-size: 0.7rem;
+	color: var(--text-dim);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.skin-file__size {
+	font-size: 0.7rem;
+	color: var(--text-dim);
+}
+
+/* the preview and the contents share the page */
+.skin-view__meta {
+	flex: 1 1 0;
 }

@@ -23,8 +23,12 @@ export type PlayfieldGeometry = {
 	/** y of the receptor / judgement line */
 	lineY: number,
 	pxPerUnit: number,
-	/** left edge of the centred playfield */
+	/** left edge of the playfield */
 	x0: number,
+	/** right edge of the playfield and its HP bar */
+	right: number,
+	/** where the grade badge goes: left of the score, as tall as it (filled in as it draws) */
+	grade: { right: number, top: number, height: number },
 };
 
 export type StrainHud = {
@@ -38,7 +42,11 @@ export type StrainHud = {
 	fatigueLabel?: string,
 	/** how warmed up, 0 cold to 1 warm */
 	warmup?: number,
+	/** past warm-up's peak */
+	cooling?: boolean,
 	warmupLabel?: string,
+	/** Cold, Warming up, ... Getting tired */
+	warmupState?: string,
 };
 
 export type DrawOptions = {
@@ -59,16 +67,13 @@ export type Field = Pick<
 /** A page canvas's 2D context, or a worker's (the editor draws its playfield in one). */
 export type Context2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
-/** What the layers read of a skin: its definition, which a worker can be handed. */
-export type SkinData = Pick<Skin, 'data'>;
-
 /** everything a layer needs to paint one frame */
 export type Frame<G extends Field = ManiaGame> = {
 	/** the game's page canvas, or a worker's for the field layers */
 	ctx: G extends ManiaGame ? CanvasRenderingContext2D : Context2D,
 	game: G,
-	/** the whole skin for the game's HUD; its definition is all the field layers read */
-	skin: G extends ManiaGame ? Skin : SkinData,
+	/** the skin, for the game's HUD: the stage layers draw from their layout's assets */
+	skin: G extends ManiaGame ? Skin : unknown,
 	/** song time in ms */
 	now: number,
 	/** the scroll position at `now` */
@@ -78,23 +83,25 @@ export type Frame<G extends Field = ManiaGame> = {
 	opts: DrawOptions,
 };
 
-/** one stacked render layer - paints itself onto the frame's canvas */
-export type Layer<G extends Field = ManiaGame> = (f: Frame<G>) => void;
-
 export const playfieldGeometry = (
 	game: Field,
-	skin: SkinData,
+	skin: Skin,
 	vp: Viewport,
 ): PlayfieldGeometry => {
 	const keys = game.keyCount;
 	const fieldWidth = keys * skin.data.playfield.columnWidth;
 	const lineY = vp.h - skin.data.playfield.hitPosition;
+	const x0 = (vp.w - fieldWidth) / 2;
 	return {
 		keys,
 		fieldWidth,
 		lineY,
 		pxPerUnit: lineY / vp.scrollMs,
-		x0: (vp.w - fieldWidth) / 2,
+		x0,
+		right: x0 + fieldWidth,
+		grade: {
+			right: 160, top: 16, height: 40,
+		},
 	};
 };
 

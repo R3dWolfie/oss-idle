@@ -17,6 +17,8 @@ import {
 import { Skills } from '@oss-idle/shared/skills';
 import { maxUpgrades } from '@oss-idle/shared/upgrades';
 import { countCurated } from './beatmaps/curated';
+import { countMapped } from './beatmaps/mapped';
+import { followerCount } from './social';
 import { db } from './db/client';
 import { scores } from './db/schema/score';
 import { beatmaps } from './db/schema/beatmap';
@@ -53,13 +55,18 @@ import { NO_MEDALS } from '@oss-idle/shared/mods';
 export type PlayFacts = {
 	/** how far into the map a failed play got, 0-1 */
 	failedAt?: number,
+	/** how many seconds into the song a failed play failed */
+	failedSeconds?: number,
 };
 
 const NIGHT_OWL_HOURS = [3, 4];
 const FAIL_99 = 0.99;
+const EARLY_FAIL_SECONDS = 10;
 /** TAG underground - POSSESSION [CHALLENGE], the "Possessed" medal's map */
 const POSSESSION_ID = 1168087;
 const PERFECT_SCORE = 1_000_000;
+/** The Parallax II: Future Sequence [Marathon], the "Future Sequence" medal's map */
+const PARALLAX_ID = 1443309;
 
 // the stars a play was actually played at: a rate changes them
 const playedStars = sql`coalesce(${scores.sr}, ${beatmaps.sr})`;
@@ -78,6 +85,8 @@ const scoreFacts = async (characterId: number) => {
 		combo727: max(sql<number>`${scores.maxCombo} = 727`),
 		possessed: max(sql<number>`${scores.beatmapId} = ${POSSESSION_ID}
 			and ${scores.score} >= ${PERFECT_SCORE}`),
+		parallax: max(sql<number>`${scores.beatmapId} = ${PARALLAX_ID}
+			and ${scores.grade} in ('XX', 'X', 'SS', 'S')`),
 	})
 		.from(scores)
 		.innerJoin(beatmaps, eq(beatmaps.id, scores.beatmapId))
@@ -91,6 +100,7 @@ const scoreFacts = async (characterId: number) => {
 		ln: Number(row?.ln) > 0,
 		combo727: Number(row?.combo727) > 0,
 		possessed: Number(row?.possessed) > 0,
+		parallax: Number(row?.parallax) > 0,
 	};
 };
 
@@ -155,12 +165,15 @@ const playedAtNight = async (characterId: number, tz: string) => {
 const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 	const id = character.id;
 	const [
-		facts, firsts, replays, curatedMaps, totals, chatted, rebirthed, nightOwl, topPercent,
+		facts, firsts, replays, curatedMaps, mappedMaps, followers, totals, chatted, rebirthed, nightOwl,
+		topPercent,
 	] = await Promise.all([
 		scoreFacts(id),
 		firstPlaces(id),
 		mostReplays(id),
 		countCurated(character.userId),
+		countMapped(character.userId, 'ranked'),
+		followerCount(character.userId),
 		getCharacterTotals(id),
 		hasChatted(id),
 		rebirthedPast(character),
@@ -174,11 +187,14 @@ const live = async (character: CharacterRow, play: PlayFacts, tz?: string) => {
 		firsts,
 		mostReplays: replays,
 		curatedMaps,
+		mappedMaps,
+		followers,
 		chatted,
 		rebirthed: rebirthed || character.generation > 1,
 		nightOwl,
 		topPercent,
 		nearMiss: (play.failedAt ?? 0) >= FAIL_99,
+		earlyFail: play.failedSeconds !== undefined && play.failedSeconds < EARLY_FAIL_SECONDS,
 		// raw, as the game shows it ("2.4ω")
 		overdrive: Math.max(...Skills.map(s => character[`${s}Overdrive`])),
 		prestige: Skills.reduce((sum, s) => sum + character[`${s}Prestige`], 0),
@@ -194,6 +210,7 @@ const COUNTERS: Record<string, (p: Live) => number> = {
 	plays: p => p.totals.playCount,
 	hits: p => p.totals.hits,
 	time: p => p.totals.playTime / 3600,
+	friends: p => p.followers,
 	...Object.fromEntries(Skills.map(s => [s, (p: Live) => p.character[`${s}Level`]])),
 	overall: p => p.character.overallLevel,
 	upgrades: p => Skills.reduce((sum, s) => sum + p.character[`${s}Upgrades`], 0),
@@ -205,6 +222,7 @@ const COUNTERS: Record<string, (p: Live) => number> = {
 	pp: p => Number(p.character.pp),
 	'play-pp': p => p.topPlay,
 	curator: p => p.curatedMaps,
+	mapper: p => p.mappedMaps,
 };
 
 /** Keep each counter's best ever next to where it is now, and return the
@@ -297,6 +315,9 @@ const RULES: Record<string, Rule> = {
 	...series('hours played (sum of map lengths)', {
 		'time-10h': 10, 'time-100h': 100, 'time-1000h': 1_000, 'time-10000h': 10_000,
 	}, 'time'),
+	...series('players who added the account as a friend', {
+		'friends-1': 1, 'friends-5': 5, 'friends-25': 25, 'friends-100': 100, 'friends-1k': 1_000,
+	}, 'friends'),
 	...Object.fromEntries(Skills.flatMap(skill => Object.entries(series(
 		`${skill} level (earned)`,
 		Object.fromEntries(SKILL_STEPS.map(n => [`${skill}-${n}`, n])),
@@ -336,9 +357,14 @@ const RULES: Record<string, Rule> = {
 	...series('proposed maps now ranked and live', {
 		'curator-1': 1, 'curator-5': 5, 'curator-25': 25, 'curator-100': 100,
 	}, 'curator'),
+	...series('ranked and live sets the account mapped', {
+		'mapper-1': 1, 'mapper-2': 2, 'mapper-5': 5, 'mapper-10': 10, 'mapper-50': 50, 'mapper-100': 100,
+	}, 'mapper'),
 	'combo-727': one('a stored score with max combo exactly 727', p => p.combo727),
 	'same-map-100': one('played a single map ≥ 100 times', p => p.mostReplays >= 100),
 	'fail-99': one('the shown play failed after ≥ 99% of the map', p => p.nearMiss),
+	'fail-10s': one(`the shown play failed in the song's first ${EARLY_FAIL_SECONDS} seconds`,
+		p => p.earlyFail),
 	'night-owl': one(
 		'a play ended between 03:00 and 04:59 local time (the timezone the player is in now)',
 		p => p.nightOwl,
@@ -346,6 +372,7 @@ const RULES: Record<string, Rule> = {
 	'first-chat': one('has sent a #oss!idle chat message (counted since medals exist)', p => p.chatted),
 	'possessed': one(`a ${amount(PERFECT_SCORE)} score on TAG underground - POSSESSION [CHALLENGE]`,
 		p => p.possessed),
+	'parallax': one('an S or better on The Parallax II: Future Sequence [Marathon]', p => p.parallax),
 };
 
 // a medal without a condition could never be earned: refuse to start

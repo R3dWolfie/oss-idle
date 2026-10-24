@@ -17,6 +17,8 @@ import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
 import Character from '../db/schema/character';
 import useSmoothNumber from '../animations/useSmoothNumber';
 import { currentSkin } from '../osu/skin/Skin';
+import { useGradeUrl } from '../osu/skin/SkinGrade';
+import SkinJudgement from '../osu/skin/SkinJudgement';
 import { Trans } from '@lingui/react/macro';
 import {
 	Judgement,
@@ -82,6 +84,7 @@ type Props = {
 
 export default function Result({ score, game, progression, failed, beatmap, medals }: Props) {
 	const [skin] = useSynced(currentSkin);
+	const gradeImage = useGradeUrl(skin, score.grade, true);
 
 	const count = (j: Judgement): number =>
 		score instanceof Score ? score[j] : score.judgements[j];
@@ -172,7 +175,8 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 				<ShareScoreButton
 					score={score}
 					beatmap={beatmap}
-					gradeImage={skin.data.grade[score.grade]}
+					game={game}
+					gradeImage={gradeImage ?? ''}
 					playerName={playerName}
 					playedAt={playedAt}
 					judges={judges.map(j => ({
@@ -194,14 +198,11 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 							<div className="result__judges">
 								{judges.map((j) => (
 									<div key={j} className="result__judge">
-										<span 
-											className="result__judge-label" 
-											style={{
-												color: skin.data.judgements[j].judge, 
-												textShadow: `0 0px 4px ${skin.data.judgements[j].judge}`, 
-											}}>
-											{skin.data.judgements[j].text}
-										</span>
+										<SkinJudgement
+											skin={skin}
+											judgement={j}
+											className="result__judge-label"
+										/>
 										<span 
 											className="result__judge-count" 
 											style={{ textShadow: `0 0px 4px ${skin.data.judgements[j].judge}` }}>
@@ -259,7 +260,7 @@ export default function Result({ score, game, progression, failed, beatmap, meda
 
 				<div className="result__right">
 					<div className="result__grade-box">
-						{skin.grade(score.grade, 'result__grade')}
+						{skin.grade(score.grade, 'result__grade', true)}
 						<ResultMods rate={score.rate} mods={score.mods} />
 					</div>
 				</div>

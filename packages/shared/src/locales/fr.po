@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-23 19:43\n"
+"PO-Revision-Date: 2026-10-24 19:27\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -140,6 +140,10 @@ msgid "AndaSeat Kaiser 3"
 msgstr "AndaSeat Kaiser 3"
 
 #: src/display/medals.ts
+msgid "Architect"
+msgstr "Architecte"
+
+#: src/display/medals.ts
 msgid "Archivist"
 msgstr "Achiviste"
 
@@ -259,6 +263,10 @@ msgstr "Première amélioration achetée"
 msgid "Cap"
 msgstr "Casquette"
 
+#: src/display/medals.ts
+msgid "Cartographer"
+msgstr "Cartographe"
+
 #: src/skills.ts
 msgid "CENTERHALV Ikea mesh office chair"
 msgstr "Chaise de bureau Ikea CENTERHALV"
@@ -335,6 +343,14 @@ msgid "Corsair K60"
 msgstr "Corsair K60"
 
 #: src/display/medals.ts
+msgid "Craftsman"
+msgstr "Artisan"
+
+#: src/display/medals.ts
+msgid "Crowd Favourite"
+msgstr "Chouchou du public"
+
+#: src/display/medals.ts
 msgid "Crystal Clear"
 msgstr "Clair et net"
 
@@ -365,10 +381,6 @@ msgstr "Notes skin par défaut"
 #: src/skills.ts
 msgid "Dell XPS chiclet keyboard"
 msgstr "Clavier chiclet Dell XPS"
-
-#: src/display/addon.ts
-msgid "Denied"
-msgstr "Refusé"
 
 #: src/display/skills.ts
 msgid "Determines how fast and how well you are able to learn SV maps"
@@ -447,6 +459,10 @@ msgid "Embedded keyboard firmware"
 msgstr "Firmware de clavier embarqué"
 
 #: src/display/medals.ts
+msgid "Encore"
+msgstr "Bis"
+
+#: src/display/medals.ts
 msgid "Escape Velocity"
 msgstr "Vitesse de libération"
 
@@ -463,8 +479,20 @@ msgid "Fade-out tail LNs"
 msgstr "LN tail en fondu"
 
 #: src/display/medals.ts
+msgid "Fail a map in its first 10 seconds"
+msgstr "Fail une map dans ses 10 premières secondes"
+
+#: src/display/medals.ts
 msgid "Fail a map with 1% of it left"
 msgstr "Perdez après avoir survécu pendant 99% du temps d'une musique"
+
+#: src/display/medals.ts
+msgid "False Start"
+msgstr "Faux départ"
+
+#: src/display/medals.ts
+msgid "Familiar Face"
+msgstr "Visage familier"
 
 #: src/display/skills.ts
 msgid "Find the perfect LN skin"
@@ -495,12 +523,20 @@ msgid "Fresh Start"
 msgstr "Nouveau départ"
 
 #: src/display/medals.ts
+msgid "Friendly"
+msgstr "Sociable"
+
+#: src/display/medals.ts
 msgid "Full combo a ranked map of {stars}★ or more"
 msgstr "Full combo une map de {stars}★ ou plus"
 
 #: src/display/medals.ts
 msgid "Fully Loaded"
 msgstr "Jusqu’aux dents"
+
+#: src/display/medals.ts
+msgid "Future Sequence"
+msgstr "Future Sequence"
 
 #: src/display/addon.ts
 msgid "Gameplay"
@@ -517,6 +553,18 @@ msgstr "Obtenir un score de 1 000 000 sur TAG underground - POSSESSION"
 #: src/display/skills.ts
 msgid "Get accustomed to higher scroll speeds to perform better"
 msgstr "Habitue-toi à des vitesses de défilement plus élevées"
+
+#: src/display/medals.ts
+msgid "Get added as a friend"
+msgstr "Être ajouté en ami"
+
+#: src/display/medals.ts
+msgid "Get added as a friend by {count} players"
+msgstr "Être ajouté en ami par {count} joueurs"
+
+#: src/display/medals.ts
+msgid "Get an S on The Parallax II: Future Sequence [Marathon]"
+msgstr "Obtenir un S sur The Parallax II: Future Sequence [Marathon]"
 
 #: src/display/medals.ts
 msgid "Get an SS on a ranked map"
@@ -557,6 +605,10 @@ msgstr "Éveil des mains"
 #: src/display/mods.ts
 msgid "Hard Rock"
 msgstr "Hard Rock"
+
+#: src/display/medals.ts
+msgid "Have {count} of your own mapsets ranked"
+msgstr "Faire classer {count} de vos mapsets"
 
 #: src/display/medals.ts
 msgid "Have {count} of your proposed maps ranked"
@@ -621,6 +673,10 @@ msgstr "Votre aisance sur les autres patterns en maintenant des LN"
 #: src/display/medals.ts
 msgid "Hush-Hush"
 msgstr "Hush-Hush"
+
+#: src/display/medals.ts
+msgid "Icon"
+msgstr "Icône"
 
 #: src/display/community.ts
 msgid "Idle"
@@ -707,6 +763,10 @@ msgstr "Décollage"
 msgid "Light percy LNs"
 msgstr "LN percy légères"
 
+#: src/display/medals.ts
+msgid "Living Legend"
+msgstr "Légende vivante"
+
 #: src/skills.ts
 msgid "Logitech H390"
 msgstr "Logitech H390"
@@ -719,9 +779,17 @@ msgstr "Logitech K120"
 msgid "Low latency Corsair iCUE"
 msgstr "Corsair iCUE à faible latence"
 
+#: src/display/medals.ts
+msgid "Map a set that gets ranked"
+msgstr "Faire classer un de vos mapsets"
+
 #: src/skills.ts
 msgid "Map editor studying"
 msgstr "Étudier la map dans l'éditeur"
+
+#: src/display/medals.ts
+msgid "Mapper"
+msgstr "Mapper"
 
 #: src/display/medals.ts
 msgid "Mastery"
@@ -812,10 +880,6 @@ msgstr "Couleur des notes selon le snap"
 msgid "Number One"
 msgstr "Numéro Un"
 
-#: src/display/addon.ts
-msgid "On Hold"
-msgstr "En Attente"
-
 #: src/display/medals.ts
 msgid "One Percent"
 msgstr "Un pour cent"
@@ -860,10 +924,6 @@ msgstr "Clear une map de {stars}★ ou plus"
 msgid "Passive learning"
 msgstr "Apprentissage passif"
 
-#: src/display/addon.ts
-msgid "Pending"
-msgstr "En Traitement"
-
 #: src/skills.ts
 msgid "Per-map scroll speed setting"
 msgstr "Réglage de la scroll speed par map"
@@ -903,6 +963,10 @@ msgstr "Jouez la même map 100 fois"
 #: src/display/community.ts
 msgid "Playing"
 msgstr "En jeu"
+
+#: src/display/medals.ts
+msgid "Popular"
+msgstr "Populaire"
 
 #: src/display/medals.ts
 msgid "Possessed"

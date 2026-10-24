@@ -1,5 +1,5 @@
 import {
-	useCallback,
+	useEffect,
 	useMemo,
 	useState,
 } from 'react';
@@ -13,65 +13,75 @@ import {
 	type PageAction,
 } from '../page/pageBar';
 import {
-	defaultSkin,
-	validateSkinSource,
-} from '../../osu/skin/Skin';
-import {
-	SkinCreateBody,
-	SkinUpdateBody,
+	type SkinCreateBody,
+	type SkinFile,
 	skinUpdateBody,
 } from '@oss-idle/shared/skin';
 import { z } from 'zod';
 import {
-	createSkin,
-	SkinDetail,
+	type SkinDetail,
 	skinIconUrl,
-	updateSkin,
 	uploadSkinIcon,
 } from '../../online/skins';
+import type { SkinSource } from '../../osu/skin/OsuSkin';
+import { memorySource } from '../../osu/skin/sources';
+import {
+	manifestOf,
+	readFolder,
+	readOsk,
+	type SkinFiles,
+} from '../../osu/skin/importSkin';
+import {
+	pickFile,
+	pickFolder,
+} from '../../pickFile';
 import IconField from '../listing/IconField';
 import SkinReadMeta from './SkinReadMeta';
-import SkinCodePane from './SkinCodePane';
 import GameplayPreview from './GameplayPreview';
+import SkinContents from './SkinContents';
+import { useSourceSkin } from './useSourceSkin';
 
-/** Blank values for creating a new skin. */
-export const newSkin = (): SkinCreateBody => ({
-	name: '',
-	version: '0.1.0',
-	description: '',
-	icon: null,
-	tags: [],
-	definition: JSON.stringify(defaultSkin()),
-});
+/** A skin's files and where to read them. */
+export type SkinContent = { files: SkinFile[], source: SkinSource };
 
 type Props = {
-	detail?: SkinDetail | SkinCreateBody,
+	detail: SkinDetail | (SkinCreateBody & { authorName?: string }),
+	/** its files, once known */
+	content?: SkinContent,
 	editing?: boolean,
 	actions?: PageAction[],
 	onBack: () => void,
-	onSaved?: () => void,
+	/** save the edits, and the files picked to replace the skin's own when there are */
+	onSave?: (body: SkinCreateBody, files?: SkinFiles) => Promise<void>,
 };
 
+/** A skin: its listing, a gameplay preview and everything it holds; or the form to edit them. */
 export default function SkinView({
 	detail,
+	content,
 	editing,
-	actions, 
+	actions,
 	onBack,
-	onSaved,
+	onSave,
 }: Props) {
 	const { t } = useLingui();
 
-	const skin = detail ?? newSkin();
-	const id = ('id' in skin ? skin.id : undefined) as number | undefined;
-
-	const [name, setName] = useState(skin.name);
-	const [description, setDescription] = useState(skin.description);
-	const [tags, setTags] = useState(skin.tags.join(', '));
-	const [version, setVersion] = useState(skin.version);
-	const [icon, setIcon] = useState(skin.icon);
-	const [definition, setDefinition] = useState(JSON.stringify(JSON.parse(skin.definition), null, 2));
+	const [name, setName] = useState(detail.name);
+	const [description, setDescription] = useState(detail.description);
+	const [tags, setTags] = useState(detail.tags.join(', '));
+	const [version, setVersion] = useState(detail.version);
+	const [icon, setIcon] = useState(detail.icon);
+	const [replacement, setReplacement] = useState<SkinFiles>();
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | undefined>();
+
+	const shown = useMemo<SkinContent | undefined>(() => replacement
+		? {
+			files: manifestOf(replacement), source: memorySource(replacement),
+		}
+		: content, [replacement, content]);
+	const skin = useSourceSkin(shown?.source);
+	useEffect(() => setError(undefined), [replacement]);
 
 	const body = useMemo(() => ({
 		name: name.trim(),
@@ -79,69 +89,73 @@ export default function SkinView({
 		tags: tags.split(',').map(s => s.trim()).filter(Boolean),
 		version: version.trim(),
 		icon,
-		definition,
-	} satisfies SkinUpdateBody), [name, description, tags, version, icon, definition]);
+	} satisfies SkinCreateBody), [name, description, tags, version, icon]);
 
 	const validation = useMemo(() => {
 		if (!editing) return undefined;
 		const meta = skinUpdateBody.safeParse(body);
-		return validateSkinSource(definition) ?? (meta.success ? undefined : z.prettifyError(meta.error));
-	}, [editing, body, definition]);
+		return meta.success ? undefined : z.prettifyError(meta.error);
+	}, [editing, body]);
 
-	const save = useCallback(async () => {
-		if (!editing) return;
+	const run = async (fn: () => Promise<void>) => {
 		setBusy(true);
 		setError(undefined);
 		try {
-			if (id) await updateSkin(id, body);
-			else await createSkin(body);
-			onSaved?.();
+			await fn();
 		} catch (e) {
 			setError(String((e as Error).message ?? e));
 		} finally {
 			setBusy(false);
 		}
-	}, [editing, body]);
+	};
+
+	const replaceFrom = (read: () => Promise<SkinFiles | undefined>) => run(async () => {
+		const files = await read();
+		if (files) setReplacement(files);
+	});
+	const fromOsk = async () => {
+		const file = await pickFile('.osk,.zip');
+		return file && readOsk(new Uint8Array(await file.arrayBuffer()));
+	};
+	const fromFolder = async () => {
+		const files = await pickFolder();
+		return files.length ? readFolder(files) : undefined;
+	};
 
 	return (
 		<div className='listing-view'>
 			<div className='listing-view__cols'>
-				<div className='listing-view__meta'>
+				<div className='listing-view__meta skin-view__meta'>
 					{editing ? (
 						<>
-							<div className='skin-view__preview'>
-								<span><Trans>Preview</Trans></span>
-								<GameplayPreview definition={definition} />
-							</div>
-					
 							<label className='listing-field'>
 								<span><Trans>Name</Trans></span>
 								<input value={name} onChange={e => setName(e.target.value)} maxLength={80} />
 							</label>
 							<label className='listing-field'>
 								<span><Trans>Description</Trans></span>
-								<textarea 
+								<textarea
 									className='listing-desc'
-									value={description} 
-									onChange={e => setDescription(e.target.value)} maxLength={500} 
+									value={description}
+									onChange={e => setDescription(e.target.value)} maxLength={500}
 								/>
 							</label>
 							<div className='listing-field-row'>
 								<label className='listing-field'>
 									<span><Trans>Version</Trans></span>
-									<input 
-										value={version} 
+									<input
+										value={version}
 										onChange={e => setVersion(e.target.value)}
-										placeholder='1.0.0' 
+										placeholder='1.0.0'
 									/>
 								</label>
 							</div>
 							<label className='listing-field'>
 								<span><Trans>Tags</Trans></span>
-								<input 
+								<input
 									value={tags}
-									onChange={e => setTags(e.target.value)} 
-									placeholder={t`comma, separated, tags`} 
+									onChange={e => setTags(e.target.value)}
+									placeholder={t`comma, separated, tags`}
 								/>
 							</label>
 							<IconField
@@ -150,6 +164,17 @@ export default function SkinView({
 								iconUrl={skinIconUrl}
 								upload={uploadSkinIcon}
 							/>
+							<div className='listing-field'>
+								<span><Trans>Skin files</Trans></span>
+								<div className='skin-view__replace'>
+									<button className='listing-btn' disabled={busy} onClick={() => void replaceFrom(fromOsk)}>
+										<Trans>Replace from an .osk</Trans>
+									</button>
+									<button className='listing-btn' disabled={busy} onClick={() => void replaceFrom(fromFolder)}>
+										<Trans>Replace from a folder</Trans>
+									</button>
+								</div>
+							</div>
 							{validation && (
 								<div className='skin-view__validation'>
 									<span><Trans>Validation errors</Trans></span>
@@ -157,37 +182,33 @@ export default function SkinView({
 								</div>
 							)}
 						</>
-					) : <>
-						<SkinReadMeta skin={skin} />
-						
-						<div className='skin-view__preview'>
-							<span><Trans>Preview</Trans></span>
-							<GameplayPreview definition={definition} />
-						</div>
-					</>
-					}
+					) : <SkinReadMeta skin={detail} />}
+
+					<div className='skin-view__preview'>
+						<span><Trans>Preview</Trans></span>
+						<GameplayPreview skin={skin} />
+					</div>
 				</div>
 
-				<div className='listing-field listing-field--code'>
-					<SkinCodePane
-						editing={editing} 
-						source={definition}
-						onChange={setDefinition}
-					/>
+				<div className='listing-field skin-view__contents'>
+					<span className='listing-view__codelabel'><Trans>Contents</Trans></span>
+					{skin?.osu && shown
+						? <SkinContents osu={skin.osu} files={shown.files} />
+						: <p className='page__muted'><Trans>Loading…</Trans></p>}
 				</div>
 			</div>
 
 			{error && <div className='page__error'>{error}</div>}
 
-			<PageBarActions 
+			<PageBarActions
 				actions={[
 					...(actions ? actions : []),
 					...editorBarActions({
 						editing,
 						busy,
-						canSave: !!name.trim() && !validation,
-						onBack, 
-						onSave: save,
+						canSave: !!name.trim() && !validation && !!(replacement ?? content),
+						onBack,
+						onSave: () => void run(() => onSave!(body, replacement)),
 					}),
 				]}
 			/>

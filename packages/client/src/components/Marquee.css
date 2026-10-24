@@ -2,17 +2,17 @@
 	overflow: hidden;
 	white-space: nowrap;
 }
-.marquee__text {
-	display: inline-block;
+.marquee__track {
+	display: inline-flex;
 }
-.marquee.is-scrolling .marquee__text {
-	animation: marquee var(--marquee-duration) linear infinite alternate;
+/* the gap after each copy, so -50% lands the copy where the text started */
+.marquee.is-scrolling .marquee__track {
+	gap: 3em;
+	padding-right: 3em;
+	animation: marquee var(--marquee-duration) linear infinite;
 }
 @keyframes marquee {
-	0%, 15% {
-		transform: translateX(0);
-	}
-	85%, 100% {
-		transform: translateX(var(--marquee-shift));
+	to {
+		transform: translateX(-50%);
 	}
 }

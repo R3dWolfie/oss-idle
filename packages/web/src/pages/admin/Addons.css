@@ -7,25 +7,6 @@
 	font-size: 0.78rem;
 }
 
-.addons-admin__feedback {
-	width: 100%;
-	min-height: 48px;
-	padding: 0.35rem 0.5rem;
-	border: 1px solid hsl(var(--hsl-b1));
-	border-radius: 6px;
-	background-color: hsl(var(--hsl-b4));
-	color: hsl(var(--hsl-c1));
-	font: inherit;
-	font-size: 0.82rem;
-	color-scheme: dark;
-	box-sizing: border-box;
-	resize: vertical;
-}
-.addons-admin__feedback:focus {
-	outline: none;
-	border-color: hsl(var(--hsl-pink-3));
-}
-
 /* actions row, right aligned */
 .addons-admin__codebar {
 	display: flex;
@@ -35,71 +16,4 @@
 .admin-list__btn.current {
 	background-color: hsl(var(--hsl-b1));
 	color: hsl(var(--hsl-c1));
-}
-
-/* code diff */
-.addons-admin__diff {
-	margin: 0;
-	padding: 8px 0;
-	background: #1e1e1e;
-	color: #d4d4d4;
-	font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-	font-size: 0.78rem;
-	line-height: 1.5;
-	white-space: pre;
-	tab-size: 4;
-}
-.addons-admin__diffline {
-	display: flex;
-	gap: 8px;
-	padding: 0 10px;
-}
-.addons-admin__diffline code {
-	background: none;
-}
-.addons-admin__sigil {
-	flex: none;
-	width: 1ch;
-	color: rgba(255, 255, 255, 0.35);
-	user-select: none;
-}
-.addons-admin__diffline--add {
-	background: rgba(80, 200, 120, 0.16);
-}
-.addons-admin__diffline--add .addons-admin__sigil {
-	color: #6ee29a;
-}
-.addons-admin__diffline--remove {
-	background: rgba(214, 64, 69, 0.18);
-}
-.addons-admin__diffline--remove .addons-admin__sigil {
-	color: #ef8888;
-}
-.addons-admin__diffline--add code {
-	color: #6ee29a;
-}
-.addons-admin__diffline--remove code {
-	color: #ef8888;
-}
-.addons-admin__diffline--file {
-	margin-top: 6px;
-	font-weight: 700;
-	color: #fff;
-}
-.addons-admin__diffline--hunk {
-	color: #8ab6f0;
-}
-.addons-admin__log {
-	margin: 0;
-	padding: 8px 10px;
-	background: #1e1e1e;
-	color: #d4d4d4;
-	white-space: pre-wrap;
-	word-break: break-all;
-}
-.addons-admin__trusted {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	font-size: 0.85rem;
 }

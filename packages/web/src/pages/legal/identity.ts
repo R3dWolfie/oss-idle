@@ -12,5 +12,5 @@ export const HOST = 'OVH SAS, 2 rue Kellermann, 59100 Roubaix, France - +33 9 72
 export const MEDIATOR: string | undefined = undefined;
 export const SITE = 'https://oss.idle.rhythmgamers.net';
 export const UPDATED = {
-	en: '21 October 2026', fr: '21 octobre 2026', 
+	en: '24 October 2026', fr: '24 octobre 2026', 
 };

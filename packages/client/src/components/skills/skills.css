@@ -63,9 +63,9 @@
 	column-gap: 14px;
 	color: rgba(255, 255, 255, 0.75);
 }
-/* the perk row spreads to its box: keep the box to its text */
+/* each perk row sits in the gear line like the gear name */
 .skill-row__perk {
-	display: inline-block;
+	display: contents;
 }
 
 .skill-row__mult {

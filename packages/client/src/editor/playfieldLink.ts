@@ -1,7 +1,8 @@
 import type { Note } from '@oss-idle/shared/editor/chart';
 import { SETTINGS } from '../db/settings';
 import { scrollSpeedToMs } from '@oss-idle/shared/osu/scroll_speed';
-import type { SkinData } from '../gameplay/render/frame';
+import type Skin from '../osu/skin/Skin';
+import type { EditorSkins } from './editorSkins';
 import type { Overlay } from './painter';
 import type {
 	PlayfieldClock,
@@ -32,8 +33,12 @@ export default class PlayfieldLink {
 	);
 	private sent: {
 		chart?: object, doc?: object, selected?: Set<Note>, view?: string, clock?: PlayfieldClock,
-		song?: object, visuals?: object, reference?: object,
+		song?: object, visuals?: object, reference?: object, skins?: string,
 	} = {};
+	/** the editor skin and the gameplay skin */
+	private skinPair?: [Skin, Skin];
+	/** both decoded for the chart's key count, as the worker has them */
+	public skins?: EditorSkins;
 
 	constructor(canvas: HTMLCanvasElement, private readonly session: EditorSession) {
 		this.worker.onerror = e => console.error('[playfield]', e.message);
@@ -53,9 +58,27 @@ export default class PlayfieldLink {
 		});
 	}
 
-	public skin(skin: SkinData): void {
-		this.post({
-			kind: 'skin', skin: skin.data,
+	public setSkins(field: Skin, preview: Skin): void {
+		this.skinPair = [field, preview];
+		this.syncSkins();
+	}
+
+	/** Decode both skins for the chart's key count and send them, once they are. */
+	private syncSkins(): void {
+		if (!this.skinPair) return;
+		const [field, preview] = this.skinPair;
+		const keys = this.session.chart.keys;
+		const key = `${field.id}:${preview.id}:${keys}`;
+		if (this.sent.skins === key) return;
+		this.sent.skins = key;
+		void Promise.all([field.prepare(keys), preview.prepare(keys)]).then(([f, p]) => {
+			if (this.sent.skins !== key || !f || !p) return;
+			this.skins = {
+				field: f, preview: p,
+			};
+			this.post({
+				kind: 'skins', skins: this.skins,
+			});
 		});
 	}
 
@@ -77,6 +100,7 @@ export default class PlayfieldLink {
 		const { session, sent } = this;
 		if (sent.chart !== session.chart) {
 			sent.chart = session.chart;
+			this.syncSkins();
 			this.post({
 				kind: 'chart', chart: session.chart,
 			});

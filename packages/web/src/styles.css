@@ -304,6 +304,10 @@ a:visited {
 	outline-style: none;
 }
 
+.mapper-link {
+	font-weight: bold;
+}
+
 /* a score card's link to its page, under the card's own links */
 .score-link {
 	position: absolute;

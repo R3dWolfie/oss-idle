@@ -54,12 +54,8 @@ test.describe('add-on types', () => {
 		});
 		expect(refused.status()).toBe(400);
 
-		// published by hand: the review is not what this is about
-		await query(
-			`UPDATE addons SET published_source = source, published_version = version,
-				published_game_version = game_version, status = 'published' WHERE id IN (?, ?)`,
-			made,
-		);
+		// published by hand: the daily publish cap is not what this is about
+		await query('UPDATE addons SET status = \'published\' WHERE id IN (?, ?)', made);
 		const listed = async (type?: string) => {
 			const params = new URLSearchParams({
 				q: name, ...type ? { type } : {},
@@ -102,11 +98,7 @@ test.describe('add-on types', () => {
 		expect(response.status()).toBe(201);
 		const { id } = await response.json() as { id: number };
 		made.push(id);
-		await query(
-			`UPDATE addons SET published_source = source, published_version = version,
-				published_game_version = game_version, status = 'published' WHERE id = ?`,
-			[id],
-		);
+		await query('UPDATE addons SET status = \'published\' WHERE id = ?', [id]);
 
 		const game = new Game(page);
 		await game.start();

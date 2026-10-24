@@ -1,206 +1,235 @@
 import Synced from '@oss-idle/shared/helpers/synced';
-import './Skin.css';
 import {
-	GRADE,
-	Grade,
-	Grades,
-	JUDGEMENT,
 	Judgements,
+	type Grade,
+	type Judgement,
 } from '@oss-idle/shared/judgement';
-import {
-	Color,
-	ColorSchema,
-} from '@oss-idle/shared/types/color';
-import { merge } from 'ts-deepmerge';
+import type { IdleIni } from '@oss-idle/shared/osuSkin/idleIni';
+import { ColorSchema } from '@oss-idle/shared/types/color';
+import { findImage } from '@oss-idle/shared/osuSkin/files';
 import { SkinDAO } from '../../db/schema/skin';
-import { z } from 'zod';
+import { SETTINGS } from '../../db/settings';
 import Log from '@oss-idle/shared/helpers/log';
+import OsuSkin from './OsuSkin';
 import {
-	ph,
-	t,
-} from '@lingui/core/macro';
+	BUILTIN,
+	OWN_GRADES,
+	RANKING_IMAGES,
+} from './builtin';
 import {
-	deepPartial,
-	DeepPartial,
-} from '@oss-idle/shared/types/deep_partial';
-import { ValueIn } from '@oss-idle/shared/helpers/mapped';
+	HIT_COMMANDS,
+	loadManiaAssets,
+	type ManiaAssets,
+} from './maniaAssets';
+import { defaultSource } from './defaultSkin';
+import { installedSource } from './sources';
+import SkinGrade from './SkinGrade';
 
-const COLUMN_RECORD_EXAMPLE = '{ 0: ..., 1: ..., 2: ..., 3: ... }';
+let defaultSkin: Promise<OsuSkin> | undefined;
+/** oss!idle's own skin, which fills in whatever a player's skin lacks. */
+export const loadDefaultSkin = () => defaultSkin ??= OsuSkin.load(defaultSource());
 
-export const HITSOUND = { NORMAL: 'default/normal-hitnormal' } as const;
-export const Hitsounds = Object.values(HITSOUND);
-export type Hitsound = ValueIn<typeof HITSOUND>;
+/** The judgements' colours and names: the skin's idle.ini, else the default skin's. */
+const judgementStyles = (own: IdleIni, fallback: IdleIni) =>
+	Object.fromEntries(Judgements.map(j => judgementStyle(j, own, fallback))) as
+		typeof BUILTIN.judgements;
 
-const JudgeConfigSchema = z.object({
-	text: z.string(),
-	judge: ColorSchema,
-	hitErrorBg: ColorSchema,
-	hitErrorTick: ColorSchema,
-	devianceGraphBg: ColorSchema,
-	devianceGraphTick: ColorSchema,
-});
-type JudgeConfig = z.infer<typeof JudgeConfigSchema>;
-
-const getUniformJudgeConfig = (color: Color, text: string): JudgeConfig => ({
-	text,
-	judge: color,
-	hitErrorBg: color,
-	hitErrorTick: color,
-	devianceGraphBg: color,
-	devianceGraphTick: color,
-});
-
-const HpBarSchema = z.object({
-	width: z.number(),
-	height: z.number(),
-	gap: z.number(),
-	fromBottom: z.number(),
-	radius: z.number(),
-	background: ColorSchema,
-	fill: ColorSchema,
-	fillLow: ColorSchema,
-	lowThreshold: z.number(),
-	transitionMs: z.number(),
-});
-
-// The default skin defines everything; it's the source every loaded skin merges onto.
-const SkinDefinitionSchema = z.object({
-	judgements: z.record(z.enum(Judgements), JudgeConfigSchema),
-	playfield: z.object({ 
-		columnWidth: z.number(),
-		noteHeight: z.number(),
-		receptorHeight: z.number(),
-		hitPosition: z.number(),
-		upscroll: z.boolean(),
-	}),
-	hitObjects: z.record(
-		z.number(),
-		z.object({ color: ColorSchema }),
-		{ error: () => t`Expected a column record like ${ph({ example: COLUMN_RECORD_EXAMPLE })}` },
-	),
-	hpBar: HpBarSchema,
-	grade: z.record(z.enum(Grades), z.string()),
-	hitSounds: z.record(z.enum(Hitsounds), z.string()),
-	// supporters only: an image url shown behind the main menu instead of the map's
-	menu: z.object({ background: z.url({ protocol: /^https?$/ }).optional() }),
-});
-
-export type SkinDefinition = z.infer<typeof SkinDefinitionSchema>;
-
-// A loaded skin only overrides what it wants, so every field is optional down to the leaves.
-const PartialSkinDefinitionSchema = deepPartial(SkinDefinitionSchema) as
-	z.ZodType<DeepPartial<SkinDefinition>>;
-export type PartialSkinDefinition = DeepPartial<SkinDefinition>;
-
-/** Validate raw skin JSON source. Returns a readable error, or undefined when valid. */
-export const validateSkinSource = (source: string): string | undefined => {
-	let data: unknown;
-	try {
-		data = JSON.parse(source);
-	} catch (e) {
-		return (e as Error).message;
-	}
-	const parse = PartialSkinDefinitionSchema.safeParse(data);
-	if (!parse.success) return z.prettifyError(parse.error);
+const judgementStyle = (j: Judgement, own: IdleIni, fallback: IdleIni) => {
+	const colour = own.judgements[j] ?? fallback.judgements[j];
+	const style = BUILTIN.judgements[j];
+	const c = colour
+		? ColorSchema.parse(`rgba(${colour[0]}, ${colour[1]}, ${colour[2]}, ${colour[3] / 255})`)
+		: style.judge;
+	return [j, {
+		text: own.judgementNames[j] ?? fallback.judgementNames[j] ?? style.text,
+		judge: c, hitErrorBg: c, hitErrorTick: c, devianceGraphBg: c, devianceGraphTick: c,
+	}];
 };
 
-export const defaultSkin: () => SkinDefinition = () => ({
-	hitObjects: {
-		0: { color: ColorSchema.parse('#e8e8f0') },
-		1: { color: ColorSchema.parse('#63b3ff') },
-		2: { color: ColorSchema.parse('#63b3ff') },
-		3: { color: ColorSchema.parse('#e8e8f0') },
-	},
-	playfield: { 
-		columnWidth: 74,
-		noteHeight: 24,
-		receptorHeight: 30,
-		hitPosition: 100,
-		upscroll: false,
-	},
-	judgements: {
-		[JUDGEMENT.DIVINE]: getUniformJudgeConfig(ColorSchema.parse('#a8f0ff'), 'DIVINE'),
-		[JUDGEMENT.MARVELOUS]: getUniformJudgeConfig(ColorSchema.parse('#ffe88a'), 'MARVELOUS'),
-		[JUDGEMENT.PERFECT]: getUniformJudgeConfig(ColorSchema.parse('#ffd24a'), 'PERFECT'),
-		[JUDGEMENT.GREAT]: getUniformJudgeConfig(ColorSchema.parse('#6fe07a'), 'GREAT'),
-		[JUDGEMENT.GOOD]: getUniformJudgeConfig(ColorSchema.parse('#4aa6ff'), 'GOOD'),
-		[JUDGEMENT.BAD]: getUniformJudgeConfig(ColorSchema.parse('#b06bd6'), 'BAD'),
-		[JUDGEMENT.MISS]: getUniformJudgeConfig(ColorSchema.parse('#ff5a72'), 'MISS'),
-	},
-	hpBar: {
-		width: 16,
-		height: 340,
-		gap: 5,
-		fromBottom: 0,
-		radius: 4,
-		background: ColorSchema.parse('rgba(0, 0, 0, 0.45)'),
-		fill: ColorSchema.parse('#ffffff'),
-		fillLow: ColorSchema.parse('#ff5a72'),
-		lowThreshold: 0.3,
-		transitionMs: 200,
-	},
-	grade: {
-		[GRADE.XX]: '/skins/default/grade-XX.png',
-		[GRADE.X]: '/skins/default/grade-X.png',
-		[GRADE.SS]: '/skins/default/grade-SS.png',
-		[GRADE.S]: '/skins/default/grade-S.png',
-		[GRADE.A]: '/skins/default/grade-A.png',
-		[GRADE.B]: '/skins/default/grade-B.png',
-		[GRADE.C]: '/skins/default/grade-C.png',
-		[GRADE.D]: '/skins/default/grade-D.png',
-		[GRADE.F]: '/skins/default/grade-F.png',
-	},
-	hitSounds: { [HITSOUND.NORMAL]: '/skins/default/hitsounds/normal-hitnormal.wav' },
-	menu: {},
-});
-
-export default class Skin {
-
-	public readonly data: SkinDefinition;
-
-	constructor(protected definition?: PartialSkinDefinition) {
-		const def = defaultSkin();
-
-		if (definition) {
-			const parse = PartialSkinDefinitionSchema.safeParse(definition);
-			const parsed = parse.success ? definition : def;
-
-			if (!parse.success) {
-				Log.errorPopup(`Failed to load skin: ${z.prettifyError(parse.error)}`);
-			}
-
-			definition = parsed;
-		}
-
-		this.data = merge(def, definition ?? {}) as SkinDefinition;
-
-		// deep merge concats the hitobject array so we overwrite the specified cols
-		this.data.hitObjects = { ...def.hitObjects };
-		for (const [col, ho] of Object.entries(definition?.hitObjects ?? {})) {
-			const n = Number(col);
-			this.data.hitObjects[n] = merge(def.hitObjects[n] ?? {}, ho ?? {}) as { color: Color };
+/** An image's URL from the skin, else the default skin; trimmed to what it shows when asked. */
+const imageUrl = async (osu: OsuSkin, fallback: OsuSkin, names: string[], trimmed = false) => {
+	for (const skin of [osu, fallback]) {
+		for (const name of names) {
+			const found = findImage(skin, name);
+			if (found) return trimmed ? skin.trimmedUrl(found.path) : skin.url(found.path);
 		}
 	}
+};
 
-	public grade(grade: Grade, className: string = ''): JSX.Element {
-		return <img
-			className={`${className} skin__grade`}
-			src={this.data.grade[grade]}
-			alt={`Grade ${grade}`}
-			draggable={false}
-		/>;
+/**
+ * The skin the game plays with: an osu! skin, and our default skin behind it. Its mania
+ * assets decode per key count on first use and stay until the skin is let go.
+ */
+export default class Skin {
+
+	private static next = 0;
+
+	/** tells this skin's decoded sounds apart from the previous skin's */
+	readonly id = `skin${Skin.next++}`;
+	private readonly mania = new Map<number, Promise<ManiaAssets>>();
+	private readonly ready = new Map<number, ManiaAssets>();
+
+	private constructor(
+		readonly osu: OsuSkin | undefined,
+		readonly fallback: OsuSkin | undefined,
+		readonly data: Omit<typeof BUILTIN, 'judgements'> & {
+			judgements: typeof BUILTIN.judgements,
+			menu: { background?: string },
+		},
+	) {}
+
+	/** The game's look while no skin has loaded yet. */
+	static empty(): Skin {
+		return new Skin(undefined, undefined, {
+			...BUILTIN, menu: {},
+		});
+	}
+
+	/** `osu` played with the default skin behind it; the default skin alone when omitted.
+	 *  A preview leaves out what only the menu shows, so a catalog skin downloads less. */
+	static async create(osu?: OsuSkin, preview = false): Promise<Skin> {
+		const fallback = await loadDefaultSkin();
+		const own = osu ?? fallback;
+		const background = osu && !preview ? await imageUrl(osu, osu, ['menu-background']) : undefined;
+		return new Skin(own, fallback, {
+			...BUILTIN,
+			judgements: judgementStyles(own.idle, fallback.idle),
+			menu: background ? { background } : {},
+		});
+	}
+
+	private readonly images = new Map<string, Promise<string>>();
+	private readonly imagesReady = new Map<string, string>();
+
+	/** The first of `names` the skin (else the default skin) has, read and trimmed the first
+	 *  time something shows it; `none` when neither has one. */
+	private image(key: string, names: string[], none = ''): Promise<string> {
+		let url = this.images.get(key);
+		if (!url) {
+			url = (this.osu && this.fallback && names.length
+				? imageUrl(this.osu, this.fallback, names, true)
+				: Promise.resolve(undefined))
+				.then(found => found ?? none);
+			this.images.set(key, url);
+			void url.then(u => this.imagesReady.set(key, u));
+		}
+		return url;
+	}
+
+	/** {@link image}, when it has already been read. */
+	imageNow(key: string): string | undefined {
+		return this.imagesReady.get(key);
+	}
+
+	/** A grade's image: the small one (ranking-X-small) everywhere but the results screen,
+	 *  which shows the large one. */
+	gradeUrl(grade: Grade, large = false): Promise<string> {
+		const image = RANKING_IMAGES[grade];
+		const names = !image ? [] : large ? [image] : [`${image}-small`, image];
+		return this.image(gradeKey(grade, large), names, OWN_GRADES[grade] ?? '');
+	}
+
+	/** A judgement's hit image, for the results screen: the skin's own file by its osu! name,
+	 *  as stable's ranking screen takes it even when skin.ini points elsewhere. */
+	judgementUrl(judgement: Judgement): Promise<string> {
+		const name = HIT_COMMANDS[judgement][1];
+		return this.image(judgementKey(judgement), [`${name}-0`, name]);
+	}
+
+	/** What the playfield draws `keys` keys with, once decoded; starts decoding it if not. */
+	maniaAssets(keys: number): ManiaAssets | undefined {
+		const ready = this.ready.get(keys);
+		if (!ready) void this.prepare(keys);
+		return ready;
+	}
+
+	prepare(keys: number): Promise<ManiaAssets | undefined> {
+		if (!this.osu || !this.fallback) return Promise.resolve(undefined);
+		let assets = this.mania.get(keys);
+		if (!assets) {
+			assets = loadManiaAssets(this.osu, this.fallback, keys);
+			this.mania.set(keys, assets);
+			void assets.then(
+				a => this.ready.set(keys, a),
+				e => Log.errorPopup(`Failed to load skin: ${String(e)}`),
+			);
+		}
+		return assets;
+	}
+
+	/** Let go of everything decoded, but the default skin's (shared by every skin). */
+	dispose(): void {
+		if (this.osu && this.osu !== this.fallback) this.osu.dispose();
+	}
+
+	/** A grade badge: the skin's small image (ranking-X-small) as stable shows grades
+	 *  everywhere but the results screen, which asks for the large one. */
+	public grade(grade: Grade, className: string = '', large = false): JSX.Element {
+		return <SkinGrade skin={this} grade={grade} className={className} large={large} />;
 	}
 
 }
 
+export const gradeKey = (grade: Grade, large: boolean) => `grade:${grade}${large ? ':large' : ''}`;
+export const judgementKey = (judgement: Judgement) => `hit:${judgement}`;
+
 export const currentSkinDAO = new Synced<SkinDAO | undefined>(undefined);
-export const currentSkin = new Synced(new Skin());
+export const currentSkin = new Synced(Skin.empty());
 
-currentSkinDAO.sync(current => 
-	currentSkin.set(current ? new Skin(JSON.parse(current.definition)) : new Skin()),
-);
-currentSkin.sync(current => console.log(current));
+/** The skin a row plays: its installed files, else the default skin. */
+export const skinOf = async (dao: SkinDAO | undefined): Promise<Skin> => {
+	const source = dao && await installedSource(dao.id);
+	return Skin.create(source && await OsuSkin.load(source));
+};
 
-SkinDAO.getEnabled().then(current => {
+let loading = 0;
+void currentSkinDAO.sync(async current => {
+	const mine = ++loading;
+	let skin: Skin;
+	try {
+		skin = await skinOf(current);
+	} catch (e) {
+		Log.errorPopup(`Failed to load skin: ${String(e)}`);
+		skin = await Skin.create();
+	}
+	if (mine !== loading) return skin.dispose();
+	// the usual key count, ready before the first play
+	await skin.prepare(4);
+	if (mine !== loading) return skin.dispose();
+	const previous = currentSkin.get();
+	currentSkin.set(skin);
+	if (previous !== currentEditorSkin.get()) previous.dispose();
+});
+
+/** The skin the editor draws its notes with: the gameplay skin itself when they are one. */
+export const currentEditorSkin = new Synced(Skin.empty());
+
+let editorLoading = 0;
+/** the id the editor's own skin (not the gameplay one) was loaded for */
+let ownEditor: number | undefined;
+const loadEditorSkin = async () => {
+	const id = SETTINGS.editorSkin.get();
+	const separate = id !== (currentSkinDAO.get()?.id ?? 0);
+	// another gameplay skin leaves the editor's own as it is
+	if (separate && ownEditor === id) return;
+	const mine = ++editorLoading;
+	let skin = currentSkin.get();
+	if (separate) {
+		const dao = id ? await SkinDAO.get(id) : undefined;
+		skin = await skinOf(dao).catch(() => Skin.create());
+	}
+	if (mine !== editorLoading) {
+		if (skin !== currentSkin.get()) skin.dispose();
+		return;
+	}
+	ownEditor = separate ? id : undefined;
+	const previous = currentEditorSkin.get();
+	currentEditorSkin.set(skin);
+	if (previous !== skin && previous !== currentSkin.get()) previous.dispose();
+};
+void SETTINGS.editorSkin.sync(loadEditorSkin);
+void currentSkin.sync(loadEditorSkin);
+
+void SkinDAO.getEnabled().then(current => {
 	if (current) currentSkinDAO.set(current);
 });

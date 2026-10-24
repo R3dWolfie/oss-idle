@@ -6,6 +6,7 @@ import Entities from '../../../entity/entities';
 import { blocked } from '../../../online/blocks';
 import { isCommunityOpen } from '../../../globals';
 import { showChat } from '../state';
+import { plainText } from './links';
 import {
 	activeChatTab,
 	chatTabs,
@@ -35,7 +36,7 @@ Socket.on('chat', ({ line }) => {
 	if (!chatTabs.get().includes(line.channel) || !mentionsMe(line.text)) return;
 	if (isCommunityOpen.get() && showChat.get() && activeChatTab.get() === line.channel) return;
 	Log.popup(
-		`${line.from.name}: ${line.text}`,
+		`${line.from.name}: ${plainText(line.text)}`,
 		POPUP_TYPE.chat,
 		false,
 		() => openChannel(line.channel),

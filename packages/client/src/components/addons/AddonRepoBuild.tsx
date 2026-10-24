@@ -6,7 +6,7 @@ import {
 } from '@oss-idle/shared/addon';
 import type { OwnAddon } from '../../online/addons';
 
-/** Where a repo add-on's builds stand: the last one, what is live, its log. */
+/** Where a repo add-on's builds stand: the last one, its log. */
 export default function AddonRepoBuild({ addon }: { addon: OwnAddon }) {
 	const [showLog, setShowLog] = useState(addon.buildStatus === ADDON_BUILD_STATUS.failed);
 
@@ -28,14 +28,8 @@ export default function AddonRepoBuild({ addon }: { addon: OwnAddon }) {
 						<a href={repoCommitUrl(addon.repoUrl, addon.commit)} target='_blank' rel='noreferrer'>
 							{addon.tag} ({addon.commit.slice(0, 7)})
 						</a>
-						{addon.publishedTag && <>
-							{' · '}<Trans>Live: {addon.publishedTag}</Trans>
-						</>}
 					</div>
 				)}
-				{addon.trusted && <div className='listing__by'>
-					<Trans>Trusted: new builds go live without review.</Trans>
-				</div>}
 			</div>
 
 			{addon.buildLog && (

@@ -58,7 +58,7 @@ export default function AddonRepoPane({
 				<input readOnly value={addon.hookUrl ?? ''} onFocus={e => e.target.select()} />
 			</label>
 			<p className='listing-view__notice'>
-				<Trans>Add this address as a push webhook of your repository, on any git host. Each new version tag (v1.2.3) is built by oss!idle from the repository, with npm ci and npm run build; addon.config.json names the built file. The build goes to review, and players get it once approved.</Trans>
+				<Trans>Add this address as a push webhook of your repository, on any git host. Each new version tag (v1.2.3) is built by oss!idle from the repository, with npm ci and npm run build; addon.config.json names the built file. Once the add-on is published, players get each new build.</Trans>
 			</p>
 			<div className='addon-repo__row'>
 				<button className='listing-btn' disabled={busy} onClick={() => run(() => renewAddonHook(addon.id))}>

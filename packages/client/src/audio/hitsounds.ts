@@ -14,12 +14,8 @@ import {
 	mapSampleName,
 	type NoteSound,
 } from '@oss-idle/shared/sim/noteSounds';
-import {
-	currentSkin,
-	HITSOUND,
-	type Hitsound,
-	Hitsounds,
-} from '../osu/skin/Skin';
+import { currentSkin } from '../osu/skin/Skin';
+import type Skin from '../osu/skin/Skin';
 
 /**
  * Hitsounds. A note's sounds (see shared noteSounds: additions, sample sets, custom
@@ -28,18 +24,35 @@ import {
  * (hitsoundSynth). Storyboard samples go through SampleSchedule.
  */
 
-const hitsoundKey = (sound: Hitsound) => currentSkin.get().data.hitSounds[sound];
+const SETS: SampleSetName[] = ['normal', 'soft', 'drum'];
+const SOUNDS: HitSoundName[] = ['hitnormal', 'hitwhistle', 'hitfinish', 'hitclap'];
+const SKIN_SOUNDS = [...SETS.flatMap(set => SOUNDS.map(sound => `${set}-${sound}`)), 'combobreak'];
 
-/** Decode the current skin's hitsounds, keyed by URL so a skin change never reuses
- *  the previous skin's buffers. */
-async function preloadHitsounds(): Promise<void> {
-	await Promise.all(Hitsounds.map(sound => effects.load(hitsoundKey(sound), hitsoundKey(sound))));
-}
+/** The current skin's hitsounds in the effects player, by name (normal-hitclap, ...). */
+let skinSounds = new Map<string, string>();
 
-void currentSkin.sync(preloadHitsounds);
-// mobile browsers kill a hidden tab's fetches: load what they cut when it comes back
+/** Decode a skin's hitsounds, the default skin's where it has none, keyed by skin so a
+ *  skin change never reuses the previous skin's buffers. */
+const prepareSkinSounds = async (skin: Skin): Promise<void> => {
+	const keys = new Map<string, string>();
+	await Promise.all(SKIN_SOUNDS.map(async name => {
+		const from = skin.osu?.sound(name) ? skin.osu : skin.fallback;
+		const path = from?.sound(name);
+		if (!from || !path) return;
+		const key = `${skin.id}:${name}`;
+		if (!effects.isLoaded(key)) await effects.storeBytes(key, await from.bytes(path));
+		keys.set(name, key);
+	}));
+	if (currentSkin.get() !== skin) return;
+	const kept = new Set(keys.values());
+	for (const key of skinSounds.values()) if (!kept.has(key)) effects.forget(key);
+	skinSounds = keys;
+};
+
+void currentSkin.sync(prepareSkinSounds);
+// mobile browsers kill a hidden tab's work: load what they cut when it comes back
 document.addEventListener('visibilitychange', () => {
-	if (document.visibilityState === 'visible') void preloadHitsounds();
+	if (document.visibilityState === 'visible') void prepareSkinSounds(currentSkin.get());
 });
 
 /**
@@ -80,9 +93,8 @@ const storeSynth = (set: SampleSetName, sound: HitSoundName): Promise<void> => {
 	return made;
 };
 
-/** The skin's sample for a hitsound, when the skin has one (today: normal-hitnormal). */
-const skinKey = (name: string): string | undefined =>
-	name === 'normal-hitnormal' ? hitsoundKey(HITSOUND.NORMAL) : undefined;
+/** The skin's sample for a hitsound, when the skin (or the default skin) has one. */
+const skinKey = (name: string): string | undefined => skinSounds.get(name);
 
 /** Where a sound plays from: its effects key, and whether it is the map's own file
  *  (pitched with the song at other rates, like keysounds). */
@@ -139,9 +151,21 @@ export async function prepareNoteSounds(
 	return sound => resolved.get(soundId(sound));
 }
 
+/** Follows a play's combo and plays the skin's combobreak when a combo past 20 breaks, as
+ *  osu! does. */
+export const makeComboBreakSound = () => {
+	let last = 0;
+	return (combo: number): void => {
+		const key = combo === 0 && last > 20 && skinKey('combobreak');
+		if (key) effects.play(key);
+		last = combo;
+	};
+};
+
 /** Play the hitsound(s) for a landed hit, now. */
 export function playHitsound(): void {
-	effects.play(hitsoundKey(HITSOUND.NORMAL));
+	const key = skinKey('normal-hitnormal');
+	if (key) effects.play(key);
 }
 
 /**
@@ -152,8 +176,9 @@ export function playHitsound(): void {
  * dropped rather than played late.
  */
 export function scheduleHitsound(songMs: number, nowMs: number): void {
-	if (songMs < nowMs) return;
-	effects.play(hitsoundKey(HITSOUND.NORMAL), { atMs: effects.now() + (songMs - nowMs) });
+	const key = skinKey('normal-hitnormal');
+	if (songMs < nowMs || !key) return;
+	effects.play(key, { atMs: effects.now() + (songMs - nowMs) });
 }
 
 /** Drop every hitsound already queued on the audio clock. Called when a play ends

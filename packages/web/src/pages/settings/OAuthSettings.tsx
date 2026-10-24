@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './OAuth.css';
 import {
 	useEffect,
@@ -34,7 +35,7 @@ export default function OAuthSettings() {
 	if (!authorized || !own) return <Trans>Loading…</Trans>;
 
 	const revoke = async (client: AuthorizedClient) => {
-		if (!confirm(t`Revoke access for ${client.name}?`)) return;
+		if (!confirm(t`Revoke access for ${ph({ app: client.name })}?`)) return;
 		await revokeClient(client.id);
 		setAuthorized(authorized.filter(a => a.id !== client.id));
 	};
@@ -61,7 +62,7 @@ export default function OAuthSettings() {
 		{authorized.map(client => <div key={client.id} className='oauth__client'>
 			<div className='oauth__client-info'>
 				<div className='oauth__client-name'>{client.name}</div>
-				{client.owner.name && <div><Trans>owned by {client.owner.name}</Trans></div>}
+				{client.owner.name && <div><Trans>owned by {ph({ owner: client.owner.name })}</Trans></div>}
 				<ul className='oauth__scopes'>
 					{client.scopes.map(s => <li key={s}>{i18n._(SCOPE_TEXT[s])}</li>)}
 				</ul>

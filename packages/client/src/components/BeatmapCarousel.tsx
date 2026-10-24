@@ -18,6 +18,7 @@ import LightBeatmapSet from '../osu/beatmap/LightBeatmapSet';
 import RightClick from '../input/RightClick';
 import type { BeatmapXPInsight } from '../xpInsights';
 import type { MapTag } from '@oss-idle/shared/beatmap';
+import type { PlaylistSlot } from '../db/schema/playlist';
 
 export type DownloadStatus = 'idle' | 'downloading' | 'done';
 
@@ -31,6 +32,10 @@ export type CarouselItem = {
 	beatmap: LightBeatmap,
 	set: LightBeatmapSet,
 	tags?: MapTag[],
+	/** in the ranked catalog */
+	ranked?: boolean,
+	/** By Playlist: which copy of the difficulty in the playlist */
+	entry?: PlaylistSlot,
 };
 
 export type CarouselHeaderRow = { 
@@ -371,7 +376,7 @@ export default function BeatmapCarousel({
 		lastCenteredRef.current = current!.metadata.id;
 		const cardCentre = padTop() + i * STRIDE + CARD_HEIGHT / 2;
 		animateTo(cardCentre - scroller.clientHeight / 2);
-	}, [animateTo, padTop]);
+	}, [animateTo, padTop, selection]);
 
 	// Take over the mouse wheel so scrolling is always smooth, never harsh.
 	useEffect(() => {
@@ -541,7 +546,8 @@ export default function BeatmapCarousel({
 							onToggle={() => onToggleGroup(row.key)}
 						/>
 						: <BeatmapCard
-							key={`c:${row.item.beatmap.metadata.id}:${row.item.beatmap.lockedRate ?? ''}`}
+							key={`c:${row.item.beatmap.metadata.id}:${row.item.beatmap.lockedRate ?? ''}`
+								+ `:${row.item.entry?.id ?? ''}`}
 							beatmap={row.item.beatmap}
 							set={row.item.set}
 							onCardClick={onCardClick}

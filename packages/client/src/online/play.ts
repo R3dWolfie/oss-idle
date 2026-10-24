@@ -4,6 +4,7 @@ import type { ReplayOffset } from '@oss-idle/shared/sim/maniaGame';
 import type Character from '../db/schema/character';
 import { showDeltas } from '../globals';
 import Socket from './socket';
+import type { Tiredness } from './localPlay';
 import { rateFor } from '../gameplay/playRate';
 import { selectedMods } from '../gameplay/playMods';
 import type { Mod } from '@oss-idle/shared/mods';
@@ -37,6 +38,8 @@ export type RankedPlayContext = {
 	fatigue: number;
 	/** how warmed up, 0 cold to 1 warm */
 	warmup: number;
+	/** past warm-up's peak */
+	cooling: boolean;
 };
 
 /** A play this client resolved and is running itself (guest, or a map the
@@ -51,6 +54,10 @@ export type LocalPlayContext = {
 	offsets: ReplayOffset[];
 	startedAt: number;
 	endsAt: number;
+	/** unranked: as tired as the server said the character was */
+	fatigue?: number;
+	warmup?: number;
+	cooling?: boolean;
 };
 
 /**
@@ -81,7 +88,7 @@ export type PlayContext =
  */
 export type PlaySession =
 	| { mode: 'guest' }
-	| { mode: 'unranked' }
+	| { mode: 'unranked', tired?: Tiredness }
 	| { mode: 'refused' }
 	// the account is restricted: no play at all
 	| { mode: 'restricted' }
@@ -158,11 +165,18 @@ export async function startPlaySession(
 				endsAt: play.endsAt + skew,
 				fatigue: play.fatigue,
 				warmup: play.warmup,
+				cooling: play.cooling,
 			};
 		}
 		if (play.status === 'restricted') return { mode: 'restricted' };
 		if (play.status === 'inMatch') return { mode: 'inMatch' };
-		return play.status === 'refused' ? { mode: 'refused' } : { mode: 'unranked' };
+		if (play.status === 'refused') return { mode: 'refused' };
+		return {
+			mode: 'unranked',
+			tired: {
+				fatigue: play.fatigue, warmup: play.warmup, cooling: play.cooling,
+			},
+		};
 	} catch {
 		// no connection / timeout: surface it so the player can retry instead of
 		// unknowingly playing unranked

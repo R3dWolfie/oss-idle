@@ -153,7 +153,7 @@ export const report = async (
 const reporter = alias(users, 'reporter');
 const reporterCharacter = alias(characters, 'reporter_character');
 
-/** Open reports first, then the latest resolved ones - for the chat console. */
+/** Open reports, newest first - for the chat console. */
 export const reports = async () => db
 	.select({
 		id: userReports.id,
@@ -161,7 +161,6 @@ export const reports = async () => db
 		comment: userReports.comment,
 		message: userReports.message,
 		createdAt: userReports.createdAt,
-		resolvedAt: userReports.resolvedAt,
 		from: {
 			userId: reporter.id, characterId: reporterCharacter.id, name: reporterCharacter.name,
 		},
@@ -174,7 +173,8 @@ export const reports = async () => db
 	.innerJoin(characters, eq(characters.id, users.currentCharacter))
 	.innerJoin(reporter, eq(reporter.id, userReports.userId))
 	.innerJoin(reporterCharacter, eq(reporterCharacter.id, reporter.currentCharacter))
-	.orderBy(sql`${userReports.resolvedAt} is not null`, desc(userReports.createdAt))
+	.where(isNull(userReports.resolvedAt))
+	.orderBy(desc(userReports.createdAt))
 	.limit(100);
 
 export const resolveReport = async (id: number, adminId: number): Promise<void> => {

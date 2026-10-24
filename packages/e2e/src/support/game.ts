@@ -142,8 +142,9 @@ export default class Game {
 		maxLengthMs: number,
 	): Promise<PickedMap> {
 		// osu!'s maps only: a map a test uploads and ranks is the easiest there is for a
-		// moment, and gone again before a test running beside it can download it
-		const sets = (await this.catalog()).filter(set => set.id < OWN_ID_FROM);
+		// moment, and gone again before a test running beside it can download it;
+		// bundled ones only, since song select lists no other set before its download
+		const sets = (await this.catalog()).filter(set => set.id < OWN_ID_FROM && set.bundled);
 		const candidates = sets.flatMap(set => set.versions
 			.filter(v => v.mode === 3 && v.keys === 4 && v.length <= maxLengthMs)
 			.map(version => ({

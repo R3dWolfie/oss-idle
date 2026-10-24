@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type { Addon as InstalledAddon } from '../../db/schema/addon';
 import { addonIconUrl } from '../../online/addons';
@@ -30,7 +31,7 @@ export default function InstalledAddonRow({
 				<div className='listing__name'>
 					{addon.name}<span className='listing__ver'>v{addon.version}</span>
 				</div>
-				<div className='listing__by'><Trans>by</Trans> {addon.authorName}</div>
+				<div className='listing__by'><Trans>by {ph({ author: addon.authorName })}</Trans></div>
 			</div>
 			<div className='listing__actions'>
 				<label className='listing-toggle'>

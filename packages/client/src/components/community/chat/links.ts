@@ -61,6 +61,12 @@ export function splitLinks(text: string): ChatPart[] {
 	return parts;
 }
 
+/** The message as it reads in chat, a map shown by its label: for a popup,
+ *  which shows text only. */
+export const plainText = (text: string): string => splitLinks(text)
+	.map(part => typeof part === 'string' ? part : part.text)
+	.join('');
+
 function splitUrls(text: string): ChatPart[] {
 	const parts: ChatPart[] = [];
 	let at = 0;

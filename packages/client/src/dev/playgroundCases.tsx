@@ -1,11 +1,14 @@
 import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
 import type { ReactNode } from 'react';
 import SkillXPBar from '../components/SkillXPBar';
+import SkinPlayground from './SkinPlayground';
+import Skins from '../scenes/Skins';
 import SkillProgression from '../components/result/SkillProgression';
 import XpMultiplierToggle from '../components/songselect/XpMultiplierToggle';
 import UpgradeRow from '../components/upgrades/UpgradeRow';
 import UpgradesView from '../components/upgrades/UpgradesView';
 import UpgradesPreview from './UpgradesPreview';
+import WarmupGaugePreview from './WarmupGaugePreview';
 import SkillsView from '../components/skills/SkillsView';
 import { sampleCharacter } from './upgradeSample';
 import PrestigeView from '../components/character/PrestigeView';
@@ -114,6 +117,7 @@ const fakeQueue = () => {
 			}, 
 		},
 		getBackgroundUri: async () => undefined,
+		is: (other?: LightBeatmap) => other?.metadata.id === id,
 	} as unknown as LightBeatmap);
 
 	const entries = [
@@ -125,7 +129,9 @@ const fakeQueue = () => {
 	];
 	PlayQueue.start({
 		label: 'Favourites', mode: 'PLAYLIST', 
-	}, entries, 0);
+	}, entries.map((beatmap, i) => ({
+		beatmap, repeat: i === 2 ? 10 : undefined,
+	})), 0);
 	void PlayManager.live.set({
 		token: 'playground',
 		beatmap: entries[0],
@@ -291,6 +297,21 @@ const resultPlayer = () => Entities.character.get().id || -1;
  *  awkward to reach by playing the game. */
 export const PLAYGROUND_CASES: PlaygroundCase[] = [
 	{
+		id: 'skin-play',
+		label: 'Skin - a generated chart',
+		render: () => <SkinPlayground />,
+	},
+	{
+		id: 'skins-manage',
+		label: 'Skins - installed and own',
+		render: () => <Skins view='manage' />,
+	},
+	{
+		id: 'skins-browse',
+		label: 'Skins - the catalog',
+		render: () => <Skins view='browse' />,
+	},
+	{
 		id: 'xpbar-single',
 		label: 'XP bar - one level',
 		render: () => <SkillXPBar progress={gain('accuracy', 3, 4, 420)} />,
@@ -418,6 +439,11 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 		</>),
 	},
 	{
+		id: 'warmup-gauge',
+		label: 'Gameplay HUD - warm-up gauge: cold, warming up, warmed up, peak, pushing, getting tired',
+		render: () => <WarmupGaugePreview />,
+	},
+	{
 		id: 'xp-toggle',
 		label: 'Debug XP multiplier',
 		render: () => <XpMultiplierToggle />,
@@ -492,7 +518,27 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 	{
 		id: 'result-replay',
 		label: 'Result - with replay graphs',
-		render: () => <Result score={sampleScore()} game={sampleReplay()} progression={spread(4, 12)} />,
+		render: () => <Result
+			score={sampleScore()}
+			game={sampleReplay()}
+			progression={spread(4, 12)}
+			beatmap={fakeQueue()[0]}
+		/>,
+	},
+	{
+		id: 'result-replay-divine',
+		label: 'Result - replay graphs, with the divine row',
+		render: () => <Result
+			score={{
+				...sampleScore(),
+				judgements: {
+					...sampleScore().judgements, DIVINE: 120, MARVELOUS: 260, PERFECT: 24, MISS: 8,
+				},
+			}}
+			game={sampleReplay()}
+			progression={spread(4, 12)}
+			beatmap={fakeQueue()[0]}
+		/>,
 	},
 	{
 		id: 'mp-abort-confirm',

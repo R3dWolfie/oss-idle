@@ -13,6 +13,7 @@ import {
 } from '../components/community/chat/state';
 import { showChat } from '../components/community/state';
 import { isCommunityOpen } from '../globals';
+import { plainText } from '../components/community/chat/links';
 
 /** A conversation line, as the chat renders it. */
 export type PmLine = {
@@ -103,7 +104,7 @@ Socket.on('pm', async ({ message }) => {
 	if (!incoming) return;
 	addTab(contact);
 	if (!isShowing(contact)) Log.popup(
-		`${message.from.name}: ${message.text}`,
+		`${message.from.name}: ${plainText(message.text)}`,
 		POPUP_TYPE.chat,
 		false,
 		() => void openConversation(contact, message.from.name),

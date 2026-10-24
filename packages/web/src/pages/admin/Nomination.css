@@ -63,6 +63,7 @@
 /* shared button + field */
 .nomination__btn {
 	display: inline-flex;
+	text-decoration: none;
 	align-items: center;
 	gap: 0.4rem;
 	padding: 0.4rem 0.75rem;

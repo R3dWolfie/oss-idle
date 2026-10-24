@@ -1,10 +1,8 @@
 import {
-	boolean,
 	int,
 	longtext,
 	mediumtext,
 	mysqlTable,
-	text,
 	timestamp,
 	unique,
 	varchar,
@@ -34,13 +32,7 @@ export const addons = mysqlTable('addons', {
 	version: varchar({ length: 20 }).notNull().default('0.1.0'),
 	gameVersion: varchar({ length: 20 }).notNull(),
 	source: longtext().notNull(),
-	reviewedSource: longtext(), // source as it was at the last moderation, null → never reviewed
-	// the approved release players get while edits await review, null → not live
-	publishedSource: longtext(),
-	publishedVersion: varchar({ length: 20 }),
-	publishedGameVersion: varchar({ length: 20 }),
 	status: varchar({ length: 20 }).notNull().default(ADDON_STATUS.unpublished),
-	feedback: text(), // admin moderation note, null → none
 	downloads: int().notNull().default(0), // unique installs, one per player
 	createdAt: timestamp().notNull().defaultNow(),
 	updatedAt: timestamp().notNull().defaultNow().onUpdateNow(),
@@ -48,13 +40,9 @@ export const addons = mysqlTable('addons', {
 	kind: varchar({ length: 10 }).notNull().default(ADDON_KIND.inline),
 	repoUrl: varchar({ length: 512 }),
 	hookSecret: varchar({ length: 64 }),
-	trusted: boolean().notNull().default(false), // repo builds go live without review
-	// what `source` was built from, and the live one
+	// what `source` was built from
 	commit: varchar({ length: 40 }),
 	tag: varchar({ length: 100 }),
-	publishedCommit: varchar({ length: 40 }),
-	publishedTag: varchar({ length: 100 }),
-	sourceDiff: longtext(), // repo diff from publishedCommit to commit, by the builder
 	buildStatus: varchar({ length: 10 }).notNull().default(ADDON_BUILD_STATUS.idle),
 	buildLog: mediumtext(),
 	buildAt: timestamp(), // queued or claimed at
@@ -78,12 +66,8 @@ export type NewAddonRow = typeof addons.$inferInsert;
 const repoOf = (row: AddonRow) => ({
 	kind: row.kind as AddonKind,
 	repoUrl: row.repoUrl ?? undefined,
-	trusted: row.trusted,
 	commit: row.commit ?? undefined,
 	tag: row.tag ?? undefined,
-	publishedCommit: row.publishedCommit ?? undefined,
-	publishedTag: row.publishedTag ?? undefined,
-	sourceDiff: row.sourceDiff ?? undefined,
 	buildStatus: row.buildStatus as AddonBuildStatus,
 	buildLog: row.buildLog ?? undefined,
 });
@@ -106,9 +90,7 @@ export const toAddonDTO = (row: AddonRow, authorName: string) => {
 		version: row.version,
 		gameVersion: row.gameVersion,
 		source: row.source,
-		publishedVersion: row.publishedVersion ?? null,
 		status: row.status as AddonStatus,
-		feedback: row.feedback ?? null,
 		downloads: row.downloads,
 		createdAt: row.createdAt.toISOString(),
 		updatedAt: row.updatedAt.toISOString(),
@@ -119,16 +101,9 @@ export const toAddonDTO = (row: AddonRow, authorName: string) => {
 
 export type AddonDTO = ReturnType<typeof toAddonDTO>;
 
-/** The public face of a live add-on: its approved release, not the edits under review. */
+/** What players see of a published add-on: not how its builds go. */
 export const toLiveAddonDTO = (row: AddonRow, authorName: string): AddonDTO => ({
 	...toAddonDTO(row, authorName),
-	source: row.publishedSource!,
-	version: row.publishedVersion!,
-	gameVersion: row.publishedGameVersion!,
-	status: ADDON_STATUS.published,
-	commit: row.publishedCommit ?? undefined,
-	tag: row.publishedTag ?? undefined,
-	sourceDiff: undefined,
 	buildStatus: ADDON_BUILD_STATUS.idle,
 	buildLog: undefined,
 });

@@ -15,7 +15,6 @@ import { HTTPException } from 'hono/http-exception';
 import {
 	ADDON_BUILD_STATUS,
 	ADDON_KIND,
-	ADDON_STATUS,
 	ADDON_TAG,
 	type AddonBuildResult,
 	type AddonBuildStatus,
@@ -26,10 +25,7 @@ import {
 } from '@oss-idle/shared/addonRules';
 import { VERSION } from '@oss-idle/shared/version';
 import { db } from './db/client';
-import {
-	addons,
-	type AddonRow,
-} from './db/schema/addon';
+import { addons } from './db/schema/addon';
 import { env } from './env';
 
 /** A claimed build nobody reported back on: the builder died, hand it out again. */
@@ -94,14 +90,12 @@ export const claimBuild = async () => {
 		id: row.id,
 		repoUrl: row.repoUrl,
 		commit: row.commit ?? undefined,
-		// what players run: a denied build's changes stay in the diff until reverted
-		base: row.publishedCommit ?? undefined,
 	};
 };
 
 /**
  * Store what the builder made of a claimed build. A new commit becomes the add-on's
- * source and goes to review, or straight live when the add-on is trusted. Queued again
+ * source, live at once when the add-on is published. Queued again
  * meanwhile (a push during the build) → it stays queued for another look.
  */
 export const applyBuild = async (id: number, result: AddonBuildResult) => {
@@ -121,7 +115,7 @@ export const applyBuild = async (id: number, result: AddonBuildResult) => {
 		const why = describeViolations(found);
 		return endBuild(id, failed, `${result.log}\nThe built code is refused:\n${why}`);
 	}
-	await storeBuild(row, result, done);
+	await storeBuild(id, result, done);
 };
 
 /** A build that leaves the add-on's code as it was. */
@@ -131,36 +125,19 @@ const endBuild = async (id: number, buildStatus: AddonBuildStatus, buildLog?: st
 	}).where(eq(addons.id, id));
 };
 
-/** A new build becomes the add-on's code: under review, or live when trusted. */
+/** A new build becomes the add-on's code. */
 const storeBuild = async (
-	row: AddonRow,
+	id: number,
 	result: Extract<AddonBuildResult, { outcome: 'built' }>,
 	buildStatus: AddonBuildStatus,
 ) => {
-	const version = ADDON_TAG.exec(result.tag)![1]!;
-	const gameVersion = result.gameVersion ?? VERSION;
-	const live = row.trusted
-		? {
-			status: ADDON_STATUS.published,
-			feedback: null,
-			publishedAt: row.publishedAt ?? new Date(),
-			reviewedSource: result.bundle,
-			publishedSource: result.bundle,
-			publishedVersion: version,
-			publishedGameVersion: gameVersion,
-			publishedCommit: result.commit,
-			publishedTag: result.tag,
-		}
-		: { status: ADDON_STATUS.pending };
 	await db.update(addons).set({
 		source: result.bundle,
-		version,
-		gameVersion,
+		version: ADDON_TAG.exec(result.tag)![1]!,
+		gameVersion: result.gameVersion ?? VERSION,
 		commit: result.commit,
 		tag: result.tag,
-		sourceDiff: result.diff,
 		buildLog: result.log,
 		buildStatus,
-		...live,
-	}).where(eq(addons.id, row.id));
+	}).where(eq(addons.id, id));
 };

@@ -136,6 +136,10 @@ export type BoardRow = Awaited<ReturnType<typeof getMapBoard>>[number];
 export const nominationPreviewUrl = (setId: number, file: string) =>
 	apiUrl(`/v1/beatmap/nomination/${setId}/preview/${encodeURIComponent(file)}`);
 
+/** A queued set's .osz, public or not (admin). */
+export const nominationOszUrl = (setId: number) =>
+	apiUrl(`/v1/beatmap/nomination/${setId}/osz`);
+
 /** A set's audio preview. */
 export const previewUrl = (setId: number, file: string) =>
 	apiUrl(`/v1/beatmap/preview/${setId}/${encodeURIComponent(file)}`);

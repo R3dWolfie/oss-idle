@@ -8,9 +8,18 @@ import { HitWindows } from '@oss-idle/shared/sim/scoring';
 import {
 	colorA,
 	colorDim,
+	type Color,
 } from '@oss-idle/shared/types/color';
 
 export { unstableRate } from '@oss-idle/shared/sim/maniaGame';
+
+// the zone colours, made once: the bar is drawn every frame
+const zoneFills = new Map<string, string>();
+const zoneFill = (c: string) => {
+	let fill = zoneFills.get(c);
+	if (fill === undefined) zoneFills.set(c, fill = colorA(colorDim(c as Color, 1.35), 0.2));
+	return fill;
+};
 
 function meanOffset(hits: HitRecord[]): number | null {
 	let sum = 0;
@@ -23,6 +32,19 @@ function meanOffset(hits: HitRecord[]): number | null {
 	}
 	return n > 0 ? sum / n : null;
 }
+
+// the bar's mean, worked out again only when a hit lands: it is drawn every frame
+let meanOf: HitRecord[] | undefined;
+let meanCount = -1;
+let meanValue: number | null = null;
+const liveMean = (hits: HitRecord[]) => {
+	if (hits !== meanOf || hits.length !== meanCount) {
+		meanOf = hits;
+		meanCount = hits.length;
+		meanValue = meanOffset(hits);
+	}
+	return meanValue;
+};
 
 interface BarOpts {
 	windows: HitWindows
@@ -55,7 +77,7 @@ export function drawHitErrorBar(
 		// a judgement the character has not unlocked has a negative window, which
 		// would drag the next ring's origin left of centre
 		if (win <= prevWin) continue;
-		ctx.fillStyle = colorA(colorDim(skin.data.judgements[j].hitErrorBg, 1.35), 0.2);
+		ctx.fillStyle = zoneFill(skin.data.judgements[j].hitErrorBg);
 		ctx.fillRect(cx + prevWin, y - barH / 2, win - prevWin, barH);
 		ctx.fillRect(cx - win, y - barH / 2, win - prevWin, barH);
 		prevWin = win;
@@ -71,9 +93,12 @@ export function drawHitErrorBar(
 	// instead of summing - a cluster near centre stays as bright as its newest
 	// tick rather than blowing out to a saturated column.
 	ctx.globalCompositeOperation = 'lighten';
-	for (const h of hits) {
-		if (h.offset == null || h.judgement === JUDGEMENT.MISS) continue;
+	// newest first, stopping well past the fade: hits come in (nearly) time order
+	for (let i = hits.length - 1; i >= 0; i--) {
+		const h = hits[i];
 		const age = now - h.time;
+		if (age > FADE * 4) break;
+		if (h.offset == null || h.judgement === JUDGEMENT.MISS) continue;
 		if (age < 0 || age > FADE) continue;
 		const off = Math.max(-miss, Math.min(miss, h.offset));
 		ctx.globalAlpha = 1 - age / FADE;
@@ -84,7 +109,7 @@ export function drawHitErrorBar(
 	ctx.globalCompositeOperation = 'source-over';
 
 	// mean / bias arrow
-	const mean = meanOffset(hits);
+	const mean = liveMean(hits);
 	if (mean != null) {
 		const mx = cx + Math.max(-miss, Math.min(miss, mean)) * scale;
 		ctx.fillStyle = '#fff';

@@ -41,10 +41,10 @@ export default function DirectFilters({ matches }: { matches: number }) {
 							value: 'ranked', label: t`Ranked`,
 						},
 						{
-							value: 'unranked', label: t`Unranked`, disabled: true,
+							value: 'unranked', label: t`Unranked`,
 						},
 						{
-							value: 'all', label: t`All`, disabled: true,
+							value: 'all', label: t`All`,
 						},
 					]}
 				/>

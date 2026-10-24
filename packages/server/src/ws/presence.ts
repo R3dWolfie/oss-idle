@@ -21,7 +21,10 @@ import {
 import { getCharacterTotals } from '../db/schema/character_totals';
 import hitAccuracy from '@oss-idle/shared/osu/hitAccuracy';
 import compareVersions from '@oss-idle/shared/helpers/compareVersions';
-import { globalRank } from '../rankings';
+import {
+	globalRank,
+	ppTopPercent,
+} from '../rankings';
 import type { GeoResult } from '../geo';
 import { hub } from './hub';
 
@@ -58,6 +61,7 @@ const buildEntry = async (params: {
 }): Promise<PresenceEntry> => {
 	const { character, user, geo, status } = params;
 	const totals = await getCharacterTotals(character.id);
+	const topPercent = Number(character.pp) > 0 ? await ppTopPercent(character.id) : undefined;
 	return {
 		characterId: character.id,
 		userId: user.id,
@@ -65,6 +69,7 @@ const buildEntry = async (params: {
 		avatarUrl: resolveAvatarUrl(character.avatarUrl, user.avatarUrl),
 		country: user.country,
 		rank: await globalRank('pp', character.id),
+		rankPercent: topPercent === undefined ? undefined : topPercent / 100,
 		pp: Number(character.pp),
 		accuracy: hitAccuracy(totals),
 		playCount: totals.playCount,

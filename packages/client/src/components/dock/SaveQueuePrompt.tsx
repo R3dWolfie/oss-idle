@@ -12,7 +12,8 @@ type Props = {
 	onClose: () => void;
 };
 
-/** Names a playlist and fills it with the queue, each map at its locked rate. */
+/** Names a playlist and fills it with the queue in its order, each map at its
+ *  locked rate and repeat. */
 export default function SaveQueuePrompt({ onClose }: Props) {
 	const { t } = useLingui();
 	const [name, setName] = useState('');
@@ -25,7 +26,9 @@ export default function SaveQueuePrompt({ onClose }: Props) {
 		onClose();
 		// no twins, as in the playlist manager: an existing name gets the maps added
 		const playlist = await Playlist.byName(trimmed) ?? await Playlist.create(trimmed);
-		for (const b of entries) await playlist.addBeatmap(b.metadata.id, b.lockedRate);
+		for (const { beatmap, repeat } of entries) {
+			await playlist.addBeatmap(beatmap.metadata.id, beatmap.lockedRate, repeat);
+		}
 	};
 
 	// the dock's backdrop-filter would pin a fixed overlay inside the dock

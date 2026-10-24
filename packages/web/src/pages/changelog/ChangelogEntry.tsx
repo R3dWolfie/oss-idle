@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
@@ -31,7 +32,7 @@ export default function ChangelogEntry({ entry }: { entry: Entry }) {
 						href={`https://github.com/${entry.author}`}
 						target='_blank'
 						className='changelog-entry__user-link'
-					>{entry.author}</OutLink>
+					>{ph({ author: entry.author })}</OutLink>
 				</Trans>
 			</span>}
 		</div>

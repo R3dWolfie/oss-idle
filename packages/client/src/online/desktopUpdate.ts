@@ -35,8 +35,10 @@ export const downloadDesktopUpdate = async () => {
 	void updateStatus.set({
 		state: 'downloading', percent: 0,
 	});
-	await desktop()?.update.download();
-	desktop()?.update.install();
+	// installing after a failed download only buries its error under electron-updater's
+	// "No update filepath provided"
+	const status = await desktop()?.update.download();
+	if (status && status.state !== 'error') desktop()?.update.install();
 };
 
 // Check once on launch, independent of the server/client version poll - the app

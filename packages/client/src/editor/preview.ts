@@ -1,23 +1,30 @@
+import type { ManiaAssets } from '../osu/skin/maniaAssets';
+import type { Context2D } from '../gameplay/render/frame';
 import {
-	playfieldGeometry,
-	type Context2D,
-	type Field,
-	type Frame,
-	type Layer,
-	type SkinData,
-} from '../gameplay/render/frame';
-import { drawPlayfield } from '../gameplay/render/playfield';
-import { drawBarlines } from '../gameplay/render/barlines';
-import { drawNotes } from '../gameplay/render/notes';
-import { drawReceptors } from '../gameplay/render/receptors';
+	drawKeys,
+	drawLighting,
+	drawStageBack,
+	drawStageBarlines,
+	drawStageFront,
+	type StageFrame,
+	type StageLayer,
+} from '../gameplay/render/stage';
+import { drawStageNotes } from '../gameplay/render/stageNotes';
+import { stageLayout } from '../gameplay/render/stageLayout';
 import ChartField from './chartField';
+import { stageSpan } from './editorSkins';
 import type { PaintState } from './painter';
 
-const LAYERS: Layer<Field>[] = [drawPlayfield, drawBarlines, drawNotes, drawReceptors];
+const KEYS_OVER: StageLayer[] = [
+	drawStageBack, drawStageBarlines, drawStageNotes, drawKeys, drawLighting, drawStageFront,
+];
+const KEYS_UNDER: StageLayer[] = [
+	drawStageBack, drawKeys, drawStageBarlines, drawStageNotes, drawLighting, drawStageFront,
+];
 
 /**
- * The chart as it plays, beside the editor: the game's own playfield layers and
- * scroll model (scroll speed changes included) at the editor's time, rebuilt with
+ * The chart as it plays, beside the editor: the game's stage layers with the gameplay skin
+ * and its scroll model (scroll speed changes included) at the editor's time, rebuilt with
  * each edit.
  */
 export default class EditorPreview {
@@ -25,7 +32,7 @@ export default class EditorPreview {
 	private field?: ChartField;
 	private builtFrom?: object;
 
-	constructor(private readonly state: PaintState) {}
+	constructor(private readonly state: PaintState, private readonly dpr: number) {}
 
 	/** The field for the chart as it stands. */
 	private current(): ChartField {
@@ -37,42 +44,58 @@ export default class EditorPreview {
 	}
 
 	/** The last frame drawn, filled in again for the next: drawing allocates nothing. */
-	private frame?: Frame<Field>;
+	private frame?: StageFrame<ChartField>;
 
 	private frameFor(
-		ctx: Context2D, game: ChartField, skin: SkinData, h: number, scrollMs: number,
+		ctx: Context2D, game: ChartField, assets: ManiaAssets, h: number, scrollMs: number,
+		scale: number,
 	) {
-		const w = game.keyCount * skin.data.playfield.columnWidth;
 		const last = this.frame;
-		if (last?.ctx === ctx && last.game.keyCount === game.keyCount && last.skin === skin
-			&& last.vp.w === w && last.vp.h === h && last.vp.scrollMs === scrollMs) {
+		if (last?.ctx === ctx && last.L.assets === assets && last.L.h === h / scale
+			&& last.vp.scrollMs === scrollMs) {
 			last.game = game;
 			return last;
 		}
-		const vp = {
-			w, h, scrollMs, 
+		// laid out at the game's size for `h`, on its own width (the stage starts at 0), and
+		// reaching higher so that drawn `scale` times smaller, it still fills the height
+		const L = stageLayout(assets, stageSpan(assets, h), h, this.dpr * scale, h / scale - h);
+		const g = {
+			keys: L.keys, fieldWidth: L.width, lineY: L.lineY, pxPerUnit: L.lineY / scrollMs, x0: L.x0,
+			right: L.x0 + L.width, grade: {
+				right: 0, top: 0, height: 0,
+			},
 		};
 		return this.frame = {
-			ctx, game, skin, now: 0, nowPos: 0, vp, g: playfieldGeometry(game, skin, vp), opts: {},
+			ctx, game, skin: undefined, now: 0, nowPos: 0, vp: {
+				w: L.width, h: L.h, scrollMs,
+			}, g, opts: {}, L,
 		};
 	}
 
-	/** Draw the field from `left`, at song time `now`. */
-	public draw(ctx: Context2D, skin: SkinData, left: number, h: number, now: number) {
+	/** Draw the stage from `left`, at song time `now`, `scale` times the game's size. */
+	public draw(
+		ctx: Context2D, assets: ManiaAssets, left: number, h: number, now: number, scale: number,
+	) {
 		const game = this.current();
-		// the skin colours a fixed set of columns; other key counts have nothing to draw with
-		if (!skin.data.hitObjects[game.keyCount - 1]) return;
-		const frame = this.frameFor(ctx, game, skin, h, this.state.scrollMs);
+		if (assets.keys !== game.keyCount) return;
+		const frame = this.frameFor(ctx, game, assets, h, this.state.scrollMs, scale);
+		const { L } = frame;
 		frame.now = now;
 		frame.nowPos = game.scroll.positionAt(frame.now);
 		game.seek(frame.now);
 		ctx.save();
 		ctx.translate(left, 0);
-		if (skin.data.playfield.upscroll) {
-			ctx.translate(0, h);
+		ctx.scale(scale, scale);
+		// only the columns: what a skin draws beside them would cover the editor's field
+		ctx.beginPath();
+		ctx.rect(L.x0, 0, L.width, L.h);
+		ctx.clip();
+		if (L.upsideDown) {
+			ctx.translate(0, L.h);
 			ctx.scale(1, -1);
 		}
-		for (const layer of LAYERS) layer(frame);
+		const layers = assets.config.keysUnderNotes ? KEYS_UNDER : KEYS_OVER;
+		for (let i = 0; i < layers.length; i++) layers[i](frame);
 		ctx.restore();
 	}
 

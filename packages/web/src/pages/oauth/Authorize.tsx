@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './Authorize.css';
 import {
 	useEffect,
@@ -75,10 +76,10 @@ export default function Authorize({ client_id, redirect_uri, scope, state }: {
 	return <main className='page-contents authorize'>
 		<h1><Trans>Authorization Request</Trans></h1>
 		<p>
-			<Trans><strong>{request.client.name}</strong> is requesting permission to access your account.</Trans>
+			<Trans><strong>{ph({ app: request.client.name })}</strong> is requesting permission to access your account.</Trans>
 		</p>
 		{request.owner.name && <p className='authorize__owner'>
-			<Trans>owned by {request.owner.name}</Trans>
+			<Trans>owned by {ph({ owner: request.owner.name })}</Trans>
 		</p>}
 		<p><Trans>This application will be able to:</Trans></p>
 		<ul className='authorize__scopes'>

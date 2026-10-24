@@ -43,6 +43,7 @@ import {
 	finishLocalPlay,
 	localPlayResult,
 	startLocalPlay,
+	type LocalStart,
 } from '../online/localPlay';
 import Socket from '../online/socket';
 import PlayManager from '../online/playManager';
@@ -70,6 +71,7 @@ import {
 	PLAYER_MODE,
 } from '../audio/MusicPlayer';
 import {
+	makeComboBreakSound,
 	preloadSamples,
 	prepareNoteSounds,
 	scheduleHitsound,
@@ -94,6 +96,11 @@ import Controls from '../input/Controls';
 import { debugMode } from '../globals';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 import SkipToEndButton from '../components/gameplay/SkipToEndButton';
+import WarmupHint from '../components/gameplay/WarmupHint';
+import {
+	warmupStage,
+	type WarmupStage,
+} from '../gameplay/warmupStage';
 import {
 	Skills,
 	type SkillName,
@@ -110,6 +117,7 @@ import GameplayRenderer, {
 	type StrainHud,
 } from '../gameplay/gameplayRenderer';
 import { sizeCanvas } from '../sizeCanvas';
+import { makeGradePlacer } from '../gameplay/gradeBadge';
 
 /** A play of a chart open in the editor: the character plays it from `start`,
  *  like a debug play (no-fail, never saved), then the editor takes over again. */
@@ -138,6 +146,12 @@ type InnerProps = {
 /** how far ahead hitsounds are queued onto the audio clock. Must exceed the
  *  background timer-throttle floor (~1s) so a blurred tab still queues the next
  *  chunk before the previous one runs out - that's what keeps sound going. */
+/** The character's skills as tired as the play has them. */
+const playedSkills = (character: Character, play: PlayContext) =>
+	play.mode !== 'debug' && play.fatigue !== undefined
+		? tiredSkills(character.skills, play.fatigue, play.warmup ?? 1)
+		: character.skills;
+
 const HITSOUND_LOOKAHEAD_MS = 1500;
 /** keep the scheduler ticking off the rAF loop so it runs while the tab is
  *  hidden (rAF is paused then; timers are merely throttled). */
@@ -173,6 +187,7 @@ function GameplayInner({
 	const [debug] = useSynced(debugMode);
 	const { i18n, t } = useLingui();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const gradeRef = useRef<HTMLDivElement>(null);
 	// background, storyboard video and the dim overlay are stacked DOM layers
 	// behind the (transparent) playfield canvas: bg → video → dim → canvas. This
 	// lets a native <video> play between the background and the playfield without
@@ -207,6 +222,17 @@ function GameplayInner({
 	);
 	const fatigueLabel = useMemo(() => t`Fatigue`, [t]);
 	const warmupLabel = useMemo(() => t`Warm-up`, [t]);
+	const warmupState = useMemo(() => {
+		const labels: Record<WarmupStage, string> = {
+			cold: t`Cold`,
+			warming: t`Warming up`,
+			warm: t`Warmed up`,
+			peak: t`Peak`,
+			pushing: t`Pushing`,
+			tired: t`Getting tired`,
+		};
+		return play.mode === 'debug' ? labels.peak : labels[warmupStage(play.warmup ?? 1, play.cooling)];
+	}, [t, play]);
 	// clock state lives in a ref so it survives HMR effect re-runs: the lead-in
 	// isn't restarted and the audio isn't re-triggered, keeping the gameplay
 	// clock continuous with the (single, still-playing) audio.
@@ -299,9 +325,7 @@ function GameplayInner({
 			// the play being watched *is* this analysis - no approximation needed
 			strainBotRef.current = local.bot;
 		} else {
-			strainBotRef.current = new CharacterBot(play.mode === 'ranked'
-				? tiredSkills(character.skills, play.fatigue, play.warmup)
-				: character.skills);
+			strainBotRef.current = new CharacterBot(playedSkills(character, play));
 			new ManiaGame(beatmap, strainBotRef.current, {
 				divine, rate, mods, playOn,
 			});
@@ -738,8 +762,6 @@ function GameplayInner({
 		if (!game) return;
 		const canvas = canvasRef.current!;
 		const ctx = canvas.getContext('2d')!;
-		const keys = game.keyCount;
-		const fieldWidth = keys * skin.data.playfield.columnWidth;
 		const mobile = window.innerWidth < 850;
 
 		let w = 0;
@@ -796,7 +818,9 @@ function GameplayInner({
 			}
 		};
 
-		const fieldX = () => (w - fieldWidth) / 2;
+		const placeGrade = makeGradePlacer();
+		// the playfield as last drawn, for the SKIP prompt's tap target
+		let field: PlayfieldGeometry | undefined;
 
 		// ---- clock: the whole play on a perf timer, the track started in step with it ----
 		// persisted in a ref so an HMR effect re-run resumes the same clock
@@ -915,6 +939,7 @@ function GameplayInner({
 
 		let raf = 0;
 		let finished = false;
+		const comboBreak = makeComboBreakSound();
 		let firstFrame = true;
 		// once the play ends we keep the playfield scrolling under the result-loading
 		// spinner instead of freezing. The song clock can stop advancing when the
@@ -980,8 +1005,8 @@ function GameplayInner({
 				? {
 					bot: strainBotRef.current,
 					labels: skillLabels,
-					...play.mode === 'ranked' ? {
-						fatigue: play.fatigue, fatigueLabel, warmup: play.warmup, warmupLabel,
+					...play.mode !== 'debug' ? {
+						fatigue: play.fatigue, fatigueLabel, warmup: play.warmup, cooling: play.cooling, warmupLabel, warmupState,
 					} : {},
 					left: scoreboardEdge.get() ? scoreboardEdge.get() + 16 : undefined,
 				}
@@ -991,12 +1016,14 @@ function GameplayInner({
 			const now = finished ? outroFrom + (performance.now() - outroAt) : songTime();
 			nowRef.current = now;
 			game.update(Math.max(0, now));
+			comboBreak(game.score.combo);
 			queueHitsounds();
 
 			drawBackground();
 			syncVideo(now);
 			// the renderer derives its own geometry (picks up a live scroll-speed
 			// change) and hands it back for the play-only chrome to align to
+			renderer.setSkin(currentSkin.get());
 			const g = renderer.draw(now, {
 				w,
 				h,
@@ -1007,6 +1034,8 @@ function GameplayInner({
 				strain: strain(),
 				onGrade: setGrade,
 			});
+			field = g;
+			placeGrade(gradeRef.current, g);
 			drawChrome(g, now);
 			publishPlayfieldEdge(g);
 
@@ -1062,7 +1091,8 @@ function GameplayInner({
 			const rect = canvas.getBoundingClientRect();
 			const px = e.clientX - rect.left;
 			const py = e.clientY - rect.top;
-			const cxField = fieldX() + fieldWidth / 2;
+			if (!field) return;
+			const cxField = field.x0 + field.fieldWidth / 2;
 			// bounding box around the SKIP / >>>> text (drawn at h*0.62–0.64)
 			if (Math.abs(px - cxField) < 90 && py > h * 0.56 && py < h * 0.68) 
 				skipToStart();
@@ -1090,7 +1120,8 @@ function GameplayInner({
 			<video ref={videoRef} className="play__video" muted playsInline />
 			<div ref={dimRef} className="play__dim" />
 			<canvas ref={canvasRef} className="play__canvas" />
-			{!done && skin.grade(grade, 'play__grade')}
+			{owned && play.warmup !== undefined && <WarmupHint warmup={play.warmup} cooling={play.cooling} />}
+			{!done && <div ref={gradeRef} className='play__grade'>{skin.grade(grade)}</div>}
 			{done && play.mode === 'ranked' && (
 				<div className="play__loading">
 					<div className="play__loading-spinner" />
@@ -1162,11 +1193,12 @@ const localContext = async (
 	character: Character,
 	beatmapInfo: LightBeatmap,
 	chart: Beatmap,
-	mode: 'guest' | 'unranked',
+	start: LocalStart,
 ): Promise<PlayContext> => {
-	const run = await startLocalPlay(character, beatmapInfo, chart, mode);
+	const run = await startLocalPlay(character, beatmapInfo, chart, start);
 	return {
-		mode,
+		...run.tired,
+		mode: run.mode,
 		token: run.token,
 		beatmapId: run.beatmapId,
 		rate: run.rate,
@@ -1383,13 +1415,13 @@ export default function Gameplay({
 					await backToSelect();
 					return;
 				}
-				play = await localContext(character, beatmapInfo, live, 'unranked');
+				play = await localContext(character, beatmapInfo, live, { mode: 'unranked' });
 			} else if (session.mode === 'ranked') {
 				play = session;
 			} else {
 				// start (or join) the local play, then watch it - the same shape the
 				// server hands back for a ranked one
-				play = await localContext(character, beatmapInfo, live, session.mode);
+				play = await localContext(character, beatmapInfo, live, session);
 			}
 
 			const timesPlayed = await Score.countPlays(

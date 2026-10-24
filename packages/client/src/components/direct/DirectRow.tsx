@@ -53,7 +53,9 @@ export default function DirectRow({
 				<span className='direct-row__title'>{set.artist} - {set.title}</span>
 				<span className='direct-row__sub'>
 					<Trans>mapped by {mapper}</Trans>
-					<span className='direct-row__date'><Trans>Ranked {ranked}</Trans></span>
+					<span className='direct-row__date'>
+						{set.ranked ? <Trans>Ranked {ranked}</Trans> : <Trans>Submitted {ranked}</Trans>}
+					</span>
 				</span>
 			</span>
 			<span className='direct-row__side'>

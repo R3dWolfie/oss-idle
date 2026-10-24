@@ -86,6 +86,11 @@ export const MEDALS: MedalDef[] = [
 	def('time-100h', 'dedication', 'silver', 'hourglass'),
 	def('time-1000h', 'dedication', 'gold', 'timer'),
 	def('time-10000h', 'dedication', 'platinum', 'mountains'),
+	def('friends-1', 'dedication', 'bronze', 'usersThree'),
+	def('friends-5', 'dedication', 'silver', 'usersThree'),
+	def('friends-25', 'dedication', 'gold', 'usersThree'),
+	def('friends-100', 'dedication', 'platinum', 'usersThree'),
+	def('friends-1k', 'dedication', 'divine', 'usersThree'),
 
 	...Skills.flatMap(skill => [
 		def(`${skill}-50`, 'mastery', 'silver', SKILL_GLYPHS[skill]),
@@ -140,13 +145,21 @@ export const MEDALS: MedalDef[] = [
 	def('curator-5', 'ranked', 'silver', 'plant'),
 	def('curator-25', 'ranked', 'gold', 'plant'),
 	def('curator-100', 'ranked', 'platinum', 'plant'),
+	def('mapper-1', 'ranked', 'bronze', 'penNib'),
+	def('mapper-2', 'ranked', 'bronze', 'penNib'),
+	def('mapper-5', 'ranked', 'silver', 'penNib'),
+	def('mapper-10', 'ranked', 'gold', 'penNib'),
+	def('mapper-50', 'ranked', 'platinum', 'penNib'),
+	def('mapper-100', 'ranked', 'divine', 'penNib'),
 
 	def('combo-727', 'secret', 'silver', 'sparkle'),
 	def('same-map-100', 'secret', 'silver', 'repeat'),
 	def('fail-99', 'secret', 'silver', 'skull'),
+	def('fail-10s', 'secret', 'silver', 'timer'),
 	def('night-owl', 'secret', 'silver', 'moonStars'),
 	def('first-chat', 'secret', 'silver', 'chatCircleDots'),
 	def('possessed', 'secret', 'silver', 'ghost'),
+	def('parallax', 'secret', 'silver', 'personSimpleRun'),
 ];
 
 const STEPS = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -164,6 +177,7 @@ export const MEDAL_LINES: Record<MedalCategory, string[][]> = {
 		['plays-100', 'plays-1k', 'plays-5k', 'plays-25k', 'plays-100k'],
 		['hits-100k', 'hits-1m', 'hits-10m', 'hits-50m', 'hits-1b'],
 		['time-10h', 'time-100h', 'time-1000h', 'time-10000h'],
+		['friends-1', 'friends-5', 'friends-25', 'friends-100', 'friends-1k'],
 	],
 	mastery: [
 		Skills.map(skill => `${skill}-50`),
@@ -183,9 +197,10 @@ export const MEDAL_LINES: Record<MedalCategory, string[][]> = {
 		['top-75', 'top-50', 'top-25', 'top-10', 'top-1'],
 		['play-pp-50', 'play-pp-100', 'play-pp-200', 'play-pp-500', 'play-pp-750', 'play-pp-1k'],
 		['curator-1', 'curator-5', 'curator-25', 'curator-100'],
+		['mapper-1', 'mapper-2', 'mapper-5', 'mapper-10', 'mapper-50', 'mapper-100'],
 	],
 	secret: [
-		['combo-727', 'same-map-100', 'fail-99', 'night-owl', 'first-chat', 'possessed'],
+		['combo-727', 'same-map-100', 'fail-99', 'fail-10s', 'night-owl', 'first-chat', 'possessed', 'parallax'],
 	],
 };
 

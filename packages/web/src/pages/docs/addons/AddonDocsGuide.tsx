@@ -13,8 +13,8 @@ export default function AddonDocsGuide() {
 		<p>
 			Add-ons are scripts players install from the game&apos;s Add-ons page (Options, then Browse
 			add-ons). They run inside oss!idle with the same access the game has: its page, its database,
-			its maps. That is what makes them useful, and why every published add-on is read by the team
-			before anyone can install it.
+			its maps. That is what makes them useful, and why each one shows its code: add-ons are not
+			reviewed, so read what you install.
 		</p>
 		<p>
 			An add-on is one JavaScript module. It may not load anything else: everything it uses, apart from
@@ -31,14 +31,16 @@ export default function AddonDocsGuide() {
 		<p>Then, in game, under Add-ons, Manage, Create new add-on, either:</p>
 		<ul>
 			<li>
-				<strong>Code written here</strong>: paste or write the file in the editor, save, and submit
-				it for review;
+				<strong>Code written here</strong>: paste or write the file in the editor, save, and publish
+				it;
 			</li>
 			<li>
-				<strong>Built from a git repository</strong>: give the address of a public repository, add
-				the webhook it shows you, and release by tagging a version (<code>v1.2.3</code>). We build
-				it ourselves from that tag (<code>npm ci --ignore-scripts</code>, then <code>npm run build</code>
-				{' '}without network) and the reviewers read the repository&apos;s changes, not a bundle.
+				<strong>Built from a git repository</strong>: <code>npm run setup</code> checks the
+				repository and prints what to fill in; add the webhook the add-on shows you, and release with
+				{' '}<code>npm run release</code>, which tags the next version (<code>v1.2.3</code>) and pushes
+				it. We build it ourselves from that tag (<code>npm ci --ignore-scripts</code>, then
+				{' '}<code>npm run build</code> without network), so players can read the repository it comes
+				from.
 			</li>
 		</ul>
 		<p>

@@ -33,7 +33,8 @@ import MasterVolume from '../components/options/MasterVolume';
 import MusicVolume from '../components/options/MusicVolume';
 import EffectVolume from '../components/options/EffectVolume';
 import DeleteAllBeatmaps from '../components/options/DeleteAllBeatmaps';
-import DownloadAllBeatmaps from '../components/options/DownloadAllBeatmaps';
+import DownloadAllBundled from '../components/options/DownloadAllBundled';
+import DownloadAllRanked from '../components/options/DownloadAllRanked';
 import MoveInstall from '../components/options/MoveInstall';
 import AutopilotDelay from '../components/options/AutopilotDelay';
 import KeepPlaying from '../components/options/KeepPlaying';
@@ -293,8 +294,12 @@ export default function Options() {
 					title: t`General`,
 					components: [
 						{
+							search: t`download|beatmap|beatmaps|bundled|supporter`,
+							component: () => DownloadAllBundled,
+						},
+						{
 							search: t`download|beatmap|beatmaps|ranked|supporter`,
-							component: () => DownloadAllBeatmaps,
+							component: () => DownloadAllRanked,
 						},
 						{
 							search: t`delete|beatmap|beatmaps`,

@@ -11,15 +11,19 @@ import {
 import type Game from '../support/game';
 import { clicks } from '../support/files';
 
-/** The default skin's column width, and the gap before the live preview's field. */
-const COLUMN = 74;
+/** The default skin's 4K column width (in its 480-high space) at the field's height, and
+ *  the gap before the live preview's field. */
+const columnWidth = (box: { height: number }) => 33 * box.height / 480;
 const PREVIEW_GAP = 60;
 
 /** The middle of a 4K column of the editor's field, which the live preview (on by
  *  default) pushes left of centre. */
-const columnX = (box: { x: number, width: number }, column: number, preview = true) => {
-	const fields = preview ? COLUMN * 8 + PREVIEW_GAP : COLUMN * 4;
-	return box.x + (box.width - fields) / 2 + COLUMN * (column + 0.5);
+const columnX = (
+	box: { x: number, width: number, height: number }, column: number, preview = true,
+) => {
+	const cw = columnWidth(box);
+	const fields = preview ? cw * 8 + PREVIEW_GAP : cw * 4;
+	return box.x + (box.width - fields) / 2 + cw * (column + 0.5);
 };
 
 
@@ -1083,9 +1087,9 @@ test.describe('editor', () => {
 		const box = (await page.locator('.editor__playfield').boundingBox())!;
 		const lineY = box.y + box.height * 0.8;
 		// from right of the field, just under the time line, to a little way into column 1
-		await page.mouse.move(columnX(box, 3) + COLUMN * 0.75, lineY + 20);
+		await page.mouse.move(columnX(box, 3) + columnWidth(box) * 0.75, lineY + 20);
 		await page.mouse.down();
-		await page.mouse.move(columnX(box, 0) + COLUMN / 4, lineY - 40, { steps: 4 });
+		await page.mouse.move(columnX(box, 0) + columnWidth(box) / 4, lineY - 40, { steps: 4 });
 		// scrolled 3 s on (shift: four lines a tick): the box keeps its start on the chart
 		await page.keyboard.down('Shift');
 		for (let i = 0; i < 6; i++) await page.mouse.wheel(0, 100);
@@ -1108,9 +1112,9 @@ test.describe('editor', () => {
 
 		const box = (await page.locator('.editor__playfield').boundingBox())!;
 		const lineY = box.y + box.height * 0.8;
-		await page.mouse.move(columnX(box, 3) + COLUMN * 0.75, lineY + 20);
+		await page.mouse.move(columnX(box, 3) + columnWidth(box) * 0.75, lineY + 20);
 		await page.mouse.down();
-		await page.mouse.move(columnX(box, 0) + COLUMN / 4, lineY - 20, { steps: 2 });
+		await page.mouse.move(columnX(box, 0) + columnWidth(box) / 4, lineY - 20, { steps: 2 });
 		// the song plays under the still mouse: the box's end goes with it
 		await page.keyboard.press('Space');
 		await page.waitForTimeout(2500);

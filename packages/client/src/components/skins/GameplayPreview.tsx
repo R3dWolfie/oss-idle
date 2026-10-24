@@ -3,7 +3,6 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { Trans } from '@lingui/react/macro';
 import { Beatmap } from 'osu-classes';
 import { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
 import CharacterBot from '@oss-idle/shared/sim/bots/character';
@@ -16,44 +15,33 @@ import { SETTINGS } from '../../db/settings';
 import { DEBUG_BOT_LEVEL } from '../../gameplay/strainDebug';
 import GameplayRenderer, { strainLabels } from '../../gameplay/gameplayRenderer';
 import BeatmapStore from '../../osu/beatmap/beatmap_store';
-import Skin, { validateSkinSource } from '../../osu/skin/Skin';
+import { skinTestChart } from '../../gameplay/skinTestChart';
+import { currentSkin } from '../../osu/skin/Skin';
+import type Skin from '../../osu/skin/Skin';
 import { sizeCanvas } from '../../sizeCanvas';
-
-/** parse a skin source, or undefined when it isn't valid yet (mid-edit) */
-const safeSkin = (source: string): Skin | undefined => {
-	try {
-		return validateSkinSource(source) ? undefined : new Skin(JSON.parse(source));
-	} catch {
-		return undefined;
-	}
-};
+import { makeGradePlacer } from '../../gameplay/gradeBadge';
 
 /**
  * A silent full-gameplay preview of the currently playing beatmap, synced to the
- * live music position, drawn with the given skin source so an author sees every
- * skinnable element - notes, receptors, HP bar, hit-error bar, strain gauges,
- * judgements, grade - in motion. Reuses the gameplay GameplayRenderer and a
+ * live music position (a chart of our own when nothing plays), drawn with the given skin so a player sees every
+ * skinnable element - notes, keys, lighting, HP bar, judgements, combo, grade -
+ * in motion. The current skin stands in while the given one loads. Reuses the gameplay GameplayRenderer and a
  * debug-level bot; no audio of its own, scoring submit, or server session.
  */
-export default function GameplayPreview({ definition }: { definition: string }) {
+export default function GameplayPreview({ skin: shown }: { skin: Skin | undefined }) {
 	const [beatmapInfo] = useSynced(music.beatmap);
 	const [dim] = useSynced(SETTINGS.backgroundDim);
-	// last valid skin (kept across invalid mid-edit states) - drives the renderer
-	// and the DOM grade badge
-	const [skin, setSkin] = useState(() => safeSkin(definition) ?? new Skin());
+	const [current] = useSynced(currentSkin);
+	const skin = shown ?? current;
 	const [grade, setGrade] = useState<Grade>('X');
 
 	const wrapRef = useRef<HTMLDivElement>(null);
 	const bgRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const gradeRef = useRef<HTMLDivElement>(null);
 	const rendererRef = useRef<GameplayRenderer | null>(null);
 	const skinRef = useRef(skin);
 	skinRef.current = skin;
-
-	useEffect(() => {
-		const s = safeSkin(definition);
-		if (s) setSkin(s);
-	}, [definition]);
 
 	useEffect(() => {
 		rendererRef.current?.setSkin(skin);
@@ -62,7 +50,7 @@ export default function GameplayPreview({ definition }: { definition: string }) 
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const wrap = wrapRef.current;
-		if (!canvas || !wrap || !beatmapInfo) return;
+		if (!canvas || !wrap) return;
 		const ctx = canvas.getContext('2d')!;
 
 		let raf = 0;
@@ -72,7 +60,8 @@ export default function GameplayPreview({ definition }: { definition: string }) 
 		void (async () => {
 			let beatmap: Beatmap;
 			try {
-				beatmap = await beatmapInfo.load();
+				// nothing playing: a chart of our own, on a clock of its own
+				beatmap = beatmapInfo ? await beatmapInfo.load() : skinTestChart(4);
 			} catch {
 				return;
 			}
@@ -86,7 +75,7 @@ export default function GameplayPreview({ definition }: { definition: string }) 
 			rendererRef.current = renderer;
 			const labels = strainLabels();
 
-			void BeatmapStore.getBeatmapBackground(beatmap).then(url => {
+			if (beatmapInfo) void BeatmapStore.getBeatmapBackground(beatmap).then(url => {
 				if (!alive || !url) return;
 				bgUrl = url;
 				if (bgRef.current) bgRef.current.style.backgroundImage = `url("${url}")`;
@@ -104,10 +93,13 @@ export default function GameplayPreview({ definition }: { definition: string }) 
 			ro = new ResizeObserver(resize);
 			ro.observe(wrap);
 
+			const placeGrade = makeGradePlacer();
+			const start = performance.now();
+			const loop = game.songEndMs + 1000;
 			const draw = () => {
 				// follow the live music position so the notes stay synced to the track
 				// (it loops / advances on its own; a backward jump rewinds the sim)
-				const now = Math.max(0, music.time());
+				const now = beatmapInfo ? Math.max(0, music.time()) : (performance.now() - start) % loop;
 				if (now < game.now()) game.seek(now);
 				else game.update(now);
 				const vp = {
@@ -116,13 +108,14 @@ export default function GameplayPreview({ definition }: { definition: string }) 
 					scrollMs,
 				};
 				renderer.clear(vp);
-				renderer.draw(now, vp, {
+				const g = renderer.draw(now, vp, {
 					strain: {
 						bot,
 						labels,
 					},
 					onGrade: setGrade,
 				});
+				placeGrade(gradeRef.current, g);
 				raf = requestAnimationFrame(draw);
 			};
 			raf = requestAnimationFrame(draw);
@@ -137,20 +130,12 @@ export default function GameplayPreview({ definition }: { definition: string }) 
 		};
 	}, [beatmapInfo]);
 
-	if (!beatmapInfo) {
-		return (
-			<div className='skin-preview skin-preview--empty'>
-				<Trans>Play a beatmap to preview the skin.</Trans>
-			</div>
-		);
-	}
-
 	return (
 		<div className='skin-preview' ref={wrapRef}>
 			<div ref={bgRef} className='skin-preview__bg' />
 			<div className='skin-preview__dim' style={{ opacity: Math.max(0, Math.min(1, dim)) }} />
 			<canvas ref={canvasRef} className='skin-preview__canvas' />
-			{skin.grade(grade, 'skin-preview__grade')}
+			<div ref={gradeRef} className='skin-preview__grade'>{skin.grade(grade)}</div>
 		</div>
 	);
 }

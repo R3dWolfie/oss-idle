@@ -58,7 +58,7 @@ export const updateAddon = (id: number, json: AddonUpdateBody) =>
 		param: { id: String(id) }, json,
 	}));
 
-/** Auth+owner: submit a draft/denied add-on for review. */
+/** Auth+owner: publish a draft add-on. */
 export const submitAddon = (id: number) =>
 	unwrap<OwnAddon>(rpc.v1.addons[':id'].submit.$post({ param: { id: String(id) } }));
 

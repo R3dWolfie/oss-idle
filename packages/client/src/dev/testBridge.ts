@@ -118,10 +118,11 @@ const queue = () => {
 	return {
 		label: state.label,
 		mode: state.mode,
-		entries: state.entries.map(e => ({
+		entries: state.entries.map(({ beatmap: e, repeat }) => ({
 			id: e.metadata.id,
 			version: e.metadata.version,
 			title: e.set.metadata.title,
+			repeat,
 		})),
 	};
 };
@@ -152,6 +153,7 @@ const catalog = async () => {
 			id: m.id,
 			title: m.title,
 			artist: m.artist,
+			bundled: m.bundled,
 			versions: m.versions.map(v => ({
 				id: v.id,
 				version: v.version,

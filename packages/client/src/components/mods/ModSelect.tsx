@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './ModSelect.css';
 import '../ContextMenu.css';
 import { useEffect } from 'react';
@@ -117,7 +118,7 @@ export default function ModSelect({ onClose }: { onClose: () => void }) {
 					</Trans>
 				</p>
 				<div className="mod-select__multiplier">
-					<Trans>Score Multiplier: {(scoreMultiplier(rate) * modsScoreMultiplier(mods)).toFixed(2)}x</Trans>
+					<Trans>Score Multiplier: {ph({ multiplier: (scoreMultiplier(rate) * modsScoreMultiplier(mods)).toFixed(2) })}x</Trans>
 					<XpMultipliers mods={mods} />
 					{!isRankedMods(mods) && (
 						<div className="mod-select__unranked">

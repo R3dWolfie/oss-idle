@@ -7,6 +7,7 @@ import { getCharacterMostPlayed } from '../../api/characters';
 import { coverBackground } from '../../api/maps';
 import { useShowMore } from '../../hooks/useShowMore';
 import ShowMoreLink from '../ShowMoreLink';
+import MapperLink from '../MapperLink';
 
 /** The profile's Historical block: the most played beatmaps. */
 export default function CharacterHistorical({ id, countplayed }: {
@@ -39,7 +40,7 @@ export default function CharacterHistorical({ id, countplayed }: {
 								<Trans>{ph({ title: mp.beatmap.title })} [{ph({ version: mp.beatmap.version })}] by {ph({ artist: mp.beatmap.artist })}</Trans>
 							</div>
 							<div className='mostplayed__bmc'>
-								<Trans>mapped by <b>{ph({ creator: mp.beatmapset.creator })}</b></Trans>
+								<Trans>mapped by <MapperLink userId={mp.beatmapset.ownerUserId} className='mapper-link'>{ph({ creator: mp.beatmapset.creator })}</MapperLink></Trans>
 							</div>
 						</div>
 						<div className='mostplayed__pl'>

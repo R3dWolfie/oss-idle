@@ -643,7 +643,7 @@ export default class PlayManager {
 		// here would reject playNext, which every caller fires and forgets, and the
 		// loop would stop with nothing but an unhandled rejection to show for it
 		try {
-			await startLocalPlay(character, beatmap, chart, session.mode);
+			await startLocalPlay(character, beatmap, chart, session);
 		} catch (e) {
 			console.warn('[queue] local play failed to start', e);
 			return 'failed';

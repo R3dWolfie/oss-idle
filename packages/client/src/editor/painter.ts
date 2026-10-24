@@ -1,4 +1,3 @@
-import { colorAFixed } from '@oss-idle/shared/types/color';
 import {
 	eachSnapLine,
 	multiplierOf,
@@ -7,14 +6,21 @@ import {
 	type Note,
 	type TimingPoint,
 } from '@oss-idle/shared/editor/chart';
+import type { Context2D } from '../gameplay/render/frame';
 import type {
-	Context2D,
-	SkinData,
-} from '../gameplay/render/frame';
+	ManiaAssets,
+	Sprite,
+} from '../osu/skin/maniaAssets';
+import { fillBody } from '../gameplay/render/stageNotes';
 import { soundNamesOf } from '@oss-idle/shared/editor/hitsounds';
 import type SongVisuals from './songVisuals';
 import type EditorPreview from './preview';
 import type { FieldOptions } from './visualOptions';
+import {
+	fieldColumns,
+	stageSpan,
+	type EditorSkins,
+} from './editorSkins';
 
 const SNAP_COLORS: Record<number, string> = {
 	1: '#ffffff',
@@ -37,6 +43,8 @@ export type FieldGeometry = {
 	keys: number,
 	/** where the live preview's field starts, when it is shown */
 	previewLeft?: number,
+	/** both fields drawn smaller than the game's, to fit between the side panels */
+	scale: number,
 };
 
 /** What the playfield shows: the page's editor state, as the playfield's worker has it. */
@@ -58,19 +66,28 @@ export type PaintState = {
 	sounds: boolean,
 };
 
+/** The width the side panels leave in the middle (as editor.css lays them out: 24px in, 270
+ *  to 400px wide), less a margin. */
+const middleWidth = (w: number) => w - 2 * (24 + Math.min(400, Math.max(270, (w - 760) / 2))) - 32;
+
 export const fieldGeometry = (
 	keys: number,
 	preview: boolean,
-	skin: SkinData,
+	skins: EditorSkins,
 	w: number,
 	h: number,
 ): FieldGeometry => {
-	const { columnWidth, noteHeight } = skin.data.playfield;
+	const natural = fieldColumns(skins.field, h);
+	// the preview's stage, or the reference difficulty drawn like this field
+	const side = preview ? Math.max(keys * natural.columnWidth, stageSpan(skins.preview, h)) : 0;
+	const gap = preview ? PREVIEW_GAP : 0;
+	const scale = Math.min(1, (middleWidth(w) - gap) / (keys * natural.columnWidth + side));
+	const columnWidth = natural.columnWidth * scale;
 	const width = keys * columnWidth;
-	const x0 = (w - (preview ? width * 2 + PREVIEW_GAP : width)) / 2;
+	const x0 = (w - width - side * scale - gap) / 2;
 	return {
-		x0, columnWidth, noteHeight, lineY: h * 0.8, keys,
-		previewLeft: preview ? x0 + width + PREVIEW_GAP : undefined,
+		x0, columnWidth, noteHeight: natural.noteHeight * scale, lineY: h * 0.8, keys,
+		previewLeft: preview ? x0 + width + gap : undefined, scale,
 	};
 };
 
@@ -93,6 +110,9 @@ export type Overlay = {
 };
 
 type Drawn = Pick<Note, 'time' | 'column' | 'end'>;
+
+/** A note image's height, drawn `w` wide. */
+const heightAt = (s: Sprite, w: number) => s.h * w / s.w;
 
 const MARKER_WIDTH = 46;
 const BOOKMARK_WIDTH = 40;
@@ -139,10 +159,10 @@ const labels = new WeakMap<TimingPoint, string>();
  */
 export default class EditorPainter {
 
-	private skin?: SkinData;
+	private skins?: EditorSkins;
 	private g?: FieldGeometry;
 	private geometryOf = {
-		w: 0, h: 0, keys: 0, preview: false, skin: undefined as SkinData | undefined,
+		w: 0, h: 0, keys: 0, preview: false, skins: undefined as EditorSkins | undefined,
 	};
 	private now = 0;
 	/** what the song's visuals are drawn against, filled in each frame */
@@ -168,10 +188,10 @@ export default class EditorPainter {
 	) {}
 
 	/** One frame at song time `now`. */
-	public draw(skin: SkinData, w: number, h: number, overlay: Overlay, now: number): void {
+	public draw(skins: EditorSkins, w: number, h: number, overlay: Overlay, now: number): void {
 		const { ctx, state } = this;
-		const g = this.geometry(skin, w, h);
-		this.skin = skin;
+		const g = this.geometry(skins, w, h);
+		this.skins = skins;
 		this.now = now;
 		this.from = timeAt(g, state.zoom, now, h + g.noteHeight);
 		this.to = timeAt(g, state.zoom, now, -g.noteHeight);
@@ -209,7 +229,7 @@ export default class EditorPainter {
 		if (g.previewLeft !== undefined && state.reference) {
 			this.drawReference(state.reference, g, h);
 		} else if (g.previewLeft !== undefined) {
-			this.preview.draw(ctx, skin, g.previewLeft, h, now);
+			this.preview.draw(ctx, skins.preview, g.previewLeft, h, now, g.scale);
 		}
 	}
 
@@ -254,19 +274,19 @@ export default class EditorPainter {
 	}
 
 	/** The field's geometry, worked out again only when what it depends on changed. */
-	private geometry(skin: SkinData, w: number, h: number): FieldGeometry {
+	private geometry(skins: EditorSkins, w: number, h: number): FieldGeometry {
 		const of = this.geometryOf;
 		const keys = this.state.chart.keys;
 		const preview = this.state.preview;
 		const same = of.w === w && of.h === h && of.keys === keys && of.preview === preview
-			&& of.skin === skin;
+			&& of.skins === skins;
 		if (!this.g || !same) {
-			this.g = fieldGeometry(keys, preview, skin, w, h);
+			this.g = fieldGeometry(keys, preview, skins, w, h);
 			of.w = w;
 			of.h = h;
 			of.keys = keys;
 			of.preview = preview;
-			of.skin = skin;
+			of.skins = skins;
 		}
 		return this.g;
 	}
@@ -279,26 +299,53 @@ export default class EditorPainter {
 		const { ctx } = this;
 		const end = note.end ?? note.time;
 		if (end < this.from || note.time > this.to) return;
-		const color = this.skin!.data.hitObjects[note.column]?.color ?? '#e8e8f0';
+		const assets = this.skins!.field;
+		const tap = assets.columns[note.column]?.note;
 		const x = g.x0 + note.column * g.columnWidth;
+		const w = g.columnWidth;
+		const yHead = this.y(g, note.time);
+		let top = yHead - g.noteHeight;
 		ctx.globalAlpha = alpha;
 		if (note.end !== undefined) {
-			ctx.globalAlpha = alpha * this.state.field.holds / 100;
-			ctx.fillStyle = colorAFixed(color, 0.5);
-			ctx.fillRect(x + 6, this.y(g, end), g.columnWidth - 12, this.y(g, note.time) - this.y(g, end));
-			ctx.fillStyle = color;
-			ctx.fillRect(x + 4, this.y(g, end) - g.noteHeight, g.columnWidth - 8, g.noteHeight);
-			ctx.globalAlpha = alpha;
+			top = this.drawHold(assets, note.column, x, w, yHead, this.y(g, end), alpha);
+		} else if (tap) {
+			top = yHead - heightAt(tap, w);
+			ctx.drawImage(tap.frames[0], x, top, w, yHead - top);
 		}
-		ctx.fillStyle = color;
-		ctx.fillRect(x + 4, this.y(g, note.time) - g.noteHeight, g.columnWidth - 8, g.noteHeight);
 		if (selected) {
 			ctx.strokeStyle = SELECTED_COLOR;
 			ctx.lineWidth = 3;
-			const top = this.y(g, end) - g.noteHeight;
-			ctx.strokeRect(x + 3, top, g.columnWidth - 6, this.y(g, note.time) - top);
+			ctx.strokeRect(x + 1, top, w - 2, yHead - top);
 		}
 		ctx.globalAlpha = 1;
+	}
+
+	/** A hold as the game draws it: the body from the head's middle to the end, the tail cap
+	 *  past it, the head over both. Returns where its top is. */
+	private drawHold(
+		assets: ManiaAssets, c: number, x: number, w: number, yHead: number, yTail: number,
+		alpha: number,
+	): number {
+		const { ctx } = this;
+		const { head, body, tail } = assets.columns[c] ?? {};
+		const hh = head ? heightAt(head, w) : 0;
+		const th = tail ? heightAt(tail, w) : 0;
+		ctx.globalAlpha = alpha * this.state.field.holds / 100;
+		if (body) fillBody(ctx, body, assets.config.noteBodyStyle[c], x, w, yTail, yHead - hh / 2, 0);
+		if (tail) {
+			// turned over in v2.5+ skins
+			const flip = assets.version >= 2.5;
+			if (flip) {
+				ctx.save();
+				ctx.translate(0, 2 * yTail - th);
+				ctx.scale(1, -1);
+			}
+			ctx.drawImage(tail.frames[0], x, yTail - th, w, th);
+			if (flip) ctx.restore();
+		}
+		ctx.globalAlpha = alpha;
+		if (head) ctx.drawImage(head.frames[0], x, yHead - hh, w, hh);
+		return Math.min(yTail - th, yHead - hh);
 	}
 
 	private drawBox(g: FieldGeometry, box: NonNullable<Overlay['box']>): void {

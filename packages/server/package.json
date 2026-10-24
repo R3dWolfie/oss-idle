@@ -1,6 +1,6 @@
 {
   "name": "@oss-idle/server",
-  "version": "1.2.2.0",
+  "version": "1.2.4.0",
   "private": true,
   "type": "module",
   "exports": {

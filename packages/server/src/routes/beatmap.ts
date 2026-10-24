@@ -59,6 +59,7 @@ import {
 	panelColumns,
 	playerMapCondition,
 	unrankedSet,
+	unrankedSets,
 } from '../beatmaps/catalog';
 import { deleteSetFiles } from '../beatmaps/storage';
 import { clearForStatus } from '../beatmaps/upload';
@@ -184,6 +185,9 @@ export const beatmapsRoutes = new Hono()
 		);
 	})
 
+	// Players' unranked uploads, catalog-shaped for oss!direct.
+	.get('/unranked', async c => c.json(await unrankedSets()))
+
 	// A player's unranked upload, catalog-shaped for the game to download it.
 	.get('/unranked/:setId', async c => {
 		const set = await unrankedSet(idParam.parse(c.req.param('setId')));
@@ -295,6 +299,12 @@ export const beatmapsRoutes = new Hono()
 		const file = c.req.param('file');
 		checkPreviewName(id, file);
 		return previewResponse(file);
+	})
+	// A queued set's .osz, public or not, to try it before ranking it.
+	.get('/nomination/:setId/osz', requireAdmin, async c => {
+		const res = await oszResponse(idParam.parse(c.req.param('setId')), false);
+		res.headers.set('Cache-Control', 'no-store');
+		return res;
 	})
 	.patch('/nomination/:setId', requireAdmin, valid('json', nominationPatch), async c => {
 		const id = idParam.parse(c.req.param('setId'));

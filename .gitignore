@@ -82,6 +82,7 @@ packages/desktop/electron-builder.staging.yml
 
 /packages/server/beatmaps
 /packages/server/previews
+/packages/server/skins
 # local design dumps, never committed
 spec/
 

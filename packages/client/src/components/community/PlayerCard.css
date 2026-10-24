@@ -137,6 +137,30 @@
 	font-size: 50px;
 	opacity: 0.25;
 }
+/* the global rank tier, as on the song select card */
+.player-card__rank.is-tiered {
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	opacity: 0.6;
+}
+/* #1: lustrous with a sweeping shine and a glow */
+.player-card__rank.is-first {
+	background-image:
+		linear-gradient(
+			110deg,
+			transparent 35%,
+			rgba(255, 255, 255, 0.85) 50%,
+			transparent 65%
+		),
+		linear-gradient(#ffe600, #ed82ff);
+	background-size:
+		250% 100%,
+		100% 100%;
+	filter: drop-shadow(0 0 8px rgba(237, 130, 255, 0.55));
+	opacity: 0.9;
+	animation: game-rank-first-shine 3.5s ease-in-out infinite;
+}
 
 .player-card__sub {
 	font-size: 16px;

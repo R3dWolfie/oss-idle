@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import { useState } from 'react';
 import {
 	Trans,
@@ -31,7 +32,7 @@ export default function OAuthClientDialog({ client, onSaved, onDeleted, onClose 
 	});
 
 	const remove = () => run(async () => {
-		if (!confirm(t`Delete ${client.name}? This cannot be undone.`)) return;
+		if (!confirm(t`Delete ${ph({ app: client.name })}? This cannot be undone.`)) return;
 		await deleteClient(client.id);
 		onDeleted(client.id);
 	});

@@ -115,6 +115,19 @@ export class EffectPlayer {
 		return buffer;
 	}
 
+	/** Decode a file's bytes under `key`. A file that does not decode (a skin's empty
+	 *  sample, its way of muting a sound) is kept as silence. */
+	public async storeBytes(key: string, bytes: ArrayBuffer | undefined): Promise<void> {
+		let buffer: AudioBuffer;
+		try {
+			if (!bytes?.byteLength) throw new Error('empty');
+			buffer = await this.decode(bytes);
+		} catch {
+			buffer = this.context.createBuffer(1, 1, this.context.sampleRate);
+		}
+		this.buffers.set(key, buffer);
+	}
+
 	/** Keep a buffer made in code (a synthesised sound) under `key`. */
 	public store(key: string, buffer: AudioBuffer): void {
 		this.buffers.set(key, buffer);

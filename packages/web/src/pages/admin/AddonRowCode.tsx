@@ -1,55 +1,27 @@
 import { useState } from 'react';
 import Prism from 'prismjs';
 import 'prism-themes/themes/prism-vsc-dark-plus.css';
-import CodeDiff from '@oss-idle/shared/display/CodeDiff';
 
-type View = 'none' | 'code' | 'diff';
-
-/** The "View code / View changes" toggle and panels for one add-on. */
-export default function AddonRowCode({
-	source,
-	liveSource,
-}: {
-	source: string;
-	liveSource?: string
-},
-) {
-	const [view, setView] = useState<View>('none');
-	// what players run now: a denied change stays in the diff until it is reverted
-	const hasChanges = liveSource !== undefined && liveSource !== source;
-	const toggle = (v: View) => setView(cur => cur === v ? 'none' : v);
-	const highlight = (source: string) => Prism.highlight(
-		source,
-		Prism.languages.javascript, 
-		'javascript',
-	);
+/** The "View code" toggle and panel for one add-on. */
+export default function AddonRowCode({ source }: { source: string }) {
+	const [open, setOpen] = useState(false);
+	const html = () => Prism.highlight(source, Prism.languages.javascript, 'javascript');
 
 	return (
 		<>
 			<div className='addons-admin__codebar'>
-				<button 
-					className={`admin-list__btn ${view === 'code' ? 'current' : ''}`}
-					onClick={() => toggle('code')}
+				<button
+					className={`admin-list__btn ${open ? 'current' : ''}`}
+					onClick={() => setOpen(o => !o)}
 				>
-					{view === 'code' ? 'Hide code' : 'View code'}
+					{open ? 'Hide code' : 'View code'}
 				</button>
-				{hasChanges && (
-					<button 
-						className={`admin-list__btn ${view === 'diff' ? 'current' : ''}`} 
-						onClick={() => toggle('diff')}
-					>
-						{view === 'diff' ? 'Hide changes' : 'View changes since the live release'}
-					</button>
-				)}
 			</div>
-			{view === 'code' && (
+			{open && (
 				<pre className='language-javascript addons-admin__code'>
-					<code className='language-javascript' 
-						dangerouslySetInnerHTML={{ __html: highlight(source) }} />
+					<code className='language-javascript'
+						dangerouslySetInnerHTML={{ __html: html() }} />
 				</pre>
-			)}
-			{view === 'diff' && liveSource !== undefined && (
-				<div className='addons-admin__code'><CodeDiff before={liveSource} after={source} /></div>
 			)}
 		</>
 	);

@@ -46,7 +46,7 @@ export const beatmapset = mysqlTable('beatmapset', {
 	// and a map from osu! its mapper took over - and on no other.
 	uploadedAt: timestamp(),
 	// Listed in everyone's song select; otherwise downloaded from the site first.
-	bundled: boolean().notNull().default(true),
+	bundled: boolean().notNull().default(false),
 	// its tags were reviewed: off the nomination page's "to categorize" queue
 	categorized: boolean().notNull().default(false),
 }, table => [index('beatmapset_owner_idx').on(table.ownerUserId)]);

@@ -4,11 +4,8 @@ import {
 	and,
 	desc,
 	eq,
-	isNotNull,
 	like,
-	or,
 } from 'drizzle-orm';
-import { z } from 'zod';
 import {
 	ADDON_KIND,
 	ADDON_STATUS,
@@ -58,9 +55,8 @@ import {
 	withAuthor,
 } from '../authored';
 
-const trustedBody = z.object({ trusted: z.boolean() });
-
-// icon uploads are capped per account, like skins'
+// add-ons publish without review: publishes and icon uploads are capped per account, like skins'
+const ADDONS_PER_DAY = 5;
 const ICONS_PER_DAY = 5;
 
 /** Load an add-on the caller owns, or throw 404/403. */
@@ -92,18 +88,12 @@ const editsOf = (existing: AddonRow, {
 		kind,
 		repoUrl: url,
 		hookSecret: existing.hookSecret ?? newHookSecret(),
-		// trust was given to builds of the other repository
-		trusted: url === existing.repoUrl ? undefined : false,
 	};
 };
 
-/** The moderator's view: with the live release, which changes are reviewed against. */
-const toAdminAddonDTO = (row: AddonRow, authorName: string) => ({
-	...toAddonDTO(row, authorName),
-	publishedSource: row.publishedSource ?? undefined,
-});
+const isPublished = eq(addons.status, ADDON_STATUS.published);
 
-/** Code players may run: nothing that runs code we did not review. */
+/** Code players may run: nothing that runs code they cannot read in it. */
 const assertAllowed = (source: string | undefined) => {
 	const found = source === undefined ? [] : addonViolations(source);
 	if (found.length) {
@@ -118,8 +108,9 @@ const reread = async (id: number) => {
 
 /**
  * Add-ons (user-published mods). Browsing the catalog is public but only exposes
- * published add-ons; authoring is auth-gated and owner-checked; moderation is
- * admin-only. Chained so the routes land in the exported AppType.
+ * published add-ons; authoring is auth-gated and owner-checked, and authors answer
+ * for what their add-ons do; taking one down is admin-only. Chained so the routes
+ * land in the exported AppType.
  */
 export const addonsRoutes = new Hono()
 	// Public: browse the published catalog. q matches name/author; tag filters;
@@ -127,7 +118,7 @@ export const addonsRoutes = new Hono()
 	.get('/', async c => {
 		const type = AddonTypes.find(known => known === c.req.query('type'));
 		const { where, orderBy } = browseQuery(c, addons);
-		where.push(isNotNull(addons.publishedSource));
+		where.push(isPublished);
 		if (type) where.push(like(addons.types, `%${type}%`));
 		const rows = await db
 			.select()
@@ -138,7 +129,7 @@ export const addonsRoutes = new Hono()
 		return c.json(rows.map(r => toLiveAddonDTO(r.addons, r.user.username)));
 	})
 
-	// Auth: the caller's own add-ons (any status, with feedback), newest first.
+	// Auth: the caller's own add-ons (any status), newest first.
 	.get('/me', requireAuth, async c => {
 		const rows = await db.select().from(addons)
 			.where(eq(addons.authorId, c.get('userId')))
@@ -185,125 +176,57 @@ export const addonsRoutes = new Hono()
 		return c.json({ url: await saveUploadedImage(body['file']) });
 	})
 
-	// Admin: every pending / on-hold / live add-on for the moderation queue.
+	// Admin: every published add-on, to take one down.
 	.get('/admin', requireAdmin, async c => {
-		const rows = await db.select().from(addons)
-			.where(or(
-				eq(addons.status, ADDON_STATUS.pending),
-				eq(addons.status, ADDON_STATUS.onHold),
-				isNotNull(addons.publishedSource),
-			))
-			.orderBy(desc(addons.updatedAt));
-		return c.json(await Promise.all(rows.map(r => withAuthor(r, toAdminAddonDTO))));
+		const rows = await db.select().from(addons).where(isPublished).orderBy(desc(addons.updatedAt));
+		return c.json(await Promise.all(rows.map(r => withAuthor(r, toAddonDTO))));
 	})
 
-	// Admin: let a repo add-on's builds go live without review, or not.
-	.patch('/admin/:id/trusted', requireAdmin, valid('json', trustedBody), async c => {
-		const id = idParam.parse(c.req.param('id'));
-		await db.update(addons).set({ trusted: c.req.valid('json').trusted }).where(eq(addons.id, id));
-		const [row] = await db.select().from(addons).where(eq(addons.id, id)).limit(1);
-		if (!row) throw new HTTPException(404, { message: 'Add-on not found' });
-		return c.json(await withAuthor(row, toAddonDTO));
-	})
-
-	// Admin: moderate - approve (→ published, stamps publishedAt, makes this code
-	// the live release), deny, unpublish (takes the live release down). Denying or
-	// holding an update leaves the previously approved release live.
+	// Admin: take an add-on down (unpublished), or put it back.
 	.patch('/admin/:id', requireAdmin, valid('json', addonModerateBody), async c => {
 		const id = idParam.parse(c.req.param('id'));
-		const {
-			status, feedback, source,
-		} = c.req.valid('json');
-
+		const { status } = c.req.valid('json');
 		const [existing] = await db.select().from(addons).where(eq(addons.id, id)).limit(1);
 		if (!existing) throw new HTTPException(404, { message: 'Add-on not found' });
-		if (existing.source !== source) {
-			throw new HTTPException(409, { message: 'The add-on changed since you opened it: review it again' });
-		}
-
-		const approved = status === ADDON_STATUS.published;
-		if (approved) assertAllowed(existing.source);
-		const publishedAt = approved
-			? (existing.publishedAt ?? new Date())
-			: existing.publishedAt;
-		const release = approved
-			? {
-				publishedSource: existing.source,
-				publishedVersion: existing.version,
-				publishedGameVersion: existing.gameVersion,
-				publishedCommit: existing.commit,
-				publishedTag: existing.tag,
-			}
-			: status === ADDON_STATUS.unpublished
-				? {
-					publishedSource: null,
-					publishedVersion: null,
-					publishedGameVersion: null,
-					publishedCommit: null,
-					publishedTag: null,
-				}
-				: {};
-
-		// Snapshot the source the admin acted on, so a later re-review can diff
-		// against it (what changed since the last validation).
 		await db.update(addons).set({
 			status,
-			feedback,
-			publishedAt,
-			reviewedSource: existing.source,
-			...release,
+			publishedAt: status === ADDON_STATUS.published ? (existing.publishedAt ?? new Date()) : undefined,
 		}).where(eq(addons.id, id));
 		const [row] = await db.select().from(addons).where(eq(addons.id, id)).limit(1);
 		return c.json(await withAuthor(row!, toAddonDTO));
 	})
 
-	// Auth+owner: edit. Updating an on-hold add-on answers the moderator's
-	// feedback, so it re-enters review (pending); changing the source of a
-	// published add-on likewise reverts to pending, its approved release staying
-	// live meanwhile. Other edits keep the status and go live as they are.
-	// A repo add-on's source and versions come from its builds only.
+	// Auth+owner: edit. A published add-on's edits are live as saved. A repo
+	// add-on's source and versions come from its builds only.
 	.patch('/:id', requireActive, valid('json', addonUpdateBody), async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const existing = await ownedBy(id, c.get('userId'));
 		const body = editsOf(existing, c.req.valid('json'));
 		if (body.source !== existing.source) assertAllowed(body.source);
 
-		const sourceChanged = body.source !== undefined && body.source !== existing.source;
-		const reReview = existing.status === ADDON_STATUS.onHold
-			|| (sourceChanged && existing.status === ADDON_STATUS.published);
-		const status = reReview ? ADDON_STATUS.pending : existing.status;
-
-		const live = status === ADDON_STATUS.published
-			? {
-				publishedVersion: body.version, publishedGameVersion: body.gameVersion,
-			}
-			: {};
-
 		await db.update(addons).set({
 			...body,
 			tags: body.tags ? csv(body.tags) : undefined,
 			types: body.types ? csv(body.types) : undefined,
-			status,
-			...live,
 		}).where(eq(addons.id, id));
 		if (body.repoUrl && body.repoUrl !== existing.repoUrl) await queueBuild(id);
 		return c.json(await reread(id));
 	})
 
-	// Auth+owner: submit a draft / denied add-on for review. A repo add-on not
-	// built yet is submitted by its first build.
-	.post('/:id/submit', requireActive, async c => {
+	// Auth+owner: publish a draft to every player. A repo add-on publishes once it
+	// has a build.
+	.post('/:id/submit', requireActive, dailyLimit('addons', ADDONS_PER_DAY), async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const existing = await ownedBy(id, c.get('userId'));
-		if (existing.status === ADDON_STATUS.pending || existing.status === ADDON_STATUS.published) {
-			throw new HTTPException(409, { message: 'Add-on already submitted' });
+		if (existing.status === ADDON_STATUS.published) {
+			throw new HTTPException(409, { message: 'Add-on already published' });
 		}
 		if (existing.kind === ADDON_KIND.repo && !existing.commit) {
-			await queueBuild(id);
-			return c.json(await reread(id));
+			throw new HTTPException(409, { message: 'Wait for the first build before publishing' });
 		}
+		assertAllowed(existing.source);
 		await db.update(addons).set({
-			status: ADDON_STATUS.pending, feedback: null,
+			status: ADDON_STATUS.published, publishedAt: existing.publishedAt ?? new Date(),
 		}).where(eq(addons.id, id));
 		return c.json(await reread(id));
 	})
@@ -350,7 +273,7 @@ export const addonsRoutes = new Hono()
 	.post('/:id/download', requireAuth, async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const [pub] = await db.select({ id: addons.id }).from(addons)
-			.where(and(eq(addons.id, id), isNotNull(addons.publishedSource)))
+			.where(and(eq(addons.id, id), isPublished))
 			.limit(1);
 		if (!pub) throw new HTTPException(404, { message: 'Add-on not found' });
 
@@ -360,12 +283,11 @@ export const addonsRoutes = new Hono()
 		return c.json(await countDownload(addons, id, inserted));
 	})
 
-	// Public: a single live add-on (its approved release, incl source, for
-	// install). Kept last so the static paths above aren't shadowed by this `:id` catch-all.
+	// Public: a single published add-on (incl source, for install). Kept last so the static paths above aren't shadowed by this `:id` catch-all.
 	.get('/:id', async c => {
 		const id = idParam.parse(c.req.param('id'));
 		const [row] = await db.select().from(addons)
-			.where(and(eq(addons.id, id), isNotNull(addons.publishedSource)))
+			.where(and(eq(addons.id, id), isPublished))
 			.limit(1);
 		if (!row) throw new HTTPException(404, { message: 'Add-on not found' });
 		return c.json(await withAuthor(row, toLiveAddonDTO));
