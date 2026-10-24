@@ -228,14 +228,23 @@ export default class PlayQueue {
 	}
 
 	/** Rebuild the queue from its playlist as it is now, in the queue's own mode.
-	 *  The map at the back - the one that just started - stays there. */
+	 *  In order it carries on from the map that just started, which stays at the back. */
 	public static async refreshFromPlaylist(): Promise<void> {
 		const drift = await this.playlistDrift();
 		const s = this.state.get();
 		if (!drift || !s) return;
 		const current = s.entries.at(-1);
 		const rest = drift.pool.filter(b => !current?.is(b));
-		const ordered = s.mode === AUTOPILOT_MODE.SHUFFLE ? shuffled(rest) : rest;
+		// in order, carry on where the queue was rather than from the top: after the map
+		// that just started, or (if it left the playlist) from the next one still in it
+		const at = current ? drift.pool.findIndex(b => b.is(current)) : -1;
+		const anchor = at >= 0
+			? drift.pool[(at + 1) % drift.pool.length]
+			: s.entries.find(e => rest.some(b => b.is(e)));
+		const from = Math.max(0, rest.findIndex(b => b.is(anchor)));
+		const ordered = s.mode === AUTOPILOT_MODE.SHUFFLE
+			? shuffled(rest)
+			: [...rest.slice(from), ...rest.slice(0, from)];
 		const entries = current && drift.pool.some(b => b.is(current)) ? [...ordered, current] : ordered;
 		const source: QueueSource = {
 			label: drift.playlist.name, mode: s.mode, groupKey: `p${drift.playlist.id}`,
