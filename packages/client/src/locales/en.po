@@ -2556,6 +2556,10 @@ msgstr "Playing"
 msgid "Playlist"
 msgstr "Playlist"
 
+#: src/components/dock/DockSource.tsx
+msgid "Playlist changed · refresh"
+msgstr "Playlist changed · refresh"
+
 #: src/components/dock/SaveQueuePrompt.tsx
 msgid "Playlist name"
 msgstr "Playlist name"
