@@ -60,10 +60,7 @@ describe('readInside', () => {
 		await expect(readInside(root, 'fifo.js', 1000)).rejects.toThrow('plain file');
 	});
 
-	it('refuses a file over the cap, or cuts it when asked', async () => {
+	it('refuses a file over the cap', async () => {
 		await expect(readInside(root, 'big.js', 10)).rejects.toThrow('over');
-		expect(await readInside(root, 'big.js', 10, true)).toEqual({
-			text: 'x'.repeat(10), cut: true,
-		});
 	});
 });

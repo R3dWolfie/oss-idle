@@ -32,12 +32,11 @@ export type AddonForm = {
 type Props = {
 	form: AddonForm,
 	set: <K extends keyof AddonForm>(key: K, value: AddonForm[K]) => void,
-	feedback?: string | null,
 };
 
-/** Left column of the add-on editor: moderator feedback, where the code comes from, the metadata. */
+/** Left column of the add-on editor: where the code comes from, the metadata. */
 export default function AddonEditMeta({
-	form, set, feedback,
+	form, set,
 }: Props) {
 	const { t } = useLingui();
 	const repo = form.kind === ADDON_KIND.repo;
@@ -52,14 +51,6 @@ export default function AddonEditMeta({
 
 	return (
 		<>
-			{feedback && (
-				<div className='listing-view__feedback'>
-					<span className='listing-view__feedback-label'>
-						<Trans>Moderator feedback</Trans>
-					</span>
-					{feedback}
-				</div>
-			)}
 			<div className='listing-view__codehead'>
 				{kindButton(ADDON_KIND.inline, <Trans>Code written here</Trans>)}
 				{kindButton(ADDON_KIND.repo, <Trans>Built from a git repository</Trans>)}

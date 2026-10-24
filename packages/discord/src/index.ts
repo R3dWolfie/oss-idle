@@ -93,6 +93,8 @@ const PERMISSIONS: Partial<Record<string, bigint[]>> = {
 		PermissionFlagsBits.DeafenMembers,
 		PermissionFlagsBits.MoveMembers,
 		PermissionFlagsBits.ViewAuditLog,
+		PermissionFlagsBits.CreateGuildExpressions,
+		PermissionFlagsBits.ManageGuildExpressions,
 	],
 };
 const isBadge = (role: Role) => BADGES.some(badge => badge.name === role.name);

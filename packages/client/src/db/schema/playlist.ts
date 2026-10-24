@@ -14,18 +14,17 @@ const playlist = table('playlist', {
 	createdAt: integer(),
 });
 
-// membership is keyed on (playlist, difficulty, rate): re-adding the same one
-// is an idempotent overwrite (the DAO inserts with OR REPLACE), never a dupe.
-// No rate follows the mod; it is stored as 0, since NULL can't sit in a key.
+// in play order; a difficulty can sit in a playlist more than once, each copy
+// with how many times it plays in a row. No rate follows the mod (stored as 0).
 const playlistEntry = table('playlist_entry', {
+	id:         integer().primaryKey().autoincrement(),
 	playlistId: integer(),
 	beatmapId:  integer(),
 	rate:       new Column<number | undefined>('REAL', v => v ?? 0, v => (v as number) || undefined)
 		.default(undefined),
-}, {
-	primaryKey: ['playlistId', 'beatmapId', 'rate'],
-	indexes: { idx_playlist_entry_beatmap: 'beatmapId' },
-});
+	position:   integer(),
+	repeat:     integer().default(1),
+}, { indexes: { idx_playlist_entry_beatmap: 'beatmapId' } });
 
 /** Bumped on every playlist mutation so live views (the song-select grouping,
  *  the manage overlay) re-query instead of holding stale lists. */
@@ -59,18 +58,23 @@ export class Playlist extends DAO(playlist) {
 		touch();
 	}
 
-	/** `rate` locks the entry at it; without one it follows the mod. */
-	async addBeatmap(beatmapId: number, rate?: number): Promise<void> {
+	/** At the end. `rate` locks the entry at it; without one it follows the mod. */
+	async addBeatmap(beatmapId: number, rate?: number, repeat = 1): Promise<void> {
+		const last = await PlaylistEntry.first(
+			'SELECT * FROM playlist_entry WHERE playlistId = ? ORDER BY position DESC LIMIT 1', [this.id],
+		);
 		await new PlaylistEntry({
-			playlistId: this.id, beatmapId, rate,
+			playlistId: this.id, beatmapId, rate, repeat, position: (last?.position ?? 0) + 1,
 		}).add();
 		touch();
 	}
 
+	/** Every copy of it. */
 	async removeBeatmap(beatmapId: number, rate?: number): Promise<void> {
-		await new PlaylistEntry({
-			playlistId: this.id, beatmapId, rate,
-		}).delete();
+		await DB.run(
+			'DELETE FROM playlist_entry WHERE playlistId = ? AND beatmapId = ? AND rate = ?',
+			[this.id, beatmapId, rate ?? 0],
+		);
 		touch();
 	}
 }
@@ -80,6 +84,14 @@ export interface PlaylistMembership {
 	id: number;
 	name: string;
 	rate?: number;
+	entry: PlaylistSlot;
+}
+
+/** One copy of a difficulty in a playlist. */
+export interface PlaylistSlot {
+	id: number;
+	position: number;
+	repeat: number;
 }
 
 /** Everything the playlist views need in one read: the playlists (A→Z), each
@@ -93,7 +105,7 @@ export interface PlaylistIndex {
 export async function getPlaylistIndex(): Promise<PlaylistIndex> {
 	const playlists = (await Playlist.getAll())
 		.sort((a, b) => a.name.localeCompare(b.name));
-	const entries = await PlaylistEntry.getAll();
+	const entries = await PlaylistEntry.query('SELECT * FROM playlist_entry ORDER BY position');
 	const byId = new Map(playlists.map(p => [p.id, p]));
 	const counts = new Map<number, number>();
 	const byBeatmap = new Map<number, PlaylistMembership[]>();
@@ -104,7 +116,9 @@ export async function getPlaylistIndex(): Promise<PlaylistIndex> {
 		let list = byBeatmap.get(e.beatmapId);
 		if (!list) byBeatmap.set(e.beatmapId, list = []);
 		list.push({
-			id: p.id, name: p.name, rate: e.rate,
+			id: p.id, name: p.name, rate: e.rate, entry: {
+				id: e.id, position: e.position, repeat: e.repeat,
+			},
 		});
 	}
 	return {

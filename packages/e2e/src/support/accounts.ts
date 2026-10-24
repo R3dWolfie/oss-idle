@@ -49,6 +49,7 @@ const TEST_USERS = {
 	queue: [user(2_147_480_007, 'e2e Grace'), user(2_147_480_008, 'e2e Heidi')],
 	editor: [user(2_147_480_013, 'e2e Mia'), user(2_147_480_014, 'e2e Noah')],
 	leaderboard: [user(2_147_480_009, 'e2e Ivan'), user(2_147_480_010, 'e2e Judy')],
+	skins: [user(2_147_480_015, 'e2e Olga'), user(2_147_480_016, 'e2e Paul')],
 };
 
 // the dev server's Redis keys (redisKeyPrefix in packages/server/src/env.ts)

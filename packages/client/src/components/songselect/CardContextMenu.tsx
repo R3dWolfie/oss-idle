@@ -19,6 +19,7 @@ export default function CardContextMenu({
 	onClearScores, 
 	onQueue,
 	onPlayNext,
+	onEdit,
 }: {
 	item: CarouselItem;
 	onClose: () => void;
@@ -27,6 +28,7 @@ export default function CardContextMenu({
 	onClearScores: () => void;
 	onQueue: () => void;
 	onPlayNext: () => void;
+	onEdit: () => void;
 }) {
 	const { t } = useLingui();
 	// delete needs a second click to confirm (osu!-style)
@@ -45,6 +47,13 @@ export default function CardContextMenu({
 				onClick: onPlayNext,
 			},
 		]
+		: [];
+	const editOption = item.beatmap.metadata.runtime
+		? [{
+			label: t`Edit`,
+			color: '#ffcc22',
+			onClick: onEdit,
+		}]
 		: [];
 	return (
 		<ContextMenu
@@ -72,6 +81,7 @@ export default function CardContextMenu({
 					color: '#ce7dd6', 
 					onClick: onClearScores, 
 				},
+				...editOption,
 				{ 
 					label: t`Cancel`,
 					color: '#6b6b6b', 

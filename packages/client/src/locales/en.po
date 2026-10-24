@@ -37,19 +37,21 @@ msgstr "[no map]"
 msgid "[playing]"
 msgstr "[playing]"
 
-#. placeholder {0}: deleting.uses
-#: src/editor/EditorSoundFiles.tsx
-msgid "{0, plural, one {# note uses this file. It will play the default sound instead.} other {# notes use this file. They will play the default sounds instead.}}"
-msgstr "{0, plural, one {# note uses this file. It will play the default sound instead.} other {# notes use this file. They will play the default sounds instead.}}"
-
-#. placeholder {0}: uses.get(name) ?? 0
-#: src/editor/EditorSoundFiles.tsx
-msgid "{0, plural, one {# note} other {# notes}}"
-msgstr "{0, plural, one {# note} other {# notes}}"
+#: src/components/skins/SkinContents.tsx
+msgid "{count, plural, one {# file} other {# files}}"
+msgstr "{count, plural, one {# file} other {# files}}"
 
 #: src/components/BeatmapCarousel.tsx
 msgid "{count, plural, one {# map} other {# maps}}"
 msgstr "{count, plural, one {# map} other {# maps}}"
+
+#: src/editor/EditorSoundFiles.tsx
+msgid "{count, plural, one {# note uses this file. It will play the default sound instead.} other {# notes use this file. They will play the default sounds instead.}}"
+msgstr "{count, plural, one {# note uses this file. It will play the default sound instead.} other {# notes use this file. They will play the default sounds instead.}}"
+
+#: src/editor/EditorSoundFiles.tsx
+msgid "{count, plural, one {# note} other {# notes}}"
+msgstr "{count, plural, one {# note} other {# notes}}"
 
 #: src/editor/builtinActions.ts
 msgid "{count, plural, one {Resnapped # note} other {Resnapped # notes}}"
@@ -336,8 +338,8 @@ msgid "Add sound files..."
 msgstr "Add sound files..."
 
 #: src/components/addons/AddonRepoPane.tsx
-msgid "Add this address as a push webhook of your repository, on any git host. Each new version tag (v1.2.3) is built by oss!idle from the repository, with npm ci and npm run build; addon.config.json names the built file. The build goes to review, and players get it once approved."
-msgstr "Add this address as a push webhook of your repository, on any git host. Each new version tag (v1.2.3) is built by oss!idle from the repository, with npm ci and npm run build; addon.config.json names the built file. The build goes to review, and players get it once approved."
+msgid "Add this address as a push webhook of your repository, on any git host. Each new version tag (v1.2.3) is built by oss!idle from the repository, with npm ci and npm run build; addon.config.json names the built file. Once the add-on is published, players get each new build."
+msgstr "Add this address as a push webhook of your repository, on any git host. Each new version tag (v1.2.3) is built by oss!idle from the repository, with npm ci and npm run build; addon.config.json names the built file. Once the add-on is published, players get each new build."
 
 #: src/components/PlaylistOverlay.tsx
 msgid "Add this difficulty"
@@ -360,6 +362,10 @@ msgstr "Add-ons"
 #: src/scenes/Options.tsx
 msgid "ADD-ONS"
 msgstr "ADD-ONS"
+
+#: src/components/addons/ManageAddonsView.tsx
+msgid "Add-ons are not reviewed: you are responsible for what yours does on players' games. Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Publish \"{addon}\"?"
+msgstr "Add-ons are not reviewed: you are responsible for what yours does on players' games. Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Publish \"{addon}\"?"
 
 #: src/components/addons/BrowseAddonsView.tsx
 msgid "Add-ons run with full access to the game. Only install add-ons you trust. Install \"{addon}\"?"
@@ -403,6 +409,10 @@ msgstr "All"
 msgid "All beatmaps deleted."
 msgstr "All beatmaps deleted."
 
+#: src/components/options/DownloadAllWarning.tsx
+msgid "All bundled beatmaps downloaded."
+msgstr "All bundled beatmaps downloaded."
+
 #: src/editor/EditorMetadata.tsx
 msgid "All but the difficulty name is shared by the set: saving writes it to every difficulty."
 msgstr "All but the difficulty name is shared by the set: saving writes it to every difficulty."
@@ -410,6 +420,10 @@ msgstr "All but the difficulty name is shared by the set: saving writes it to ev
 #: src/components/options/DownloadAllWarning.tsx
 msgid "All ranked beatmaps downloaded."
 msgstr "All ranked beatmaps downloaded."
+
+#: src/components/gameplay/WarmupHint.tsx
+msgid "Almost at your peak."
+msgstr "Almost at your peak."
 
 #: src/scenes/Gameplay.tsx
 msgid "Already playing"
@@ -551,12 +565,8 @@ msgstr "Beat snap 1/{n}"
 msgid "Beatmap"
 msgstr "Beatmap"
 
-#. placeholder {0}: card.creator
-#: src/components/result/scoreCard.ts
-msgid "Beatmap by {0}"
-msgstr "Beatmap by {0}"
-
 #: src/components/result/ResultMeta.tsx
+#: src/components/result/scoreCard.ts
 msgid "Beatmap by {creator}"
 msgstr "Beatmap by {creator}"
 
@@ -672,13 +682,11 @@ msgstr "Buy {nextGear}?"
 msgid "Buy now"
 msgstr "Buy now"
 
+#: src/components/addons/BrowseAddonsView.tsx
 #: src/components/addons/InstalledAddonRow.tsx
 #: src/components/skins/BrowseSkinsView.tsx
+#: src/components/skins/DefaultSkinRow.tsx
 #: src/components/skins/SkinDAORow.tsx
-msgid "by"
-msgstr "by"
-
-#: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/SkinReadMeta.tsx
 msgid "by {author}"
 msgstr "by {author}"
@@ -722,6 +730,10 @@ msgstr "By Rank Achieved"
 #: src/editor/EditorViewOptions.tsx
 msgid "By snap"
 msgstr "By snap"
+
+#: src/components/songselect/TopBar.tsx
+msgid "By Status"
+msgstr "By Status"
 
 #: src/components/songselect/TopBar.tsx
 msgid "By Title"
@@ -884,13 +896,16 @@ msgid "Coarser beat snap"
 msgstr "Coarser beat snap"
 
 #: src/components/addons/AddonCodePane.tsx
-#: src/components/skins/SkinCodePane.tsx
 msgid "Code"
 msgstr "Code"
 
 #: src/components/addons/AddonEditMeta.tsx
 msgid "Code written here"
 msgstr "Code written here"
+
+#: src/scenes/Gameplay.tsx
+msgid "Cold"
+msgstr "Cold"
 
 #: src/editor/EditorViewOptions.tsx
 msgid "Colour"
@@ -909,6 +924,10 @@ msgstr "comma, separated, tags"
 #: src/editor/EditorSummary.tsx
 msgid "Compose"
 msgstr "Compose"
+
+#: src/components/skins/SkinView.tsx
+msgid "Contents"
+msgstr "Contents"
 
 #: src/scenes/Options.tsx
 msgid "CONTROLS"
@@ -1004,10 +1023,6 @@ msgstr "Create new add-on"
 msgid "Create New Game..."
 msgstr "Create New Game..."
 
-#: src/components/skins/ManageSkinsView.tsx
-msgid "Create new skin"
-msgstr "Create new skin"
-
 #: src/components/Onboarding.tsx
 msgid "Create your first character to finish setting up your account."
 msgstr "Create your first character to finish setting up your account."
@@ -1044,6 +1059,10 @@ msgstr "Custom index"
 #: src/editor/builtinActions.ts
 msgid "Cut"
 msgstr "Cut"
+
+#: src/components/skins/DefaultSkinRow.tsx
+msgid "Default skin"
+msgstr "Default skin"
 
 #: src/editor/EditorHitsounds.tsx
 msgid "Default sounds"
@@ -1162,8 +1181,16 @@ msgid "Download all"
 msgstr "Download all"
 
 #: src/components/options/DownloadAllBeatmaps.tsx
+msgid "Download all bundled beatmaps"
+msgstr "Download all bundled beatmaps"
+
+#: src/components/options/DownloadAllBeatmaps.tsx
 msgid "Download all ranked beatmaps"
 msgstr "Download all ranked beatmaps"
+
+#: src/components/options/DownloadAllWarning.tsx
+msgid "Download every bundled beatmap?"
+msgstr "Download every bundled beatmap?"
 
 #: src/components/options/DownloadAllWarning.tsx
 msgid "Download every ranked beatmap?"
@@ -1176,6 +1203,10 @@ msgstr "Download stopped."
 #: src/scenes/SongSelect.tsx
 msgid "Download the beatmap first"
 msgstr "Download the beatmap first"
+
+#: src/scenes/Options.tsx
+msgid "download|beatmap|beatmaps|bundled|supporter"
+msgstr "download|beatmap|beatmaps|bundled|supporter"
 
 #: src/scenes/Options.tsx
 msgid "download|beatmap|beatmaps|ranked|supporter"
@@ -1215,6 +1246,10 @@ msgstr "Downloading update… {percent}%"
 msgid "Drum"
 msgstr "Drum"
 
+#: src/components/dock/DockQueue.tsx
+msgid "Duplicate"
+msgstr "Duplicate"
+
 #: src/components/Tutorial.tsx
 msgid "Each completed play earns your character <0>XP</0> and <1>levels</1> across various skillsets, making it perform better on future plays."
 msgstr "Each completed play earns your character <0>XP</0> and <1>levels</1> across various skillsets, making it perform better on future plays."
@@ -1225,6 +1260,7 @@ msgstr "Each Speed upgrade unlocks one more step"
 
 #: src/components/addons/MyAddonRow.tsx
 #: src/components/skins/MySkinRow.tsx
+#: src/components/songselect/CardContextMenu.tsx
 #: src/editor/actions.ts
 msgid "Edit"
 msgstr "Edit"
@@ -1233,6 +1269,8 @@ msgstr "Edit"
 msgid "Edit the queue"
 msgstr "Edit the queue"
 
+#: src/components/skins/DefaultSkinRow.tsx
+#: src/components/skins/SkinDAORow.tsx
 #: src/scenes/MainMenu.tsx
 msgid "Editor"
 msgstr "Editor"
@@ -1250,6 +1288,7 @@ msgid "Empty the queue"
 msgstr "Empty the queue"
 
 #: src/components/addons/InstalledAddonRow.tsx
+#: src/components/skins/DefaultSkinRow.tsx
 #: src/components/skins/SkinDAORow.tsx
 msgid "Enabled"
 msgstr "Enabled"
@@ -1257,6 +1296,10 @@ msgstr "Enabled"
 #: src/components/multiplayer/CreateMatch.tsx
 msgid "Enter a password before attempting to start the game..."
 msgstr "Enter a password before attempting to start the game..."
+
+#: src/components/options/DownloadAllBeatmaps.tsx
+msgid "Every bundled beatmap is already downloaded."
+msgstr "Every bundled beatmap is already downloaded."
 
 #: src/components/options/DownloadAllBeatmaps.tsx
 msgid "Every ranked beatmap is already downloaded."
@@ -1279,9 +1322,10 @@ msgstr "Exit"
 msgid "Exit oss!idle"
 msgstr "Exit oss!idle"
 
-#: src/osu/skin/Skin.tsx
-msgid "Expected a column record like {example}"
-msgstr "Expected a column record like {example}"
+#: src/components/skins/DefaultSkinRow.tsx
+#: src/components/skins/SkinDAORow.tsx
+msgid "Export"
+msgstr "Export"
 
 #: src/editor/builtinActions.ts
 #: src/editor/EditorActions.tsx
@@ -1309,6 +1353,10 @@ msgstr "Faster playback"
 #: src/scenes/Gameplay.tsx
 msgid "Fatigue"
 msgstr "Fatigue"
+
+#: src/components/gameplay/WarmupHint.tsx
+msgid "Fatigue only kicks in if you keep pushing after getting tired, and reduces XP gains."
+msgstr "Fatigue only kicks in if you keep pushing after getting tired, and reduces XP gains."
 
 #: src/editor/EditorViewOptions.tsx
 msgid "Field"
@@ -1464,6 +1512,10 @@ msgstr "GENERAL"
 msgid "Generation {generation}"
 msgstr "Generation {generation}"
 
+#: src/scenes/Gameplay.tsx
+msgid "Getting tired"
+msgstr "Getting tired"
+
 #: src/components/community/PlayerMenu.tsx
 msgid "Give Host"
 msgstr "Give Host"
@@ -1551,6 +1603,10 @@ msgstr "Highs"
 msgid "hit"
 msgstr "hit"
 
+#: src/components/result/scoreCard.ts
+msgid "Hit deviance"
+msgstr "Hit deviance"
+
 #: src/scenes/Result.tsx
 msgid "Hit deviance · {ur} UR"
 msgstr "Hit deviance · {ur} UR"
@@ -1580,6 +1636,22 @@ msgstr "Icon"
 #: src/scenes/MainMenu.tsx
 msgid "Import"
 msgstr "Import"
+
+#: src/components/skins/ManageSkinsView.tsx
+msgid "Import a skin folder"
+msgstr "Import a skin folder"
+
+#: src/components/skins/ManageSkinsView.tsx
+msgid "Import an .osk"
+msgstr "Import an .osk"
+
+#: src/components/skins/ManageSkinsView.tsx
+msgid "Import an osu! skin, then publish it from the list above."
+msgstr "Import an osu! skin, then publish it from the list above."
+
+#: src/components/skins/SkinDAORow.tsx
+msgid "Imported"
+msgstr "Imported"
 
 #: src/osu/beatmap/oszImport.ts
 msgid "Imported {title}"
@@ -1632,6 +1704,10 @@ msgstr "Installed"
 msgid "Intensity"
 msgstr "Intensity"
 
+#: src/components/skins/SkinContents.tsx
+msgid "Interface"
+msgstr "Interface"
+
 #: src/editor/builtinActions.ts
 msgid "Inverse the whole map"
 msgstr "Inverse the whole map"
@@ -1659,6 +1735,10 @@ msgstr "Joining this game requires a password..."
 #: src/components/Tutorial.tsx
 msgid "Keep playing"
 msgstr "Keep playing"
+
+#: src/components/gameplay/WarmupHint.tsx
+msgid "Keep playing physically demanding maps to reach your peak."
+msgstr "Keep playing physically demanding maps to reach your peak."
 
 #: src/components/options/KeepPlaying.tsx
 msgid "Keep playing the queue when the game is closed"
@@ -1766,11 +1846,6 @@ msgstr "Live note offset (ms)"
 msgid "Live preview"
 msgstr "Live preview"
 
-#. placeholder {0}: addon.publishedTag
-#: src/components/addons/AddonRepoBuild.tsx
-msgid "Live: {0}"
-msgstr "Live: {0}"
-
 #: src/editor/EditorShortcuts.tsx
 msgid "LN"
 msgstr "LN"
@@ -1787,8 +1862,13 @@ msgstr "loading library…"
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/leaderboard/Leaderboard.tsx
 #: src/components/skins/BrowseSkinsView.tsx
+#: src/components/skins/SkinView.tsx
 msgid "Loading…"
 msgstr "Loading…"
+
+#: src/osu/beatmap/grouping.ts
+msgid "Local"
+msgstr "Local"
 
 #: src/components/community/CommunityBody.tsx
 msgid "Location"
@@ -1925,10 +2005,6 @@ msgstr "Mirror the whole map"
 #: src/editor/EditorHitsounds.tsx
 msgid "Mixed"
 msgstr "Mixed"
-
-#: src/components/addons/AddonEditMeta.tsx
-msgid "Moderator feedback"
-msgstr "Moderator feedback"
 
 #: src/components/dock/DockModsButton.tsx
 msgid "mods"
@@ -2156,10 +2232,6 @@ msgstr "No skill gains"
 msgid "No skins found."
 msgstr "No skins found."
 
-#: src/components/skins/ManageSkinsView.tsx
-msgid "No skins installed. Browse the catalog to find some."
-msgstr "No skins installed. Browse the catalog to find some."
-
 #: src/editor/EditorSoundFiles.tsx
 msgid "No sound files yet"
 msgstr "No sound files yet"
@@ -2201,8 +2273,8 @@ msgid "Normal"
 msgstr "Normal"
 
 #: src/components/addons/AddonCodeCheck.tsx
-msgid "Not allowed: add-ons may not run code that was not reviewed"
-msgstr "Not allowed: add-ons may not run code that was not reviewed"
+msgid "Not allowed: add-ons may not run code players cannot read in them"
+msgstr "Not allowed: add-ons may not run code players cannot read in them"
 
 #: src/components/multiplayer/ReadyButton.tsx
 msgid "Not everyone is ready. Start anyway?"
@@ -2367,9 +2439,17 @@ msgstr "osu! music at startup"
 msgid "osu!mania (head-to-head)"
 msgstr "osu!mania (head-to-head)"
 
+#: src/components/skins/SkinContents.tsx
+msgid "osu!mania layouts: {keys}"
+msgstr "osu!mania layouts: {keys}"
+
 #: src/scenes/Options.tsx
 msgid "osu|music|theme"
 msgstr "osu|music|theme"
+
+#: src/components/skins/SkinContents.tsx
+msgid "Other files"
+msgstr "Other files"
 
 #: src/osu/beatmap/grouping.ts
 msgid "Over 5 months ago"
@@ -2440,6 +2520,14 @@ msgstr "Pause after this map"
 msgid "paused"
 msgstr "paused"
 
+#: src/scenes/Gameplay.tsx
+msgid "Peak"
+msgstr "Peak"
+
+#: src/components/upgrades/SkillPerk.tsx
+msgid "Peak until"
+msgstr "Peak until"
+
 #: src/components/result/scoreCard.ts
 #: src/scenes/Result.tsx
 msgid "Performance"
@@ -2457,6 +2545,10 @@ msgstr "Permanently delete \"{addon}\"? This cannot be undone."
 #: src/components/leaderboard/PersonalBest.tsx
 msgid "Personal best"
 msgstr "Personal best"
+
+#: src/components/gameplay/WarmupHint.tsx
+msgid "Physical skills ({skills}) need some warmup to reach their peak. You still gain full XP independently of warmup."
+msgstr "Physical skills ({skills}) need some warmup to reach their peak. You still gain full XP independently of warmup."
 
 #: src/components/direct/DirectPanel.tsx
 msgid "Pick a beatmap to see it here."
@@ -2500,13 +2592,17 @@ msgstr "Play {file}"
 msgid "Play / pause"
 msgstr "Play / pause"
 
-#: src/components/skins/GameplayPreview.tsx
-msgid "Play a beatmap to preview the skin."
-msgstr "Play a beatmap to preview the skin."
-
 #: src/components/community/PlayerCard.tsx
 msgid "Play Count: {playCount} (Lv{level})"
 msgstr "Play Count: {playCount} (Lv{level})"
+
+#: src/components/dock/DockQueue.tsx
+msgid "Play it one more time"
+msgstr "Play it one more time"
+
+#: src/components/dock/DockQueue.tsx
+msgid "Play it one time fewer"
+msgstr "Play it one time fewer"
 
 #: src/components/songselect/CardContextMenu.tsx
 msgid "Play next"
@@ -2515,6 +2611,10 @@ msgstr "Play next"
 #: src/components/Tutorial.tsx
 msgid "Play online"
 msgstr "Play online"
+
+#: src/components/gameplay/WarmupHint.tsx
+msgid "Play physically demanding maps to warm up."
+msgstr "Play physically demanding maps to warm up."
 
 #: src/scenes/Gameplay.tsx
 msgid "Play unranked"
@@ -2532,13 +2632,8 @@ msgstr "Playback"
 msgid "Playback speed"
 msgstr "Playback speed"
 
-#. placeholder {0}: card.playerName
-#. placeholder {1}: card.playedAt
-#: src/components/result/scoreCard.ts
-msgid "Played by {0} on {1}"
-msgstr "Played by {0} on {1}"
-
 #: src/components/result/ResultMeta.tsx
+#: src/components/result/scoreCard.ts
 msgid "Played by {playerName} on {playedAt}"
 msgstr "Played by {playerName} on {playedAt}"
 
@@ -2598,7 +2693,6 @@ msgid "Prestiges taken"
 msgstr "Prestiges taken"
 
 #: src/components/skins/SkinView.tsx
-#: src/components/skins/SkinView.tsx
 msgid "Preview"
 msgstr "Preview"
 
@@ -2623,9 +2717,23 @@ msgstr "Profile picture<0/>Defaults to your osu! avatar"
 msgid "Progress made as a Guest <0>stays on this device</0> and can never be moved to an online character, so the leaderboards stay fair."
 msgstr "Progress made as a Guest <0>stays on this device</0> and can never be moved to an online character, so the leaderboards stay fair."
 
+#: src/components/addons/ManageAddonsView.tsx
+#: src/components/addons/MyAddonRow.tsx
+#: src/components/skins/SkinDAORow.tsx
+msgid "Publish"
+msgstr "Publish"
+
+#: src/components/addons/ManageAddonsView.tsx
+msgid "Publish add-on"
+msgstr "Publish add-on"
+
 #: src/components/addons/AddonView.tsx
 msgid "Published add-on code must be licensed under the AGPLv3 (or a compatible licence), regardless of its source code's license."
 msgstr "Published add-on code must be licensed under the AGPLv3 (or a compatible licence), regardless of its source code's license."
+
+#: src/scenes/Gameplay.tsx
+msgid "Pushing"
+msgstr "Pushing"
 
 #: src/scenes/Lobby.tsx
 msgid "Quick Join"
@@ -2657,6 +2765,7 @@ msgstr "rank: {best} - {worst}"
 
 #: src/components/direct/DirectFilters.tsx
 #: src/editor/EditorSubmission.tsx
+#: src/osu/beatmap/grouping.ts
 msgid "Ranked"
 msgstr "Ranked"
 
@@ -2768,6 +2877,14 @@ msgstr "Renderer"
 #: src/editor/EditorSoundFiles.tsx
 msgid "Replace"
 msgstr "Replace"
+
+#: src/components/skins/SkinView.tsx
+msgid "Replace from a folder"
+msgstr "Replace from a folder"
+
+#: src/components/skins/SkinView.tsx
+msgid "Replace from an .osk"
+msgstr "Replace from an .osk"
 
 #: src/components/community/PlayerMenu.tsx
 msgid "Report"
@@ -2916,10 +3033,9 @@ msgstr "Scale factor"
 msgid "Score"
 msgstr "Score"
 
-#. placeholder {0}: (scoreMultiplier(rate) * modsScoreMultiplier(mods)).toFixed(2)
 #: src/components/mods/ModSelect.tsx
-msgid "Score Multiplier: {0}x"
-msgstr "Score Multiplier: {0}x"
+msgid "Score Multiplier: {multiplier}x"
+msgstr "Score Multiplier: {multiplier}x"
 
 #: src/components/dock/DockTransport.tsx
 msgid "Screensaver"
@@ -3116,10 +3232,6 @@ msgstr "Sign in"
 msgid "Sign in to create and publish add-ons."
 msgstr "Sign in to create and publish add-ons."
 
-#: src/components/skins/ManageSkinsView.tsx
-msgid "Sign in to create and publish skins."
-msgstr "Sign in to create and publish skins."
-
 #: src/editor/EditorView.tsx
 msgid "Sign in to upload your maps"
 msgstr "Sign in to upload your maps"
@@ -3152,6 +3264,14 @@ msgstr "Skills"
 #: src/scenes/Options.tsx
 msgid "SKIN"
 msgstr "SKIN"
+
+#: src/components/skins/SkinView.tsx
+msgid "Skin files"
+msgstr "Skin files"
+
+#: src/components/skins/SkinContents.tsx
+msgid "skin.ini version {version}"
+msgstr "skin.ini version {version}"
 
 #: src/scenes/Options.tsx
 msgid "skin|skins|browse|catalog|install"
@@ -3218,6 +3338,10 @@ msgstr "Song select"
 msgid "Sort"
 msgstr "Sort"
 
+#: src/components/skins/SkinContents.tsx
+msgid "Sounds"
+msgstr "Sounds"
+
 #: src/editor/EditorMetadata.tsx
 msgid "Source"
 msgstr "Source"
@@ -3281,19 +3405,17 @@ msgstr "Stop the play (Esc)"
 msgid "Strain debug"
 msgstr "Strain debug"
 
-#: src/components/addons/ManageAddonsView.tsx
-#: src/components/addons/MyAddonRow.tsx
 #: src/components/skins/MySkinRow.tsx
 msgid "Submit"
 msgstr "Submit"
 
-#: src/components/addons/ManageAddonsView.tsx
-msgid "Submit add-on"
-msgstr "Submit add-on"
-
 #: src/editor/EditorSubmission.tsx
 msgid "Submit for rank"
 msgstr "Submit for rank"
+
+#: src/components/direct/DirectRow.tsx
+msgid "Submitted {ranked}"
+msgstr "Submitted {ranked}"
 
 #: src/editor/EditorSubmission.tsx
 msgid "Submitted for rank"
@@ -3358,6 +3480,10 @@ msgstr "Thanks for your generosity!"
 msgid "That folder already has an oss!idle folder with files in it."
 msgstr "That folder already has an oss!idle folder with files in it."
 
+#: src/osu/skin/importSkin.ts
+msgid "That is too many files for a skin"
+msgstr "That is too many files for a skin"
+
 #: src/components/options/DownloadAllWarning.tsx
 msgid "That's why downloading them all at once is an oss!supporter perk."
 msgstr "That's why downloading them all at once is an oss!supporter perk."
@@ -3371,8 +3497,16 @@ msgid "The custom index picks the map's own hitsound files: 1 its unnumbered one
 msgstr "The custom index picks the map's own hitsound files: 1 its unnumbered ones (soft-hitclap.wav), 2 and up those numbered so (soft-hitclap2.wav). A note without them plays the default sounds. A volume of 0 falls back to the line."
 
 #: src/scenes/Direct.tsx
+msgid "The latest beatmaps"
+msgstr "The latest beatmaps"
+
+#: src/scenes/Direct.tsx
 msgid "The latest ranked beatmaps"
 msgstr "The latest ranked beatmaps"
+
+#: src/scenes/Direct.tsx
+msgid "The latest unranked beatmaps"
+msgstr "The latest unranked beatmaps"
 
 #: src/editor/EditorHitsounds.tsx
 msgid "The line in effect here"
@@ -3395,8 +3529,16 @@ msgid "The map's sound files"
 msgstr "The map's sound files"
 
 #: src/scenes/Direct.tsx
+msgid "The most played beatmaps"
+msgstr "The most played beatmaps"
+
+#: src/scenes/Direct.tsx
 msgid "The most played ranked beatmaps"
 msgstr "The most played ranked beatmaps"
+
+#: src/scenes/Direct.tsx
+msgid "The most played unranked beatmaps"
+msgstr "The most played unranked beatmaps"
 
 #: src/components/community/chat/ReportMessageDialog.tsx
 msgid "The report could not be sent."
@@ -3413,6 +3555,10 @@ msgstr "The team answered your bug report: {title}"
 #: src/scenes/Lobby.tsx
 msgid "There are no matches available."
 msgstr "There are no matches available."
+
+#: src/osu/skin/importSkin.ts
+msgid "There are no skin files in there"
+msgstr "There are no skin files in there"
 
 #: src/scenes/Gameplay.tsx
 msgid "This difficulty failed to load."
@@ -3441,6 +3587,10 @@ msgstr "This map belongs to another mapper"
 #: src/scenes/Gameplay.tsx
 msgid "This play took too long to start."
 msgstr "This play took too long to start."
+
+#: src/osu/skin/importSkin.ts
+msgid "This skin is too big"
+msgstr "This skin is too big"
 
 #: src/scenes/Options.tsx
 msgid "thumb|thumbnail"
@@ -3528,10 +3678,6 @@ msgstr "Trade skill levels for XP boosts"
 msgid "Tries: {tries}"
 msgstr "Tries: {tries}"
 
-#: src/components/addons/AddonRepoBuild.tsx
-msgid "Trusted: new builds go live without review."
-msgstr "Trusted: new builds go live without review."
-
 #: src/editor/builtinActions.ts
 msgid "Two columns, like 1 4"
 msgstr "Two columns, like 1 4"
@@ -3562,8 +3708,8 @@ msgid "ui|scale|scaling|zoom|size"
 msgstr "ui|scale|scaling|zoom|size"
 
 #: src/db/schema/skin.ts
-msgid "Unable to load \"{skin}\": Malformed definition"
-msgstr "Unable to load \"{skin}\": Malformed definition"
+msgid "Unable to load \"{skin}\""
+msgstr "Unable to load \"{skin}\""
 
 #: src/editor/builtinActions.ts
 msgid "Undo"
@@ -3600,6 +3746,7 @@ msgid "Unrank your map?"
 msgstr "Unrank your map?"
 
 #: src/components/direct/DirectFilters.tsx
+#: src/osu/beatmap/grouping.ts
 msgid "Unranked"
 msgstr "Unranked"
 
@@ -3765,9 +3912,18 @@ msgstr "Waiting for the next map"
 msgid "Waiting for the other players to finish..."
 msgstr "Waiting for the other players to finish..."
 
+#: src/components/upgrades/SkillPerk.tsx
 #: src/scenes/Gameplay.tsx
 msgid "Warm-up"
 msgstr "Warm-up"
+
+#: src/scenes/Gameplay.tsx
+msgid "Warmed up"
+msgstr "Warmed up"
+
+#: src/scenes/Gameplay.tsx
+msgid "Warming up"
+msgstr "Warming up"
 
 #: src/components/dock/DockWatchButton.tsx
 msgid "Watch"
@@ -3898,9 +4054,17 @@ msgstr "You are a player."
 msgid "You are a supporter."
 msgstr "You are a supporter."
 
+#: src/components/gameplay/WarmupHint.tsx
+msgid "You are past your peak. Play easier maps to stay in optimal shape."
+msgstr "You are past your peak. Play easier maps to stay in optimal shape."
+
 #: src/scenes/MatchSetup.tsx
 msgid "You are the host!"
 msgstr "You are the host!"
+
+#: src/components/gameplay/WarmupHint.tsx
+msgid "You are tiring and your physical skills are slipping."
+msgstr "You are tiring and your physical skills are slipping."
 
 #: src/online/multiplayer.ts
 msgid "You have become the host for this room!"
@@ -3910,9 +4074,9 @@ msgstr "You have become the host for this room!"
 msgid "You haven't created any add-ons yet."
 msgstr "You haven't created any add-ons yet."
 
-#: src/components/skins/ManageSkinsView.tsx
-msgid "You haven't created any skins yet."
-msgstr "You haven't created any skins yet."
+#: src/components/gameplay/WarmupHint.tsx
+msgid "You warm up by playing physically demanding maps. If you do this for too long though, you get tired and need to cool down in order to reach your peak again. Balance it out properly and you'll always play at your maximum skill level."
+msgstr "You warm up by playing physically demanding maps. If you do this for too long though, you get tired and need to cool down in order to reach your peak again. Balance it out properly and you'll always play at your maximum skill level."
 
 #: src/components/RestrictedNotice.tsx
 msgid "Your account has been <0>restricted</0>: you can't play or chat. If you think it's a mistake: <1>{email}</1>"
@@ -3950,17 +4114,17 @@ msgstr "Your character keeps playing its queue for {hours} hours after you quit.
 msgid "Your own plays and level-ups, seen only by you."
 msgstr "Your own plays and level-ups, seen only by you."
 
-#: src/components/addons/ManageAddonsView.tsx
-msgid "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{addon}\" for review?"
-msgstr "Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit \"{addon}\" for review?"
+#: src/components/gameplay/WarmupHint.tsx
+msgid "Your physical skills are at their best."
+msgstr "Your physical skills are at their best."
+
+#: src/components/skins/ManageSkinsView.tsx
+msgid "Your published skins"
+msgstr "Your published skins"
 
 #: src/components/OldHostPrompt.tsx
 msgid "Your save, settings and session came along. Delete everything the old address still keeps in this browser, downloaded beatmaps included?"
 msgstr "Your save, settings and session came along. Delete everything the old address still keeps in this browser, downloaded beatmaps included?"
-
-#: src/components/skins/ManageSkinsView.tsx
-msgid "Your skins"
-msgstr "Your skins"
 
 #: src/editor/EditorShortcuts.tsx
 msgid "Zoom"

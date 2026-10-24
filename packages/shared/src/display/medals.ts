@@ -72,6 +72,11 @@ const NAMES = defineMessages({
 	'time-100h': 'Where Did The Day Go',
 	'time-1000h': 'Lifer',
 	'time-10000h': 'Ten Thousand Hours',
+	'friends-1': 'Familiar Face',
+	'friends-5': 'Friendly',
+	'friends-25': 'Popular',
+	'friends-100': 'Crowd Favourite',
+	'friends-1k': 'Icon',
 	'overall-25': 'Well Rounded',
 	'overall-50': 'Halfway There',
 	'overall-75': 'Seasoned',
@@ -118,12 +123,20 @@ const NAMES = defineMessages({
 	'curator-5': 'Talent Scout',
 	'curator-25': 'Tastemaker',
 	'curator-100': 'Archivist',
+	'mapper-1': 'Mapper',
+	'mapper-2': 'Encore',
+	'mapper-5': 'Craftsman',
+	'mapper-10': 'Cartographer',
+	'mapper-50': 'Architect',
+	'mapper-100': 'Living Legend',
 	'combo-727': 'When You See It',
 	'same-map-100': 'Broken Record',
 	'fail-99': 'So Close',
+	'fail-10s': 'False Start',
 	'night-owl': 'Night Owl',
 	'first-chat': 'Hello World',
 	possessed: 'Possessed',
+	parallax: 'Future Sequence',
 });
 
 const DESCRIPTIONS = defineMessages({
@@ -138,12 +151,16 @@ const DESCRIPTIONS = defineMessages({
 	rebirth: 'Rebirth your character',
 	'first-1': 'Take #1 on a ranked map',
 	'curator-1': 'Propose a map that gets ranked',
+	'mapper-1': 'Map a set that gets ranked',
+	'friends-1': 'Get added as a friend',
 	'combo-727': 'Finish a play at exactly 727 combo',
 	'same-map-100': 'Play the same map 100 times',
 	'fail-99': 'Fail a map with 1% of it left',
+	'fail-10s': 'Fail a map in its first 10 seconds',
 	'night-owl': 'Play between 3 and 5 am',
 	'first-chat': 'Say something in #oss!idle',
 	possessed: 'Get a 1,000,000 score on TAG underground - POSSESSION',
+	parallax: 'Get an S on The Parallax II: Future Sequence [Marathon]',
 });
 
 /** The medals of a numbered series share one text: the number is the medal
@@ -164,6 +181,8 @@ const SERIES_DESCRIPTIONS = defineMessages({
 	'play-pp': 'Set a {pp} pp play',
 	top: 'Be in the top {percent}% of players by pp',
 	curator: 'Have {count} of your proposed maps ranked',
+	mapper: 'Have {count} of your own mapsets ranked',
+	friends: 'Get added as a friend by {count} players',
 });
 
 /** A skill's mastery medals: the tier, with the skill as `medalSkill` gives it. */

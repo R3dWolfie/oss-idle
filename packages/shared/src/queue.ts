@@ -29,6 +29,7 @@ export const AUTOPILOT_DELAY = {
 } as const;
 
 export const MAX_QUEUE = 5000;
+export const MAX_REPEAT = 100;
 
 /** Hours a character keeps playing once its game is closed. */
 export const AWAY_HOURS = 12;
@@ -38,8 +39,18 @@ export const queueEntryDTO = z.object({
 	beatmapId: z.number().int(),
 	/** a playlist's locked rate; otherwise the character's own rate */
 	rate: rateSchema.optional(),
+	/** plays in a row before it goes to the back */
+	repeat: z.number().int().min(1).max(MAX_REPEAT).optional(),
+	/** how many of the run have started */
+	played: z.number().int().min(0).max(MAX_REPEAT).optional(),
 });
 export type QueueEntry = z.infer<typeof queueEntryDTO>;
+
+/** An entry by its place among the copies of the same map: the same on every
+ *  device, since a device knows all of a map's copies or none. */
+const nth = z.number().int().min(0).max(MAX_QUEUE).optional();
+const queueEntryRefDTO = queueEntryDTO.extend({ nth });
+export type QueueEntryRef = z.infer<typeof queueEntryRefDTO>;
 
 export const queuePrefsDTO = z.object({
 	mode: z.enum(AutopilotModes),
@@ -70,11 +81,18 @@ export const queueEditDTO = z.discriminatedUnion('op', [
 		op: z.literal('playNext'), entry: queueEntryDTO, label: z.string().max(200).optional(),
 	}),
 	z.object({
-		op: z.literal('remove'), entry: queueEntryDTO,
+		op: z.literal('remove'), entry: queueEntryRefDTO,
 	}),
 	// `before` unset: to the back
 	z.object({
-		op: z.literal('move'), entry: queueEntryDTO, before: queueEntryDTO.optional(),
+		op: z.literal('move'), entry: queueEntryRefDTO, before: queueEntryRefDTO.optional(),
+	}),
+	// a copy right after it
+	z.object({
+		op: z.literal('duplicate'), entry: queueEntryRefDTO,
+	}),
+	z.object({
+		op: z.literal('repeat'), entry: queueEntryRefDTO, repeat: z.number().int().min(1).max(MAX_REPEAT),
 	}),
 	z.object({ op: z.literal('clear') }),
 ]);
@@ -163,13 +181,28 @@ export const queueServerMessages = [
 export const sameEntry = (a: QueueEntry, b: QueueEntry) =>
 	a.beatmapId === b.beatmapId && a.rate === b.rate;
 
-/** The map that just started goes to the back. Named rather than assumed to be
- *  the head: the queue may have been edited while it started. */
-export const rotateQueue = (entries: QueueEntry[], played: QueueEntry): QueueEntry[] => {
-	const at = entries.findIndex(e => sameEntry(e, played));
-	if (at < 0) return entries;
-	return [...entries.slice(0, at), ...entries.slice(at + 1), entries[at]];
+type Repeats = Pick<QueueEntry, 'repeat' | 'played'>;
+
+/** The map at `at` just started: it stays where it is until its repeats are
+ *  done, then goes to the back. */
+export const advanceQueue = <T extends Repeats>(
+	entries: T[], at: number,
+): T[] => {
+	const entry = entries[at];
+	if (!entry) return entries;
+	const played = (entry.played ?? 0) + 1;
+	if (played < (entry.repeat ?? 1)) return entries.map((e, i) => i === at ? {
+		...e, played, 
+	} : e);
+	return [...entries.slice(0, at), ...entries.slice(at + 1), {
+		...entry, played: undefined, 
+	}];
 };
+
+/** Named rather than assumed to be the head: the queue may have been edited
+ *  while it started. */
+export const rotateQueue = (entries: QueueEntry[], played: QueueEntry): QueueEntry[] =>
+	advanceQueue(entries, entries.findIndex(e => sameEntry(e, played)));
 
 /** When the head starts, `ms` from now - or never, while something holds the queue. */
 export const nextStart = (
@@ -177,24 +210,51 @@ export const nextStart = (
 ): number | undefined =>
 	q.paused || mode === AUTOPILOT_MODE.DISABLED || !q.entries.length ? undefined : now + ms;
 
-const without = (entries: QueueEntry[], entry: QueueEntry): QueueEntry[] => {
-	const at = entries.findIndex(e => sameEntry(e, entry));
-	return at < 0 ? entries : [...entries.slice(0, at), ...entries.slice(at + 1)];
+const find = (entries: QueueEntry[], ref: QueueEntryRef): number => {
+	let nth = ref.nth ?? 0;
+	return entries.findIndex(e => sameEntry(e, ref) && nth-- === 0);
 };
+
+const without = (entries: QueueEntry[], at: number): QueueEntry[] =>
+	at < 0 ? entries : [...entries.slice(0, at), ...entries.slice(at + 1)];
+
+/** Played `repeat` times in a row; a run already past it ends with this play. */
+export const withRepeat = <T extends Repeats>(entry: T, repeat: number): T => ({
+	...entry,
+	repeat: repeat > 1 ? repeat : undefined,
+	played: (entry.played ?? 0) < repeat ? entry.played : undefined,
+});
+
+const moveEntry = (entries: QueueEntry[], from: number, before: number): QueueEntry[] => {
+	if (from < 0) return entries;
+	const rest = without(entries, from);
+	const at = before < 0 ? -1 : rest.indexOf(entries[before]);
+	return at < 0 ? [...rest, entries[from]] : rest.toSpliced(at, 0, entries[from]);
+};
+
+const duplicateEntry = (entries: QueueEntry[], at: number): QueueEntry[] =>
+	at < 0 || entries.length >= MAX_QUEUE ? entries : entries.toSpliced(at + 1, 0, {
+		...entries[at], played: undefined,
+	});
 
 export const applyQueueEdit = (entries: QueueEntry[], edit: QueueEdit): QueueEntry[] => {
 	switch (edit.op) {
 		case 'append':
 			return [...entries, edit.entry].slice(0, MAX_QUEUE);
-		case 'playNext':
-			return [edit.entry, ...entries.filter(e => !sameEntry(e, edit.entry))].slice(0, MAX_QUEUE);
+		case 'playNext': {
+			// one already queued moves up; its other copies keep their places
+			const at = find(entries, edit.entry);
+			return [entries[at] ?? edit.entry, ...without(entries, at)].slice(0, MAX_QUEUE);
+		}
 		case 'remove':
-			return without(entries, edit.entry);
-		case 'move': {
-			if (!entries.some(e => sameEntry(e, edit.entry))) return entries;
-			const rest = without(entries, edit.entry);
-			const at = edit.before ? rest.findIndex(e => sameEntry(e, edit.before!)) : -1;
-			return at < 0 ? [...rest, edit.entry] : [...rest.slice(0, at), edit.entry, ...rest.slice(at)];
+			return without(entries, find(entries, edit.entry));
+		case 'move':
+			return moveEntry(entries, find(entries, edit.entry), edit.before ? find(entries, edit.before) : -1);
+		case 'duplicate':
+			return duplicateEntry(entries, find(entries, edit.entry));
+		case 'repeat': {
+			const at = find(entries, edit.entry);
+			return at < 0 ? entries : entries.with(at, withRepeat(entries[at], edit.repeat));
 		}
 		case 'clear':
 			return [];

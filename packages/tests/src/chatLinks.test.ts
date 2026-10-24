@@ -5,6 +5,7 @@ import {
 } from 'vitest';
 import {
 	mapLink,
+	plainText,
 	splitLinks,
 } from '@oss-idle/client/components/community/chat/links';
 
@@ -75,5 +76,14 @@ describe('splitLinks', () => {
 			},
 			' x]',
 		]);
+	});
+});
+
+describe('plainText', () => {
+	it('shows a map by its label and keeps addresses as written', () => {
+		const np = mapLink('http://localhost:5175', {
+			setId: 882805, beatmapId: 1846628,
+		}, 'aran - L.F.O [Beginner]');
+		expect(plainText(`${np} see https://a.com`)).toBe('aran - L.F.O [Beginner] see https://a.com');
 	});
 });

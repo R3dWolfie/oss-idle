@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import './MapRequests.css';
 import './MapClaims.css';
 
@@ -93,7 +94,7 @@ export default function MapClaims() {
 							disabled={busy}
 							onClick={() => void save()}
 						>
-							<Trans>Save ({picked.size})</Trans>
+							<Trans>Save ({ph({ count: picked.size })})</Trans>
 						</button>
 					</div>
 					{message && <p className='requests__muted'>{message}</p>}

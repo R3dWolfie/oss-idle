@@ -2,16 +2,16 @@ import Synced from '@oss-idle/shared/helpers/synced';
 import BeatmapAPI, { type Metadata } from './beatmap_api';
 import BeatmapStore from './beatmap_store';
 
-/** The supporter "download every ranked beatmap" run: its progress while it goes. */
+/** The "download every bundled / ranked beatmap" run: its progress while it goes. */
 export const bulkDownload = new Synced<{ done: number; total: number } | undefined>(undefined);
 let stopping = false;
 
-/** The bundled sets not downloaded yet. */
-export const missingSets = async (): Promise<Metadata[]> => {
+/** The ranked (or only bundled) sets not downloaded yet. */
+export const missingSets = async (bundled: boolean): Promise<Metadata[]> => {
 	const manifest = await BeatmapAPI.getManifest();
-	const bundled = manifest.beatmaps.filter(m => m.bundled);
-	const stored = await Promise.all(bundled.map(m => BeatmapStore.has(m.id)));
-	return bundled.filter((_, i) => !stored[i]);
+	const sets = manifest.beatmaps.filter(m => !bundled || m.bundled);
+	const stored = await Promise.all(sets.map(m => BeatmapStore.has(m.id)));
+	return sets.filter((_, i) => !stored[i]);
 };
 
 /** Download the sets one after another; false when stopped before the end. */

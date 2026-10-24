@@ -47,6 +47,14 @@
 	letter-spacing: 0.02em;
 	text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
+/* the skin's hit burst in place of the name */
+img.result__judge-label {
+	height: 2.2rem;
+	width: auto;
+	max-width: 100%;
+	object-fit: contain;
+	object-position: left center;
+}
 .result__judge-count {
 	font-size: 3rem;
 	font-weight: 700;

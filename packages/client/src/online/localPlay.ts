@@ -9,6 +9,7 @@ import CharacterBot, { type SkillProgress } from '@oss-idle/shared/sim/bots/char
 import { makeOrderedSkills } from '@oss-idle/shared/sim/skills/factory';
 import Memory from '@oss-idle/shared/sim/skills/memory';
 import { hasUnlock } from '@oss-idle/shared/rebirth';
+import { tireSkill } from '@oss-idle/shared/fatigue';
 import type { Grade } from '@oss-idle/shared/judgement';
 import LightBeatmap from '../osu/beatmap/LightBeatmap';
 import Character from '../db/schema/character';
@@ -35,6 +36,11 @@ const RESULT_TTL_MS = 10 * 60 * 1000;
 
 export type LocalScoring = 'guest' | 'unranked';
 
+/** How tired and warmed up the server says the character plays right now. */
+export type Tiredness = { fatigue: number, warmup: number, cooling?: boolean };
+
+export type LocalStart = { mode: LocalScoring, tired?: Tiredness };
+
 /** The client-side twin of the server's pending play. Everything about the play
  *  is decided here, when it starts. */
 type LocalRun = {
@@ -54,6 +60,7 @@ type LocalRun = {
 	/** the analysis that produced it, so the strain HUD shows the play being
 	 *  watched rather than a second, different one */
 	bot: CharacterBot;
+	tired?: Tiredness;
 	offsets: ReplayOffset[];
 	startedAt: number;
 	endsAt: number;
@@ -117,7 +124,7 @@ export const currentLocalPlay = (): LocalRun | undefined => current;
  * the play already in flight, which is the very thing the deferred purchases
  * exist to prevent. This is what the server does with `loadCharacterSkills`.
  */
-const snapshotSkills = (character: Character, timesPlayed: number) => {
+const snapshotSkills = (character: Character, timesPlayed: number, tired?: Tiredness) => {
 	const skills = makeOrderedSkills();
 	for (const skill of skills) {
 		const live = character.skills.find(s => s.name === skill.name);
@@ -128,6 +135,7 @@ const snapshotSkills = (character: Character, timesPlayed: number) => {
 		void skill.overdrive.set(live.overdrive.get());
 		void skill.prestige.set(live.prestige.get());
 		if (skill instanceof Memory) void skill.timesPlayed.set(timesPlayed);
+		if (tired) tireSkill(skill, tired.fatigue, tired.warmup);
 	}
 	return skills;
 };
@@ -168,13 +176,13 @@ export const startLocalPlay = async (
 	character: Character,
 	beatmap: LightBeatmap,
 	chart: Beatmap,
-	mode: LocalScoring,
+	{ mode, tired }: LocalStart,
 ): Promise<LocalRun> => {
 	const beatmapId = chart.metadata.beatmapId;
 	if (current && current.beatmapId === beatmapId) return current;
 	if (starting?.beatmapId === beatmapId) return starting.run;
 
-	const run = simulate(character, beatmap, chart, mode, beatmapId);
+	const run = simulate(character, beatmap, chart, mode, beatmapId, tired);
 	starting = {
 		beatmapId, run,
 	};
@@ -191,6 +199,7 @@ const simulate = async (
 	chart: Beatmap,
 	mode: LocalScoring,
 	beatmapId: number,
+	tired?: Tiredness,
 ): Promise<LocalRun> => {
 	const timesPlayed = await Score.countPlays(
 		character.id,
@@ -204,7 +213,7 @@ const simulate = async (
 	const options = {
 		divine: hasUnlock(character.generation, 'DIVINE'), rate, mods,
 	};
-	const bot = new CharacterBot(snapshotSkills(character, timesPlayed));
+	const bot = new CharacterBot(snapshotSkills(character, timesPlayed, tired));
 	const game = new ManiaGame(chart, bot, options);
 
 	// walk to the end in steps, checkpointing accuracy and grade on the way -
@@ -234,6 +243,7 @@ const simulate = async (
 		chart,
 		game,
 		bot,
+		tired,
 		offsets: game.replayOffsets(),
 		startedAt,
 		endsAt: startedAt + LEAD_IN_MS + endSongTime,

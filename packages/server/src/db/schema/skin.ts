@@ -1,7 +1,9 @@
 import {
+	char,
+	index,
 	int,
-	longtext,
 	mysqlTable,
+	primaryKey,
 	timestamp,
 	unique,
 	varchar,
@@ -22,7 +24,9 @@ export const skins = mysqlTable('skin', {
 	tags: varchar({ length: 255 }).notNull().default(''),
 	icon: varchar({ length: 512 }),
 	version: varchar({ length: 20 }).notNull().default('0.1.0'),
-	definition: longtext().notNull(),
+	/** bytes of all its files, and how many */
+	size: int().notNull().default(0),
+	fileCount: int().notNull().default(0),
 	status: varchar({ length: 20 }).notNull().default(SKIN_STATUS.UNPUBLISHED),
 	downloads: int().notNull().default(0), // unique installs, one per player
 	createdAt: timestamp().notNull().defaultNow(),
@@ -41,6 +45,15 @@ export const skinDownloads = mysqlTable('skin_downloads', {
 	downloadedAt: timestamp().notNull().defaultNow(),
 }, t => [unique().on(t.skinId, t.userId)]);
 
+// A skin's files, as it names them; the bytes live on disk by hash (skins/storage.ts).
+export const skinFiles = mysqlTable('skin_file', {
+	skinId: int().notNull()
+		.references(() => skins.id, { onDelete: 'cascade' }),
+	path: varchar({ length: 512 }).notNull(),
+	hash: char({ length: 64 }).notNull(),
+	size: int().notNull(),
+}, t => [primaryKey({ columns: [t.skinId, t.path] }), index('skin_file_hash_idx').on(t.hash)]);
+
 export type SkinRow = typeof skins.$inferSelect;
 export type NewSkinRow = typeof skins.$inferInsert;
 
@@ -54,7 +67,8 @@ export const toSkinDTO = (row: SkinRow, authorName: string) => {
 		tags: splitTags(row.tags),
 		icon: row.icon,
 		version: row.version,
-		definition: row.definition,
+		size: row.size,
+		fileCount: row.fileCount,
 		status: row.status as SkinStatus,
 		downloads: row.downloads,
 		createdAt: row.createdAt.toISOString(),

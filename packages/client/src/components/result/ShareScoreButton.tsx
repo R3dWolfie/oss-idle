@@ -5,6 +5,7 @@ import {
 import { versionLabel } from '@oss-idle/shared/rate';
 import { playLabel } from '@oss-idle/shared/mods';
 import type { ScoreDTO } from '@oss-idle/shared/score';
+import type { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
 import type { SkillProgress } from '@oss-idle/shared/sim/bots/character';
 import { effectiveLevelOf } from '@oss-idle/shared/sim/skills/levelCurve';
 import { LEVEL_COLOUR_MIN } from '@oss-idle/shared/display/levelDisplay';
@@ -23,11 +24,13 @@ import {
 import SharePreview from './SharePreview';
 import { playShutter } from '../../audio/shutter';
 import { message } from '../../globals';
+import { currentSkin } from '../../osu/skin/Skin';
 import { useState } from 'react';
 
 type Props = {
 	score: Score | ScoreDTO,
 	beatmap?: LightBeatmap,
+	game?: ManiaGame,
 	gradeImage: string,
 	playerName: string,
 	playedAt: string,
@@ -63,7 +66,7 @@ const notice = async (text: string) => {
 let shots = 0;
 
 /** Captures the result screen as an image to share, onto the clipboard. */
-export default function ShareScoreButton({ score, beatmap, ranking, gains, ...card }: Props) {
+export default function ShareScoreButton({ score, beatmap, game, ranking, gains, ...card }: Props) {
 	const { t } = useLingui();
 	const live = music.beatmap.use((b) => b);
 	const map = beatmap ?? live;
@@ -90,6 +93,9 @@ export default function ShareScoreButton({ score, beatmap, ranking, gains, ...ca
 			ur: score.ur,
 			rate: score.rate,
 			mods: score.mods,
+			graphs: game && {
+				game, skin: currentSkin.get(),
+			},
 			gains: gains.map(g => ({
 				name: skillName(g.skill),
 				level: levelLabel(g, character.skills.find(s => s.name === g.skill)?.prestige.get()),

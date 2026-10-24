@@ -71,6 +71,8 @@ export type CatalogEntry = {
 	id: number;
 	title: string;
 	artist: string;
+	/** song select lists it before it is downloaded */
+	bundled: boolean;
 	versions: CatalogVersion[];
 	/** the shortest difficulty in the set, ms */
 	length: number;

@@ -189,21 +189,9 @@
 	background-color: hsl(var(--hsl-b4));
 	color: hsl(var(--hsl-c2));
 }
-.admin-list__badge--pending {
-	background-color: hsl(var(--hsl-orange-1));
-	color: hsl(var(--hsl-b4));
-}
-.admin-list__badge--onHold {
-	background-color: hsl(var(--hsl-blue-1));
-	color: hsl(var(--hsl-b4));
-}
 .admin-list__badge--published {
 	background-color: hsl(var(--hsl-lime-1));
 	color: hsl(var(--hsl-b4));
-}
-.admin-list__badge--denied {
-	background-color: hsl(var(--hsl-red-2));
-	color: hsl(var(--hsl-b5));
 }
 .admin-list__badge--UNPUBLISHED {
 	background-color: hsl(var(--hsl-b4));

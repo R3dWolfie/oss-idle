@@ -12,9 +12,6 @@
 	border-radius: 6px;
 	background-color: hsl(var(--hsl-b4));
 }
-.chat-reports__row[data-resolved="true"] {
-	opacity: 0.5;
-}
 
 .chat-reports__head {
 	display: flex;

@@ -56,6 +56,38 @@ describe('server play queue', () => {
 		expect(applyQueueEdit([a, b], { op: 'clear' })).toEqual([]);
 	});
 
+	it('keeps a repeated map at its place until its run is done', () => {
+		const twice = {
+			beatmapId: 1, repeat: 2,
+		};
+		const once = rotateQueue([twice, b], twice);
+		expect(once).toEqual([{
+			...twice, played: 1,
+		}, b]);
+		expect(rotateQueue(once, twice)).toEqual([b, twice]);
+	});
+
+	it('edits the copy it names among duplicates', () => {
+		expect(applyQueueEdit([a, b, a, c], {
+			op: 'move', entry: {
+				...a, nth: 1,
+			}, before: b,
+		})).toEqual([a, a, b, c]);
+		expect(applyQueueEdit([a, b, a], {
+			op: 'repeat', entry: {
+				...a, nth: 1,
+			}, repeat: 3,
+		})).toEqual([a, b, {
+			...a, repeat: 3,
+		}]);
+		expect(applyQueueEdit([a, b], {
+			op: 'duplicate', entry: a,
+		})).toEqual([a, a, b]);
+		expect(applyQueueEdit([b, a, c, a], {
+			op: 'playNext', entry: a,
+		})).toEqual([a, b, c, a]);
+	});
+
 	it('schedules only an unpaused, non-empty, enabled queue', () => {
 		const q = {
 			paused: false, entries: [a],

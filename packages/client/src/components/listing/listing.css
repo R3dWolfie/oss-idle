@@ -80,11 +80,6 @@
 	background: rgba(255, 255, 255, 0.08);
 	color: rgba(255, 255, 255, 0.7);
 }
-.listing__feedback {
-	font-size: 0.8rem;
-	font-style: italic;
-	color: #f0c674;
-}
 .listing__desc {
 	font-size: 0.82rem;
 	color: rgba(255, 255, 255, 0.58);
@@ -108,14 +103,6 @@
 .listing__badge--PUBLISHED {
 	background: rgba(110, 226, 154, 0.2);
 	color: #6ee29a;
-}
-.listing__badge--pending {
-	background: rgba(240, 198, 116, 0.2);
-	color: #f0c674;
-}
-.listing__badge--onHold {
-	background: rgba(110, 170, 240, 0.2);
-	color: #8ab6f0;
 }
 .listing__badge--denied {
 	background: rgba(239, 136, 136, 0.2);
@@ -240,25 +227,6 @@
 	gap: 1.1rem;
 	padding: 1.5rem;
 	background: rgba(0, 0, 0, 0.5);
-}
-
-/* moderator feedback, pinned at the top of the metadata (edit mode only) */
-.listing-view__feedback {
-	display: flex;
-	flex-direction: column;
-	gap: 0.25rem;
-	padding: 0.7rem 1rem;
-	background: rgba(240, 198, 116, 0.12);
-	border-left: 3px solid #f0c674;
-	color: #f4d488;
-	font-size: 0.92rem;
-}
-.listing-view__feedback-label {
-	font-size: 0.7rem;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	color: #f0c674;
 }
 
 /* metadata fills the left, the code is a fixed 80-col column on the right;

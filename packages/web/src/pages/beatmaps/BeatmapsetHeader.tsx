@@ -14,6 +14,7 @@ import {
 } from '@oss-idle/shared/display/difficulty';
 import { osuSetUrl } from '@oss-idle/shared/beatmap';
 import OutLink from '../../components/OutLink';
+import MapperLink from '../../components/MapperLink';
 import {
 	coverBackground,
 	type MapDiff,
@@ -49,7 +50,7 @@ export default function BeatmapsetHeader({ mapset, diff }: { mapset: Mapset; dif
 			<div className='mapset__title'>{set.title}</div>
 			<div className='mapset__artist'>{set.artist}</div>
 			<div className='mapset__mapper'>
-				<Trans>mapped by <b>{ph({ creator: set.creator })}</b></Trans>
+				<Trans>mapped by <MapperLink userId={set.ownerUserId} className='mapper-link'>{ph({ creator: set.creator })}</MapperLink></Trans>
 			</div>
 			<div className='mapset__buttons'>
 				<DownloadButton setId={set.id} />

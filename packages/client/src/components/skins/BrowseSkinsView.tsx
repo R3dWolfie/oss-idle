@@ -12,28 +12,22 @@ import {
 } from '@lingui/react/macro';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 import type { PageAction } from '../page/pageBar';
-import {
-	installedSkins,
-	SkinDAO,
-} from '../../db/schema/skin';
+import { installedSkins } from '../../db/schema/skin';
 import {
 	browseSkins,
+	getSkin,
 	skinIconUrl,
 	recordSkinDownload,
 	Skin,
 } from '../../online/skins';
+import { installSkin } from '../../osu/skin/skinActions';
+import { remoteSource } from '../../osu/skin/sources';
 import Account from '../../online/account';
 import ConfirmMenu, { Confirm } from '../ConfirmMenu';
 import ListingIcon from '../listing/ListingIcon';
-import SkinView from './SkinView';
+import SkinView, { type SkinContent } from './SkinView';
 
 type Sort = 'created' | 'updated' | 'downloads';
-
-/** Persist a catalog skin locally and enable it. */
-export const install = async (skin: Skin) => {
-	const installed = await (await SkinDAO.fromSkinDTO(skin)).add();
-	installed.setEnabled(true);
-};
 
 export default function BrowseSkinsView() {
 	const { t } = useLingui();
@@ -41,6 +35,7 @@ export default function BrowseSkinsView() {
 	const installedIds = new Set(installed.map(s => s.id));
 	const [list, setList] = useState<Skin[] | undefined>();
 	const [detail, setDetail] = useState<Skin | undefined>();
+	const [content, setContent] = useState<SkinContent>();
 	const [confirming, setConfirming] = useState<Confirm | undefined>();
 	const [query, setQuery] = useState('');
 	const searchRef = useRef<HTMLInputElement>(null);
@@ -76,10 +71,21 @@ export default function BrowseSkinsView() {
 
 	const doInstall = (dto: Skin) => {
 		setBusy(true);
-		void install(dto)
+		void installSkin(dto)
 			.then(() => recordDownload(dto.id))
 			.catch(e => setError(String((e as Error).message ?? e)))
 			.finally(() => setBusy(false));
+	};
+
+	// the files are listed first; only what is shown of them is downloaded
+	const openDetail = (a: Skin) => {
+		setContent(undefined);
+		setDetail(a);
+		void getSkin(a.id)
+			.then(({ files }) => setContent({
+				files, source: remoteSource(files),
+			}))
+			.catch(e => setError(String((e as Error).message ?? e)));
 	};
 
 	// Row action (inline, in the list).
@@ -113,8 +119,9 @@ export default function BrowseSkinsView() {
 		<>
 			{detail
 				? <SkinView 
-					detail={detail} 
-					actions={[barInstall(detail)]} 
+					detail={detail}
+					content={content}
+					actions={[barInstall(detail)]}
 					onBack={() => setDetail(undefined)}
 				/>
 				: (
@@ -166,7 +173,7 @@ export default function BrowseSkinsView() {
 											{a.name}<span className='listing__ver'>v{a.version}</span>
 										</div>
 										<div className='listing__by'>
-											<Trans>by</Trans> {a.authorName}
+											<Trans>by {ph({ author: a.authorName })}</Trans>
 											<span className='skin__downloads'>
 												{' · '}
 												<Plural value={ph({ downloads: a.downloads })} one='# download' other='# downloads' />
@@ -181,7 +188,7 @@ export default function BrowseSkinsView() {
 									<div className='listing__actions'>
 										<button
 											className='listing-btn' 
-											onClick={() => setDetail(a)}>
+											onClick={() => openDetail(a)}>
 											<Trans>Details</Trans>
 										</button>
 										{installButton(a)}

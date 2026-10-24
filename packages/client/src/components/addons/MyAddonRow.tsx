@@ -28,8 +28,7 @@ export default function MyAddonRow({
 	onInstall, 
 	onDelete, 
 }: Props) {
-	const canSubmit = addon.status === ADDON_STATUS.unpublished
-					|| addon.status === ADDON_STATUS.denied;
+	const canSubmit = addon.status === ADDON_STATUS.unpublished;
 	const building = addon.buildStatus === ADDON_BUILD_STATUS.queued
 		|| addon.buildStatus === ADDON_BUILD_STATUS.building;
 
@@ -50,7 +49,6 @@ export default function MyAddonRow({
 					{building && (
 						<span className='listing__badge listing__badge--unpublished'><Trans>Building</Trans></span>
 					)}
-					{addon.feedback && <span className='listing__feedback'>{addon.feedback}</span>}
 				</div>
 			</div>
 			<div className='listing__actions'>
@@ -66,7 +64,7 @@ export default function MyAddonRow({
 					disabled={busy} 
 					onClick={onSubmit}
 				>
-					<Trans>Submit</Trans>
+					<Trans>Publish</Trans>
 				</button>}
 				<button 
 					className='listing-btn' 

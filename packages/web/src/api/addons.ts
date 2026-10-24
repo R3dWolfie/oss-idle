@@ -5,28 +5,19 @@ import {
 } from './client';
 import type { AddonStatus } from '@oss-idle/shared/addon';
 
-/** Admin: every pending + published add-on for the moderation queue. */
+/** Admin: every published add-on, to take one down. */
 export const listAddonsAdmin = () => unwrap(rpc.v1.addons.admin.$get());
 
-/** One moderation-queue row, inferred from the route. */
+/** One admin list row, inferred from the route. */
 export type AdminAddon = Awaited<ReturnType<typeof listAddonsAdmin>>[number];
 
-/** An admin's verdict on the source they read. */
-export type AddonVerdict = { status: AddonStatus; feedback?: string | null; source: string };
-
-/** Admin: set an add-on's status and optionally leave feedback. */
+/** Admin: set an add-on's status. */
 export const moderateAddon = (
 	id: number,
-	body: AddonVerdict,
+	body: { status: AddonStatus },
 ) =>
 	unwrap(rpc.v1.addons.admin[':id'].$patch({
-		param: { id: String(id) }, json: body, 
-	}));
-
-/** Admin: let a repo add-on's builds go live without review, or not. */
-export const setAddonTrusted = (id: number, trusted: boolean) =>
-	unwrap(rpc.v1.addons.admin[':id'].trusted.$patch({
-		param: { id: String(id) }, json: { trusted },
+		param: { id: String(id) }, json: body,
 	}));
 
 /** Resolve a stored icon path to a full URL for an <img>. */

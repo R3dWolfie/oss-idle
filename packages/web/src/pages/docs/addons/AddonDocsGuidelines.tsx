@@ -1,7 +1,7 @@
 import { ADDON_RULES } from '@oss-idle/shared/addonRules';
 import Link from '../../../components/Link';
 
-/** What the reviewers look for: the code rules the game enforces, and the guidelines. */
+/** The code rules the game enforces, the guidelines, and publishing. */
 export default function AddonDocsGuidelines() {
 	return <>
 		<h1 id='guidelines'>Guidelines</h1>
@@ -13,7 +13,7 @@ export default function AddonDocsGuidelines() {
 		<h2 id='code-rules'>Code the game refuses</h2>
 		<p>
 			The game reads every add-on before it accepts it, and refuses code that loads or builds other
-			code, since a reviewer could not read it:
+			code, since players could not read it:
 		</p>
 		<ul>
 			{ADDON_RULES.map(rule => <li key={rule}>{rule}</li>)}
@@ -43,16 +43,16 @@ export default function AddonDocsGuidelines() {
 				every change can be undone.
 			</li>
 			<li>
-				<strong>Be readable.</strong> Leave the bundle unminified when you can: a reviewer reads it,
-				or the repository it was built from.
+				<strong>Be readable.</strong> Leave the bundle unminified when you can: players read it,
+				or the repository it was built from, before trusting it.
 			</li>
 		</ul>
 
-		<h2 id='review'>Review</h2>
+		<h2 id='publishing'>Publishing</h2>
 		<p>
-			A new add-on is a draft only you see. Submitting it puts it in the review queue; the team publishes
-			it, sends it back with a note, or turns it down. Each new version is read again before it goes
-			live, the last approved one staying up meanwhile.
+			A new add-on is a draft only you see until you publish it. Add-ons are not reviewed: once
+			published, each edit you save, or each new build of a repository, reaches players at once, and you
+			are responsible for what your add-on does. The team takes down add-ons that break the rules.
 		</p>
 	</>;
 }

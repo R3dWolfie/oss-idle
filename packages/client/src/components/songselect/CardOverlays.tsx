@@ -2,6 +2,7 @@ import { type CarouselItem } from '../BeatmapCarousel';
 import CardContextMenu from './CardContextMenu';
 import PlaylistOverlay from '../PlaylistOverlay';
 import PlayQueue from '../../gameplay/playQueue';
+import SceneManager, { SCENE } from '../../scenes/SceneManager';
 
 type Props = {
 	/** the right-clicked card's menu target */
@@ -42,6 +43,7 @@ export default function CardOverlays({
 					PlayQueue.playNext(menuItem.beatmap, queueLabel);
 					onCloseMenu();
 				}}
+				onEdit={() => SceneManager.set(SCENE.EDITOR, menuItem.beatmap)}
 				onManagePlaylists={onManagePlaylists}
 				onDelete={onDelete}
 				onClearScores={onClearScores}

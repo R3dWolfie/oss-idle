@@ -60,10 +60,13 @@ const database = (live = false): Database => {
 			characterId INTEGER NOT NULL, beatmapId INTEGER NOT NULL, scoreId INTEGER NOT NULL,
 			PRIMARY KEY (characterId, beatmapId)
 		);`);
-	db.run(`CREATE TABLE playlist_entry (
+	db.run(live ? `CREATE TABLE playlist_entry (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		playlistId INTEGER NOT NULL, beatmapId INTEGER NOT NULL, rate REAL NOT NULL DEFAULT 0,
+		position INTEGER NOT NULL, repeat INTEGER NOT NULL DEFAULT 1
+	);` : `CREATE TABLE playlist_entry (
 		playlistId INTEGER NOT NULL, beatmapId INTEGER NOT NULL,
-		${live ? 'rate REAL NOT NULL DEFAULT 0,' : ''}
-		PRIMARY KEY (playlistId, beatmapId${live ? ', rate' : ''})
+		PRIMARY KEY (playlistId, beatmapId)
 	);`);
 	db.run('CREATE INDEX idx_playlist_entry_beatmap ON playlist_entry(beatmapId);');
 	// a fresh database has run nothing yet and replays every migration
@@ -171,17 +174,18 @@ describe('client database migrations', () => {
 		expect(forgets(0)).toEqual([]);
 	});
 
-	it('keeps every playlist entry unlocked and lets a locked one sit beside it', () => {
+	it('keeps every playlist entry unlocked, in order, and lets copies sit beside it', () => {
 		const db = oldDatabase();
-		db.run('INSERT INTO playlist_entry (playlistId, beatmapId) VALUES (1, 10), (1, 11), (2, 10);');
+		db.run('INSERT INTO playlist_entry (playlistId, beatmapId) VALUES (1, 11), (1, 10), (2, 10);');
 
 		migrate(db);
 
-		expect(rows(db, `SELECT playlistId, beatmapId, rate FROM playlist_entry
-			ORDER BY playlistId, beatmapId`)).toEqual([[1, 10, 0], [1, 11, 0], [2, 10, 0]]);
-		db.run('INSERT INTO playlist_entry (playlistId, beatmapId, rate) VALUES (1, 10, 1.3);');
+		expect(rows(db, `SELECT playlistId, beatmapId, rate, repeat FROM playlist_entry
+			ORDER BY position`)).toEqual([[1, 11, 0, 1], [1, 10, 0, 1], [2, 10, 0, 1]]);
+		db.run(`INSERT INTO playlist_entry (playlistId, beatmapId, rate, position)
+			VALUES (1, 10, 1.3, 4), (1, 10, 0, 5);`);
 		expect(one(db, `SELECT COUNT(*) FROM playlist_entry
-			WHERE playlistId = 1 AND beatmapId = 10`)).toBe(2);
+			WHERE playlistId = 1 AND beatmapId = 10`)).toBe(3);
 		expect(one(db, `SELECT COUNT(*) FROM sqlite_master
 			WHERE type = 'index' AND name = 'idx_playlist_entry_beatmap'`)).toBe(1);
 	});

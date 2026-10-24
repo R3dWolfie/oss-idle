@@ -9,6 +9,7 @@ import { music } from '../audio/MusicPlayer';
 import { currentSkin } from '../osu/skin/Skin';
 import Controls from '../input/Controls';
 import useTick from '../components/dock/useTick';
+import { openPage } from '../globals';
 import Background from './Background';
 import { leaveScreensaver } from './screensaver';
 import './Screensaver.css';
@@ -24,12 +25,14 @@ const IDLE_MS = 4000;
 export default function Screensaver() {
 	const [live] = useSynced(PlayManager.live);
 	const [skin] = useSynced(currentSkin);
+	const [page] = useSynced(openPage);
 	useTick(!!live);
 	Controls.back.usePress(leaveScreensaver);
 
 	// burn-in: the dock, cursor and other fixed chrome fade out (Screensaver.css)
-	// until the pointer or a key wakes them
+	// until the pointer or a key wakes them; a page open over it stays up
 	useEffect(() => {
+		if (page) return;
 		const html = document.documentElement;
 		let timer = 0;
 		const wake = () => {
@@ -45,7 +48,7 @@ export default function Screensaver() {
 			events.forEach(e => window.removeEventListener(e, wake));
 			html.classList.remove('is-saver-idle');
 		};
-	}, []);
+	}, [!!page]);
 
 	// the track follows the play, at the play's position
 	useEffect(() => {

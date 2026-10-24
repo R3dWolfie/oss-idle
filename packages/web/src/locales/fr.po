@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: osu-idle\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-24 10:41\n"
+"PO-Revision-Date: 2026-10-24 19:27\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -44,7 +44,7 @@ msgstr "{days, plural, one {# jour} other {# jours}}"
 
 #: src/pages/characters/CharacterPage.tsx
 msgid "{days}d {hours}h {minutes}m"
-msgstr ""
+msgstr "{days}j {hours}h {minutes}min"
 
 #: src/pages/beatmaps/RequestSearchHit.tsx
 msgid "{diffs} × 4K"
@@ -130,14 +130,13 @@ msgstr "{years, plural, one {# année} other {# années}}"
 msgid "#1 ranks"
 msgstr "top #1"
 
-#. placeholder {0}: request.client.name
-#: src/pages/oauth/Authorize.tsx
-msgid "<0>{0}</0> is requesting permission to access your account."
-msgstr "<0>{0}</0> demande l'accès à votre compte."
-
 #: src/pages/store/SupporterStatus.tsx
 msgid "<0>{amount}</0> of it went to <1>{players, plural, one {# other player} other {# other players}}</1>, covering <2><3/></2>."
 msgstr "<0>{amount}</0> est allé à <1>{players, plural, one {# autre joueur} other {# autres joueurs}}</1>, couvrant <2><3/></2>."
+
+#: src/pages/oauth/Authorize.tsx
+msgid "<0>{app}</0> is requesting permission to access your account."
+msgstr "<0>{app}</0> demande l'accès à votre compte."
 
 #: src/pages/help/FAQ.tsx
 msgid "<0>Guest:</0> signed out. Saved in your browser only, with local experience."
@@ -424,10 +423,9 @@ msgstr "par {artist}"
 msgid "by {creator}"
 msgstr "par {creator}"
 
-#. placeholder {0}: entry.author
 #: src/pages/changelog/ChangelogEntry.tsx
-msgid "by <0>{0}</0>"
-msgstr ""
+msgid "by <0>{author}</0>"
+msgstr "par <0>{author}</0>"
 
 #: src/pages/help/FAQ.tsx
 msgid "By playing. Ranked and guest plays give experience; unranked plays don't. Pick maps that push the skills you want to train: the song select shows what each map gave you last time."
@@ -492,7 +490,7 @@ msgstr "Acheter"
 
 #: src/pages/settings/ItchSettings.tsx
 msgid "Claim itch.io donation"
-msgstr ""
+msgstr "J'ai fait un don sur itch.io"
 
 #: src/routes/maps/claim.tsx
 msgid "claim your proposals"
@@ -573,10 +571,9 @@ msgstr "Date"
 msgid "Delete"
 msgstr "Supprimer"
 
-#. placeholder {0}: client.name
 #: src/pages/settings/OAuthClientDialog.tsx
-msgid "Delete {0}? This cannot be undone."
-msgstr "Supprimer {0} ? Cette action est irréversible."
+msgid "Delete {app}? This cannot be undone."
+msgstr "Supprimer {app} ? Cette action est irréversible."
 
 #: src/components/character/DeleteAccountDialog.tsx
 msgid "Delete {username}'s account?"
@@ -625,7 +622,7 @@ msgstr "Ai-je besoin d'un compte osu! ?"
 
 #: src/pages/settings/ItchSettings.tsx
 msgid "Donated to <0>oss!idle on itch.io</0>? Sign in with your itch.io account to turn your donations into oss!supporter, prorated on the store's prices."
-msgstr ""
+msgstr "Vous avez fait un don à <0>oss!idle sur itch.io</0> ? Connectez-vous avec votre compte itch.io pour convertir vos dons en oss!supporter, au prorata des prix de la boutique."
 
 #: src/components/MapsetCard.tsx
 #: src/pages/beatmaps/DownloadButton.tsx
@@ -1134,7 +1131,7 @@ msgstr "Pas encore de mise à jour. Revenez bientôt !"
 
 #: src/pages/settings/ItchSettings.tsx
 msgid "No new donation on this itch.io account."
-msgstr ""
+msgstr "Aucun nouveau don sur ce compte itch.io."
 
 #: src/pages/news/News.tsx
 #: src/pages/PublicLanding.tsx
@@ -1265,6 +1262,10 @@ msgstr "oss!idle tourne sur un serveur qui coûte de l'argent chaque mois. Un ta
 msgid "osu! page"
 msgstr "page osu!"
 
+#: src/components/character/ProfileSocialBar.tsx
+msgid "osu! profile"
+msgstr "Profil osu!"
+
 #: src/pages/help/FAQ.tsx
 msgid "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
 msgstr "Uniquement les difficultés osu!mania 4K. Le classement se décide par difficulté : un set peut avoir certaines difficultés classées et d'autres non."
@@ -1277,12 +1278,10 @@ msgstr "Autres plateformes :"
 msgid "Own Clients"
 msgstr "Mes clients"
 
-#. placeholder {0}: client.owner.name
-#. placeholder {0}: request.owner.name
 #: src/pages/oauth/Authorize.tsx
 #: src/pages/settings/OAuthSettings.tsx
-msgid "owned by {0}"
-msgstr "possédé par {0}"
+msgid "owned by {owner}"
+msgstr "possédé par {owner}"
 
 #: src/components/leaderboard/Pager.tsx
 msgid "page {page}"
@@ -1436,7 +1435,7 @@ msgstr "Proposez jusqu'à {supporterMax} maps au classement en même temps, au l
 
 #: src/components/character/CharacterBeatmaps.tsx
 msgid "Proposed Beatmaps"
-msgstr "Beatmaps proposées"
+msgstr "Maps proposées"
 
 #: src/pages/beatmaps/MapClaims.tsx
 msgid "Proposed maps for ranking on Discord? Tick the ones you proposed and save, and they will count for your curator medals once an admin confirms."
@@ -1627,10 +1626,9 @@ msgstr "Retourner sur oss!idle"
 msgid "Revoke Access"
 msgstr "Révoquer l'accès"
 
-#. placeholder {0}: client.name
 #: src/pages/settings/OAuthSettings.tsx
-msgid "Revoke access for {0}?"
-msgstr "Révoquer l'accès de {0} ?"
+msgid "Revoke access for {app}?"
+msgstr "Révoquer l'accès de {app} ?"
 
 #: src/components/character/RollbackUpgradeDialog.tsx
 msgid "Roll back"
@@ -1657,10 +1655,9 @@ msgstr "Règles"
 msgid "Save"
 msgstr "Sauvegarder"
 
-#. placeholder {0}: picked.size
 #: src/pages/beatmaps/MapClaims.tsx
-msgid "Save ({0})"
-msgstr "Sauvegarder ({0})"
+msgid "Save ({count})"
+msgstr "Sauvegarder ({count})"
 
 #: src/pages/store/SupportSlider.tsx
 msgid "save {saving}%"
@@ -1863,8 +1860,8 @@ msgid "Small"
 msgstr "Petit"
 
 #: src/pages/help/FAQ.tsx
-msgid "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
-msgstr "De petits scripts créés par les joueurs qui ajoutent des fonctionnalités au jeu. Les add-ons partagés sont vérifiés par l'équipe avant d'être publiés, mais ils s'exécutent dans votre jeu : n'installez que ceux en qui vous avez confiance."
+msgid "Small scripts made by players that add features to the game. Shared add-ons are not reviewed by the team and they run inside your game: only install the ones you trust."
+msgstr "De petits scripts créés par les joueurs, qui ajoutent des fonctionnalités au jeu. Les add-ons partagés ne sont pas vérifiés par l'équipe et s'exécutent dans votre jeu : n'installez que ceux en lesquels vous avez confiance."
 
 #: src/pages/store/SupporterStatus.tsx
 msgid "So far you gave <0>{amount}</0>, and held a supporter tag for <1><2/></1>."
@@ -1959,7 +1956,7 @@ msgstr "Conditions"
 
 #: src/pages/settings/ItchSettings.tsx
 msgid "Thank you! Your donations gave you {days} days of oss!supporter."
-msgstr ""
+msgstr "Merci ! Vos dons vous ont rapporté {days} jours d'oss!supporter."
 
 #: src/pages/groups/GroupPage.tsx
 msgid "The <0>Administrators</0> run oss!idle: they develop the game, rank the maps and manage the team."
@@ -1971,7 +1968,7 @@ msgstr "L'<0>Équipe Globale de Modération</0> permet à la communauté de rest
 
 #: src/pages/settings/ItchSettings.tsx
 msgid "The claim didn't go through. Try again in a moment."
-msgstr ""
+msgstr "La récupération a échoué. Réessayez dans un instant."
 
 #: src/pages/help/FAQ.tsx
 msgid "The game"
@@ -2073,7 +2070,7 @@ msgstr "Non classée"
 
 #: src/components/character/CharacterBeatmaps.tsx
 msgid "Unranked Beatmaps"
-msgstr "Beatmaps non classées"
+msgstr "Maps non classées"
 
 #: src/pages/bugs/BugImagesField.tsx
 msgid "Up to {max}, or paste them into the text."
@@ -2197,12 +2194,12 @@ msgid "XP Lv{level} → XP Lv{nextLevel}"
 msgstr "XP Lv{level} → XP Lv{nextLevel}"
 
 #: src/pages/help/FAQ.tsx
-msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
-msgstr "Oui. Le résultat et l'expérience d'une partie sont décidés à son lancement : tout ce que vous achetez pendant qu'elle tourne est appliqué dès qu'elle se termine, dans l'ordre de vos achats."
+msgid "Yes, with osu! skins: any skin that works in osu!stable works here. Import its .osk or its folder from the skins page, and publish it to share it with everyone."
+msgstr "Oui, avec les skins osu! : tout skin qui fonctionne dans osu!stable fonctionne ici. Importez son .osk ou son dossier depuis la page des skins, et publiez-le pour le partager avec tout le monde."
 
 #: src/pages/help/FAQ.tsx
-msgid "Yes. Skins change the playfield, notes and gameplay interface, and you can make your own in the skin editor with a live preview. Players can share their skins with everyone."
-msgstr "Oui. Les skins changent le terrain de jeu, les notes et l'interface de jeu, et vous pouvez créer le vôtre dans l'éditeur de skin avec un aperçu en direct. Les joueurs peuvent partager leurs skins avec tout le monde."
+msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
+msgstr "Oui. Le résultat et l'expérience d'une partie sont décidés à son lancement : tout ce que vous achetez pendant qu'elle tourne est appliqué dès qu'elle se termine, dans l'ordre de vos achats."
 
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "You already have {max} requests waiting. Wait for one to be answered before proposing another."

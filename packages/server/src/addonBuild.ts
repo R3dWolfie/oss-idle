@@ -16,9 +16,7 @@ import {
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import {
-	ADDON_DIFF_CUT,
 	MAX_ADDON_BUNDLE,
-	MAX_ADDON_DIFF,
 	type AddonBuildResult,
 } from '@oss-idle/shared/addon';
 import {
@@ -35,13 +33,11 @@ const STEP_TIMEOUT_MS = 10 * 60_000;
 const LOG_LINES = 200;
 const LOG_LINE_CHARS = 500;
 const MAX_SMALL_FILE = 1024 * 1024;
-const EMPTY_TREE = '4b825dc642cb6eb9a060e54bf8d69288fbee4904';
 
 export type Job = {
 	id: number,
 	repoUrl: string,
 	commit?: string,
-	base?: string,
 };
 
 export class BuildError extends Error {}
@@ -99,9 +95,9 @@ const docker = (
 
 /**
  * Read a file a container left in the work dir: a plain file, reached through no
- * symlink (it would point at this host's files), at most `max` bytes or cut there.
+ * symlink (it would point at this host's files), at most `max` bytes.
  */
-export const readInside = async (root: string, rel: string, max: number, cut = false) => {
+export const readInside = async (root: string, rel: string, max: number) => {
 	const file = path.resolve(root, rel);
 	const real = await realpath(file).catch(() => {
 		throw new BuildError(`${rel} is missing`);
@@ -110,14 +106,12 @@ export const readInside = async (root: string, rel: string, max: number, cut = f
 	if (real !== file || !real.startsWith(root + path.sep) || !info.isFile()) {
 		throw new BuildError(`${rel} must be a plain file inside the repository`);
 	}
-	if (info.size > max && !cut) throw new BuildError(`${rel} is over ${Math.round(max / 1024)} KB`);
+	if (info.size > max) throw new BuildError(`${rel} is over ${Math.round(max / 1024)} KB`);
 	const handle = await open(real, 'r');
 	try {
-		const buffer = Buffer.alloc(Math.min(info.size, max));
+		const buffer = Buffer.alloc(info.size);
 		await handle.read(buffer, 0, buffer.length, 0);
-		return {
-			text: buffer.toString('utf8'), cut: info.size > max,
-		};
+		return { text: buffer.toString('utf8') };
 	} finally {
 		await handle.close();
 	}
@@ -156,22 +150,15 @@ export const checkIsolation = async () => {
 
 const GIT = 'git -c http.followRedirects=false -c protocol.allow=never -c protocol.https.allow=always';
 
-/** Clone the commit and diff it from the live release, before any of its code runs. */
-const fetchSource = async (work: string, job: Job, commit: string, log: string[]) => {
-	await docker(work, NETWORK, [
+/** Clone the commit, before any of its code runs. */
+const fetchSource = (work: string, job: Job, commit: string, log: string[]) =>
+	docker(work, NETWORK, [
 		`${GIT} clone -q "$URL" repo`,
 		'cd repo',
 		'git -c advice.detachedHead=false checkout -q "$COMMIT"',
-		`git cat-file -e "$BASE^{commit}" 2>/dev/null || BASE=${EMPTY_TREE}`,
-		// --text: a .gitattributes "-diff" would show a change as "Binary files differ"
-		'git diff --no-color --text --no-textconv --no-ext-diff "$BASE" "$COMMIT" > /w/diff',
 	].join('\n'), {
-		URL: job.repoUrl, COMMIT: commit, BASE: job.base ?? EMPTY_TREE,
+		URL: job.repoUrl, COMMIT: commit,
 	}, log);
-	const diff = await readInside(work, 'diff', MAX_ADDON_DIFF, true);
-	await rm(path.join(work, 'diff'));
-	return diff.cut ? `${diff.text}\n${ADDON_DIFF_CUT}` : diff.text;
-};
 
 /** The built file `addon.config.json` names, once the author's build is over. */
 const readBundle = async (repo: string) => {
@@ -198,7 +185,7 @@ const build = async (job: Job, work: string, log: string[]): Promise<AddonBuildR
 	if (newest.commit === job.commit) return { outcome: 'unchanged' };
 	log.push(`building ${newest.tag} (${newest.commit})`);
 
-	const diff = await fetchSource(work, job, newest.commit, log);
+	await fetchSource(work, job, newest.commit, log);
 
 	// no install scripts, and no git: a repository's .npmrc can point `git` at its own script
 	log.push('$ npm ci');
@@ -215,7 +202,6 @@ const build = async (job: Job, work: string, log: string[]): Promise<AddonBuildR
 		tag: newest.tag,
 		commit: newest.commit,
 		...built,
-		diff,
 		log: log.join('\n'),
 	};
 };

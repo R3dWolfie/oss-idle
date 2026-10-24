@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import type {
-	Nomination,
-	NominationPatch,
+import {
+	type Nomination,
+	type NominationPatch,
+	nominationOszUrl,
 } from '../../api/maps';
 import NominationCover from './NominationCover';
 import NominationDiffs from './NominationDiffs';
@@ -161,6 +162,7 @@ export default function NominationRow({
 				>
 					{player ? 'Send back' : 'Reject'}
 				</button>}
+				<a className='nomination__btn' href={nominationOszUrl(row.id)} download>Download</a>
 				<button 
 					className='nomination__btn nomination__btn--danger'
 					disabled={busy}

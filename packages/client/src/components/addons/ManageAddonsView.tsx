@@ -176,9 +176,9 @@ export default function ManageAddonsView() {
 						busy={busy}
 						onEdit={() => setEditing({ addon: a })}
 						onSubmit={() => setConfirming({
-							title: t`Submit add-on`,
-							sub: t`Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Submit "${ph({ addon: a.name })}" for review?`,
-							confirmLabel: t`Submit`,
+							title: t`Publish add-on`,
+							sub: t`Add-ons are not reviewed: you are responsible for what yours does on players' games. Your published code must be licensed under the AGPLv3 (or a compatible licence). This does not necessarily affect its source's license. Publish "${ph({ addon: a.name })}"?`,
+							confirmLabel: t`Publish`,
 							color: '#ff66ab',
 							onConfirm: () => run(() => submitAddon(a.id)),
 						})}

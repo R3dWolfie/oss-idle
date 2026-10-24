@@ -171,6 +171,7 @@ export default defineConfig({
 				ws: true,
 			},
 			'/uploads': `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,
+			'/skin-files': `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,
 			// the public API
 			'/api': `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,
 			'/oauth': `http://localhost:${process.env.DEV_API_PORT ?? 3873}`,

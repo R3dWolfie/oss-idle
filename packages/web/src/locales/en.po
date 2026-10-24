@@ -125,14 +125,13 @@ msgstr "{years, plural, one {# year} other {# years}}"
 msgid "#1 ranks"
 msgstr "#1 ranks"
 
-#. placeholder {0}: request.client.name
-#: src/pages/oauth/Authorize.tsx
-msgid "<0>{0}</0> is requesting permission to access your account."
-msgstr "<0>{0}</0> is requesting permission to access your account."
-
 #: src/pages/store/SupporterStatus.tsx
 msgid "<0>{amount}</0> of it went to <1>{players, plural, one {# other player} other {# other players}}</1>, covering <2><3/></2>."
 msgstr "<0>{amount}</0> of it went to <1>{players, plural, one {# other player} other {# other players}}</1>, covering <2><3/></2>."
+
+#: src/pages/oauth/Authorize.tsx
+msgid "<0>{app}</0> is requesting permission to access your account."
+msgstr "<0>{app}</0> is requesting permission to access your account."
 
 #: src/pages/help/FAQ.tsx
 msgid "<0>Guest:</0> signed out. Saved in your browser only, with local experience."
@@ -419,10 +418,9 @@ msgstr "by {artist}"
 msgid "by {creator}"
 msgstr "by {creator}"
 
-#. placeholder {0}: entry.author
 #: src/pages/changelog/ChangelogEntry.tsx
-msgid "by <0>{0}</0>"
-msgstr "by <0>{0}</0>"
+msgid "by <0>{author}</0>"
+msgstr "by <0>{author}</0>"
 
 #: src/pages/help/FAQ.tsx
 msgid "By playing. Ranked and guest plays give experience; unranked plays don't. Pick maps that push the skills you want to train: the song select shows what each map gave you last time."
@@ -568,10 +566,9 @@ msgstr "Date"
 msgid "Delete"
 msgstr "Delete"
 
-#. placeholder {0}: client.name
 #: src/pages/settings/OAuthClientDialog.tsx
-msgid "Delete {0}? This cannot be undone."
-msgstr "Delete {0}? This cannot be undone."
+msgid "Delete {app}? This cannot be undone."
+msgstr "Delete {app}? This cannot be undone."
 
 #: src/components/character/DeleteAccountDialog.tsx
 msgid "Delete {username}'s account?"
@@ -1260,6 +1257,10 @@ msgstr "oss!idle runs on a server that costs money every month. A supporter tag 
 msgid "osu! page"
 msgstr "osu! page"
 
+#: src/components/character/ProfileSocialBar.tsx
+msgid "osu! profile"
+msgstr "osu! profile"
+
 #: src/pages/help/FAQ.tsx
 msgid "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
 msgstr "osu!mania 4K difficulties only. Ranking is decided per difficulty, so a set can have some of its difficulties ranked and others not."
@@ -1272,12 +1273,10 @@ msgstr "Other platforms:"
 msgid "Own Clients"
 msgstr "Own Clients"
 
-#. placeholder {0}: client.owner.name
-#. placeholder {0}: request.owner.name
 #: src/pages/oauth/Authorize.tsx
 #: src/pages/settings/OAuthSettings.tsx
-msgid "owned by {0}"
-msgstr "owned by {0}"
+msgid "owned by {owner}"
+msgstr "owned by {owner}"
 
 #: src/components/leaderboard/Pager.tsx
 msgid "page {page}"
@@ -1622,10 +1621,9 @@ msgstr "Return to oss!idle"
 msgid "Revoke Access"
 msgstr "Revoke Access"
 
-#. placeholder {0}: client.name
 #: src/pages/settings/OAuthSettings.tsx
-msgid "Revoke access for {0}?"
-msgstr "Revoke access for {0}?"
+msgid "Revoke access for {app}?"
+msgstr "Revoke access for {app}?"
 
 #: src/components/character/RollbackUpgradeDialog.tsx
 msgid "Roll back"
@@ -1652,10 +1650,9 @@ msgstr "Rules"
 msgid "Save"
 msgstr "Save"
 
-#. placeholder {0}: picked.size
 #: src/pages/beatmaps/MapClaims.tsx
-msgid "Save ({0})"
-msgstr "Save ({0})"
+msgid "Save ({count})"
+msgstr "Save ({count})"
 
 #: src/pages/store/SupportSlider.tsx
 msgid "save {saving}%"
@@ -1858,8 +1855,8 @@ msgid "Small"
 msgstr "Small"
 
 #: src/pages/help/FAQ.tsx
-msgid "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
-msgstr "Small scripts made by players that add features to the game. Shared add-ons are reviewed by the team before they are published, but they run inside your game: only install the ones you trust."
+msgid "Small scripts made by players that add features to the game. Shared add-ons are not reviewed by the team and they run inside your game: only install the ones you trust."
+msgstr "Small scripts made by players that add features to the game. Shared add-ons are not reviewed by the team and they run inside your game: only install the ones you trust."
 
 #: src/pages/store/SupporterStatus.tsx
 msgid "So far you gave <0>{amount}</0>, and held a supporter tag for <1><2/></1>."
@@ -2192,12 +2189,12 @@ msgid "XP Lv{level} → XP Lv{nextLevel}"
 msgstr "XP Lv{level} → XP Lv{nextLevel}"
 
 #: src/pages/help/FAQ.tsx
-msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
-msgstr "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
+msgid "Yes, with osu! skins: any skin that works in osu!stable works here. Import its .osk or its folder from the skins page, and publish it to share it with everyone."
+msgstr "Yes, with osu! skins: any skin that works in osu!stable works here. Import its .osk or its folder from the skins page, and publish it to share it with everyone."
 
 #: src/pages/help/FAQ.tsx
-msgid "Yes. Skins change the playfield, notes and gameplay interface, and you can make your own in the skin editor with a live preview. Players can share their skins with everyone."
-msgstr "Yes. Skins change the playfield, notes and gameplay interface, and you can make your own in the skin editor with a live preview. Players can share their skins with everyone."
+msgid "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
+msgstr "Yes. A play's result and experience are decided when it starts, so anything you buy while it runs is applied as soon as it ends, in the order you bought it."
 
 #: src/pages/beatmaps/RequestForm.tsx
 msgid "You already have {max} requests waiting. Wait for one to be answered before proposing another."

@@ -85,6 +85,7 @@ import {
 	playStrain,
 } from './fatigue';
 import {
+	coolingDown,
 	fatigueLevel,
 	fatigueXp,
 	restedFatigue,
@@ -156,11 +157,15 @@ type Pending = {
 	fatigue?: number,
 	/** how warmed up, 0 cold to 1 warm */
 	warmup?: number,
+	/** past warm-up's peak */
+	cooling?: boolean,
 	samples?: PlaySample[],
 	skipped?: true,
 	failedAt?: number,
 	/** how far into the map a failed play got, 0-1 (a medal checks it) */
 	failProgress?: number,
+	/** seconds into the song a failed play failed, at its rate (a medal checks it) */
+	failSeconds?: number,
 	/** NF in a match round: played on the server, never submitted */
 	unranked?: true,
 	/** scored on a player's unranked map's leaderboard: no XP, no pp, nothing ranked */
@@ -178,7 +183,7 @@ type Gains = Awaited<ReturnType<typeof applySkillXp>>;
  *  when finalised server-side (the sweep), so a result a client already saw on
  *  its own result screen isn't re-surfaced as a "missed" score. */
 type StoredResult =
-	| { token: string; failed: true; notify: boolean; failProgress?: number }
+	| { token: string; failed: true; notify: boolean; failProgress?: number; failSeconds?: number }
 	| {
 		token: string;
 		failed: false;
@@ -327,6 +332,7 @@ type RankedStartPlayResult = {
 	serverNow: number,
 	fatigue: number,
 	warmup: number,
+	cooling: boolean,
 } & OffsetChunk;
 
 /** The offsets revealed so far: every one whose note is within the buffer window
@@ -341,7 +347,7 @@ function chunkFrom(p: Pending, from: number): OffsetChunk {
 }
 
 type StartPlayResult = RankedStartPlayResult
-	| { status: 'unranked' }
+	| { status: 'unranked', fatigue: number, warmup: number, cooling: boolean }
 	| { status: 'refused' }
 	| { status: 'restricted' };
 
@@ -430,6 +436,7 @@ const joinResult = (p: Pending): StartPlayResult => ({
 	serverNow: Date.now(),
 	fatigue: p.fatigue ?? 0,
 	warmup: p.warmup ?? 1,
+	cooling: p.cooling ?? false,
 	...chunkFrom(p, 0),
 });
 
@@ -464,6 +471,20 @@ export type PlayOptions = {
 	board?: boolean,
 };
 
+/** How tired and warmed up the character plays right now. */
+const tiredness = (character: CharacterRow) => {
+	const tired = restedFatigue(character.fatigue ?? undefined, Date.now());
+	return {
+		fatigue: fatigueLevel(tired),
+		warmup: warmup(tired, character.staminaUpgrades),
+		cooling: coolingDown(tired, character.staminaUpgrades),
+	};
+};
+
+const unranked = (character: CharacterRow) => ({
+	status: 'unranked' as const, ...tiredness(character),
+});
+
 export async function startPlay(
 	character: CharacterRow,
 	beatmapId: number,
@@ -478,7 +499,7 @@ export async function startPlay(
 
 	// a solo NF play is the client's own, like any unranked one
 	const mods = cleanMods(options.mods ?? []);
-	if (!options.round && !isRankedMods(mods)) return { status: 'unranked' };
+	if (!options.round && !isRankedMods(mods)) return unranked(character);
 
 	// Provisional 60s lock so a near-simultaneous cold start is held off while
 	// this one simulates. Atomic across workers (see ACQUIRE_PLAY).
@@ -519,7 +540,7 @@ export async function startPlay(
 	}
 	// Any other unranked diff, or one whose set isn't live, plays like an unknown map: local play, no submit.
 	await redis.zrem(PLAYING_KEY, String(character.id));
-	return { status: 'unranked' };
+	return unranked(character);
 }
 
 /** The xp a finished play is worth: mindblock and the bonus for a first X.
@@ -570,13 +591,15 @@ export const getServerXP = async (
 
 /** Where a simulated play ends in song time, and the fail it records. A round plays
  *  on past its fail to the map's end; a fail with EZ tells no medal how far it got. */
-const playEnd = (game: ManiaGame, round: boolean, mods: Mod[]) => {
+const playEnd = (game: ManiaGame, round: boolean, mods: Mod[], rate: number) => {
 	const failedAt = game.score.failed ? game.score.failedIndex : undefined;
 	const lastNoteEnd = game.notes.reduce((m, n) => Math.max(m, n.hold ? n.endTime : n.time), 0);
 	const failSongTime = failedAt ? game.hits[failedAt - 1].time : lastNoteEnd;
-	const fail: Pick<Pending, 'failedAt' | 'failProgress'> = failedAt ? {
+	const fail: Pick<Pending, 'failedAt' | 'failProgress' | 'failSeconds'> = failedAt ? {
 		failedAt,
-		...countsForMedals(mods) ? { failProgress: failSongTime / lastNoteEnd } : {},
+		...countsForMedals(mods) ? {
+			failProgress: failSongTime / lastNoteEnd, failSeconds: failSongTime / rate / 1000,
+		} : {},
 	} : {};
 	return {
 		lastNoteEnd, endSongTime: round ? lastNoteEnd : failSongTime, fail,
@@ -593,9 +616,7 @@ async function simulateAndStore(
 		xpMultiplier = 1, rate = 1, mods = [], round = false, board = false,
 	}: PlayOptions,
 ): Promise<StartPlayResult> {
-	const tired = restedFatigue(character.fatigue ?? undefined, Date.now());
-	const fatigue = fatigueLevel(tired);
-	const warm = warmup(tired, character.staminaUpgrades);
+	const { fatigue, warmup: warm, cooling } = tiredness(character);
 	const skills = await loadCharacterSkills(character, beatmapId, fatigue, warm);
 
 	const chart = decoder.decodeFromString(beatmap.chart);
@@ -647,7 +668,7 @@ async function simulateAndStore(
 		mods: modsKey(mods),
 	};
 
-	const { lastNoteEnd, endSongTime, fail } = playEnd(game, round, mods);
+	const { lastNoteEnd, endSongTime, fail } = playEnd(game, round, mods, rate);
 	const startedAt = Date.now();
 	const endsAt = startedAt + LEAD_IN_MS + endSongTime;
 
@@ -690,6 +711,7 @@ async function simulateAndStore(
 		), xpMultiplier),
 		fatigue,
 		warmup: warm,
+		cooling,
 		...fail,
 		...board ? { board: 'unranked' as const } : {
 			strain: {
@@ -728,6 +750,7 @@ async function simulateAndStore(
 		serverNow: Date.now(),
 		fatigue,
 		warmup: warm,
+		cooling,
 		...chunkFrom(entry, 0),
 	};
 }
@@ -779,6 +802,7 @@ const parsePlayResult = async (play: Pending, notify: boolean): Promise<StoredRe
 			failed: true,
 			notify,
 			failProgress: play.failProgress,
+			failSeconds: play.failSeconds,
 		};
 	}
 	if (play.board === 'unranked') return parseUnrankedResult(play, notify);
@@ -941,8 +965,10 @@ const resultWithMedals = async (
 ): Promise<PlayResult> => {
 	const sent = ScoreResult(result);
 	if (!medals || !sent.ok) return sent;
-	const failedAt = result.failed ? result.failProgress : undefined;
-	const unlocked = await awardMedals(characterId, { failedAt }).catch(e => {
+	const fail = result.failed ? {
+		failedAt: result.failProgress, failedSeconds: result.failSeconds,
+	} : {};
+	const unlocked = await awardMedals(characterId, fail).catch(e => {
 		console.error('[play] medals failed for', characterId, e);
 		return undefined;
 	});

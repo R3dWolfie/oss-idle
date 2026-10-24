@@ -6,6 +6,7 @@ import {
 } from '@lingui/core/macro';
 import { CarouselItem } from '../../components/BeatmapCarousel';
 import { Grades } from '@oss-idle/shared/judgement';
+import type { PlaylistMembership } from '../../db/schema/playlist';
 
 /** Per-character play history, keyed by beatmap (difficulty) id. Mirrors what
  *  SongSelect derives from the local score table; the two history-based group
@@ -20,10 +21,9 @@ export const EMPTY_HISTORY: PlayHistory = {
 	lastPlayed: new Map(), 
 };
 
-/** beatmapId -> the local playlists containing that difficulty, once per rate
- *  it is locked at there. Backs the "By Playlist" group mode; a light shape so
- *  this module stays DB-free. */
-export type PlaylistsByBeatmap = Map<number, { id: number, name: string, rate?: number }[]>;
+/** beatmapId -> the local playlists containing that difficulty, once per copy
+ *  of it there. Backs the "By Playlist" group mode. */
+export type PlaylistsByBeatmap = Map<number, PlaylistMembership[]>;
 
 export const EMPTY_PLAYLISTS: PlaylistsByBeatmap = new Map();
 
@@ -35,6 +35,8 @@ export interface Group {
 	order: number;
 	/** By Playlist: the rate the difficulty is locked at in this playlist */
 	rate?: number;
+	/** By Playlist: which copy of the difficulty this is */
+	entry?: PlaylistMembership['entry'];
 }
 
 const MINUTE = 60_000;
@@ -101,6 +103,21 @@ function recencyGroup(last: number | undefined, now: number): Group {
 	};
 }
 
+/** Ranked (in the catalog), Unranked (a player's upload) or Local (an import or
+ *  editor map: negative ids). */
+function statusGroup(item: CarouselItem): Group {
+	if (item.ranked) return {
+		key: 'ranked', label: t`Ranked`, order: 0,
+	};
+	return item.set.metadata.id < 0
+		? {
+			key: 'local', label: t`Local`, order: 2,
+		}
+		: {
+			key: 'unranked', label: t`Unranked`, order: 1,
+		};
+}
+
 /**
  * Every group a carousel item falls into for the given group mode. Most modes
  * bucket an item exactly once, but "By Playlist" mirrors osu! collections: a
@@ -115,7 +132,7 @@ export function groupsOf(
 		// all order 0: playlists render alphabetically via the label tiebreak
 		return (playlists.get(item.beatmap.metadata.id) ?? [])
 			.map((p) => ({
-				key: `p${p.id}`, label: p.name, order: 0, rate: p.rate,
+				key: `p${p.id}`, label: p.name, order: 0, rate: p.rate, entry: p.entry,
 			}));
 	}
 	const g = groupOf(item, mode, history, now, downloaded);
@@ -162,6 +179,7 @@ export function groupOf(
 					key: 'available', label: t`Available`, order: 1, 
 				};
 		}
+		case 'By Status': return statusGroup(item);
 		case 'By Rank Achieved': {
 			const rank = history.bestRank.get(bm.id);
 			if (rank === undefined) return {

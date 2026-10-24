@@ -7,26 +7,17 @@ import {
 } from './helpers/mapped.js';
 
 /**
- * Add-on moderation lifecycle. An add-on is born `unpublished` (a private draft
- * owned by its author) and enters `pending` when submitted for review. An admin
- * then `published` it (publicly browsable), `denied` it, or leaves feedback
- * without a verdict, which parks it `onHold`. The author answering by updating
- * the add-on returns it to `pending`. The UI and server branch on these keys;
- * their human labels live in `display/addon` so the keys never carry presentation.
+ * An add-on is born `unpublished` (a private draft owned by its author); its author
+ * publishes it (publicly browsable, its edits live as saved), and only an admin
+ * takes it down. Their human labels live in `display/addon` so the keys never carry presentation.
  */
-export const AddonStatuses = [
-	'unpublished',
-	'pending',
-	'onHold',
-	'denied',
-	'published',
-] as const;
+export const AddonStatuses = ['unpublished', 'published'] as const;
 export const ADDON_STATUS = mapped(AddonStatuses);
 export type AddonStatus = ValueIn<typeof ADDON_STATUS>;
 
 /**
  * `inline`: one source edited in game. `repo`: built by us from the newest
- * version tag of a public git repository, reviewed on its diff.
+ * version tag of a public git repository.
  */
 export const AddonKinds = ['inline', 'repo'] as const;
 export const ADDON_KIND = mapped(AddonKinds);
@@ -63,9 +54,6 @@ export const repoCommitUrl = (repoUrl: string, commit: string) =>
 /** Players download a bundle whole. */
 export const MAX_ADDON_BUNDLE = 8 * 1024 * 1024;
 
-/** A repository diff past this is cut, and its end says so with ADDON_DIFF_CUT. */
-export const MAX_ADDON_DIFF = 4 * 1024 * 1024;
-export const ADDON_DIFF_CUT = '... diff cut here: read the repository itself';
 const MAX_BUILD_LOG = 256 * 1024;
 
 const repoUrl = z.url({
@@ -134,14 +122,8 @@ export const addonUpdateBody = addonFields.partial().extend({
 });
 export type AddonUpdateBody = z.infer<typeof addonUpdateBody>;
 
-/** Moderation payload (admin): set the status, optionally leave feedback. */
-export const addonModerateBody = z.object({
-	status: z.enum(AddonStatuses),
-	feedback: z.string().max(2000).nullable().default(null),
-	// the code the admin read: an edit landing meanwhile is not what they approved
-	source: z.string(),
-});
-export type AddonModerateBody = z.infer<typeof addonModerateBody>;
+/** Moderation payload (admin): set the status. */
+export const addonModerateBody = z.object({ status: z.enum(AddonStatuses) });
 
 /** What the builder reports for the repo add-on it claimed. */
 export const addonBuildResult = z.discriminatedUnion('outcome', [
@@ -151,7 +133,6 @@ export const addonBuildResult = z.discriminatedUnion('outcome', [
 		commit: z.string().regex(/^[0-9a-f]{40}$/),
 		gameVersion: z.string().trim().max(20).optional(),
 		bundle: z.string().min(1).max(MAX_ADDON_BUNDLE),
-		diff: z.string().max(MAX_ADDON_DIFF + ADDON_DIFF_CUT.length + 1),
 		log: z.string().max(MAX_BUILD_LOG),
 	}),
 	// the newest tag is the commit already built

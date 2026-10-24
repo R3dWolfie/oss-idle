@@ -53,6 +53,11 @@ import { oauthRoutes } from './routes/oauth';
 import { tokenRoutes } from './oauth';
 import { apiV2Routes } from './api/v2';
 import { UPLOAD_MAX } from './beatmaps/upload';
+import { SKIN_UPLOAD_MAX } from '@oss-idle/shared/skin';
+import {
+	SKIN_DIR,
+	SKIN_ROUTE,
+} from './skins/storage';
 
 // The desktop app loads its bundle from a registered `app://` scheme, so it
 // calls us from that origin (Bearer-authed, no cookie). In dev also accept the
@@ -73,6 +78,7 @@ const TOKEN_QUERY = /([?&]token=)[^&\s]+/;
 const bodyCap = (path: string): number => {
 	if (path === '/v1/beatmap/nomination') return 200 * MB;
 	if (/^\/v1\/beatmap\/upload(\/\d+)?$/.test(path)) return UPLOAD_MAX;
+	if (/^\/v1\/skins\/\d+\/files$/.test(path)) return SKIN_UPLOAD_MAX;
 	if (/\/(icon|avatar|banner|image)$/.test(path)) return 6 * MB;
 	return 2 * MB;
 };
@@ -160,6 +166,15 @@ const app = new Hono()
 		// every upload gets a new name, never rewritten
 		onFound: (_path, c) => {
 			c.header('Cache-Control', IMMUTABLE);
+		},
+	}))
+	// skin files, named by their content: never rewritten
+	.use(`${SKIN_ROUTE}/*`, serveStatic({
+		root: SKIN_DIR,
+		rewriteRequestPath: path => path.replace(new RegExp(`^${SKIN_ROUTE}`), ''),
+		onFound: (_path, c) => {
+			c.header('Cache-Control', IMMUTABLE);
+			c.header('X-Content-Type-Options', 'nosniff');
 		},
 	}))
 	.route('/v1', v1);

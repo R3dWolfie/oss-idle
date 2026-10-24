@@ -2,7 +2,7 @@ import type {
 	Chart,
 	ChartDoc,
 } from '@oss-idle/shared/editor/chart';
-import type { SkinData } from '../gameplay/render/frame';
+import type { EditorSkins } from './editorSkins';
 import type { Overlay } from './painter';
 import type { VisualOptions } from './visualOptions';
 
@@ -22,7 +22,7 @@ export type PlayfieldClock = {
 export type ToPlayfield =
 	| { kind: 'init', canvas: OffscreenCanvas, dpr: number }
 	| { kind: 'size', w: number, h: number }
-	| { kind: 'skin', skin: SkinData['data'] }
+	| { kind: 'skins', skins: EditorSkins }
 	| { kind: 'chart', chart: Chart }
 	| { kind: 'doc', doc: ChartDoc, selected: number[] }
 	| { kind: 'select', selected: number[] }

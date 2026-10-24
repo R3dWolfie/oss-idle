@@ -24,7 +24,7 @@ const TOC: TocItem[] = [
 	item('guidelines', 'Guidelines', [
 		item('code-rules', 'Code the game refuses'),
 		item('good-add-ons', 'Good add-ons'),
-		item('review', 'Review'),
+		item('publishing', 'Publishing'),
 	]),
 ];
 

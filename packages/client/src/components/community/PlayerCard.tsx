@@ -11,6 +11,11 @@ import {
 import { countryName } from '@oss-idle/shared/display/country';
 import { statusName } from '@oss-idle/shared/display/community';
 import accuracyText from '@oss-idle/shared/display/accuracy';
+import {
+	isFirst,
+	rankTier,
+	rankTierGradient,
+} from '@oss-idle/shared/display/rankTier';
 import type { PresenceEntry } from '@oss-idle/shared/community/presence';
 
 /**
@@ -53,6 +58,11 @@ export default function PlayerCard({ character, onClick, className = '' }: {
 	const accuracy = accuracyText(character.accuracy);
 	const playCount = character.playCount.toLocaleString(i18n.locale);
 	const level = character.level;
+	const tier = rankTier(character.rank, character.rankPercent);
+	const first = !!tier && isFirst(character.rank);
+	const rankClass = [
+		'player-card__rank', tier && 'is-tiered', first && 'is-first',
+	].filter(Boolean).join(' ');
 
 	return (
 		<div
@@ -71,7 +81,12 @@ export default function PlayerCard({ character, onClick, className = '' }: {
 				/>
 			</div>
 			<div className="player-card__body">
-				<span className="player-card__rank">{character.rank ? `#${character.rank}` : '—'}</span>
+				<span
+					className={rankClass}
+					style={tier && !first ? { backgroundImage: rankTierGradient(tier) } : undefined}
+				>
+					{character.rank ? `#${character.rank}` : '—'}
+				</span>
 				<span className="player-card__name">{character.name}</span>
 				<div className="player-card__meta">
 					<div className='player-card-side recto'>

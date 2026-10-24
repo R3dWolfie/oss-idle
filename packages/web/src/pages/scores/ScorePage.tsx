@@ -14,6 +14,7 @@ import rank from '@oss-idle/shared/display/rank';
 import type { getScore } from '../../api/scores';
 import { coverBackground } from '../../api/maps';
 import Link from '../../components/Link';
+import MapperLink from '../../components/MapperLink';
 import Flag from '../../components/Flag';
 import ProfilePicture from '../../components/ProfilePicture';
 import ScoreMods from '../../components/score/ScoreMods';
@@ -54,7 +55,11 @@ export default function ScorePage({ show }: { show: Awaited<ReturnType<typeof ge
 					★ {starsText(stars)}
 				</span>
 				<b>{beatmap.version}</b>
-				<span><Trans>mapped by <b>{ph({ creator: beatmapset.creator })}</b></Trans></span>
+				<span><Trans>
+					mapped by <MapperLink userId={beatmapset.ownerUserId} className='mapper-link'>
+						{ph({ creator: beatmapset.creator })}
+					</MapperLink>
+				</Trans></span>
 			</div>
 		</div>
 

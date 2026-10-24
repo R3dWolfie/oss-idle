@@ -2,12 +2,17 @@ import {
 	type Group,
 	isAdmin,
 } from '@oss-idle/shared/groups';
+import { useLingui } from '@lingui/react/macro';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
+import { osuUserUrl } from '@oss-idle/shared/osu/profile';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
+import OutLink from '../OutLink';
 import FriendButton from './FriendButton';
 import ProfileMenu from './ProfileMenu';
 
-/** The bar under a profile's stats: the friend pill, and on someone else's
- *  profile the ⋮ menu. */
+/** The bar under a profile's stats: the friend pill, on someone else's
+ *  profile the ⋮ menu, then the osu! profile link. */
 export default function ProfileSocialBar({ userId, characterId, name, restricted, groups }: {
 	userId: number;
 	characterId: number;
@@ -15,6 +20,7 @@ export default function ProfileSocialBar({ userId, characterId, name, restricted
 	restricted: boolean;
 	groups: Group[];
 }) {
+	const { t } = useLingui();
 	const me = useCurrentUser();
 	const other = !!me && me.id !== userId;
 	return (
@@ -27,6 +33,14 @@ export default function ProfileSocialBar({ userId, characterId, name, restricted
 				restricted={restricted}
 				sanctionable={!isAdmin(groups)}
 			/>}
+			<OutLink
+				href={osuUserUrl(userId)}
+				target='_blank'
+				className='character__osu-link'
+				label={t`osu! profile`}
+			>
+				<FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+			</OutLink>
 		</div>
 	);
 }

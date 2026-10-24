@@ -33,7 +33,7 @@ export default function ChatConsole() {
 	const [openReports, setOpenReports] = useState(0);
 	useEffect(() => {
 		getReports()
-			.then(r => setOpenReports(r.filter(x => !x.resolvedAt).length))
+			.then(r => setOpenReports(r.length))
 			.catch(() => undefined);
 	}, []);
 	const logRef = useRef<HTMLDivElement>(null);

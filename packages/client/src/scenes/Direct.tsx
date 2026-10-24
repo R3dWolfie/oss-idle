@@ -3,13 +3,21 @@ import {
 	Trans,
 	useLingui,
 } from '@lingui/react/macro';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { openPage } from '../globals';
 import Page from '../components/page/Page';
 import DirectView from '../components/direct/DirectView';
+import { directDisplay } from '../components/direct/directState';
 
-/** oss!direct: every ranked map, downloadable from inside the game. */
+/** oss!direct: every ranked or player's map, downloadable from inside the game. */
 export default function Direct() {
 	const { t } = useLingui();
+	const [display] = useSynced(directDisplay);
+	const subtitles = {
+		ranked: [t`The latest ranked beatmaps`, t`The most played ranked beatmaps`],
+		unranked: [t`The latest unranked beatmaps`, t`The most played unranked beatmaps`],
+		all: [t`The latest beatmaps`, t`The most played beatmaps`],
+	}[display];
 
 	return (
 		<Page
@@ -19,13 +27,13 @@ export default function Direct() {
 				{
 					id: 'new',
 					label: <Trans>New Releases</Trans>,
-					subtitle: t`The latest ranked beatmaps`,
+					subtitle: subtitles[0],
 					render: () => <DirectView sort='new' />,
 				},
 				{
 					id: 'played',
 					label: <Trans>Most Played</Trans>,
-					subtitle: t`The most played ranked beatmaps`,
+					subtitle: subtitles[1],
 					render: () => <DirectView sort='played' />,
 				},
 			]}

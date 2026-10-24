@@ -77,7 +77,7 @@ export default function EditorSoundFiles({ session, files }: {
 						<span className='editor__sound-file-name'>{name}</span>
 						<span className='editor__sound-file-kind'>{kind(name)}</span>
 						<span className='editor__sound-file-uses'>
-							{plural(uses.get(name) ?? 0, {
+							{plural(ph({ count: uses.get(name) ?? 0 }), {
 								one: '# note', other: '# notes', 
 							})}
 						</span>
@@ -107,7 +107,7 @@ export default function EditorSoundFiles({ session, files }: {
 			{deleting && (
 				<ConfirmMenu
 					title={t`Delete ${ph({ file: deleting.name })}?`}
-					sub={plural(deleting.uses, {
+					sub={plural(ph({ count: deleting.uses }), {
 						one: '# note uses this file. It will play the default sound instead.',
 						other: '# notes use this file. They will play the default sounds instead.',
 					})}

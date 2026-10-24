@@ -30,7 +30,7 @@ export const report = (userId: number, body: ReportBody) =>
 		param: { userId: String(userId) }, json: body,
 	}));
 
-/** Admin: the latest reports, open ones first. */
+/** Admin: the open reports. */
 export const getReports = () => unwrap(rpc.v1.social.reports.$get());
 
 export const resolveReport = (id: number) =>

@@ -126,6 +126,9 @@ type CatalogSet = {
 	size: number;
 	/** listed in song select before it is downloaded */
 	bundled: boolean;
+	/** false for a player's own map not ranked yet */
+	ranked: boolean;
+	/** when it was ranked, or submitted for one not ranked */
 	rankedAt: string;
 	/** every difficulty's plays */
 	plays: number;
@@ -146,7 +149,9 @@ const catalogSets = async (where: SQL | undefined): Promise<CatalogSet[]> => {
 			title: beatmapset.title,
 			creator: beatmapset.creator,
 			bundled: beatmapset.bundled,
+			status: beatmapset.status,
 			rankedAt: beatmapset.rankedAt,
+			submittedAt: beatmapset.submittedAt,
 			b: beatmaps,
 		})
 		.from(beatmapset)
@@ -164,7 +169,8 @@ const catalogSets = async (where: SQL | undefined): Promise<CatalogSet[]> => {
 				artist: row.artist,
 				creator: row.creator,
 				bundled: row.bundled,
-				rankedAt: (row.rankedAt ?? new Date()).toISOString(),
+				ranked: row.status === 'ranked',
+				rankedAt: (row.rankedAt ?? row.submittedAt).toISOString(),
 				plays: 0,
 				size: statSync(oszPath(row.setId), { throwIfNoEntry: false })?.size ?? 0,
 				versions: [],
@@ -278,6 +284,9 @@ export const nameMatches = (search?: string) => {
 		like(beatmapset.creator, pattern),
 	);
 };
+
+/** Every player's own map not ranked yet, catalog-shaped like the ranked catalog. */
+export const unrankedSets = () => catalogSets(listCondition('unranked'));
 
 /** One player's own map not ranked yet, catalog-shaped for the game to download it. */
 export const unrankedSet = async (setId: number): Promise<CatalogSet | undefined> =>

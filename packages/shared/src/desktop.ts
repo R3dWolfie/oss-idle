@@ -30,8 +30,8 @@ export interface DesktopPresence {
 export interface DesktopUpdater {
 	/** Ask the update feed whether a newer build exists; resolves to the outcome. */
 	check(): Promise<DesktopUpdateStatus>;
-	/** Download the available update (progress arrives via {@link onStatus}). */
-	download(): Promise<void>;
+	/** Download the available update (progress arrives via {@link onStatus}); resolves to the outcome. */
+	download(): Promise<DesktopUpdateStatus>;
 	/** Quit and install a downloaded update (relaunches into the new version). */
 	install(): void;
 	/** Subscribe to update lifecycle/progress; returns an unsubscribe fn. */

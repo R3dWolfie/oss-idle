@@ -38,6 +38,7 @@ import {
 	togglePreview,
 } from '../preview';
 import Link from './Link';
+import MapperLink from './MapperLink';
 import ManiaIcon from './ManiaIcon';
 import MapsetDiffsPopup from './MapsetDiffsPopup';
 
@@ -45,6 +46,8 @@ export type Mapset = MapCover & {
 	title: string;
 	artist: string;
 	creator: string;
+	/** the mapper's osu! id, once the set is credited to them */
+	ownerUserId?: number | null;
 	plays: string | null;
 	rankedAt: string | null;
 	/** the preview track */
@@ -167,7 +170,7 @@ export default function MapsetCard({ mapset }: { mapset: Mapset }) {
 					</div>
 					<div className='list__beatmap_row list__beatmap_row--mapper'>
 						<span className='list__beatmap_ellipsis'>
-							<Trans>mapped by <span className='list__beatmap_mapper'>{ph({ creator: mapset.creator })}</span></Trans>
+							<Trans>mapped by <MapperLink userId={mapset.ownerUserId} className='list__beatmap_mapper'>{ph({ creator: mapset.creator })}</MapperLink></Trans>
 						</span>
 					</div>
 					<div className='list__beatmap_row list__beatmap_row--stats'>

@@ -13,7 +13,7 @@ import rosuReady from '../rosu';
 import BeatmapStore, { type SetRecord } from './beatmap_store';
 import LightBeatmapSet from './LightBeatmapSet';
 import { pickFile } from '../../pickFile';
-import { asSet } from './oszFiles';
+import { unwrapArchive } from '@oss-idle/shared/osuSkin/files';
 
 /** FNV-1a, 31 bits: stable across sessions, unlike any random id. */
 const hash = (text: string): number => {
@@ -37,7 +37,7 @@ export const localSetId = (map: SetNames) =>
 
 /** Store an .osz from the player's own files as a local set. */
 export const importOsz = async (data: Uint8Array): Promise<SetRecord> =>
-	importFiles(asSet(await new Promise<Unzipped>((resolve, reject) => {
+	importFiles(unwrapArchive(await new Promise<Unzipped>((resolve, reject) => {
 		unzip(data, (err, out) => (err ? reject(err) : resolve(out)));
 	})));
 

@@ -28,7 +28,7 @@ export default function AddonCodeCheck({ source }: { source: string }) {
 	return (
 		<div className='addon-check'>
 			<span className='addon-check__title'>
-				<Trans>Not allowed: add-ons may not run code that was not reviewed</Trans>
+				<Trans>Not allowed: add-ons may not run code players cannot read in them</Trans>
 			</span>
 			{found.slice(0, 10).map(v => (
 				<span key={`${v.line}:${v.column}:${v.rule}`}>{v.line}:{v.column + 1} {v.rule}</span>

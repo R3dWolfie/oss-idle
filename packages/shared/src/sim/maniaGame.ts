@@ -136,6 +136,9 @@ export class ManiaGame {
 	lastFlash?: JudgementFlash;
 	/** per-column song-time of the last hit, for receptor glow */
 	readonly columnFlash: number[];
+	/** per-column song-times the last hold was caught and let go: held while start > end */
+	readonly holdStart: number[];
+	readonly holdEnd: number[];
 
 	private lastTime: number = 0;
 	private readonly playOn: boolean;
@@ -146,6 +149,8 @@ export class ManiaGame {
 		const beatmap = new ManiaRuleset().applyToBeatmap(rawBeatmap);
 		this.keyCount = beatmap.totalColumns;
 		this.columnFlash = new Array(this.keyCount).fill(-Infinity);
+		this.holdStart = new Array(this.keyCount).fill(-Infinity);
+		this.holdEnd = new Array(this.keyCount).fill(-Infinity);
 
 		this.notes = beatmap.hitObjects
 			.filter(o => 'column' in o)
@@ -372,6 +377,8 @@ export class ManiaGame {
 		this.timings.length = 0;
 		this.lastFlash = undefined;
 		this.columnFlash.fill(-Infinity);
+		this.holdStart.fill(-Infinity);
+		this.holdEnd.fill(-Infinity);
 		this.score.reset();
 		for (const n of this.notes) {
 			n.headJudged = false;
@@ -409,6 +416,7 @@ export class ManiaGame {
 				// that press still feeds the unstable rate as its own sample.
 				note.holding = !ev.ignore;
 				if (note.holding) {
+					this.holdStart[ev.column] = ev.time;
 					note.headOffset = offset;
 					this.timings.push(offset);
 				}
@@ -420,6 +428,7 @@ export class ManiaGame {
 		} else {
 			if (note.tailJudged) return;
 			note.tailJudged = true;
+			if (note.holding) this.holdEnd[ev.column] = ev.time;
 			note.holding = false;
 			const j = this.judgeTail(note, ev);
 			// a dropped hold: remember where along the body it broke, so the renderer
@@ -503,6 +512,7 @@ export class ManiaGame {
 		} else {
 			if (note.tailJudged) return;
 			note.tailJudged = true;
+			if (note.holding) this.holdEnd[note.column] = ev.time;
 			note.holding = false;
 			this.registerHit(JUDGEMENT.MISS, note.column, note.endTime, note.endTime, null);
 		}

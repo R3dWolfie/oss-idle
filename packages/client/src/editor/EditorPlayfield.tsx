@@ -4,7 +4,10 @@ import {
 	useRef,
 } from 'react';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
-import { currentSkin } from '../osu/skin/Skin';
+import {
+	currentEditorSkin,
+	currentSkin,
+} from '../osu/skin/Skin';
 import { SETTINGS } from '../db/settings';
 import {
 	fieldGeometry,
@@ -23,12 +26,13 @@ export default function EditorPlayfield({ session }: { session: EditorSession })
 	const hostRef = useRef<HTMLDivElement>(null);
 	const linkRef = useRef<PlayfieldLink>(undefined);
 	const [skin] = useSynced(currentSkin);
-	const skinRef = useRef(skin);
-	skinRef.current = skin;
+	const [editorSkin] = useSynced(currentEditorSkin);
+	const skinsRef = useRef([editorSkin, skin] as const);
+	skinsRef.current = [editorSkin, skin];
 
 	useEffect(() => {
-		linkRef.current?.skin(skin);
-	}, [skin]);
+		linkRef.current?.setSkins(editorSkin, skin);
+	}, [editorSkin, skin]);
 
 	useEffect(() => {
 		const host = hostRef.current!;
@@ -37,7 +41,7 @@ export default function EditorPlayfield({ session }: { session: EditorSession })
 		host.append(canvas);
 		const link = new PlayfieldLink(canvas, session);
 		linkRef.current = link;
-		link.skin(skinRef.current);
+		link.setSkins(...skinsRef.current);
 		const pointer = new EditorPointer(session);
 		let w = 0;
 		let h = 0;
@@ -57,11 +61,13 @@ export default function EditorPlayfield({ session }: { session: EditorSession })
 		for (const setting of settings) void setting.sync(sync);
 		sync();
 
-		const geometry = () =>
-			fieldGeometry(session.chart.keys, sideField(session), skinRef.current, w, h);
-		const pointed = (e: { clientX: number, clientY: number }): PointerAt => {
+		const geometry = () => link.skins
+			&& fieldGeometry(session.chart.keys, sideField(session), link.skins, w, h);
+		// nothing to point at until the skins are decoded
+		const pointed = (e: { clientX: number, clientY: number }): PointerAt | undefined => {
 			const rect = host.getBoundingClientRect();
 			const g = geometry();
+			if (!g) return undefined;
 			const x = (e.clientX - rect.left - g.x0) / g.columnWidth;
 			const column = Math.floor(x);
 			return {
@@ -76,15 +82,21 @@ export default function EditorPlayfield({ session }: { session: EditorSession })
 		const showPointer = () => link.overlay(pointer.overlay());
 
 		const onDown = (e: MouseEvent) => {
-			const tolerance = geometry().noteHeight / session.zoom;
-			pointer.down(pointed(e), e.button, e.ctrlKey || e.metaKey, tolerance);
+			const g = geometry();
+			const at = pointed(e);
+			if (!g || !at) return;
+			pointer.down(at, e.button, e.ctrlKey || e.metaKey, g.noteHeight / session.zoom);
 			showPointer();
+		};
+		const move = (e: { clientX: number, clientY: number }) => {
+			const at = pointed(e);
+			return !!at && pointer.move(at);
 		};
 		const onMove = (e: MouseEvent) => {
 			last = {
 				clientX: e.clientX, clientY: e.clientY,
 			};
-			pointer.move(pointed(e));
+			move(e);
 			showPointer();
 		};
 		const onUp = () => {
@@ -102,7 +114,7 @@ export default function EditorPlayfield({ session }: { session: EditorSession })
 			if (e.ctrlKey) session.zoomBy(e.deltaY < 0 ? 1.15 : 1 / 1.15);
 			else session.step(e.deltaY > 0 ? 1 : -1, e.shiftKey ? SHIFT_STEPS : 1);
 			// the chart moved under a still mouse: a drag follows it
-			if (last) pointer.move(pointed(last));
+			if (last) move(last);
 			showPointer();
 		};
 
@@ -111,7 +123,7 @@ export default function EditorPlayfield({ session }: { session: EditorSession })
 		const follow = () => {
 			frame = requestAnimationFrame(follow);
 			if (!last || !pointer.dragging || !session.isPlaying) return;
-			if (pointer.move(pointed(last))) showPointer();
+			if (move(last)) showPointer();
 		};
 		frame = requestAnimationFrame(follow);
 

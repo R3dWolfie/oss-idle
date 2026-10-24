@@ -7,7 +7,9 @@ import {
 } from '../../online/skins';
 import ListingIcon from '../listing/ListingIcon';
 
-export default function SkinReadMeta({ skin }: { skin: Skin | SkinCreateBody }) {
+type Shown = Skin | (SkinCreateBody & { authorName?: string });
+
+export default function SkinReadMeta({ skin }: { skin: Shown }) {
 	return (
 		<>
 			<div className='listing-view__head'>
@@ -16,7 +18,7 @@ export default function SkinReadMeta({ skin }: { skin: Skin | SkinCreateBody }) 
 					<div className='listing-view__name'>
 						{skin.name}<span className='listing__ver'>v{skin.version}</span>
 					</div>
-					{'authorName' in skin && (
+					{skin.authorName && (
 						<div className='listing__by'>
 							<Trans>by {ph({ author: skin.authorName })}</Trans>
 						</div>

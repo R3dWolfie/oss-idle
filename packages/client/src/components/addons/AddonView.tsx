@@ -124,8 +124,7 @@ type Props = {
  * The single add-on view, shared by the editor, details, install preview and
  * update diff. Metadata sits on the left (editable inputs in edit mode, a
  * read-only summary otherwise), the code on the right; the back/return action
- * lives in the button row so it stays reachable. Moderator feedback only shows
- * while editing.
+ * lives in the button row so it stays reachable.
  */
 export default function AddonView(props: Props) {
 	const { detail, onBack } = props;
@@ -166,7 +165,7 @@ export default function AddonView(props: Props) {
 			<div className='listing-view__cols'>
 				<div className='listing-view__meta'>
 					{editing
-						? <AddonEditMeta form={form} set={set} feedback={own?.feedback} />
+						? <AddonEditMeta form={form} set={set} />
 						: <AddonReadMeta detail={detail} />}
 				</div>
 

@@ -61,17 +61,31 @@ const warmGear = (upgrades: number): number => {
 	return Math.min(upgrades, GEAR_LADDER) + (1 - GEAR_DECAY ** tiers) / (1 - GEAR_DECAY);
 };
 
-/** How warmed up `minutes` of fatigue leave a character with `upgrades` stamina gear: 0 cold, 1 warm. */
-export const warmup = (minutes: number, upgrades = 0): number => {
+/** The strained minutes where warm-up peaks, starts cooling, is half and is cold, with `upgrades` stamina gear. */
+export const warmupCurve = (upgrades = 0) => {
 	const gear = warmGear(upgrades);
 	const cold = Math.min(COLD_MINUTES + gear * GEAR_HOLD, STRAIN_CAP);
 	const half = Math.min(HALF_WARM_MINUTES + gear * GEAR_HOLD, cold);
 	const peakEnd = Math.min(WARM_MINUTES + gear * GEAR_HOLD, half);
 	const warm = Math.min(WARM_MINUTES / (1 + gear * GEAR_SPEED), peakEnd);
+	return {
+		warm, peakEnd, half, cold,
+	};
+};
+
+/** How warmed up `minutes` of fatigue leave a character with `upgrades` stamina gear: 0 cold, 1 warm. */
+export const warmup = (minutes: number, upgrades = 0): number => {
+	const {
+		warm, peakEnd, half, cold,
+	} = warmupCurve(upgrades);
 	if (minutes < warm) return ease(minutes, 0, warm);
 	if (minutes < half) return lerp(1, 0.5, ease(minutes, peakEnd, half));
 	return lerp(0.5, 0, ease(minutes, half, cold));
 };
+
+/** Whether `minutes` of fatigue are past warm-up's peak, cooling it down. */
+export const coolingDown = (minutes: number, upgrades = 0): boolean =>
+	minutes > warmupCurve(upgrades).peakEnd;
 
 /** The share of the physical skills' xp gains a play at fatigue `level` keeps. */
 export const fatigueXp = (level: number): number => lerp(1, XP_FLOOR, level);

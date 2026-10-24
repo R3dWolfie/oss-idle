@@ -5,12 +5,14 @@ import BeatmapStore from '../osu/beatmap/beatmap_store';
 import BeatmapAPI from '../osu/beatmap/beatmap_api';
 import { t } from '@lingui/core/macro';
 import {
+	advanceQueue,
 	AUTOPILOT_MODE,
 	type AutopilotMode,
 	type QueueEdit,
 	type QueueEntry,
 	type QueueSource,
 	type QueueState as ServerQueueState,
+	withRepeat,
 } from '@oss-idle/shared/queue';
 import Socket from '../online/socket';
 import Entities from '../entity/entities';
@@ -35,13 +37,16 @@ export const autopilotModeLabels = (): Record<AutopilotMode, string> => ({
 	[AUTOPILOT_MODE.LOOP]: t`Loop`,
 });
 
+/** A map waiting to play, with its repeat run. */
+export type Queued = Pick<QueueEntry, 'repeat' | 'played'> & { beatmap: LightBeatmap };
+
 export type QueueState = QueueSource & {
 	/** what is waiting to play, in play order. The head is what plays next. */
-	entries: LightBeatmap[];
+	entries: Queued[];
 };
 
 /** Fisher-Yates, on a copy. */
-const shuffled = (entries: LightBeatmap[]): LightBeatmap[] => {
+const shuffled = <T>(entries: T[]): T[] => {
 	const out = [...entries];
 	for (let i = out.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
@@ -64,19 +69,19 @@ export const fillQueue = (beatmap: LightBeatmap, from: {
 	groupKey?: string;
 	label: string;
 	playlists: boolean;
-	pool: LightBeatmap[];
+	pool: Queued[];
 }): void => {
 	const { mode, groupKey } = from;
 	if (mode === AUTOPILOT_MODE.DISABLED) return;
 	if (mode === AUTOPILOT_MODE.LOOP) {
 		PlayQueue.start({
 			label: beatmap.set.metadata.title, mode, groupKey,
-		}, [beatmap], 0);
+		}, [{ beatmap }], 0);
 		return;
 	}
 	if (mode === AUTOPILOT_MODE.PLAYLIST && !from.playlists) return;
-	const pool = from.pool.filter(b => canPlayAt(b.lockedRate));
-	const index = pool.findIndex(b => b.is(beatmap));
+	const pool = from.pool.filter(q => canPlayAt(q.beatmap.lockedRate));
+	const index = pool.findIndex(q => q.beatmap.is(beatmap));
 	if (index < 0) return;
 	PlayQueue.start({
 		label: from.label, mode, groupKey,
@@ -85,14 +90,20 @@ export const fillQueue = (beatmap: LightBeatmap, from: {
 
 /** Only a downloaded map can be played, so only a downloaded map can wait in
  *  the queue - that is what keeps "the head is next" honest. */
-const playable = (entries: LightBeatmap[]): LightBeatmap[] =>
-	entries.filter(e => e.metadata.runtime);
+const playable = (entries: Queued[]): Queued[] =>
+	entries.filter(e => e.beatmap.metadata.runtime);
 
-const toEntry = (b: LightBeatmap): QueueEntry => ({
-	beatmapId: b.metadata.id, rate: b.lockedRate,
+const toEntry = ({ beatmap, repeat, played }: Queued): QueueEntry => ({
+	beatmapId: beatmap.metadata.id, rate: beatmap.lockedRate, repeat, played,
 });
 
-type PlaylistDrift = { playlist: Playlist, pool: LightBeatmap[] };
+/** The entry at `at`, named as the server finds it among the map's copies. */
+const refAt = (entries: Queued[], at: number) => ({
+	...toEntry(entries[at]),
+	nth: entries.slice(0, at).filter(e => e.beatmap.is(entries[at].beatmap)).length,
+});
+
+type PlaylistDrift = { playlist: Playlist, pool: Queued[] };
 
 const entryKey = (b: LightBeatmap): string => `${b.metadata.id}@${b.lockedRate ?? 0}`;
 
@@ -116,7 +127,7 @@ const online = (): boolean => {
 
 /** The maps the server's entries name, the downloaded copy first. One this
  *  device has never heard of stays on the server, just not in this view. */
-const resolve = async (entries: QueueEntry[]): Promise<LightBeatmap[]> => {
+const resolve = async (entries: QueueEntry[]): Promise<Queued[]> => {
 	const byId = new Map<number, LightBeatmap>();
 	const add = (sets: LightBeatmapSet[]) => {
 		for (const b of sets.flatMap(s => s.beatmaps)) {
@@ -128,7 +139,12 @@ const resolve = async (entries: QueueEntry[]): Promise<LightBeatmap[]> => {
 		const manifest = await BeatmapAPI.getManifest().catch(() => undefined);
 		if (manifest) add(manifest.beatmaps.map(m => LightBeatmapSet.fromMetadata(m)));
 	}
-	return entries.flatMap(e => byId.get(e.beatmapId)?.at(e.rate) ?? []);
+	return entries.flatMap(({ beatmapId, rate, repeat, played }) => {
+		const beatmap = byId.get(beatmapId)?.at(rate);
+		return beatmap ? [{
+			beatmap, repeat, played,
+		}] : [];
+	});
 };
 
 /**
@@ -158,10 +174,10 @@ export default class PlayQueue {
 	 *  removed, played) never read as the playlist changing. */
 	private static queued: { groupKey: string, keys: Set<string> } | undefined;
 
-	private static remember(source: QueueSource, pool: LightBeatmap[]): void {
+	private static remember(source: QueueSource, pool: Queued[]): void {
 		this.queued = source.groupKey
 			? {
-				groupKey: source.groupKey, keys: new Set(pool.map(entryKey)),
+				groupKey: source.groupKey, keys: new Set(pool.map(q => entryKey(q.beatmap))),
 			}
 			: undefined;
 	}
@@ -192,7 +208,7 @@ export default class PlayQueue {
 	 */
 	public static start(
 		source: QueueSource,
-		pool: LightBeatmap[],
+		pool: Queued[],
 		index: number,
 	): void {
 		const launched = pool[index];
@@ -204,7 +220,7 @@ export default class PlayQueue {
 		this.remember(source, playable(pool));
 		// the launched map comes round again at the back, so a single-map queue
 		// (LOOP) repeats and a playlist wraps
-		const entries = launched?.metadata.runtime ? [...ordered, launched] : ordered;
+		const entries = launched?.beatmap.metadata.runtime ? [...ordered, launched] : ordered;
 		void this.state.set({
 			...source, entries,
 		});
@@ -230,14 +246,15 @@ export default class PlayQueue {
 		const playlist = await sourcePlaylist(s);
 		if (!playlist) return undefined;
 		const rows = await PlaylistEntry.query(
-			'SELECT * FROM playlist_entry WHERE playlistId = ? ORDER BY rowid', [playlist.id],
+			'SELECT * FROM playlist_entry WHERE playlistId = ? ORDER BY position, rowid', [playlist.id],
 		);
 		const pool = playable(await resolve(rows.map(r => ({
-			beatmapId: r.beatmapId, rate: r.rate,
-		})))).filter(b => canPlayAt(b.lockedRate));
-		const was = this.queued?.groupKey === s.groupKey ? this.queued.keys : undefined;
-		const have = was ?? new Set(s.entries.map(entryKey));
-		const same = pool.every(b => have.has(entryKey(b))) && (!was || pool.length === was.size);
+			beatmapId: r.beatmapId, rate: r.rate, repeat: r.repeat > 1 ? r.repeat : undefined,
+		})))).filter(q => canPlayAt(q.beatmap.lockedRate));
+		const queued = this.queued;
+		const was = queued && queued.groupKey === s.groupKey ? queued.keys : undefined;
+		const have = was ?? new Set(s.entries.map(e => entryKey(e.beatmap)));
+		const same = pool.every(q => have.has(entryKey(q.beatmap))) && (!was || pool.length === was.size);
 		return same || !pool.length ? undefined : {
 			playlist, pool,
 		};
@@ -249,19 +266,20 @@ export default class PlayQueue {
 		const drift = await this.playlistDrift();
 		const s = this.state.get();
 		if (!drift || !s) return;
-		const current = s.entries.at(-1);
-		const rest = drift.pool.filter(b => !current?.is(b));
+		const current: Queued | undefined = s.entries[s.entries.length - 1];
+		const same = (a: Queued, b?: Queued) => !!b && a.beatmap.is(b.beatmap);
+		const rest = drift.pool.filter(q => !same(q, current));
 		// in order, carry on where the queue was rather than from the top: after the map
 		// that just started, or (if it left the playlist) from the next one still in it
-		const at = current ? drift.pool.findIndex(b => b.is(current)) : -1;
+		const at = drift.pool.findIndex(q => same(q, current));
 		const anchor = at >= 0
 			? drift.pool[(at + 1) % drift.pool.length]
-			: s.entries.find(e => rest.some(b => b.is(e)));
-		const from = Math.max(0, rest.findIndex(b => b.is(anchor)));
+			: s.entries.find(e => rest.some(q => same(q, e)));
+		const from = Math.max(0, rest.findIndex(q => same(q, anchor)));
 		const ordered = s.mode === AUTOPILOT_MODE.SHUFFLE
 			? shuffled(rest)
 			: [...rest.slice(from), ...rest.slice(0, from)];
-		const entries = current && drift.pool.some(b => b.is(current)) ? [...ordered, current] : ordered;
+		const entries = current && at >= 0 ? [...ordered, current] : ordered;
 		const source: QueueSource = {
 			label: drift.playlist.name, mode: s.mode, groupKey: `p${drift.playlist.id}`,
 		};
@@ -287,7 +305,7 @@ export default class PlayQueue {
 
 	/** What plays next: the head of the queue, always. */
 	public static next(): LightBeatmap | undefined {
-		return this.state.get()?.entries[0];
+		return this.state.get()?.entries[0]?.beatmap;
 	}
 
 	/**
@@ -302,10 +320,10 @@ export default class PlayQueue {
 	public static advance(played: LightBeatmap): void {
 		const s = this.state.get();
 		if (!s || online()) return;
-		const at = s.entries.findIndex(e => e.is(played));
+		const at = s.entries.findIndex(e => e.beatmap.is(played));
 		if (at < 0) return;
 		void this.state.set({
-			...s, entries: [...s.entries.filter((_, i) => i !== at), s.entries[at]],
+			...s, entries: advanceQueue(s.entries, at),
 		});
 	}
 
@@ -313,27 +331,53 @@ export default class PlayQueue {
 	 *  an idle client is enough to have something to play. */
 	public static append(beatmap: LightBeatmap, label = ''): void {
 		const s = this.state.get();
-		this.edit(s ? [...s.entries, beatmap] : [beatmap], {
-			op: 'append', entry: toEntry(beatmap), label,
+		const queued = { beatmap };
+		this.edit([...s?.entries ?? [], queued], {
+			op: 'append', entry: toEntry(queued), label,
 		}, label);
 	}
 
 	/** Put a map at the head, where it plays next. */
 	public static playNext(beatmap: LightBeatmap, label = ''): void {
-		const s = this.state.get();
+		const entries = this.state.get()?.entries ?? [];
 		// by difficulty, not by instance: the library hands out fresh objects
-		// whenever it reloads, and two of them are the same map
-		this.edit([beatmap, ...(s?.entries ?? []).filter(e => !e.is(beatmap))], {
-			op: 'playNext', entry: toEntry(beatmap), label,
+		// whenever it reloads, and two of them are the same map. One already
+		// queued moves up; its other copies keep their places.
+		const at = entries.findIndex(e => e.beatmap.is(beatmap));
+		const queued = entries[at] ?? { beatmap };
+		this.edit([queued, ...entries.filter((_, i) => i !== at)], {
+			op: 'playNext', entry: toEntry(queued), label,
 		}, label);
 	}
 
 	public static remove(at: number): void {
 		const s = this.state.get();
+		if (!s?.entries[at]) return;
+		this.edit(s.entries.filter((_, i) => i !== at), {
+			op: 'remove', entry: refAt(s.entries, at),
+		});
+	}
+
+	/** A copy right after it, to move where it should play again. */
+	public static duplicate(at: number): void {
+		const s = this.state.get();
 		const entry = s?.entries[at];
 		if (!s || !entry) return;
-		this.edit(s.entries.filter((_, i) => i !== at), {
-			op: 'remove', entry: toEntry(entry),
+		const copy = {
+			beatmap: entry.beatmap, repeat: entry.repeat,
+		};
+		this.edit(s.entries.toSpliced(at + 1, 0, copy), {
+			op: 'duplicate', entry: refAt(s.entries, at),
+		});
+	}
+
+	/** Play it `repeat` times in a row before the queue moves on. */
+	public static setRepeat(at: number, repeat: number): void {
+		const s = this.state.get();
+		const entry = s?.entries[at];
+		if (!s || !entry) return;
+		this.edit(s.entries.with(at, withRepeat(entry, repeat)), {
+			op: 'repeat', entry: refAt(s.entries, at), repeat,
 		});
 	}
 
@@ -348,7 +392,9 @@ export default class PlayQueue {
 		const before = entries[at];
 		entries.splice(at, 0, moved);
 		this.edit(entries, {
-			op: 'move', entry: toEntry(moved), before: before && toEntry(before),
+			op: 'move',
+			entry: refAt(s.entries, from),
+			before: before && refAt(s.entries, s.entries.indexOf(before)),
 		});
 	}
 
@@ -360,7 +406,7 @@ export default class PlayQueue {
 	}
 
 	/** Show the edit now; signed in, the server's push confirms it. */
-	private static edit(entries: LightBeatmap[], edit: QueueEdit, label = ''): void {
+	private static edit(entries: Queued[], edit: QueueEdit, label = ''): void {
 		const s = this.state.get();
 		void this.state.set({
 			// the server plays ranked maps this device never downloaded

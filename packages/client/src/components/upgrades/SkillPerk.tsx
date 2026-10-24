@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import HoverCardRow from '@oss-idle/shared/display/HoverCardRow';
+import { warmupCurve } from '@oss-idle/shared/fatigue';
 import {
 	fastestRate,
 	rateLabel,
@@ -12,14 +13,14 @@ import {
 
 const Arrow = () => <span className="ladder-tip__arrow"> → </span>;
 
-/** What a skill's upgrade count gives besides its XP boost, written for display. */
-const PERKS: Partial<Record<SkillName, (upgrades: number) => string>> = {
-	[SKILL.speed]: upgrades => upgrades > 0
-		? `${rateLabel(slowestRate(upgrades))}–${rateLabel(fastestRate(upgrades))}`
-		: rateLabel(1),
+const hours = (minutes: number) => {
+	const m = Math.round(minutes);
+	return `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`;
 };
 
-/** The upgrade tooltip's line for a skill's own perk: what it gives now, and after
+type Perk = [label: string, value: (upgrades: number) => string];
+
+/** The upgrade tooltip's lines for a skill's own perks: what they give now, and after
  *  the next upgrade. Nothing for a skill without one. */
 export default function SkillPerk({ skill, upgrades, next }: {
 	skill: SkillName,
@@ -27,12 +28,20 @@ export default function SkillPerk({ skill, upgrades, next }: {
 	next: number,
 }) {
 	const { t } = useLingui();
-	const perk = PERKS[skill];
-	if (!perk) return null;
-	const labels: Partial<Record<SkillName, string>> = { [SKILL.speed]: t`Rates` };
-	const now = perk(upgrades);
-	const after = perk(next);
-	return <HoverCardRow label={labels[skill]}>
-		{now}{after !== now && <><Arrow /><span className="ladder-tip__boost">{after}</span></>}
-	</HoverCardRow>;
+	const perks: Partial<Record<SkillName, Perk[]>> = {
+		[SKILL.speed]: [[t`Rates`, u => u > 0
+			? `${rateLabel(slowestRate(u))}–${rateLabel(fastestRate(u))}`
+			: rateLabel(1)]],
+		[SKILL.stamina]: [
+			[t`Warm-up`, u => hours(warmupCurve(u).warm)],
+			[t`Peak until`, u => hours(warmupCurve(u).peakEnd)],
+		],
+	};
+	return perks[skill]?.map(([label, perk]) => {
+		const now = perk(upgrades);
+		const after = perk(next);
+		return <HoverCardRow key={label} label={label}>
+			{now}{after !== now && <><Arrow /><span className="ladder-tip__boost">{after}</span></>}
+		</HoverCardRow>;
+	});
 }

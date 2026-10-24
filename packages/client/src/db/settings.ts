@@ -19,7 +19,7 @@ export type ScoreTab = ValueIn<typeof SCORE_TAB>;
 
 export const GroupOptions = [
 	'No Grouping', 'By Artist', 'By BPM', 'By Creator', 'By Difficulty',
-	'By Download Status', 'By Length', 'By Playlist', 'By Rank Achieved', 'By Title', 'Recently Played',
+	'By Download Status', 'By Length', 'By Playlist', 'By Rank Achieved', 'By Status', 'By Title', 'Recently Played',
 ] as const;
 export const GROUP_OPTION = mapped(GroupOptions);
 export type GroupOption = ValueIn<typeof GROUP_OPTION>;
@@ -112,6 +112,11 @@ const defaults = [
 	 */
 	option<number>()('longpress', 400),
 	option<number>()('scrollspeed', 16),
+	/**
+	 * The installed skin the editor draws its notes with (0: the default skin); the
+	 * gameplay skin is the enabled one.
+	 */
+	option<number>()('editorSkin', 0),
 	/**
 	 * Playback rate picked in song select (held to what Speed upgrades unlock), and
 	 * whether the music's pitch follows it.

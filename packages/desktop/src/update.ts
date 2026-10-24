@@ -79,8 +79,8 @@ export async function checkForUpdate(): Promise<DesktopUpdateStatus> {
 	return status;
 }
 
-export async function downloadUpdate(): Promise<void> {
-	if (unavailable()) return;
+export async function downloadUpdate(): Promise<DesktopUpdateStatus> {
+	if (unavailable()) return { state: 'none' };
 	try {
 		await autoUpdater.downloadUpdate();
 	} catch (e) {
@@ -88,6 +88,7 @@ export async function downloadUpdate(): Promise<void> {
 			state: 'error', message: e instanceof Error ? e.message : String(e), 
 		});
 	}
+	return status;
 }
 
 export function installUpdate(): void {
@@ -142,6 +143,5 @@ export async function switchStream(name: string): Promise<void> {
 	autoUpdater.allowDowngrade = true;
 	await checkForUpdate();
 	if (status.state !== 'available') return;
-	await downloadUpdate();
-	if (getUpdateStatus().state !== 'error') installUpdate();
+	if ((await downloadUpdate()).state !== 'error') installUpdate();
 }

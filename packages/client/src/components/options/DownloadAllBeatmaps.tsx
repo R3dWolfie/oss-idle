@@ -11,16 +11,21 @@ import {
 	stopDownloadAll,
 } from '../../osu/beatmap/downloadAll';
 
-/** oss!supporter: every ranked beatmap in one go, after a warning on its size. */
-export default function DownloadAllBeatmaps() {
+/** oss!supporter: every bundled or every ranked beatmap in one go, after a warning
+ *  on its size. */
+export default function DownloadAllBeatmaps({ bundled }: { bundled: boolean }) {
 	const { t } = useLingui();
 	const [progress] = useSynced(bulkDownload);
 	const [pending, setPending] = useState<Metadata[]>();
 
 	const click = async () => {
 		if (progress) return stopDownloadAll();
-		const sets = await missingSets();
-		if (!sets.length) return Log.popup(t`Every ranked beatmap is already downloaded.`);
+		const sets = await missingSets(bundled);
+		if (!sets.length) {
+			return Log.popup(bundled
+				? t`Every bundled beatmap is already downloaded.`
+				: t`Every ranked beatmap is already downloaded.`);
+		}
 		setPending(sets);
 	};
 
@@ -29,12 +34,16 @@ export default function DownloadAllBeatmaps() {
 
 	return <>
 		<Button
-			accent="#2f5f9a"
+			accent={bundled ? '#2f5f9a' : '#d64045'}
 			onClick={() => void click()}
 			label={progress
 				? t`Downloading beatmaps: ${done}/${total} (click to stop)`
-				: t`Download all ranked beatmaps`}
+				: bundled ? t`Download all bundled beatmaps` : t`Download all ranked beatmaps`}
 		/>
-		{pending && <DownloadAllWarning sets={pending} onClose={() => setPending(undefined)} />}
+		{pending && <DownloadAllWarning
+			bundled={bundled}
+			sets={pending}
+			onClose={() => setPending(undefined)}
+		/>}
 	</>;
 }

@@ -7,26 +7,21 @@ import {
 	table,
 	text,
 } from '../dao';
-import Skin, {
-	currentSkin,
-	currentSkinDAO,
-} from '../../osu/skin/Skin';
+import { currentSkinDAO } from '../../osu/skin/Skin';
+import { SETTINGS } from '../settings';
+import { deleteSkinFiles } from '../../osu/skin/skinFiles';
 import Log from '@oss-idle/shared/helpers/log';
 import {
 	ph,
 	t,
 } from '@lingui/core/macro';
-import {
-	Skin as SkinDTO,
-	SkinDetail,
-} from '../../online/skins';
+import type { Skin as SkinDTO } from '../../online/skins';
 
 const skin = table('skin', {
 	id:          integer().primaryKey(),
 	name:        text(),
 	description: text(),
 	version:     text(),
-	definition:  text(),
 	icon:        text().nullable(),
 	authorId:    integer(),
 	authorName:  text(),
@@ -57,6 +52,7 @@ export class SkinDAO extends DAO(skin) {
 
 	async delete(): Promise<void> {
 		await super.delete();
+		await deleteSkinFiles(this.id);
 		await reloadInstalledSkins();
 	}
 
@@ -76,15 +72,19 @@ export class SkinDAO extends DAO(skin) {
 			}
 			await this.update({ enabled });
 		} catch {
-			Log.errorPopup(t`Unable to load "${ph({ skin: this.name })}": Malformed definition`);
+			Log.errorPopup(t`Unable to load "${ph({ skin: this.name })}"`);
 		}
 	}
 
 	async uninstall(): Promise<void> {
 		await this.delete();
-		if (this.enabled) {
-			currentSkin.set(new Skin());
-		}
+		if (currentSkinDAO.get()?.id === this.id) currentSkinDAO.set(undefined);
+		if (SETTINGS.editorSkin.get() === this.id) SETTINGS.editorSkin.set(0);
+	}
+
+	/** Not from the catalog: imported from the player's own files. */
+	get local(): boolean {
+		return this.id < 0;
 	}
 
 	public static async getEnabled(): Promise<SkinDAO | undefined> {
@@ -94,6 +94,7 @@ export class SkinDAO extends DAO(skin) {
 	public static fromSkinDTO(dto: SkinDTO): SkinDAO {
 		const dao = new SkinDAO({
 			...dto,
+			tags: dto.tags.join(','),
 			enabled: false,
 			installedAt: Date.now(),
 		});
@@ -101,8 +102,16 @@ export class SkinDAO extends DAO(skin) {
 		return dao;
 	}
 
-	public toSkinDTO(): SkinDetail {
-		return { ...this };
+	/** Its listing, to show it like a catalog skin. */
+	public toDetail() {
+		return {
+			name: this.name,
+			description: this.description,
+			version: this.version,
+			icon: this.icon,
+			tags: this.tags ? this.tags.split(',') : [],
+			...this.authorName ? { authorName: this.authorName } : {},
+		};
 	}
 }
 

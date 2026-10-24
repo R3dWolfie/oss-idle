@@ -12,7 +12,7 @@ import {
 	buildBarlines,
 	type Barline,
 } from '@oss-idle/shared/sim/scroll';
-import type { Field } from '../gameplay/render/frame';
+import type { StageField } from '../gameplay/render/stage';
 
 const SKIPPED = {
 	parseEvents: false, parseStoryboard: false, parseColours: false,
@@ -57,18 +57,23 @@ const timeline = (chart: Chart, doc: ChartDoc, last: Note | undefined) => {
  * A chart as the game would draw it, played perfectly: what the editor's preview
  * shows. Built straight from the editor's notes, so an edit costs no parse.
  */
-export default class ChartField implements Field {
+export default class ChartField implements StageField {
 
 	readonly keyCount: number;
 	readonly notes: RuntimeNote[];
 	readonly scroll: ScrollModel;
 	readonly barlines: Barline[];
 	readonly columnFlash: number[];
+	readonly holdStart: number[];
+	readonly holdEnd: number[];
+	readonly songStartMs: number;
 
 	/** `reuse`: the previous field, whose scroll still holds when only notes moved. */
 	constructor(chart: Chart, doc: ChartDoc, reuse?: ChartField) {
 		this.keyCount = chart.keys;
 		this.columnFlash = new Array(chart.keys).fill(-Infinity);
+		this.holdStart = new Array(chart.keys).fill(-Infinity);
+		this.holdEnd = new Array(chart.keys).fill(-Infinity);
 		this.notes = [...doc.notes]
 			.sort((a, b) => a.time - b.time || a.column - b.column)
 			.map(n => new RuntimeNote(n.time, endOf(n), n.column, n.end !== undefined, false, false, false));
@@ -80,6 +85,7 @@ export default class ChartField implements Field {
 			&& reuse.key.end === key.end;
 		({ scroll: this.scroll, barlines: this.barlines } = same ? reuse : timeline(chart, doc, last));
 		this.key = key;
+		this.songStartMs = this.notes[0]?.time ?? 0;
 		for (const note of this.notes) note.placeOn(this.scroll);
 	}
 
@@ -88,13 +94,20 @@ export default class ChartField implements Field {
 	/** Every note at `now` as autoplay leaves it: heads pressed on time, holds released on time. */
 	seek(now: number): void {
 		this.columnFlash.fill(-Infinity);
+		this.holdStart.fill(-Infinity);
+		this.holdEnd.fill(-Infinity);
 		const notes = this.notes;
 		for (let i = 0; i < notes.length; i++) {
 			const note = notes[i];
 			note.headJudged = note.time <= now;
 			note.holding = note.hold && note.headJudged && note.endTime > now;
 			note.tailJudged = note.hold && note.endTime <= now;
-			if (note.headJudged) this.columnFlash[note.column] = note.time;
+			if (!note.headJudged) continue;
+			if (!note.hold) this.columnFlash[note.column] = note.time;
+			else {
+				this.holdStart[note.column] = note.time;
+				if (note.tailJudged) this.columnFlash[note.column] = this.holdEnd[note.column] = note.endTime;
+			}
 		}
 	}
 

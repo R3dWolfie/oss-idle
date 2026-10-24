@@ -1,4 +1,7 @@
-import { t } from '@lingui/core/macro';
+import {
+	ph,
+	t,
+} from '@lingui/core/macro';
 import accuracy from '@oss-idle/shared/display/accuracy';
 import type { Mod } from '@oss-idle/shared/mods';
 import { MOD_LOOK } from '@oss-idle/shared/display/mods';
@@ -8,6 +11,10 @@ import {
 	GLYPHS,
 	type GlyphName,
 } from '@oss-idle/shared/achievements/glyphs';
+import type { ManiaGame } from '@oss-idle/shared/sim/maniaGame';
+import type Skin from '../../osu/skin/Skin';
+import { drawHpGraph } from '../../gameplay/drawHpGraph';
+import { drawDevianceGraph } from '../../gameplay/hitError';
 
 export type ScoreCard = {
 	title?: string,
@@ -28,6 +35,8 @@ export type ScoreCard = {
 	judges: { label: string, count: number, color: string }[],
 	gains: Gain[],
 	failed?: boolean,
+	/** the replay's HP and deviance graphs, when there is one */
+	graphs?: { game: ManiaGame, skin: Skin },
 	/** the match's other players, best first */
 	standings?: Standing[],
 };
@@ -54,6 +63,8 @@ const W = 1200;
 const H = 630;
 const PAD = 48;
 const SITE = 'oss.idle.rhythmgamers.net';
+/** where the graphs and the site's line end */
+const BOTTOM = H - 28;
 const PINK = '#ff66aa';
 const GREY = '#b9b3c6';
 
@@ -172,19 +183,25 @@ const drawHeader = (ctx: CanvasRenderingContext2D, card: ScoreCard) => {
 	ctx.fillStyle = GREY;
 	if (card.creator) {
 		ctx.font = font(500, 20);
-		ctx.fillText(fit(ctx, t`Beatmap by ${card.creator}`, LEFT_W), PAD, 98);
+		ctx.fillText(fit(ctx, t`Beatmap by ${ph({ creator: card.creator })}`, LEFT_W), PAD, 94);
 	}
 	ctx.font = font(500, 18);
-	ctx.fillText(fit(ctx, t`Played by ${card.playerName} on ${card.playedAt}`, LEFT_W), PAD, 128);
+	const { playerName, playedAt } = card;
+	const played = fit(ctx, t`Played by ${ph({ playerName })} on ${ph({ playedAt })}`, LEFT_W);
+	ctx.fillText(played, PAD, card.creator ? 120 : 94);
 };
 
-const drawScore = (ctx: CanvasRenderingContext2D, card: ScoreCard) => {
+const JUDGES_Y = 252;
+const JUDGE_ROW = 38;
+
+/** Draws the score panel, returning where it ends. */
+const drawScore = (ctx: CanvasRenderingContext2D, card: ScoreCard): number => {
 	ctx.fillStyle = '#fff';
 	ctx.font = font(700, 80);
 	ctx.letterSpacing = '6px';
 	ctx.textAlign = 'right';
 	// letter spacing also trails the last digit
-	ctx.fillText(Math.round(card.score).toString().padStart(7, '0'), PAD + 610 + 6, 236);
+	ctx.fillText(Math.round(card.score).toString().padStart(7, '0'), PAD + 610 + 6, 200);
 	ctx.textAlign = 'left';
 	ctx.letterSpacing = '0px';
 
@@ -192,7 +209,7 @@ const drawScore = (ctx: CanvasRenderingContext2D, card: ScoreCard) => {
 	const right = (i: number) => i % 2 === 1 || i === card.judges.length - 1;
 	card.judges.forEach((j, i) => {
 		const x = PAD + (right(i) ? 330 : 0);
-		const y = 290 + Math.floor(i / 2) * 44;
+		const y = JUDGES_Y + Math.floor(i / 2) * JUDGE_ROW;
 		ctx.textAlign = 'left';
 		ctx.fillStyle = j.color;
 		ctx.font = font(900, 24);
@@ -210,7 +227,7 @@ const drawScore = (ctx: CanvasRenderingContext2D, card: ScoreCard) => {
 		[t`Accuracy`, accuracy(card.accuracy)],
 		['UR', card.ur.toFixed(2)],
 	];
-	const top = 290 + Math.ceil(card.judges.length / 2) * 44 + 14;
+	const top = JUDGES_Y + (Math.ceil(card.judges.length / 2) - 1) * JUDGE_ROW + 50;
 	let x = PAD;
 	for (const [label, value] of stats) {
 		ctx.fillStyle = GREY;
@@ -224,6 +241,54 @@ const drawScore = (ctx: CanvasRenderingContext2D, card: ScoreCard) => {
 		ctx.fillText(value, x, top + 40);
 		x += Math.max(labelWidth, ctx.measureText(value).width) + 44;
 	}
+	return top + 58;
+};
+
+const GRAPH_GAP = 16;
+const CAPTION = 26;
+
+/** HP and hit deviance side by side under the score, as under the result screen's panel. */
+const drawGraphs = (
+	ctx: CanvasRenderingContext2D,
+	{ game, skin }: NonNullable<ScoreCard['graphs']>,
+	top: number,
+) => {
+	const width = (LEFT_W - GRAPH_GAP) / 2;
+	const height = BOTTOM - top - CAPTION;
+	const graphs: [string, (g: CanvasRenderingContext2D) => void][] = [
+		['HP', g => drawHpGraph(g, {
+			hits: game.hits,
+			songEndMs: game.songEndMs,
+			width,
+			height,
+			lowThreshold: skin.data.hpBar.lowThreshold,
+		})],
+		[t`Hit deviance`, g => drawDevianceGraph(skin, g, {
+			hits: game.hits,
+			windows: game.windows,
+			songEndMs: game.songEndMs,
+			width,
+			height,
+		})],
+	];
+	graphs.forEach(([label, draw], i) => {
+		const x = PAD + i * (width + GRAPH_GAP);
+		ctx.fillStyle = GREY;
+		ctx.font = font(700, 13);
+		ctx.letterSpacing = '3px';
+		ctx.fillText(label.toUpperCase(), x, top + 16);
+		ctx.letterSpacing = '0px';
+		// each graph clears its own canvas
+		const graph = document.createElement('canvas');
+		graph.width = width;
+		graph.height = height;
+		draw(graph.getContext('2d')!);
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+		ctx.beginPath();
+		ctx.roundRect(x, top + CAPTION, width, height, 6);
+		ctx.fill();
+		ctx.drawImage(graph, x, top + CAPTION);
+	});
 };
 
 const drawGains = (ctx: CanvasRenderingContext2D, gains: Gain[], top: number) => {
@@ -260,7 +325,8 @@ const drawFailed = (ctx: CanvasRenderingContext2D, centre: number) => {
 /** Grade, mods and xp gains, stacked up from the bottom. */
 const drawSide = (ctx: CanvasRenderingContext2D, card: ScoreCard, grade?: ImageBitmap) => {
 	const gains = card.gains.slice(0, 3);
-	const gainsTop = H - PAD - (gains.length - 1) * LINE;
+	// the site's line sits under them
+	const gainsTop = BOTTOM - 30 - (gains.length - 1) * LINE;
 	drawGains(ctx, gains, gainsTop);
 
 	const icons = modIcons(card);
@@ -321,7 +387,9 @@ const drawStandings = (ctx: CanvasRenderingContext2D, standings: Standing[]) => 
 const drawSite = (ctx: CanvasRenderingContext2D, height: number) => {
 	ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
 	ctx.font = font(500, 16);
-	ctx.fillText(SITE, PAD, height - 26);
+	ctx.textAlign = 'right';
+	ctx.fillText(SITE, W - PAD, height - (H - BOTTOM));
+	ctx.textAlign = 'left';
 };
 
 /** The result screen as an image to share: 1200x630, taller with a match's standings. */
@@ -340,7 +408,8 @@ export const drawScoreCard = async (card: ScoreCard): Promise<HTMLCanvasElement>
 	const ctx = canvas.getContext('2d')!;
 	drawBackground(ctx, height, background);
 	drawHeader(ctx, card);
-	drawScore(ctx, card);
+	const scoreBottom = drawScore(ctx, card);
+	if (card.graphs) drawGraphs(ctx, card.graphs, scoreBottom);
 	drawSide(ctx, card, grade);
 	drawStandings(ctx, standings);
 	drawSite(ctx, height);
