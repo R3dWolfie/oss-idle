@@ -1,5 +1,4 @@
-/** The emoji the chat offers for `:shortcodes:`, Discord's names. A built-in list for now:
- *  a custom emote set takes its place by being another `EmojiSet` (see emoji.ts). */
+// the chat's `:shortcode:` emoji, under Discord's names
 export type EmojiSet = readonly (readonly [name: string, char: string])[];
 
 export const BUILTIN_EMOJI: EmojiSet = [

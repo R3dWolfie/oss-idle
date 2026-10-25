@@ -4,6 +4,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
+import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 import clock from '@oss-idle/shared/display/clock';
@@ -26,6 +27,7 @@ import {
 import { blocked } from '../../../online/blocks';
 import ChatText from './ChatText';
 import useEmojiSuggest from './useEmojiSuggest';
+import { replaceShortcodes } from './emoji';
 import { mapLink } from './links';
 import {
 	MENTION_COLOR,
@@ -60,8 +62,6 @@ export default function ChatTabContents({ channel, inputRef } : {
 	const logRef = useRef<HTMLDivElement>(null);
 	const completion = useRef<{ start: number, matches: string[], index: number }>(undefined);
 	const emoji = useEmojiSuggest(draft, setDraft, inputRef);
-	// lines go out in the order typed, even when the first waits for the emoji to load
-	const sending = useRef(Promise.resolve());
 	const [user] = useSynced(Auth.user);
 	const me = user?.id;
 
@@ -127,13 +127,11 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 	const submit = (e: React.FormEvent) => {
 		e.preventDefault();
-		const typed = draft.trim();
-		if (!typed || !chatTabs.get()?.includes(channel)) return;
+		const text = replaceShortcodes(draft.trim());
+		if (!text || !chatTabs.get()?.includes(channel)) return;
+		if (contact === undefined) Socket.sendChat(handleCommand(text), channel);
+		else sendPm(contact, handleCommand(text));
 		setDraft('');
-		sending.current = sending.current.then(() => emoji.expand(typed)).then(text => {
-			if (contact === undefined) Socket.sendChat(handleCommand(text), channel);
-			else sendPm(contact, handleCommand(text));
-		}).catch(() => {});
 	};
 
 	return (<>
@@ -170,10 +168,10 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 		{channel !== LOGS_CHANNEL && channel !== ANNOUNCE_CHANNEL && (
 			<form className="chat__compose" onSubmit={submit}>
-				{emoji.suggestions.length > 0 && (
+				{emoji.query && emoji.suggestions.length > 0 && (
 					<div className="chat__emoji">
 						<div className="chat__emoji-title">
-							<Trans>Emoji matching <b>:{emoji.query}</b></Trans>
+							<Trans>Emoji matching <b>:{ph({ query: emoji.query })}</b></Trans>
 						</div>
 						{emoji.suggestions.map((s, i) => (
 							<button
