@@ -36,6 +36,11 @@ import useNameComplete from './useNameComplete';
 import useReply from './useReply';
 import ReplyBar from './ReplyBar';
 import ReplyRef from './ReplyRef';
+import Reactions from './Reactions';
+import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
+import ReactPicker from './ReactPicker';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faReply } from '@fortawesome/free-solid-svg-icons/faReply';
 import MentionSuggestions from './MentionSuggestions';
 import { mapLink } from './links';
 import {
@@ -58,6 +63,7 @@ type LogLine = {
 	fromId?: number,
 	link?: { label: string, path: string },
 	sender?: MenuTarget,
+	reactions?: LineReactions,
 };
 
 export default function ChatTabContents({ channel, inputRef } : {
@@ -87,7 +93,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 				id: l.id, at: l.at, text: '<block>',
 			};
 			return {
-				id: l.id, at: l.at, text: l.text, name: l.from.name, fromId: l.from.userId,
+				id: l.id, at: l.at, text: l.text, name: l.from.name, fromId: l.from.userId, reactions: l.reactions,
 				color: mentionsMe(l.text) && l.from.userId !== me ? MENTION_COLOR : l.from.color,
 				sender: {
 					...l.from, line: l,
@@ -157,12 +163,18 @@ export default function ChatTabContents({ channel, inputRef } : {
 								})}
 							>{line.name}</span>:
 						</span>
-						<ChatText text={line.text} link={line.link} senderId={line.fromId} />
+						<span className="chat__body">
+							<ChatText text={line.text} link={line.link} senderId={line.fromId} />
+							<Reactions channel={channel} id={line.id} reactions={line.reactions} />
+						</span>
 						{line.fromId !== undefined && (
-							<button
-								type="button" className="chat__reply-btn" title={t`Reply`}
-								onClick={() => reply.start(line)}
-							>↪</button>
+							<span className="chat__line-actions">
+								<button
+									type="button" className="chat__line-btn" title={t`Reply`}
+									onClick={() => reply.start(line)}
+								><FontAwesomeIcon icon={faReply} /></button>
+								{contact === undefined && <ReactPicker channel={channel} id={line.id} />}
+							</span>
 						)}
 					</div>
 				);

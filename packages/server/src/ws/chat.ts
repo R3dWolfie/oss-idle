@@ -11,6 +11,7 @@ import {
 	MAX_CHAT_LENGTH,
 	TEAM_CHANNEL,
 } from '@oss-idle/shared/community/wire';
+import { applyReaction } from '@oss-idle/shared/community/reactions';
 import {
 	type Group,
 	GROUP_BADGE,
@@ -26,6 +27,7 @@ import {
 	groupsOf,
 	teamCharacters,
 } from '../groups';
+import { emojis } from '../db/schema/emoji';
 import { pushMedals } from '../medals';
 import { count } from '../metrics';
 import { redis } from '../redis';
@@ -57,7 +59,7 @@ export const chatChannels = (): string[] => [...CHANNELS];
 // counted apart from public chat.
 const WINDOW_MS = 5 * 1000;
 const BURST = {
-	chat: 5, pm: 10,
+	chat: 5, pm: 10, react: 15,
 };
 
 // History is a rolling 1-day window, per channel.
@@ -294,6 +296,45 @@ export const teamAnnounce = async (text: string): Promise<void> => {
 /** An admin `/announce`: a system line in the attention colour. */
 export const adminAnnounce = (channel: string, text: string): void =>
 	announce(channel, text, ANNOUNCE_COLOR);
+
+// --- reactions ---
+
+/** The emoji someone may react with: the team's, or a supporter's own or shared one. */
+const usableEmoji = async (emojiId: number, userId: number): Promise<boolean> => {
+	const [row] = await db.select({
+		ownerId: emojis.ownerId, shared: emojis.shared, 
+	})
+		.from(emojis).where(eq(emojis.id, emojiId)).limit(1);
+	return !!row && (!row.ownerId || row.shared || row.ownerId === userId);
+};
+
+/** Turn `userId`'s reaction on a stored line on or off, and tell every client the line's reactions. Who
+ *  may post there may react; a muted player, a deleted line or a system line takes none. Quietly
+ *  ignored otherwise: a reaction has nothing worth an error. */
+export const handleReact = async (
+	characterId: number,
+	userId: number,
+	channel: string,
+	id: string,
+	emojiId: number,
+	on: boolean,
+): Promise<void> => {
+	if (channel === LEGACY_DEFAULT_CHANNEL) channel = DEFAULT_CHANNEL;
+	const members = channel === TEAM_CHANNEL ? await teamCharacters() : await channelMembers(channel);
+	if (members ? !members.includes(characterId) : !CHANNELS.has(channel)) return;
+	if (await isMuted(userId) || await rateLimited(characterId, 'react')) return;
+	if (on && !await usableEmoji(emojiId, userId)) return;
+	const line = await chatLine(channel, id);
+	if (!line || line.kind !== 'player' || line.text === DELETED_TEXT) return;
+	const reactions = applyReaction(line.reactions, emojiId, userId, on);
+	if (!reactions) return;
+	await redis.hset(logKey(channel), id, JSON.stringify({
+		...line, reactions,
+	}));
+	hub.broadcast({
+		type: 'chat:react', channel, id, reactions,
+	});
+};
 
 // --- deletion ---
 

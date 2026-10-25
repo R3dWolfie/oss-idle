@@ -90,6 +90,13 @@ export default class Socket {
 		});
 	}
 
+	/** Your reaction on a line, on or off (the server answers everyone with the line's reactions). */
+	public static sendReact(channel: string, id: string, emoji: number, on: boolean): void {
+		this.send({
+			type: 'chat:react', channel, id, emoji, on,
+		});
+	}
+
 	/** Send now if the socket is open. Returns whether it was sent. */
 	public static send(msg: ClientMessage): boolean {
 		if (this.ws?.readyState !== WS_OPEN) return false;
@@ -270,6 +277,14 @@ export default class Socket {
 					.slice(-CHAT_LIMIT));
 				break;
 			}
+			case 'chat:react':
+				void this.chat.set(this.chat.get().map(l =>
+					l.channel === msg.channel && l.id === msg.id
+						? {
+							...l, reactions: msg.reactions,
+						}
+						: l));
+				break;
 			case 'chat:delete': {
 				const ids = new Set(msg.ids);
 				void this.chat.set(this.chat.get().map(l =>

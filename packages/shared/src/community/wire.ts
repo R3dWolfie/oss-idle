@@ -14,6 +14,7 @@ import {
 	playClientMessages,
 	playServerMessages,
 } from '../play.js';
+import { reactionsDTO } from './reactions.js';
 import {
 	queueClientMessages,
 	queueServerMessages,
@@ -53,6 +54,8 @@ const chatLineBase = {
 	channel: z.string(),
 	text: z.string(),
 	at: z.number().int(), // epoch ms
+	/** emoji people reacted with; absent until the first (older clients drop it) */
+	reactions: reactionsDTO.optional(),
 };
 
 /** One chat line as it travels to clients. No persistence: a line exists only
@@ -115,6 +118,14 @@ export const clientMessage = z.discriminatedUnion('type', [
 		type: z.literal('chat'),
 		channel: z.string(),
 		text: z.string().min(1).max(MAX_CHAT_LENGTH),
+	}),
+	// your reaction on a line, on or off
+	z.object({
+		type: z.literal('chat:react'),
+		channel: z.string(),
+		id: z.string(),
+		emoji: z.number().int().positive(),
+		on: z.boolean(),
 	}),
 	z.object({
 		type: z.literal('status'),
@@ -185,6 +196,13 @@ export const serverMessage = z.discriminatedUnion('type', [
 		type: z.literal('chat:delete'),
 		channel: z.string(),
 		ids: z.array(z.string()),
+	}),
+	// a line's reactions changed: all of them, as they are now
+	z.object({
+		type: z.literal('chat:react'),
+		channel: z.string(),
+		id: z.string(),
+		reactions: reactionsDTO,
 	}),
 	z.object({
 		type: z.literal('online'),

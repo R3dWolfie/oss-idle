@@ -56,6 +56,7 @@ import { touchActive } from '../social';
 import {
 	chatHistory,
 	handleChat,
+	handleReact,
 	nameColor,
 } from './chat';
 import { hub } from './hub';
@@ -269,6 +270,9 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 						name: now.name,
 						color: await nameColor(user.id),
 					}, user.id, msg.channel, msg.text);
+				} else if (msg.type === 'chat:react') {
+					const now = await currentRow();
+					await handleReact(now.id, user.id, msg.channel, msg.id, msg.emoji, msg.on);
 				} else if (msg.type === 'pm') {
 					const now = await currentRow();
 					await handlePm({
