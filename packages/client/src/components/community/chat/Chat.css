@@ -260,3 +260,132 @@
 .chat__link:hover {
 	background: #3d74e8;
 }
+
+/* replies: a ↪ right after the text of the line under the pointer; over a reply, who it answers,
+   joined by a thin curve */
+.chat__reply-btn {
+	align-self: flex-start;
+	flex: none;
+	padding: 0 6px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: rgba(255, 255, 255, 0.45);
+	font: inherit;
+	cursor: pointer;
+	opacity: 0;
+}
+.chat__line:hover .chat__reply-btn {
+	opacity: 1;
+}
+.chat__reply-btn:hover {
+	background: rgba(255, 255, 255, 0.12);
+	color: #fff;
+}
+.chat__line:has(> .chat__reply-ref) {
+	flex-wrap: wrap;
+	row-gap: 0;
+}
+.chat__reply-ref {
+	position: relative;
+	display: flex;
+	flex-basis: 100%;
+	align-items: baseline;
+	gap: 6px;
+	min-width: 0;
+	padding: 0 0 0 28px;
+	border: none;
+	background: none;
+	color: rgba(255, 255, 255, 0.5);
+	font: inherit;
+	font-size: 0.72em;
+	text-align: left;
+	cursor: pointer;
+}
+/* the curve: from the reference down towards the name under it */
+.chat__reply-ref::before {
+	content: "";
+	position: absolute;
+	left: 10px;
+	top: 0.7em;
+	width: 12px;
+	height: 0.75em;
+	border-top: 2px solid rgba(255, 255, 255, 0.25);
+	border-left: 2px solid rgba(255, 255, 255, 0.25);
+	border-top-left-radius: 6px;
+}
+.chat__reply-ref b {
+	flex: none;
+	font-weight: 600;
+	opacity: 0.9;
+}
+.chat__reply-ref span {
+	min-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.chat__reply-ref:hover:not(:disabled) {
+	color: #fff;
+}
+.chat__reply-ref:disabled {
+	cursor: default;
+}
+/* the line a reference was clicked from: lit for a moment */
+.chat__line.is-flash {
+	animation: chat-flash 1.4s ease-out;
+}
+@keyframes chat-flash {
+	from {
+		background: rgba(255, 255, 255, 0.14);
+	}
+}
+/* while answering: a small card over the start of the input, like the @ and emoji lists */
+.chat__replybar {
+	position: absolute;
+	left: 12px;
+	bottom: calc(100% + 2px);
+	z-index: var(--z-chat-emoji);
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	max-width: min(560px, calc(100% - 24px));
+	padding: 3px 6px 3px 10px;
+	border-left: 3px solid var(--osu-pink);
+	border-radius: 6px;
+	background: #1e1f22;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+	color: rgba(255, 255, 255, 0.6);
+}
+/* (the compose row sizes every span of its own at 24px) */
+.chat__compose .chat__replybar-text {
+	min-width: 0;
+	overflow: hidden;
+	font-size: 14px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.chat__replybar b {
+	margin: 0 4px 0 2px;
+	font-weight: 600;
+}
+.chat__replybar button {
+	flex: none;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border: none;
+	border-radius: 4px;
+	background: none;
+	color: inherit;
+	font-size: 12px;
+	cursor: pointer;
+}
+.chat__replybar button:hover {
+	background: rgba(255, 255, 255, 0.1);
+	color: #fff;
+}
+/* the @ and emoji lists clear the card */
+.chat__compose:has(.chat__replybar) .chat__emoji {
+	bottom: calc(100% + 34px);
+}

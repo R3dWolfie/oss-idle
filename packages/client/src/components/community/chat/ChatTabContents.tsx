@@ -1,4 +1,7 @@
-import { ph } from '@lingui/core/macro';
+import {
+	ph,
+	t,
+} from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {
 	type RefObject,
@@ -6,7 +9,6 @@ import {
 	useRef,
 	useState,
 } from 'react';
-
 import { ANNOUNCE_CHANNEL } from '@oss-idle/shared/community/wire';
 import clock from '@oss-idle/shared/display/clock';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
@@ -31,6 +33,9 @@ import {
 } from '../state';
 import ChatText from './ChatText';
 import useNameComplete from './useNameComplete';
+import useReply from './useReply';
+import ReplyBar from './ReplyBar';
+import ReplyRef from './ReplyRef';
 import MentionSuggestions from './MentionSuggestions';
 import { mapLink } from './links';
 import {
@@ -91,6 +96,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 		})
 		: (pms.get(contact) ?? []);
 	const names = useNameComplete(draft, setDraft, inputRef, shown);
+	const reply = useReply(shown, logRef, inputRef);
 
 	useEffect(() => {
 		const el = logRef.current;
@@ -111,15 +117,16 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 	// emoji first (their list takes Tab while it's open), then player names: the @ list or Tab's cycle
 	const complete = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (!emoji.onKeyDown(e)) names.onKeyDown(e);
+		if (!emoji.onKeyDown(e) && !names.onKeyDown(e)) reply.onKeyDown(e);
 	};
 
 	const submit = (e: React.FormEvent) => {
 		e.preventDefault();
 		const text = draft.trim();
 		if (!text || !chatTabs.get()?.includes(channel)) return;
-		if (contact === undefined) Socket.sendChat(handleCommand(text), channel);
-		else sendPm(contact, handleCommand(text));
+		const out = reply.wrap(handleCommand(text));
+		if (contact === undefined) Socket.sendChat(out, channel);
+		else sendPm(contact, out);
 		setDraft('');
 	};
 
@@ -138,7 +145,8 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 				const { sender } = line;
 				return (
-					<div key={line.id} className="chat__line">
+					<div key={line.id} className="chat__line" data-line={line.id}>
+						<ReplyRef text={line.text} reply={reply} />
 						<span className="chat__from" style={{ color: line.color }}>
 							{`${time} `}
 							<span
@@ -150,6 +158,12 @@ export default function ChatTabContents({ channel, inputRef } : {
 							>{line.name}</span>:
 						</span>
 						<ChatText text={line.text} link={line.link} senderId={line.fromId} />
+						{line.fromId !== undefined && (
+							<button
+								type="button" className="chat__reply-btn" title={t`Reply`}
+								onClick={() => reply.start(line)}
+							>↪</button>
+						)}
 					</div>
 				);
 			})}
@@ -157,6 +171,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 		{channel !== LOGS_CHANNEL && channel !== ANNOUNCE_CHANNEL && (
 			<form className="chat__compose" onSubmit={submit}>
+				<ReplyBar target={reply.target} color={reply.color} onCancel={reply.cancel} />
 				<MentionSuggestions mention={names} inputRef={inputRef} draft={draft} />
 				{emoji.query && emoji.suggestions.length > 0 && (
 					<div className="chat__emoji">
