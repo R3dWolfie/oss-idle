@@ -771,6 +771,10 @@ msgstr "By Title"
 msgid "Cancel"
 msgstr "Cancel"
 
+#: src/components/community/chat/ReplyBar.tsx
+msgid "Cancel the reply"
+msgstr "Cancel the reply"
+
 #: src/components/Onboarding.tsx
 msgid "Change"
 msgstr "Change"
@@ -1573,6 +1577,10 @@ msgstr "Go there"
 #: src/components/direct/DirectView.tsx
 msgid "Go to map"
 msgstr "Go to map"
+
+#: src/components/community/chat/ReplyRef.tsx
+msgid "Go to the message"
+msgstr "Go to the message"
 
 #: src/components/Tutorial.tsx
 msgid "Got it!"
@@ -3005,6 +3013,10 @@ msgstr "Replace from an .osk"
 #: src/scenes/Editor.tsx
 msgid "Replace the background?"
 msgstr "Replace the background?"
+
+#: src/components/community/chat/ChatTabContents.tsx
+msgid "Reply"
+msgstr "Reply"
 
 #: src/components/community/PlayerMenu.tsx
 msgid "Report"

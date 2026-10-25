@@ -12,6 +12,7 @@ import ChatEmoji from './ChatEmoji';
 import { splitLinks } from './links';
 import { mentionPattern } from './mentionQuery';
 import { openChatMap } from './openMap';
+import { parseReply } from './replies';
 
 /** A line's text cut around the emoji its sender may use. */
 type Split = (text: string) => ReturnType<ReturnType<typeof emoji.get>['split']>;
@@ -73,6 +74,9 @@ export default function ChatText({ text, link, senderId }: {
 	const split = (part: string) => matcher.split(part, senderId);
 	const me = character.name ?? '';
 	const pattern = patternFor(presence, me);
+	// a reply shows only what it says here; who it answers is drawn over the line (ReplyRef)
+	const reply = parseReply(text);
+	if (reply) return <span className="chat__text">{linked(split, reply.body, pattern, me)}</span>;
 	const at = link ? text.indexOf(link.label) : -1;
 	if (!link || at < 0) return <span className="chat__text">{linked(split, text, pattern, me)}</span>;
 	const open = () => {
