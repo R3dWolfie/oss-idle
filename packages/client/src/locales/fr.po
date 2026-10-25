@@ -2056,6 +2056,10 @@ msgstr "médailles"
 msgid "Medals unlocked"
 msgstr "Médailles débloquées"
 
+#: src/components/community/chat/MentionSuggestions.tsx
+msgid "Mention a player"
+msgstr ""
+
 #: src/editor/EditorSummary.tsx
 msgid "Metadata"
 msgstr "Métadonnées"
@@ -2744,6 +2748,10 @@ msgstr "Vitesse de lecture"
 #: src/components/result/scoreCard.ts
 msgid "Played by {playerName} on {playedAt}"
 msgstr "Joué par {playerName} le {playedAt}"
+
+#: src/components/community/chat/MentionSuggestions.tsx
+msgid "Players matching <0>@{query}</0>"
+msgstr ""
 
 #: src/editor/EditorViewOptions.tsx
 #: src/editor/EditorViewOptions.tsx

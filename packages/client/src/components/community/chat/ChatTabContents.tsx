@@ -30,6 +30,8 @@ import {
 	type MenuTarget,
 } from '../state';
 import ChatText from './ChatText';
+import useMentionSuggest from './useMentionSuggest';
+import MentionSuggestions from './MentionSuggestions';
 import { mapLink } from './links';
 import {
 	MENTION_COLOR,
@@ -89,6 +91,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 			};
 		})
 		: (pms.get(contact) ?? []);
+	const mention = useMentionSuggest(draft, setDraft, inputRef, shown);
 
 	useEffect(() => {
 		const el = logRef.current;
@@ -109,7 +112,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 	// Tab completes an online player's name; pressing it again cycles
 	const complete = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (emoji.onKeyDown(e)) return;
+		if (mention.onKeyDown(e) || emoji.onKeyDown(e)) return;
 		if (e.key !== 'Tab') return;
 		e.preventDefault();
 		if (!completion.current) {
@@ -171,6 +174,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 		{channel !== LOGS_CHANNEL && channel !== ANNOUNCE_CHANNEL && (
 			<form className="chat__compose" onSubmit={submit}>
+				<MentionSuggestions mention={mention} inputRef={inputRef} draft={draft} />
 				{emoji.query && emoji.suggestions.length > 0 && (
 					<div className="chat__emoji">
 						<div className="chat__emoji-title">

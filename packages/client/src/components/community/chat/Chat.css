@@ -197,6 +197,26 @@
 	width: 20px;
 	height: 20px;
 }
+/* a player in the @ list: their avatar (the guest one when the server has none), round */
+.chat__mention-avatar {
+	width: 20px;
+	height: 20px;
+	flex: none;
+	border-radius: 50%;
+	object-fit: cover;
+	background: rgba(255, 255, 255, 0.15);
+}
+/* an @Name in a line; brighter when it's you, as Discord marks a ping */
+.chat__mention {
+	padding: 0 2px;
+	border-radius: 3px;
+	color: #c9e8ff;
+	background: rgba(102, 204, 255, 0.15);
+}
+.chat__mention.is-you {
+	color: #fff;
+	background: rgba(102, 204, 255, 0.4);
+}
 /* Discord's inline size */
 .chat__emoji-img {
 	width: 1.375em;
