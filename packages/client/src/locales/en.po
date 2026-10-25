@@ -135,6 +135,10 @@ msgstr "{name} becomes this difficulty's background"
 msgid "{name} keeps its name"
 msgstr "{name} keeps its name"
 
+#: src/components/community/chat/mentions.ts
+msgid "{name} mentioned you"
+msgstr "{name} mentioned you"
+
 #: src/logs.ts
 msgid "{name} played {map} and got a {accuracy} {grade}. {gains}"
 msgstr "{name} played {map} and got a {accuracy} {grade}. {gains}"
@@ -815,6 +819,10 @@ msgid "Chat"
 msgstr "Chat"
 
 #: src/scenes/Options.tsx
+msgid "chat|mention|ping|notification|sound|@"
+msgstr "chat|mention|ping|notification|sound|@"
+
+#: src/scenes/Options.tsx
 msgid "chat|message|private|pm|friends"
 msgstr "chat|message|private|pm|friends"
 
@@ -1138,6 +1146,10 @@ msgstr "delete|beatmap|beatmaps"
 #: src/components/skins/SkinView.tsx
 msgid "Description"
 msgstr "Description"
+
+#: src/components/options/MentionPings.tsx
+msgid "Desktop notification for mentions while the game is in the background"
+msgstr "Desktop notification for mentions while the game is in the background"
 
 #: src/editor/EditorViewOptions.tsx
 msgid "Detail"
@@ -2655,6 +2667,10 @@ msgstr "Pick a folder outside the current installation."
 #: src/components/Tutorial.tsx
 msgid "Pick a song"
 msgstr "Pick a song"
+
+#: src/components/options/MentionPings.tsx
+msgid "Ping when someone mentions you"
+msgstr "Ping when someone mentions you"
 
 #: src/components/options/PitchFollowsRate.tsx
 msgid "Pitch follows the rate (Double and Half mods)"

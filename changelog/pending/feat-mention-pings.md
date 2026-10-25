@@ -1,0 +1,1 @@
+add [Chat] A mention you can't see plays a ping, and while the game is in the background it shows a desktop notification that opens the channel; both can be turned off in Options > General > Chat, by @R3dWolfie

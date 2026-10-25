@@ -18,6 +18,7 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 import AutopilotDelay from '../components/options/AutopilotDelay';
 import AutopilotMode from '../components/options/AutopilotMode';
+import MentionPings from '../components/options/MentionPings';
 import BackgroundDim from '../components/options/BackgroundDim';
 import BrowseAddons from '../components/options/BrowseAddons';
 import BrowseSkins from '../components/options/BrowseSkins';
@@ -124,6 +125,10 @@ export default function Options() {
 						{
 							search: t`chat|message|private|pm|friends`,
 							component: () => PmFromAnyone,
+						},
+						{
+							search: t`chat|mention|ping|notification|sound|@`,
+							component: () => MentionPings,
 						},
 					],
 				},
