@@ -17,6 +17,7 @@ import {
 import Socket from '../online/socket';
 import Entities from '../entity/entities';
 import { canPlayAt } from './playRate';
+import { requeue } from './requeue';
 import {
 	Playlist,
 	PlaylistEntry,
@@ -103,21 +104,20 @@ const refAt = (entries: Queued[], at: number) => ({
 	nth: entries.slice(0, at).filter(e => e.beatmap.is(entries[at].beatmap)).length,
 });
 
-type PlaylistDrift = { playlist: Playlist, pool: Queued[] };
-
-const entryKey = (b: LightBeatmap): string => `${b.metadata.id}@${b.lockedRate ?? 0}`;
-
-/** The playlist a queue was started from. Song select keys a playlist group
- *  `p<id>`; a playlist rebuilt under the same name (a tool rewriting it) has a new
- *  id, so its name - the queue's label - is the fallback. */
-const sourcePlaylist = async (s: QueueSource): Promise<Playlist | undefined> => {
-	if (!s.groupKey?.startsWith('p')) return undefined;
-	const id = Number(s.groupKey.slice(1));
-	const byId = Number.isInteger(id)
-		? await Playlist.first('SELECT * FROM playlist WHERE id = ?', [id])
-		: undefined;
-	return byId ?? (s.label ? await Playlist.byName(s.label) : undefined);
+/** The playlist a queue plays: song select keys a playlist group `p<id>`. */
+const playlistOf = (s?: QueueSource): number | undefined => {
+	const fromList = s?.mode === AUTOPILOT_MODE.PLAYLIST || s?.mode === AUTOPILOT_MODE.SHUFFLE;
+	const id = fromList ? s.groupKey?.match(/^p(\d+)$/)?.[1] : undefined;
+	return id === undefined ? undefined : Number(id);
 };
+
+const playlistRows = (id: number): Promise<PlaylistEntry[]> => PlaylistEntry.query(
+	'SELECT * FROM playlist_entry WHERE playlistId = ? ORDER BY position, rowid', [id],
+);
+
+/** A playlist's entries in order, compared as a whole. */
+const contents = (rows: PlaylistEntry[]): string =>
+	rows.map(r => `${r.beatmapId}@${r.rate ?? 0}x${r.repeat}`).join();
 
 /** A signed-in character's queue is the server's; a guest's lives here. */
 const online = (): boolean => {
@@ -170,21 +170,14 @@ export default class PlayQueue {
 	/** Each push resolves on its own; an older one landing late must not win. */
 	private static received = 0;
 
-	/** The playlist's maps when it was queued, so the queue's own edits (added,
-	 *  removed, played) never read as the playlist changing. */
-	private static queued: { groupKey: string, keys: Set<string> } | undefined;
-
-	private static remember(source: QueueSource, pool: Queued[]): void {
-		this.queued = source.groupKey
-			? {
-				groupKey: source.groupKey, keys: new Set(pool.map(q => entryKey(q.beatmap))),
-			}
-			: undefined;
-	}
+	/** The queue's playlist when it was first seen queued, so the queue's own
+	 *  edits never read as the playlist changing. */
+	private static queued: { id: number, contents: string } | undefined;
 
 	/** Another identity took over: its queue arrives with its own push. */
 	public static reset(): void {
 		this.received++;
+		this.queued = undefined;
 		if (this.state.get()) void this.state.set(undefined);
 	}
 
@@ -217,7 +210,7 @@ export default class PlayQueue {
 			...pool.slice(0, index),
 		]);
 		const ordered = source.mode === AUTOPILOT_MODE.SHUFFLE ? shuffled(rest) : rest;
-		this.remember(source, playable(pool));
+		this.queued = undefined;
 		// the launched map comes round again at the back, so a single-map queue
 		// (LOOP) repeats and a playlist wraps
 		const entries = launched?.beatmap.metadata.runtime ? [...ordered, launched] : ordered;
@@ -232,58 +225,45 @@ export default class PlayQueue {
 	}
 
 	/**
-	 * The maps the queue's playlist holds now, when they are no longer the maps
-	 * it held when queued: the queue is a copy taken at launch, so an edited
-	 * playlist leaves it playing the old list (and cycling back through played maps).
-	 * Without that snapshot (a queue from before a restart) it falls back to maps
-	 * the playlist gained that the queue lacks. Undefined when it still matches, or
-	 * the queue did not come from a playlist.
+	 * Whether the queue's playlist was edited since it was queued: the queue is a
+	 * copy taken at launch, so it keeps playing the old list. The first look at a
+	 * queue takes what its playlist holds then.
 	 */
-	public static async playlistDrift(): Promise<PlaylistDrift | undefined> {
-		const s = this.state.get();
-		const fromList = s?.mode === AUTOPILOT_MODE.PLAYLIST || s?.mode === AUTOPILOT_MODE.SHUFFLE;
-		if (!s || !fromList) return undefined;
-		const playlist = await sourcePlaylist(s);
-		if (!playlist) return undefined;
-		const rows = await PlaylistEntry.query(
-			'SELECT * FROM playlist_entry WHERE playlistId = ? ORDER BY position, rowid', [playlist.id],
-		);
+	public static async playlistChanged(): Promise<boolean> {
+		const id = playlistOf(this.state.get());
+		if (id === undefined) return false;
+		const rows = await playlistRows(id);
+		const now = contents(rows);
+		if (this.queued?.id !== id) this.queued = {
+			id, contents: now,
+		};
+		return rows.length > 0 && this.queued.contents !== now;
+	}
+
+	/** Rebuild the queue from its playlist as it is now, in the queue's own mode
+	 *  ({@link requeue}). */
+	public static async refreshFromPlaylist(): Promise<void> {
+		const id = playlistOf(this.state.get());
+		if (id === undefined) return;
+		const [playlist, rows] = await Promise.all([
+			Playlist.first('SELECT * FROM playlist WHERE id = ?', [id]),
+			playlistRows(id),
+		]);
 		const pool = playable(await resolve(rows.map(r => ({
 			beatmapId: r.beatmapId, rate: r.rate, repeat: r.repeat > 1 ? r.repeat : undefined,
 		})))).filter(q => canPlayAt(q.beatmap.lockedRate));
-		const queued = this.queued;
-		const was = queued && queued.groupKey === s.groupKey ? queued.keys : undefined;
-		const have = was ?? new Set(s.entries.map(e => entryKey(e.beatmap)));
-		const same = pool.every(q => have.has(entryKey(q.beatmap))) && (!was || pool.length === was.size);
-		return same || !pool.length ? undefined : {
-			playlist, pool,
-		};
-	}
-
-	/** Rebuild the queue from its playlist as it is now, in the queue's own mode.
-	 *  In order it carries on from the map that just started, which stays at the back. */
-	public static async refreshFromPlaylist(): Promise<void> {
-		const drift = await this.playlistDrift();
 		const s = this.state.get();
-		if (!drift || !s) return;
-		const current: Queued | undefined = s.entries[s.entries.length - 1];
-		const same = (a: Queued, b?: Queued) => !!b && a.beatmap.is(b.beatmap);
-		const rest = drift.pool.filter(q => !same(q, current));
-		// in order, carry on where the queue was rather than from the top: after the map
-		// that just started, or (if it left the playlist) from the next one still in it
-		const at = drift.pool.findIndex(q => same(q, current));
-		const anchor = at >= 0
-			? drift.pool[(at + 1) % drift.pool.length]
-			: s.entries.find(e => rest.some(q => same(q, e)));
-		const from = Math.max(0, rest.findIndex(q => same(q, anchor)));
-		const ordered = s.mode === AUTOPILOT_MODE.SHUFFLE
-			? shuffled(rest)
-			: [...rest.slice(from), ...rest.slice(0, from)];
-		const entries = current && at >= 0 ? [...ordered, current] : ordered;
-		const source: QueueSource = {
-			label: drift.playlist.name, mode: s.mode, groupKey: `p${drift.playlist.id}`,
+		if (!playlist || !s || playlistOf(s) !== id || !pool.length) return;
+		this.queued = {
+			id, contents: contents(rows),
 		};
-		this.remember(source, drift.pool);
+		const entries = requeue(
+			pool, s.entries, (a, b) => a.beatmap.is(b.beatmap),
+			s.mode === AUTOPILOT_MODE.SHUFFLE ? shuffled : undefined,
+		);
+		const source: QueueSource = {
+			label: playlist.name, mode: s.mode, groupKey: s.groupKey,
+		};
 		void this.state.set({
 			...source, entries,
 		});

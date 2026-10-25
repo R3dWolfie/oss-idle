@@ -22,7 +22,7 @@ const MODE_ICON = {
 };
 
 /** Where the queue came from: its autopilot mode and the playlist or group,
- *  how long it plays, and a refresh once that playlist no longer holds what the queue does. */
+ *  how long it plays, and a refresh once that playlist was edited. */
 export default function DockSource() {
 	const [queue] = useSynced(PlayQueue.state);
 	if (!queue?.mode && !queue?.label && !queue?.entries.length) return null;

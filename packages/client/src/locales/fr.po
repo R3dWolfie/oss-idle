@@ -2657,7 +2657,7 @@ msgid "Playlist"
 msgstr "Playlist"
 
 #: src/components/dock/DockRefresh.tsx
-msgid "Playlist changed · refresh"
+msgid "Playlist changed: refresh the queue"
 msgstr ""
 
 #: src/components/dock/SaveQueuePrompt.tsx

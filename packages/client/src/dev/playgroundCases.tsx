@@ -22,6 +22,7 @@ import LinkMenu from '../components/community/LinkMenu';
 import DockPanel from '../components/dock/DockPanel';
 import DockPill from '../components/dock/DockPill';
 import PlayQueue from '../gameplay/playQueue';
+import { Playlist } from '../db/schema/playlist';
 import SongSelect from '../scenes/SongSelect';
 import PlayDock from '../components/dock/PlayDock';
 import SceneManager, { SCENE } from '../scenes/SceneManager';
@@ -106,7 +107,7 @@ const spread = (count: number, levels: number): SkillProgress[] =>
 
 /** A queue of maps that were never downloaded - enough for the dock and the
  *  rail to render, which is all these cases need. */
-const fakeQueue = () => {
+const fakeQueue = (groupKey?: string) => {
 	const entry = (artist: string, title: string, version: string, id: number) => ({
 		metadata: {
 			id, version, runtime: true, total_length: 180_000,
@@ -128,7 +129,7 @@ const fakeQueue = () => {
 		entry('Various Artists', 'Jack Dumps', 'dj TAKA feat. NORIA - quaver', 5),
 	];
 	PlayQueue.start({
-		label: 'Favourites', mode: 'PLAYLIST', 
+		label: 'Favourites', mode: 'PLAYLIST', groupKey,
 	}, entries.map((beatmap, i) => ({
 		beatmap, repeat: i === 2 ? 10 : undefined,
 	})), 0);
@@ -143,6 +144,17 @@ const fakeQueue = () => {
 		grade: 'S',
 	});
 	return entries;
+};
+
+/** {@link fakeQueue} from a playlist that gained a map once queued. */
+const editedPlaylistQueue = async () => {
+	const name = 'Playground: edited playlist';
+	await (await Playlist.byName(name))?.deleteWithEntries();
+	const playlist = await Playlist.create(name);
+	for (const id of [1, 2, 3, 4, 5]) await playlist.addBeatmap(id);
+	fakeQueue(`p${playlist.id}`);
+	await PlayQueue.playlistChanged();
+	await playlist.addBeatmap(6);
 };
 
 const sampleScore = (): ScoreDTO => ({
@@ -403,13 +415,25 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 	{
 		id: 'dock-panel',
 		label: 'Play dock - open, mid-play with a queue behind it',
-		setup: fakeQueue,
+		setup: () => fakeQueue(),
 		render: () => <DockPanel />,
+	},
+	{
+		id: 'dock-refresh',
+		label: 'Play dock - the queue\'s playlist was edited since: its refresh beside the playlist',
+		setup: () => void editedPlaylistQueue(),
+		render: () => <DockPanel />,
+	},
+	{
+		id: 'dock-refresh-queue',
+		label: 'Play dock - docked beside the queue view, its playlist edited since',
+		setup: () => void editedPlaylistQueue(),
+		render: () => <DockPanel left />,
 	},
 	{
 		id: 'dock-pill',
 		label: 'Play dock - collapsed, as it sits over gameplay',
-		setup: fakeQueue,
+		setup: () => fakeQueue(),
 		render: () => <DockPill />,
 	},
 	{
