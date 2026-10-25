@@ -1,16 +1,14 @@
 // more would stick out of the top of the chat panel
-const MENTION_SUGGESTIONS = 6;
+export const MENTION_SUGGESTIONS = 6;
 
 // the `@query` at the end of the draft: open from the bare `@`, so the list shows before a letter is typed
 export const mentionQuery = (draft: string): string | undefined =>
 	/(?:^|\s)@([^\s@]*)$/.exec(draft)?.[1];
 
-// names starting with the query, then names containing it; each in the order given (who's talking first)
-export const matchNames = (names: readonly string[], query: string): string[] => {
-	const q = query.toLowerCase();
-	const starts = names.filter(n => n.toLowerCase().startsWith(q));
-	const contains = names.filter(n => !n.toLowerCase().startsWith(q) && n.toLowerCase().includes(q));
-	return [...starts, ...contains].slice(0, MENTION_SUGGESTIONS);
+/** The names that `prefix` starts, any case, in the order given (who's talking first). */
+export const namesStarting = (names: readonly string[], prefix: string): string[] => {
+	const p = prefix.toLowerCase();
+	return names.filter(n => n.toLowerCase().startsWith(p));
 };
 
 const escape = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

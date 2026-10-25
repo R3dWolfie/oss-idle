@@ -2,7 +2,7 @@ import type { RefObject } from 'react';
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
-import type useMentionSuggest from './useMentionSuggest';
+import type useNameComplete from './useNameComplete';
 
 let measure: CanvasRenderingContext2D | null | undefined;
 
@@ -24,7 +24,7 @@ const atLeft = (input: HTMLInputElement | null, before: string): number | undefi
 
 /** The `@` list, above the `@` it completes: online players (and the channel's speakers) to mention. */
 export default function MentionSuggestions({ mention, inputRef, draft }: {
-	mention: ReturnType<typeof useMentionSuggest>,
+	mention: ReturnType<typeof useNameComplete>,
 	inputRef: RefObject<HTMLInputElement>,
 	draft: string,
 }) {

@@ -30,7 +30,7 @@ import {
 	type MenuTarget,
 } from '../state';
 import ChatText from './ChatText';
-import useMentionSuggest from './useMentionSuggest';
+import useNameComplete from './useNameComplete';
 import MentionSuggestions from './MentionSuggestions';
 import { mapLink } from './links';
 import {
@@ -65,7 +65,6 @@ export default function ChatTabContents({ channel, inputRef } : {
 	const [blockedIds = new Set<number>()] = useSynced(blocked);
 	const [draft, setDraft] = useState('');
 	const logRef = useRef<HTMLDivElement>(null);
-	const completion = useRef<{ start: number, matches: string[], index: number }>(undefined);
 	const emoji = useEmojiSuggest(draft, setDraft, inputRef);
 	const [user] = useSynced(Auth.user);
 	const me = user?.id;
@@ -91,7 +90,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 			};
 		})
 		: (pms.get(contact) ?? []);
-	const mention = useMentionSuggest(draft, setDraft, inputRef, shown);
+	const names = useNameComplete(draft, setDraft, inputRef, shown);
 
 	useEffect(() => {
 		const el = logRef.current;
@@ -110,25 +109,9 @@ export default function ChatTabContents({ channel, inputRef } : {
 		return text;
 	};
 
-	// Tab completes an online player's name; pressing it again cycles
+	// emoji first (their list takes Tab while it's open), then player names: the @ list or Tab's cycle
 	const complete = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (mention.onKeyDown(e) || emoji.onKeyDown(e)) return;
-		if (e.key !== 'Tab') return;
-		e.preventDefault();
-		if (!completion.current) {
-			const start = draft.lastIndexOf(' ') + 1;
-			const prefix = draft.slice(start).toLowerCase();
-			const matches = [...new Set(Socket.presence.get().map(p => p.name))]
-				.filter(name => name.toLowerCase().startsWith(prefix))
-				.sort((a, b) => a.localeCompare(b));
-			if (!prefix || !matches.length) return;
-			completion.current = {
-				start, matches, index: -1, 
-			};
-		}
-		const c = completion.current;
-		c.index = (c.index + 1) % c.matches.length;
-		setDraft(draft.slice(0, c.start) + c.matches[c.index]);
+		if (!emoji.onKeyDown(e)) names.onKeyDown(e);
 	};
 
 	const submit = (e: React.FormEvent) => {
@@ -174,7 +157,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 		{channel !== LOGS_CHANNEL && channel !== ANNOUNCE_CHANNEL && (
 			<form className="chat__compose" onSubmit={submit}>
-				<MentionSuggestions mention={mention} inputRef={inputRef} draft={draft} />
+				<MentionSuggestions mention={names} inputRef={inputRef} draft={draft} />
 				{emoji.query && emoji.suggestions.length > 0 && (
 					<div className="chat__emoji">
 						<div className="chat__emoji-title">
@@ -203,7 +186,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 					type="text"
 					value={draft}
 					onChange={e => {
-						completion.current = undefined;
+						names.typed();
 						setDraft(e.target.value);
 					}}
 					onKeyDown={complete}

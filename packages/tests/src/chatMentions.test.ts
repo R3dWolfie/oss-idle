@@ -4,7 +4,7 @@ import {
 	expect,
 } from 'vitest';
 import {
-	matchNames,
+	namesStarting,
 	mentionPattern,
 	mentionQuery,
 } from '@oss-idle/client/components/community/chat/mentionQuery';
@@ -23,21 +23,17 @@ describe('mentionQuery', () => {
 	});
 });
 
-describe('matchNames', () => {
+describe('namesStarting', () => {
 	const names = ['Adri', 'adrien', 'Badri', 'R3D', 'R3DWolfie', 'Rai'];
 
-	it('puts names starting with the query first, then containing it, any case', () => {
-		expect(matchNames(names, 'ADR')).toEqual(['Adri', 'adrien', 'Badri']);
-		expect(matchNames(names, 'r3')).toEqual(['R3D', 'R3DWolfie']);
+	it('keeps the names the prefix starts, any case', () => {
+		expect(namesStarting(names, 'ADR')).toEqual(['Adri', 'adrien']);
+		expect(namesStarting(names, 'r3')).toEqual(['R3D', 'R3DWolfie']);
 	});
 
-	it('keeps the order it was given (who is talking first)', () => {
-		expect(matchNames(['Rai', 'Adri', 'R3D'], '')).toEqual(['Rai', 'Adri', 'R3D']);
-		expect(matchNames(['Radri', 'Adri'], 'adri')).toEqual(['Adri', 'Radri']);
-	});
-
-	it('lists everyone for an empty query, six at most', () => {
-		expect(matchNames([...names, 'x1', 'x2'], '')).toHaveLength(6);
+	it('keeps the order it was given (who is talking first), everyone for an empty prefix', () => {
+		expect(namesStarting(['Rai', 'Adri', 'R3D'], 'r')).toEqual(['Rai', 'R3D']);
+		expect(namesStarting(names, '')).toEqual(names);
 	});
 });
 
