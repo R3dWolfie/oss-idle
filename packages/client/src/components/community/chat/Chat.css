@@ -345,7 +345,7 @@
 .chat__reaction:disabled {
 	cursor: default;
 }
-/* the ☺'s card of emoji, like the @ and emoji lists */
+/* the ☺'s card of emoji, the same panel as the @ and emoji lists */
 .chat__react {
 	display: flex;
 }
@@ -357,12 +357,10 @@
 	gap: 6px;
 	width: max-content;
 	max-width: 400px;
-	padding: 6px;
-	border: none;
-	border-top: 2px solid var(--osu-pink);
-	border-radius: 4px;
-	background: var(--bg-1);
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+	padding: 4px;
+	border-radius: 6px;
+	background: #1e1f22;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 	animation: chat-react-in 0.12s ease-out;
 }
 @keyframes chat-react-in {
@@ -419,13 +417,9 @@
 	color: var(--text-dim);
 	font: inherit;
 	cursor: pointer;
-	transition:
-		background-color 0.1s,
-		transform 0.1s;
 }
 .chat__react-card button:hover {
-	background: rgba(255, 138, 183, 0.18);
-	transform: scale(1.12);
+	background: rgba(255, 255, 255, 0.1);
 }
 .chat__react-card img {
 	width: 28px;
