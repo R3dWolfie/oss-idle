@@ -273,7 +273,7 @@
 	opacity: 0;
 }
 .chat__line:hover .chat__line-actions,
-.chat__line-actions:has(.chat__react-card) {
+.chat__line-actions:has(.chat__react.is-open) {
 	opacity: 1;
 }
 .chat__line-btn {
@@ -359,10 +359,8 @@
 	position: relative;
 }
 .chat__react-card {
-	position: absolute;
-	right: 0;
-	bottom: calc(100% + 6px);
-	z-index: var(--z-chat-emoji);
+	position: fixed;
+	z-index: var(--z-chat-tooltip);
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
@@ -384,10 +382,6 @@
 }
 .chat__react-card.is-all {
 	width: 290px;
-}
-.chat__react-card.is-below {
-	top: calc(100% + 6px);
-	bottom: auto;
 }
 .chat__react-grid {
 	display: flex;

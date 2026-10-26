@@ -3,10 +3,12 @@ import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { t } from '@lingui/core/macro';
 import {
+	type CSSProperties,
 	useEffect,
 	useRef,
 	useState,
 } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
 	type Emoji,
@@ -42,26 +44,34 @@ export default function ReactPicker({ channel, id }: { channel: string, id: stri
 	const [open, setOpen] = useState(false);
 	const [all, setAll] = useState(false);
 	const [query, setQuery] = useState('');
-	// near the top of the log the card opens downwards, so the tabs don't cut it
-	const [below, setBelow] = useState(false);
+	// over the page, not the log (which would cut it): above the ☺, below it near the window's top
+	const [at, setAt] = useState<CSSProperties>();
 	const button = useRef<HTMLButtonElement>(null);
 	const [user] = useSynced(Auth.user);
 	const [{ list }] = useSynced(emoji);
-	const card = useRef<HTMLSpanElement>(null);
+	const card = useRef<HTMLDivElement>(null);
 
 	const close = () => {
 		setOpen(false);
+		setAt(undefined);
 		setAll(false);
 		setQuery('');
 	};
-	// the whole list stays while you type in it; a click anywhere else closes it
+	// the whole list stays while you type in it; a click elsewhere or the log scrolling closes it
 	useEffect(() => {
 		if (!open) return;
-		const outside = (e: MouseEvent) => {
-			if (!card.current?.parentElement?.contains(e.target as Node)) close();
+		const away = (e: Event) => {
+			const target = e.target as Node;
+			if (!card.current?.contains(target) && !button.current?.contains(target)) close();
 		};
-		window.addEventListener('mousedown', outside, true);
-		return () => window.removeEventListener('mousedown', outside, true);
+		window.addEventListener('mousedown', away, true);
+		window.addEventListener('scroll', away, true);
+		window.addEventListener('resize', close);
+		return () => {
+			window.removeEventListener('mousedown', away, true);
+			window.removeEventListener('scroll', away, true);
+			window.removeEventListener('resize', close);
+		};
 	}, [open]);
 
 	if (!user) return null;
@@ -80,20 +90,25 @@ export default function ReactPicker({ channel, id }: { channel: string, id: stri
 	};
 
 	return (
-		<span className="chat__react">
+		<span className={`chat__react ${open ? 'is-open' : ''}`}>
 			<button
 				ref={button} type="button" className="chat__line-btn" aria-label={t`React`}
 				onClick={() => {
 					if (open) return close();
-					const at = button.current?.getBoundingClientRect().top ?? 0;
-					const top = button.current?.closest('.chat__log')?.getBoundingClientRect().top ?? 0;
-					setBelow(at - top < ROOM_ABOVE);
+					const r = button.current?.getBoundingClientRect();
+					if (!r) return;
+					const right = window.innerWidth - r.right;
+					setAt(r.top < ROOM_ABOVE ? {
+						right, top: r.bottom + 6,
+					} : {
+						right, bottom: window.innerHeight - r.top + 6,
+					});
 					setOpen(true);
 				}}
 			><FontAwesomeIcon icon={faFaceSmile} /></button>
-			{open && (
-				<span
-					ref={card} className={`chat__react-card ${all ? 'is-all' : ''} ${below ? 'is-below' : ''}`}
+			{open && at && createPortal(
+				<div
+					ref={card} className={`chat__react-card ${all ? 'is-all' : ''}`} style={at}
 					onMouseLeave={() => { if (!all) close(); }}
 				>
 					{all && (
@@ -119,7 +134,8 @@ export default function ReactPicker({ channel, id }: { channel: string, id: stri
 							</button>
 						)}
 					</span>
-				</span>
+				</div>,
+				document.body,
 			)}
 		</span>
 	);
