@@ -2708,11 +2708,11 @@ msgstr "Parties : {playCount} (Lv{level})"
 msgid "Play harder maps to reach the sweet spot."
 msgstr "Joue des maps plus difficiles pour atteindre ton peak."
 
-#: src/components/dock/DockQueue.tsx
+#: src/components/dock/DockRepeatCount.tsx
 msgid "Play it one more time"
 msgstr "Jouer cette map une fois de plus"
 
-#: src/components/dock/DockQueue.tsx
+#: src/components/dock/DockRepeatCount.tsx
 msgid "Play it one time fewer"
 msgstr "Jouer cette map une fois de moins"
 
@@ -3762,7 +3762,7 @@ msgstr "Temps (ms)"
 msgid "Time Zone"
 msgstr "Fuseau horaire"
 
-#: src/components/dock/DockQueue.tsx
+#: src/components/dock/DockRepeatCount.tsx
 msgid "Times to play it"
 msgstr "Nombre de fois à la jouer"
 
@@ -4288,4 +4288,3 @@ msgstr "Dézoomer"
 #: src/editor/EditorShortcuts.tsx
 msgid "Zoom over the columns, change the beat snap elsewhere"
 msgstr "Zoomer au-dessus des colonnes, changer le snap ailleurs"
-
