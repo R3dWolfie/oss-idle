@@ -304,7 +304,7 @@
 	/* top of the line, as the ↩ and ☺ */
 	vertical-align: top;
 }
-/* a reaction, in the game's own look: a flat dark chip with a pink count; yours a solid pink pill */
+/* a reaction: a flat dark chip with a pink count; yours tinted and outlined in pink */
 .chat__reaction {
 	display: inline-flex;
 	align-items: center;
@@ -335,20 +335,12 @@
 	color: #fff;
 }
 .chat__reaction.is-mine {
-	background: linear-gradient(
-		180deg,
-		var(--osu-pink),
-		var(--osu-pink-darkest)
-	);
+	background: rgba(255, 102, 171, 0.18);
+	box-shadow: inset 0 0 0 1px var(--osu-pink);
 	color: #fff;
-	text-shadow: 0 1px 1px rgba(120, 0, 50, 0.45);
 }
 .chat__reaction.is-mine:hover:not(:disabled) {
-	background: linear-gradient(
-		180deg,
-		var(--osu-pink-light),
-		var(--osu-pink-dark)
-	);
+	background: rgba(255, 102, 171, 0.3);
 }
 .chat__reaction:disabled {
 	cursor: default;
