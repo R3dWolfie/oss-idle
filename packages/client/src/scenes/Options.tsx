@@ -70,6 +70,7 @@ export default function Options() {
 		'GAMEPLAY',
 		'SKIN',
 		'CONTROLS',
+		'CHAT',
 		'EDITOR',
 		'ADDONS',
 		'MAINTENANCE',
@@ -82,6 +83,7 @@ export default function Options() {
 		[CATEGORY.GAMEPLAY]: t`GAMEPLAY`,
 		[CATEGORY.SKIN]: t`SKIN`,
 		[CATEGORY.CONTROLS]: t`CONTROLS`,
+		[CATEGORY.CHAT]: t`CHAT`,
 		[CATEGORY.EDITOR]: t`EDITOR`,
 		[CATEGORY.ADDONS]: t`ADD-ONS`,
 		[CATEGORY.MAINTENANCE]: t`MAINTENANCE`,
@@ -116,19 +118,6 @@ export default function Options() {
 						{
 							search: t`bug|report|issue|problem|crash|help`,
 							component: () => ReportBug,
-						},
-					],
-				},
-				{
-					title: t`Chat`,
-					components: [
-						{
-							search: t`chat|message|private|pm|friends`,
-							component: () => PmFromAnyone,
-						},
-						{
-							search: t`chat|gif|image|picture|media|embed`,
-							component: () => ChatMedia,
 						},
 					],
 				},
@@ -286,6 +275,29 @@ export default function Options() {
 						{
 							search: t`right|click|hold|time`,
 							component: () => RightClickHold,
+						},
+					],
+				},
+			],
+		},
+		{
+			name: CATEGORY.CHAT,
+			groups: [
+				{
+					title: t`Messages`,
+					components: [
+						{
+							search: t`chat|message|private|pm|friends`,
+							component: () => PmFromAnyone,
+						},
+					],
+				},
+				{
+					title: t`GIFs and pictures`,
+					components: [
+						{
+							search: t`chat|gif|image|picture|media|embed|ticker`,
+							component: () => ChatMedia,
 						},
 					],
 				},

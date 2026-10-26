@@ -828,12 +828,12 @@ msgid "Character name"
 msgstr "Character name"
 
 #: src/scenes/Options.tsx
-msgid "Chat"
-msgstr "Chat"
+msgid "CHAT"
+msgstr "CHAT"
 
 #: src/scenes/Options.tsx
-msgid "chat|gif|image|picture|media|embed"
-msgstr "chat|gif|image|picture|media|embed"
+msgid "chat|gif|image|picture|media|embed|ticker"
+msgstr "chat|gif|image|picture|media|embed|ticker"
 
 #: src/scenes/Options.tsx
 msgid "chat|message|private|pm|friends"
@@ -1602,6 +1602,10 @@ msgstr "Generation {generation}"
 msgid "GIFs"
 msgstr "GIFs"
 
+#: src/scenes/Options.tsx
+msgid "GIFs and pictures"
+msgstr "GIFs and pictures"
+
 #: src/components/community/PlayerMenu.tsx
 msgid "Give Host"
 msgstr "Give Host"
@@ -2104,6 +2108,10 @@ msgstr "Medals unlocked"
 #: src/components/community/chat/MentionSuggestions.tsx
 msgid "Mention a player"
 msgstr "Mention a player"
+
+#: src/scenes/Options.tsx
+msgid "Messages"
+msgstr "Messages"
 
 #: src/editor/EditorSummary.tsx
 msgid "Metadata"
