@@ -5,6 +5,7 @@ import { t } from '@lingui/core/macro';
 import {
 	type CSSProperties,
 	useEffect,
+	useLayoutEffect,
 	useRef,
 	useState,
 } from 'react';
@@ -27,6 +28,8 @@ import Socket from '../../../online/socket';
 const QUICK = ['thumbsup', 'joy', 'sob', 'heart', 'fire', 'skull', 'eyes', 'tada'];
 // the full list with its search is about this tall: less room above, and it opens below
 const ROOM_ABOVE = 240;
+// from the window's edge
+const MARGIN = 8;
 
 /** Every emoji whose name has `query`: the ones it starts first. */
 const search = (list: readonly Emoji[], query: string): Emoji[] => {
@@ -57,6 +60,14 @@ export default function ReactPicker({ channel, id }: { channel: string, id: stri
 		setAll(false);
 		setQuery('');
 	};
+	// too wide to end at the ☺ (a short line on the left): it starts at the window's edge instead
+	useLayoutEffect(() => {
+		const c = card.current;
+		if (!c || c.getBoundingClientRect().left >= MARGIN) return;
+		c.style.left = `${MARGIN}px`;
+		c.style.right = 'auto';
+	}, [at, all]);
+
 	// the whole list stays while you type in it; a click elsewhere or the log scrolling closes it
 	useEffect(() => {
 		if (!open) return;
