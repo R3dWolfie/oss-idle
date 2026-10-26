@@ -535,3 +535,200 @@
 .chat__compose:has(.chat__replybar) .chat__emoji {
 	bottom: calc(100% + 34px);
 }
+
+/* a sender's card, over the name the pointer rests on, after osu!'s user panel: their avatar
+   big on the left and, blurred and dimmed, behind the whole card */
+.name-card {
+	position: fixed;
+	z-index: var(--z-over-chat);
+	width: 360px;
+	height: 112px;
+	box-sizing: border-box;
+	display: flex;
+	gap: 12px;
+	padding: 12px;
+	overflow: hidden;
+	border-radius: 12px;
+	background: #14121b;
+	box-shadow: 0 10px 28px rgb(0 0 0 / 60%);
+	color: #fff;
+	font-size: 13px;
+	line-height: 1.2;
+	isolation: isolate;
+	animation: name-card-in 0.12s ease-out;
+}
+.name-card__bg {
+	position: absolute;
+	inset: -24px;
+	z-index: -1;
+	background: center / cover;
+	filter: blur(16px) brightness(0.38) saturate(1.2);
+}
+.name-card__bg--banner {
+	inset: 0;
+	filter: brightness(0.55);
+	animation: name-card-banner-in 0.25s ease-out;
+}
+.name-card:has(.name-card__bg--banner)::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: linear-gradient(
+		90deg,
+		rgb(0 0 0 / 30%),
+		rgb(0 0 0 / 65%) 45%,
+		rgb(0 0 0 / 40%)
+	);
+}
+.name-card__avatar {
+	flex: none;
+	width: 88px;
+	height: 88px;
+	border-radius: 10px;
+	object-fit: cover;
+	box-shadow: 0 2px 8px rgb(0 0 0 / 45%);
+}
+.name-card__body {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+.name-card__top {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	height: 28px;
+}
+.name-card__flag {
+	height: 15px;
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px rgb(255 255 255 / 15%);
+}
+.name-card__rank {
+	margin-left: 4px;
+	font-size: 15px;
+	font-weight: 700;
+	color: #ddd;
+	background-clip: text;
+	-webkit-background-clip: text;
+}
+.name-card__rank[style] {
+	color: transparent;
+}
+.name-card__where {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 4px;
+	font-size: 13px;
+	text-shadow: 0 1px 3px rgb(0 0 0 / 60%);
+}
+.name-card__buttons {
+	display: flex;
+	gap: 6px;
+	margin-left: auto;
+}
+.name-card__button {
+	display: grid;
+	place-items: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: rgb(0 0 0 / 45%);
+	color: #fff;
+	font-size: 13px;
+}
+button.name-card__button {
+	cursor: pointer;
+}
+button.name-card__button:hover:not(:disabled) {
+	background: rgb(255 255 255 / 18%);
+}
+button.name-card__button:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+.name-card__button--on {
+	background: #ff66ab;
+}
+.name-card__name {
+	min-width: 0;
+	font-size: 20px;
+	font-weight: 700;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-shadow: 0 1px 4px rgb(0 0 0 / 50%);
+}
+.name-card__status {
+	display: flex;
+	gap: 5px;
+	margin-top: auto;
+	color: #ccc;
+	text-shadow: 0 1px 3px rgb(0 0 0 / 60%);
+}
+.name-card__play {
+	flex: none;
+}
+.name-card__marquee {
+	min-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.name-card__marquee > span {
+	display: inline-block;
+}
+.name-card__marquee:has(.name-card__marquee--on) {
+	mask-image: linear-gradient(90deg, #000 90%, transparent);
+}
+.name-card__marquee--on {
+	animation: name-card-marquee linear infinite alternate;
+}
+.name-card__status[data-status="playing"] {
+	color: #8fe3b0;
+}
+.name-card__stats {
+	display: flex;
+	text-shadow: 0 1px 3px rgb(0 0 0 / 60%);
+	gap: 10px;
+	margin-top: 2px;
+	color: #aaa;
+	font-size: 12px;
+	white-space: nowrap;
+}
+.name-card__stats b {
+	color: #fff;
+	font-weight: 600;
+}
+.name-card__country {
+	min-width: 0;
+	color: #ddd;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+@keyframes name-card-marquee {
+	0%,
+	15% {
+		transform: none;
+	}
+	85%,
+	100% {
+		transform: translateX(var(--shift));
+	}
+}
+@keyframes name-card-banner-in {
+	from {
+		opacity: 0;
+	}
+}
+@keyframes name-card-in {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
+	}
+}

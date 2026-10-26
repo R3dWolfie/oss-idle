@@ -350,6 +350,10 @@ msgstr "Ajouter à {offset} ms"
 msgid "Add at the current time"
 msgstr "Ajouter au temps actuel"
 
+#: src/components/community/chat/SenderName.tsx
+msgid "Add friend"
+msgstr ""
+
 #: src/editor/EditorSoundFiles.tsx
 msgid "Add sound files..."
 msgstr "Ajouter des fichiers son..."
@@ -1522,6 +1526,10 @@ msgstr "Mods libres"
 msgid "Frequencies"
 msgstr "Fréquences"
 
+#: src/components/community/chat/SenderName.tsx
+msgid "Friend"
+msgstr ""
+
 #: src/components/community/CommunityHeader.tsx
 msgid "Friends"
 msgstr "Amis"
@@ -1987,6 +1995,11 @@ msgstr "Lv{level}"
 msgid "Lv<0/>"
 msgstr "Lv<0/>"
 
+#. placeholder {0}: p.level
+#: src/components/community/chat/SenderName.tsx
+msgid "Lv<0>{0}</0>"
+msgstr ""
+
 #: src/scenes/Options.tsx
 msgid "Main menu"
 msgstr "Menu principal"
@@ -2209,6 +2222,10 @@ msgstr "Musique en lecture"
 #: src/editor/EditorViewOptions.tsx
 msgid "Musical"
 msgstr "Musicale"
+
+#: src/components/community/chat/SenderName.tsx
+msgid "Mutual friends"
+msgstr ""
 
 #: src/components/addons/AddonEditMeta.tsx
 #: src/components/community/CommunityBody.tsx

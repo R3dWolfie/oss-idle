@@ -34,10 +34,7 @@ import {
 	sendPm,
 } from '../../../online/privateMessages';
 import Socket from '../../../online/socket';
-import {
-	menuFor,
-	type MenuTarget,
-} from '../state';
+import type { MenuTarget } from '../state';
 import ChatText from './ChatText';
 import { mapLink } from './links';
 import {
@@ -49,6 +46,7 @@ import Reactions from './Reactions';
 import ReactPicker from './ReactPicker';
 import ReplyBar from './ReplyBar';
 import ReplyRef from './ReplyRef';
+import SenderName from './SenderName';
 import {
 	chatTabs,
 	pmContact,
@@ -164,13 +162,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 						<ReplyRef to={line.replyTo} reply={reply} />
 						<span className="chat__from" style={{ color: line.color }}>
 							{`${time} `}
-							<span
-								className={sender ? 'chat__name' : undefined}
-								onClick={sender && (e => {
-									e.stopPropagation();
-									void menuFor.set({ ...sender });
-								})}
-							>{line.name}</span>:
+							<SenderName sender={sender} name={line.name} color={line.color} />:
 						</span>
 						<span className="chat__body">
 							<ChatText text={line.text} link={line.link} senderId={line.fromId} />
