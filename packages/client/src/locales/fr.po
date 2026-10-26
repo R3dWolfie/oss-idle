@@ -3369,6 +3369,10 @@ msgstr "Fixer à"
 msgid "SHARE"
 msgstr "PARTAGER"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Shared by supporters"
+msgstr ""
+
 #: src/editor/EditorShortcuts.tsx
 msgid "Shift + wheel"
 msgstr "Maj + molette"
@@ -3688,10 +3692,6 @@ msgstr "Envoi du score…"
 #: src/components/SupporterHeart.tsx
 msgid "Support the game to access cool features!"
 msgstr "Soutiens le jeu pour accéder à des fonctionnalités sympas !"
-
-#: src/components/community/chat/EmojiPicker.tsx
-msgid "Supporters'"
-msgstr ""
 
 #: src/editor/EditorSummary.tsx
 #: src/osu/beatmap/grouping.ts

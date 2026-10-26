@@ -154,7 +154,7 @@ export default function EmojiPicker({ anchor, align = 'start', onPick, onPickGif
 				list: frequentIds(uses).map(id => byId.get(id)).filter(e => !!e),
 			},
 			{
-				key: 'supporters', title: t`Supporters'`, tab: <FontAwesomeIcon icon={faUserAstronaut} />,
+				key: 'supporters', title: t`Shared by supporters`, tab: <FontAwesomeIcon icon={faUserAstronaut} />,
 				list: usable.filter(e => e.owner),
 			},
 			...EMOJI_GROUPS.map(g => {
