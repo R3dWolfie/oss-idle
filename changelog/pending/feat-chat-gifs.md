@@ -1,0 +1,1 @@
+add [Chat] GIFs and pictures linked from Tenor, Giphy and Imgur show in the chat (a line that is only one shows just the GIF); star one to keep it in the picker's new GIFs tab; Options > General > Chat turns them off, by @R3dWolfie

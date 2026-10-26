@@ -36,7 +36,7 @@ import useNameComplete from './useNameComplete';
 import useReply from './useReply';
 import ReplyBar from './ReplyBar';
 import ReplyRef from './ReplyRef';
-import Reactions from './Reactions';
+import LineBody from './LineBody';
 import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
 import ReactPicker from './ReactPicker';
 import ComposeEmoji from './ComposeEmoji';
@@ -164,10 +164,10 @@ export default function ChatTabContents({ channel, inputRef } : {
 								})}
 							>{line.name}</span>:
 						</span>
-						<span className="chat__body">
-							<ChatText text={line.text} link={line.link} senderId={line.fromId} />
-							<Reactions channel={channel} id={line.id} reactions={line.reactions} />
-						</span>
+						<LineBody
+							channel={channel} id={line.id} text={line.text} link={line.link}
+							senderId={line.fromId} reactions={line.reactions}
+						/>
 						{line.fromId !== undefined && (
 							<span className="chat__line-actions">
 								<button

@@ -9,7 +9,8 @@ import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
 import { t } from '@lingui/core/macro';
 import EmojiPicker from './EmojiPicker';
 
-/** The ☺ at the end of the chat input: the emoji picker, putting `:name:` where the cursor is. */
+/** The ☺ at the end of the chat input: the emoji picker, putting `:name:` (or a starred GIF's link)
+ *  where the cursor is. */
 export default function ComposeEmoji({ draft, setDraft, inputRef }: {
 	draft: string,
 	setDraft: (draft: string) => void,
@@ -30,10 +31,10 @@ export default function ComposeEmoji({ draft, setDraft, inputRef }: {
 		return () => window.removeEventListener('mousedown', outside, true);
 	}, [open]);
 
-	const insert = (name: string) => {
+	const insert = (text: string) => {
 		const at = Math.min(caret.current, draft.length);
 		const before = draft.slice(0, at);
-		const code = `${before && !before.endsWith(' ') ? ' ' : ''}:${name}: `;
+		const code = `${before && !before.endsWith(' ') ? ' ' : ''}${text} `;
 		setDraft(before + code + draft.slice(at));
 		setOpen(false);
 		// back to typing, right after it
@@ -54,7 +55,8 @@ export default function ComposeEmoji({ draft, setDraft, inputRef }: {
 			><FontAwesomeIcon icon={faFaceSmile} /></button>
 			{open && (
 				<EmojiPicker
-					anchor={root} align="end" onPick={e => insert(e.name)} onClose={() => setOpen(false)}
+					anchor={root} align="end" onPick={e => insert(`:${e.name}:`)} onPickGif={url => insert(url)}
+					onClose={() => setOpen(false)}
 				/>
 			)}
 		</span>

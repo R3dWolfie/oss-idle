@@ -697,7 +697,7 @@ msgstr "Buy {nextGear}?"
 msgid "Buy now"
 msgstr "Buy now"
 
-#. placeholder {0}: preview.owner.name
+#. placeholder {0}: e.owner.name
 #: src/components/community/chat/EmojiPicker.tsx
 msgid "by {0}"
 msgstr "by {0}"
@@ -830,6 +830,10 @@ msgstr "Character name"
 #: src/scenes/Options.tsx
 msgid "Chat"
 msgstr "Chat"
+
+#: src/scenes/Options.tsx
+msgid "chat|gif|image|picture|media|embed"
+msgstr "chat|gif|image|picture|media|embed"
 
 #: src/scenes/Options.tsx
 msgid "chat|message|private|pm|friends"
@@ -1340,6 +1344,7 @@ msgid "Effect"
 msgstr "Effect"
 
 #: src/components/community/chat/ComposeEmoji.tsx
+#: src/components/community/chat/EmojiPicker.tsx
 msgid "Emoji"
 msgstr "Emoji"
 
@@ -1593,6 +1598,10 @@ msgstr "GENERAL"
 msgid "Generation {generation}"
 msgstr "Generation {generation}"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "GIFs"
+msgstr "GIFs"
+
 #: src/components/community/PlayerMenu.tsx
 msgid "Give Host"
 msgstr "Give Host"
@@ -1816,6 +1825,10 @@ msgstr "Join Game"
 #: src/scenes/Lobby.tsx
 msgid "Joining this game requires a password..."
 msgstr "Joining this game requires a password..."
+
+#: src/components/community/chat/ChatMediaView.tsx
+msgid "Keep in your GIFs"
+msgstr "Keep in your GIFs"
 
 #: src/components/Tutorial.tsx
 msgid "Keep playing"
@@ -3033,6 +3046,10 @@ msgstr "Remove a note"
 msgid "Remove from the queue"
 msgstr "Remove from the queue"
 
+#: src/components/community/chat/ChatMediaView.tsx
+msgid "Remove from your GIFs"
+msgstr "Remove from your GIFs"
+
 #: src/components/PlaylistOverlay.tsx
 msgid "Remove this difficulty"
 msgstr "Remove this difficulty"
@@ -3388,6 +3405,10 @@ msgstr "Show FPS counter"
 msgid "Show Full"
 msgstr "Show Full"
 
+#: src/components/options/ChatMedia.tsx
+msgid "Show GIFs and pictures in chat"
+msgstr "Show GIFs and pictures in chat"
+
 #: src/scenes/Lobby.tsx
 msgid "Show In-Progress"
 msgstr "Show In-Progress"
@@ -3580,6 +3601,10 @@ msgstr "Speed"
 #: src/editor/EditorScrollTools.tsx
 msgid "Speed for the stretch"
 msgstr "Speed for the stretch"
+
+#: src/components/community/chat/GifGrid.tsx
+msgid "Star a GIF in the chat (its ★) to keep it here."
+msgstr "Star a GIF in the chat (its ★) to keep it here."
 
 #: src/components/songselect/BeatmapInfo.tsx
 msgid "Star Rating: {stars}★"
