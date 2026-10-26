@@ -268,7 +268,7 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 						characterId: now.id,
 						name: now.name,
 						color: await nameColor(user.id),
-					}, user.id, msg.channel, msg.text);
+					}, user.id, msg.channel, msg.text, { replyTo: msg.replyTo });
 				} else if (msg.type === 'pm') {
 					const now = await currentRow();
 					await handlePm({

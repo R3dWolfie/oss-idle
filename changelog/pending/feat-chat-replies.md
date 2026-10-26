@@ -1,1 +1,1 @@
-add [Chat] Reply to a line with the ↪ that shows when you hover it: the reply carries who and what it answers, shown over it (click to go to the line), and reads fine as plain text on clients without it, by @R3dWolfie
+add [Chat] Reply to a line with the ↪ that shows when you hover it: the reply carries who and what it answers, shown over it (click to go to the line), by @R3dWolfie

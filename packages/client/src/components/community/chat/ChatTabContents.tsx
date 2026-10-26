@@ -10,7 +10,10 @@ import {
 	useState,
 } from 'react';
 
-import { ANNOUNCE_CHANNEL } from '@oss-idle/shared/community/wire';
+import {
+	ANNOUNCE_CHANNEL,
+	type ReplyQuote,
+} from '@oss-idle/shared/community/wire';
 import clock from '@oss-idle/shared/display/clock';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 
@@ -57,8 +60,10 @@ type LogLine = {
 	color?: string,
 	name?: string,
 	fromId?: number,
+	fromColor?: string,
 	link?: { label: string, path: string },
 	sender?: MenuTarget,
+	replyTo?: ReplyQuote,
 };
 
 export default function ChatTabContents({ channel, inputRef } : {
@@ -88,8 +93,9 @@ export default function ChatTabContents({ channel, inputRef } : {
 				id: l.id, at: l.at, text: '<block>',
 			};
 			return {
-				id: l.id, at: l.at, text: l.text, name: l.from.name, fromId: l.from.userId,
+				id: l.id, at: l.at, text: l.text, name: l.from.name, fromId: l.from.userId, fromColor: l.from.color,
 				color: mentionsMe(l.text) && l.from.userId !== me ? MENTION_COLOR : l.from.color,
+				replyTo: l.replyTo,
 				sender: {
 					...l.from, line: l,
 				},
@@ -125,9 +131,10 @@ export default function ChatTabContents({ channel, inputRef } : {
 		e.preventDefault();
 		const text = draft.trim();
 		if (!text || !chatTabs.get()?.includes(channel)) return;
-		const out = reply.wrap(handleCommand(text));
-		if (contact === undefined) Socket.sendChat(out, channel);
-		else sendPm(contact, out);
+		if (contact === undefined) {
+			const out = reply.send(handleCommand(text));
+			Socket.sendChat(out.text, channel, out.replyTo);
+		} else sendPm(contact, handleCommand(text));
 		setDraft('');
 	};
 
@@ -147,7 +154,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 				const { sender } = line;
 				return (
 					<div key={line.id} className="chat__line" data-line={line.id}>
-						<ReplyRef text={line.text} reply={reply} />
+						<ReplyRef to={line.replyTo} reply={reply} />
 						<span className="chat__from" style={{ color: line.color }}>
 							{`${time} `}
 							<span
@@ -159,9 +166,9 @@ export default function ChatTabContents({ channel, inputRef } : {
 							>{line.name}</span>:
 						</span>
 						<ChatText text={line.text} link={line.link} senderId={line.fromId} />
-						{line.fromId !== undefined && (
+						{contact === undefined && line.fromId !== undefined && line.text !== '<deleted>' && (
 							<button
-								type="button" className="chat__reply-btn" title={t`Reply`}
+								type="button" className="chat__reply-btn" aria-label={t`Reply`}
 								onClick={() => reply.start(line)}
 							>↪</button>
 						)}
@@ -174,7 +181,6 @@ export default function ChatTabContents({ channel, inputRef } : {
 			<form className="chat__compose" onSubmit={submit}>
 				<ReplyBar
 					target={reply.target}
-					color={reply.color}
 					onCancel={reply.cancel}
 					inputRef={inputRef}
 					draft={draft}

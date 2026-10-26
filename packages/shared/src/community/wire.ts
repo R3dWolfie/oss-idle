@@ -48,6 +48,9 @@ export const TEAM_CHANNEL = '#team';
 /** Server-enforced cap on a chat line. */
 export const MAX_CHAT_LENGTH = 2000;
 
+/** How much of the answered line a reply keeps. */
+export const REPLY_QUOTE_LENGTH = 200;
+
 const chatLineBase = {
 	id: z.string(), // server-assigned, stable across history + live so a delete can target it
 	channel: z.string(),
@@ -69,6 +72,14 @@ export const chatLineDTO = z.discriminatedUnion('kind', [
 			name: z.string(),
 			color: z.string(),
 		}),
+		/** the line this one answers, as it was then */
+		replyTo: z.object({
+			id: z.string(),
+			userId: z.number().int().positive(),
+			name: z.string(),
+			color: z.string(),
+			text: z.string(),
+		}).optional(),
 	}),
 	z.object({
 		kind: z.literal('system'),
@@ -89,6 +100,8 @@ export const chatLineDTO = z.discriminatedUnion('kind', [
 	}),
 ]);
 export type ChatLine = z.infer<typeof chatLineDTO>;
+/** What a reply keeps of the line it answers. */
+export type ReplyQuote = NonNullable<Extract<ChatLine, { kind: 'player' }>['replyTo']>;
 
 /** A private message, as it reaches both ends. Never stored by the server:
  *  delivered while the recipient is online, kept locally by each client. */
@@ -115,6 +128,8 @@ export const clientMessage = z.discriminatedUnion('type', [
 		type: z.literal('chat'),
 		channel: z.string(),
 		text: z.string().min(1).max(MAX_CHAT_LENGTH),
+		/** the id of the line it answers */
+		replyTo: z.string().max(64).optional(),
 	}),
 	z.object({
 		type: z.literal('status'),

@@ -9,6 +9,7 @@ import {
 	DEFAULT_CHANNEL,
 	LEGACY_DEFAULT_CHANNEL,
 	MAX_CHAT_LENGTH,
+	REPLY_QUOTE_LENGTH,
 	TEAM_CHANNEL,
 } from '@oss-idle/shared/community/wire';
 import {
@@ -184,7 +185,7 @@ export const handleChat = async (
 	userId: number,
 	channel: string,
 	text: string,
-	opts?: { bypassRate?: boolean },
+	opts?: { bypassRate?: boolean, replyTo?: string },
 ): Promise<void> => {
 	const trimmed = text.trim();
 	if (!trimmed) return;
@@ -222,6 +223,7 @@ export const handleChat = async (
 		},
 		text: trimmed.slice(0, MAX_CHAT_LENGTH),
 		at: Date.now(),
+		replyTo: await quote(channel, opts?.replyTo),
 	};
 
 	await store(channel, line);
@@ -237,6 +239,19 @@ export const handleChat = async (
 	const answer = botLine(channel, reply);
 	await store(channel, answer);
 	relay(answer, members);
+};
+
+/** What a reply keeps of the line it answers; nothing for a gone, deleted or system line. */
+const quote = async (channel: string, id: string | undefined) => {
+	const q = id ? await chatLine(channel, id) : undefined;
+	if (q?.kind !== 'player' || q.text === DELETED_TEXT) return undefined;
+	return {
+		id: q.id,
+		userId: q.from.userId,
+		name: q.from.name,
+		color: q.from.color,
+		text: q.text.slice(0, REPLY_QUOTE_LENGTH),
+	};
 };
 
 /** Send a line to a match's players, or everyone. */
@@ -297,7 +312,7 @@ export const adminAnnounce = (channel: string, text: string): void =>
 
 // --- deletion ---
 
-/** Blank the given lines in history and tell every client to do the same. */
+/** Blank the given lines in history, and the replies' quotes of them, and tell every client to do the same. */
 export const deleteMessages = async (channel: string, ids: string[]): Promise<string[]> => {
 	if (!ids.length) return [];
 	const raw = await redis.hmget(logKey(channel), ...ids);
@@ -312,6 +327,16 @@ export const deleteMessages = async (channel: string, ids: string[]): Promise<st
 		deleted.push(line.id);
 	}
 	if (!deleted.length) return [];
+	const gone = new Set(deleted);
+	for (const line of await chatHistory(channel)) {
+		const to = line.kind === 'player' ? line.replyTo : undefined;
+		if (!to || !gone.has(to.id) || gone.has(line.id)) continue;
+		tx.hset(logKey(channel), line.id, JSON.stringify({
+			...line, replyTo: {
+				...to, text: DELETED_TEXT,
+			},
+		}));
+	}
 	await tx.exec();
 	hub.broadcast({
 		type: 'chat:delete', channel, ids: deleted,

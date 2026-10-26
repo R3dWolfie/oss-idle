@@ -11,10 +11,9 @@ import type { ReplyTarget } from './replies';
 /** Above the input while answering a line, following what you type: a small card with who and a taste of
  *  what they said, in their colour, and the ✕ to drop it (Esc too). */
 export default function ReplyBar({
-	target, color, onCancel, inputRef, draft,
+	target, onCancel, inputRef, draft,
 }: {
 	target: ReplyTarget | undefined,
-	color?: string,
 	onCancel: () => void,
 	inputRef: RefObject<HTMLInputElement>,
 	draft: string,
@@ -29,12 +28,15 @@ export default function ReplyBar({
 	});
 	if (!target) return null;
 	return (
-		<div ref={ref} className="chat__replybar" style={color ? { borderLeftColor: color } : undefined}>
+		<div
+			ref={ref} className="chat__replybar"
+			style={target.color ? { borderLeftColor: target.color } : undefined}
+		>
 			<span className="chat__replybar-text">
-				↩ <b style={{ color }}>{target.name}</b> {target.snippet}
+				↩ <b style={{ color: target.color }}>{target.name}</b> {target.text}
 			</span>
 			<button
-				type="button" title={t`Cancel the reply`}
+				type="button" aria-label={t`Cancel the reply`}
 				onMouseDown={e => e.preventDefault()} onClick={onCancel}
 			>✕</button>
 		</div>

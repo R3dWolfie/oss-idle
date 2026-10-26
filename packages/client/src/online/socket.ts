@@ -84,9 +84,9 @@ export default class Socket {
 		this.watchActivity();
 	}
 
-	public static sendChat(text: string, channel: string = DEFAULT_CHANNEL): void {
+	public static sendChat(text: string, channel: string = DEFAULT_CHANNEL, replyTo?: string): void {
 		this.send({
-			type: 'chat', channel, text,
+			type: 'chat', channel, text, replyTo,
 		});
 	}
 
@@ -272,12 +272,18 @@ export default class Socket {
 			}
 			case 'chat:delete': {
 				const ids = new Set(msg.ids);
-				void this.chat.set(this.chat.get().map(l =>
-					l.channel === msg.channel && ids.has(l.id)
-						? {
-							...l, text: '<deleted>',
-						}
-						: l));
+				void this.chat.set(this.chat.get().map(l => {
+					if (l.channel !== msg.channel) return l;
+					if (ids.has(l.id)) return {
+						...l, text: '<deleted>',
+					};
+					if (l.kind === 'player' && l.replyTo && ids.has(l.replyTo.id)) return {
+						...l, replyTo: {
+							...l.replyTo, text: '<deleted>',
+						},
+					};
+					return l;
+				}));
 				break;
 			}
 		}
