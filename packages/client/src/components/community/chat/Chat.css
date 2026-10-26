@@ -688,3 +688,14 @@
 .emoji-picker__gifs .emoji-picker__none {
 	grid-column: 1 / -1;
 }
+
+/* the ticker draws no GIFs: a small tag where one's link was */
+.chat__media-label {
+	padding: 0 5px;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, 0.12);
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 0.75em;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+}

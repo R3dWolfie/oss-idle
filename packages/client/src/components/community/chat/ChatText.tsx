@@ -13,6 +13,7 @@ import { splitLinks } from './links';
 import { openChatMap } from './openMap';
 import { mentionPattern } from './mentionQuery';
 import { parseReply } from './replies';
+import { mediaOf } from './media';
 
 /** A line's text cut around the emoji its sender may use. */
 type Split = (text: string) => ReturnType<ReturnType<typeof emoji.get>['split']>;
@@ -51,11 +52,18 @@ const withMentions = (
 	return out;
 };
 
+/** How a GIF's or picture's link shows in the text: as itself, not at all (it's drawn under the line), or
+ *  as a small "GIF" (where it isn't drawn: the ticker). */
+export type MediaLinks = 'show' | 'hide' | 'label';
+
 /** The text with each map and web address it contains clickable. */
 const linked = (
-	split: Split, text: string, pattern?: RegExp, me = '',
+	split: Split, text: string, pattern?: RegExp, me = '', media: MediaLinks = 'show',
 ) => splitLinks(text).flatMap((part, i) => {
 	if (typeof part === 'string') return withMentions(split, part, i, pattern, me);
+	if (media !== 'show' && 'url' in part && mediaOf(part.url)) {
+		return media === 'hide' ? [] : <span key={i} className="chat__media-label">GIF</span>;
+	}
 	const open = 'map' in part
 		? () => void openChatMap(part.map)
 		: () => void linkFor.set(part.url);
@@ -63,10 +71,11 @@ const linked = (
 });
 
 /** A line's text, its `link` part opening a web platform page; `senderId`'s own emoji drawn. */
-export default function ChatText({ text, link, senderId }: {
+export default function ChatText({ text, link, senderId, media = 'show' }: {
 	text: string,
 	link?: { label: string, path: string },
 	senderId?: number,
+	media?: MediaLinks,
 }) {
 	const [matcher] = useSynced(emoji);
 	const [presence = []] = useSynced(Socket.presence);
@@ -76,18 +85,19 @@ export default function ChatText({ text, link, senderId }: {
 	const pattern = patternFor(presence, me);
 	// a reply shows only what it says here; who it answers is drawn over the line (ReplyRef)
 	const reply = parseReply(text);
-	if (reply) return <span className="chat__text">{linked(split, reply.body, pattern, me)}</span>;
+	const say = (s: string) => linked(split, s, pattern, me, media);
+	if (reply) return <span className="chat__text">{say(reply.body)}</span>;
 	const at = link ? text.indexOf(link.label) : -1;
-	if (!link || at < 0) return <span className="chat__text">{linked(split, text, pattern, me)}</span>;
+	if (!link || at < 0) return <span className="chat__text">{say(text)}</span>;
 	const open = () => {
 		void webUrl.set(link.path);
 		void isWebOpen.set(true);
 	};
 	return (
 		<span className="chat__text">
-			{linked(split, text.slice(0, at), pattern, me)}
+			{say(text.slice(0, at))}
 			<a className="chat__link" onClick={open}>{link.label}</a>
-			{linked(split, text.slice(at + link.label.length), pattern, me)}
+			{say(text.slice(at + link.label.length))}
 		</span>
 	);
 }

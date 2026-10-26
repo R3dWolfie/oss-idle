@@ -61,7 +61,7 @@ export default function Ticker() {
 				>{`${time} ${latest.from.name}:`}</span>
 				<span className="chat__body">
 					{reply && <span className="chat__ticker-reply">↩ {reply.name}</span>}
-					<ChatText text={latest.text} senderId={latest.from.userId} />
+					<ChatText text={latest.text} senderId={latest.from.userId} media="label" />
 					<Reactions channel={latest.channel} id={latest.id} reactions={latest.reactions} readOnly />
 				</span>
 			</div>

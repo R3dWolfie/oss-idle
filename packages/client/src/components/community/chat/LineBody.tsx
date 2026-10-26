@@ -7,8 +7,8 @@ import { parseReply } from './replies';
 import { onlyMedia } from './media';
 import { showMedia } from './gifPrefs';
 
-/** What a line says: its text (not when it's only a GIF's link: the GIF stands in), the GIFs and
- *  pictures it links to, and its reactions. */
+/** What a line says: its text (a GIF's link left out of it, the GIF stands in; a line that's only one
+ *  has no text), the GIFs and pictures it links to, and its reactions. */
 export default function LineBody({ channel, id, text, link, senderId, reactions }: {
 	channel: string,
 	id: string,
@@ -21,7 +21,9 @@ export default function LineBody({ channel, id, text, link, senderId, reactions 
 	const said = parseReply(text)?.body ?? text;
 	return (
 		<span className="chat__body">
-			{!(media && onlyMedia(said)) && <ChatText text={text} link={link} senderId={senderId} />}
+			{!(media && onlyMedia(said)) && (
+				<ChatText text={text} link={link} senderId={senderId} media={media ? 'hide' : 'show'} />
+			)}
 			<ChatMediaView text={said} />
 			<Reactions channel={channel} id={id} reactions={reactions} />
 		</span>
