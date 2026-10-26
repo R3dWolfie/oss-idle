@@ -9,7 +9,10 @@ import Log, { POPUP_TYPE } from '@oss-idle/shared/helpers/log';
 import { playPing } from '../../../audio/ping';
 import { Setting } from '../../../db/settings';
 import Entities from '../../../entity/entities';
-import { isCommunityOpen } from '../../../globals';
+import {
+	isCommunityOpen,
+	isStandalone,
+} from '../../../globals';
 import Auth from '../../../online/auth';
 import { blocked } from '../../../online/blocks';
 import Socket from '../../../online/socket';
@@ -22,13 +25,15 @@ import {
 
 /** A mention you can't see plays a ping. */
 export const mentionSound = new Setting('chat.mentionSound', true);
-/** A mention while the game isn't in front shows a desktop notification. */
-export const mentionNotify = new Setting('chat.mentionNotify', true);
+/** A mention while the game isn't in front shows a desktop notification. Off on the web until ticked,
+ *  the click that asks the browser. */
+export const mentionNotify = new Setting('chat.mentionNotify', isStandalone.get());
 
-/** The browser asks once, on a click (it won't from nowhere); the desktop app needs nothing. */
-export const askNotifyPermission = (): void => {
-	if (typeof Notification === 'undefined' || Notification.permission !== 'default') return;
-	void Notification.requestPermission();
+/** Whether notifications may show; the browser asks once, on a click. */
+export const askNotifyPermission = async (): Promise<boolean> => {
+	if (typeof Notification === 'undefined') return false;
+	if (Notification.permission === 'default') await Notification.requestPermission();
+	return Notification.permission === 'granted';
 };
 
 /** The sender's name colour on a line that mentions you. */

@@ -18,8 +18,10 @@ export default function MentionPings() {
 		<Checkbox value={mentionSound} label={<Trans>Ping when someone mentions you</Trans>} />
 		<Checkbox
 			value={mentionNotify}
-			// the click is the one moment a browser lets the game ask
-			onChange={on => { if (on) askNotifyPermission(); }}
+			// the click is the one moment a browser lets the game ask; refused, it unticks
+			onChange={on => {
+				if (on) void askNotifyPermission().then(ok => { if (!ok) void mentionNotify.set(false); });
+			}}
 			label={<Trans>Desktop notification for mentions while the game is in the background</Trans>}
 		/>
 	</>;
