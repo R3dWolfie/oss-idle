@@ -350,7 +350,7 @@ msgstr "Ajouter à {offset} ms"
 msgid "Add at the current time"
 msgstr "Ajouter au temps actuel"
 
-#: src/components/community/chat/SenderName.tsx
+#: src/components/community/chat/NameCardFriends.tsx
 msgid "Add friend"
 msgstr ""
 
@@ -1526,7 +1526,7 @@ msgstr "Mods libres"
 msgid "Frequencies"
 msgstr "Fréquences"
 
-#: src/components/community/chat/SenderName.tsx
+#: src/components/community/chat/NameCardFriends.tsx
 msgid "Friend"
 msgstr ""
 
@@ -1996,7 +1996,7 @@ msgid "Lv<0/>"
 msgstr "Lv<0/>"
 
 #. placeholder {0}: p.level
-#: src/components/community/chat/SenderName.tsx
+#: src/components/community/chat/NameCard.tsx
 msgid "Lv<0>{0}</0>"
 msgstr ""
 
@@ -2223,7 +2223,7 @@ msgstr "Musique en lecture"
 msgid "Musical"
 msgstr "Musicale"
 
-#: src/components/community/chat/SenderName.tsx
+#: src/components/community/chat/NameCardFriends.tsx
 msgid "Mutual friends"
 msgstr ""
 

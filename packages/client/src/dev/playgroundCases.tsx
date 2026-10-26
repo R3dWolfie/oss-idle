@@ -37,7 +37,7 @@ import PrestigeView from '../components/character/PrestigeView';
 import ChannelPicker from '../components/community/chat/ChannelPicker';
 import Chat from '../components/community/chat/Chat';
 import ChatText from '../components/community/chat/ChatText';
-import { NameCard } from '../components/community/chat/SenderName';
+import NameCard from '../components/community/chat/NameCard';
 import LinkMenu from '../components/community/LinkMenu';
 import ConfirmMenu from '../components/ConfirmMenu';
 import DirectLinkPanel from '../components/direct/DirectLinkPanel';

@@ -536,8 +536,7 @@
 	bottom: calc(100% + 34px);
 }
 
-/* a sender's card, over the name the pointer rests on, after osu!'s user panel: their avatar
-   big on the left and, blurred and dimmed, behind the whole card */
+/* osu!'s user panel */
 .name-card {
 	position: fixed;
 	z-index: var(--z-over-chat);
@@ -676,17 +675,6 @@ button.name-card__button:disabled {
 }
 .name-card__marquee {
 	min-width: 0;
-	overflow: hidden;
-	white-space: nowrap;
-}
-.name-card__marquee > span {
-	display: inline-block;
-}
-.name-card__marquee:has(.name-card__marquee--on) {
-	mask-image: linear-gradient(90deg, #000 90%, transparent);
-}
-.name-card__marquee--on {
-	animation: name-card-marquee linear infinite alternate;
 }
 .name-card__status[data-status="playing"] {
 	color: #8fe3b0;
@@ -710,16 +698,6 @@ button.name-card__button:disabled {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-@keyframes name-card-marquee {
-	0%,
-	15% {
-		transform: none;
-	}
-	85%,
-	100% {
-		transform: translateX(var(--shift));
-	}
 }
 @keyframes name-card-banner-in {
 	from {
