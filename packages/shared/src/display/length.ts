@@ -2,8 +2,7 @@ import { __ } from '../i18n/translate.js';
 
 const two = (n: number) => n.toString().padStart(2, '0');
 
-/** A length as `mm:ss`, `h:mm:ss` from an hour, and `3d 4:05:06` from a day
- *  (a long queue read 64101:12). */
+/** A length as `mm:ss`, `h:mm:ss` from an hour, and `3d 04:05:06` from a day. */
 export const length = (seconds: number): string => {
 	const total = Math.floor(seconds);
 	const s = total % 60;
