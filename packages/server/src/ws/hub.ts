@@ -55,7 +55,7 @@ const legacyMessage = (msg: ServerMessage): ServerMessage | undefined => {
 			},
 		};
 	}
-	if (msg.type === 'chat:delete' && msg.channel === DEFAULT_CHANNEL) {
+	if ((msg.type === 'chat:delete' || msg.type === 'chat:react') && msg.channel === DEFAULT_CHANNEL) {
 		return {
 			...msg, channel: LEGACY_DEFAULT_CHANNEL,
 		};

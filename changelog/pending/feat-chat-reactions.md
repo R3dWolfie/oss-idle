@@ -1,0 +1,1 @@
+add [Chat] React to a line with the ☺ that shows when you hover it: the common emoji first, all of them a click away; reactions show under the line with how many, yours lit, a click to add or take back yours, by @R3dWolfie

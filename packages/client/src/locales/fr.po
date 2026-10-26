@@ -160,6 +160,10 @@ msgstr "{nbMaps} maps"
 msgid "{online} users connected"
 msgstr "{online} utilisateurs en ligne"
 
+#: src/components/community/chat/Reactions.tsx
+msgid "{others} more"
+msgstr ""
+
 #: src/online/presence.ts
 msgid "{result} on {map}"
 msgstr "{result} sur {map}"
@@ -2109,6 +2113,10 @@ msgstr "Les mods changent comment la map se joue. Un rate plus rapide rend gén�
 msgid "More"
 msgstr "Plus"
 
+#: src/components/community/chat/ReactPicker.tsx
+msgid "More emoji"
+msgstr ""
+
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
 msgid "Most downloaded"
@@ -2280,6 +2288,10 @@ msgstr "Aucun add-on installé. Tu en trouveras dans le catalogue."
 #: src/editor/EditorChecks.tsx
 msgid "No background image"
 msgstr "Pas d'image de fond"
+
+#: src/components/community/chat/ReactPicker.tsx
+msgid "No emoji found"
+msgstr ""
 
 #: src/components/songselect/TopBar.tsx
 msgid "No Grouping"
@@ -2909,6 +2921,10 @@ msgstr "Rates"
 msgid "Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You lose its upgrades and Overdrive, and gain a bonus level, an extra gear slot and a multiplicative XP bonus. Each prestige asks for one more level than the last."
 msgstr "Atteindre le niveau d'XP Lv{PRESTIGE_MIN_LEVEL} sur une compétence permet de la réinitialiser. Tu perdras les améliorations et l'Overdrive, et obtiendras un niveau bonus, débloqueras un rang d'amélioration supplémentaire et un bonus d'XP multiplicatif. Chaque prestige nécessite un niveau de plus que le dernier."
 
+#: src/components/community/chat/ReactPicker.tsx
+msgid "React"
+msgstr ""
+
 #: src/components/Announce.tsx
 msgid "Read the full article"
 msgstr "Lire en entier"
@@ -3187,6 +3203,10 @@ msgstr "Chercher des actions et des options"
 #: src/components/direct/DirectFilters.tsx
 msgid "Search by artist, title, mapper, stars>5..."
 msgstr "Rechercher par artiste, titre, mappeur, stars>5..."
+
+#: src/components/community/chat/ReactPicker.tsx
+msgid "Search emoji"
+msgstr ""
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/community/chat/ChannelPicker.tsx

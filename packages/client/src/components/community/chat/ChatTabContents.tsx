@@ -1,3 +1,5 @@
+import { faReply } from '@fortawesome/free-solid-svg-icons/faReply';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	ph,
 	t,
@@ -10,6 +12,7 @@ import {
 	useState,
 } from 'react';
 
+import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
 import {
 	ANNOUNCE_CHANNEL,
 	type ReplyQuote,
@@ -42,6 +45,8 @@ import {
 	mentionsMe,
 } from './mentions';
 import MentionSuggestions from './MentionSuggestions';
+import Reactions from './Reactions';
+import ReactPicker from './ReactPicker';
 import ReplyBar from './ReplyBar';
 import ReplyRef from './ReplyRef';
 import {
@@ -64,6 +69,7 @@ type LogLine = {
 	link?: { label: string, path: string },
 	sender?: MenuTarget,
 	replyTo?: ReplyQuote,
+	reactions?: LineReactions,
 };
 
 export default function ChatTabContents({ channel, inputRef } : {
@@ -94,6 +100,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 			};
 			return {
 				id: l.id, at: l.at, text: l.text, name: l.from.name, fromId: l.from.userId, fromColor: l.from.color,
+				reactions: l.reactions,
 				color: mentionsMe(l.text) && l.from.userId !== me ? MENTION_COLOR : l.from.color,
 				replyTo: l.replyTo,
 				sender: {
@@ -165,12 +172,18 @@ export default function ChatTabContents({ channel, inputRef } : {
 								})}
 							>{line.name}</span>:
 						</span>
-						<ChatText text={line.text} link={line.link} senderId={line.fromId} />
+						<span className="chat__body">
+							<ChatText text={line.text} link={line.link} senderId={line.fromId} />
+							<Reactions channel={channel} id={line.id} reactions={line.reactions} />
+						</span>
 						{contact === undefined && line.fromId !== undefined && line.text !== '<deleted>' && (
-							<button
-								type="button" className="chat__reply-btn" aria-label={t`Reply`}
-								onClick={() => reply.start(line)}
-							>↪</button>
+							<span className="chat__line-actions">
+								<button
+									type="button" className="chat__line-btn" aria-label={t`Reply`}
+									onClick={() => reply.start(line)}
+								><FontAwesomeIcon icon={faReply} /></button>
+								<ReactPicker channel={channel} id={line.id} />
+							</span>
 						)}
 					</div>
 				);

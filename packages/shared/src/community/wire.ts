@@ -22,6 +22,7 @@ import {
 	CLIENT_STATUS,
 	presenceEntryDTO,
 } from './presence.js';
+import { reactionsDTO } from './reactions.js';
 
 /** The default channel every signed-in player joins. */
 export const DEFAULT_CHANNEL = '#oss!idle';
@@ -56,6 +57,8 @@ const chatLineBase = {
 	channel: z.string(),
 	text: z.string(),
 	at: z.number().int(), // epoch ms
+	/** emoji people reacted with; absent until the first (older clients drop it) */
+	reactions: reactionsDTO.optional(),
 };
 
 /** One chat line as it travels to clients. No persistence: a line exists only
@@ -131,6 +134,14 @@ export const clientMessage = z.discriminatedUnion('type', [
 		/** the id of the line it answers */
 		replyTo: z.string().max(64).optional(),
 	}),
+	// your reaction on a line, on or off
+	z.object({
+		type: z.literal('chat:react'),
+		channel: z.string(),
+		id: z.string(),
+		emoji: z.number().int().positive(),
+		on: z.boolean(),
+	}),
 	z.object({
 		type: z.literal('status'),
 		status: z.enum(values(CLIENT_STATUS)),
@@ -200,6 +211,13 @@ export const serverMessage = z.discriminatedUnion('type', [
 		type: z.literal('chat:delete'),
 		channel: z.string(),
 		ids: z.array(z.string()),
+	}),
+	// a line's reactions changed: all of them, as they are now
+	z.object({
+		type: z.literal('chat:react'),
+		channel: z.string(),
+		id: z.string(),
+		reactions: reactionsDTO,
 	}),
 	z.object({
 		type: z.literal('online'),

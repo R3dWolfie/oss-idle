@@ -155,6 +155,10 @@ msgstr "{nbMaps} maps"
 msgid "{online} users connected"
 msgstr "{online} users connected"
 
+#: src/components/community/chat/Reactions.tsx
+msgid "{others} more"
+msgstr "{others} more"
+
 #: src/online/presence.ts
 msgid "{result} on {map}"
 msgstr "{result} on {map}"
@@ -2104,6 +2108,10 @@ msgstr "Mods change how a map plays. A faster rate usually makes the map harder,
 msgid "More"
 msgstr "More"
 
+#: src/components/community/chat/ReactPicker.tsx
+msgid "More emoji"
+msgstr "More emoji"
+
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
 msgid "Most downloaded"
@@ -2275,6 +2283,10 @@ msgstr "No add-ons installed. Browse the catalog to find some."
 #: src/editor/EditorChecks.tsx
 msgid "No background image"
 msgstr "No background image"
+
+#: src/components/community/chat/ReactPicker.tsx
+msgid "No emoji found"
+msgstr "No emoji found"
 
 #: src/components/songselect/TopBar.tsx
 msgid "No Grouping"
@@ -2904,6 +2916,10 @@ msgstr "Rates"
 msgid "Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You lose its upgrades and Overdrive, and gain a bonus level, an extra gear slot and a multiplicative XP bonus. Each prestige asks for one more level than the last."
 msgstr "Reaching XP Lv{PRESTIGE_MIN_LEVEL} on a skill lets you reset it. You lose its upgrades and Overdrive, and gain a bonus level, an extra gear slot and a multiplicative XP bonus. Each prestige asks for one more level than the last."
 
+#: src/components/community/chat/ReactPicker.tsx
+msgid "React"
+msgstr "React"
+
 #: src/components/Announce.tsx
 msgid "Read the full article"
 msgstr "Read the full article"
@@ -3182,6 +3198,10 @@ msgstr "Search actions and options"
 #: src/components/direct/DirectFilters.tsx
 msgid "Search by artist, title, mapper, stars>5..."
 msgstr "Search by artist, title, mapper, stars>5..."
+
+#: src/components/community/chat/ReactPicker.tsx
+msgid "Search emoji"
+msgstr "Search emoji"
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/community/chat/ChannelPicker.tsx

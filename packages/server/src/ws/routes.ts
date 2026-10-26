@@ -56,6 +56,7 @@ import { touchActive } from '../social';
 import {
 	chatHistory,
 	handleChat,
+	handleReact,
 	nameColor,
 } from './chat';
 import { hub } from './hub';
@@ -252,6 +253,11 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 					})],
 					['queue', () => handleQueue(msg, bound(ws), ws)],
 					['mp', () => handleMultiplayer(msg, bound(ws), ws, scores)],
+					['react', async () => {
+						if (msg.type !== 'chat:react') return false;
+						await handleReact((await currentRow()).id, user.id, msg.channel, msg.id, msg.emoji, msg.on);
+						return true;
+					}],
 				];
 				for (const [tag, handle] of features) {
 					try {
