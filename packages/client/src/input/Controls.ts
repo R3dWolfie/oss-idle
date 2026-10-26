@@ -174,12 +174,11 @@ export default class Controls {
 						e.preventDefault();
 						e.stopPropagation();
 						await this.openOptions.trigger(press, release);
-						break;
 					}
-					// Shift+O: the in-game browser, outside a play or the editor. A capital O typed
-					// in a box stays text (a printable key may have just moved focus into one)
-					if (this.mode_Shift.get() && !this.mode_Control.get() && !this.mode_Alt.get()
-						&& !inTextBox(e.target) && !inTextBox(document.activeElement)
+					break;
+				// Ctrl+Shift+B: the in-game browser, outside a play or the editor
+				case 'b':
+					if (this.mode_Control.get() && this.mode_Shift.get() && !this.mode_Alt.get()
 						&& SceneManager.current.get() !== SCENE.GAME && SceneManager.current.get() !== SCENE.EDITOR) {
 						e.preventDefault();
 						await this.web.trigger(press, release);
