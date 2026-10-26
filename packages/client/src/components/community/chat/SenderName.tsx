@@ -7,11 +7,13 @@ import { createPortal } from 'react-dom';
 
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 
+import { isCommunityOpen } from '../../../globals';
 import { getCharacter } from '../../../online/services/characters';
 import Socket from '../../../online/socket';
 import {
 	menuFor,
 	type MenuTarget,
+	showChat,
 } from '../state';
 import NameCard from './NameCard';
 
@@ -61,13 +63,26 @@ export default function SenderName({ sender, name, color }: {
 		const away = (e: Event) => {
 			if (!cardRef.current?.contains(e.target as Node)) hide();
 		};
+		const shown = (on: boolean) => {
+			if (!on) hide();
+		};
+		const stops = [showChat.forceSync(shown), isCommunityOpen.forceSync(shown)];
 		window.addEventListener('wheel', away, true);
 		window.addEventListener('mousedown', away, true);
+		window.addEventListener('scroll', away, true);
+		window.addEventListener('resize', hide);
 		return () => {
+			stops.forEach(stop => stop());
 			window.removeEventListener('wheel', away, true);
 			window.removeEventListener('mousedown', away, true);
+			window.removeEventListener('scroll', away, true);
+			window.removeEventListener('resize', hide);
 		};
 	}, [at]);
+	const online = !!card;
+	useEffect(() => {
+		if (!online) hide();
+	}, [online]);
 	useEffect(() => () => window.clearTimeout(timer.current), []);
 
 	const show = (el: HTMLElement) => {
