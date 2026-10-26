@@ -211,6 +211,14 @@ msgstr "{upgrades}/{max} upgrades"
 msgid "{version} (copy)"
 msgstr "{version} (copy)"
 
+#: src/components/community/chat/SenderName.tsx
+msgid "⇄ Mutual friends"
+msgstr "⇄ Mutual friends"
+
+#: src/components/community/chat/SenderName.tsx
+msgid "+ Add friend"
+msgstr "+ Add friend"
+
 #: src/components/character/PrestigeRow.tsx
 msgid "+{bonus} Lv · +{slots} gear slot · x{multiplier} XP"
 msgstr "+{bonus} Lv · +{slots} gear slot · x{multiplier} XP"
@@ -228,6 +236,10 @@ msgstr "+{prestige} Lv"
 #: src/editor/EditorSummary.tsx
 msgid "<0>{rice}</0> rice, <1>{longNotes}</1> LN"
 msgstr "<0>{rice}</0> rice, <1>{longNotes}</1> LN"
+
+#: src/components/community/chat/SenderName.tsx
+msgid "✓ Friend"
+msgstr "✓ Friend"
 
 #: src/components/mods/ModSelect.tsx
 msgid "1. Reset All Mods"
@@ -1957,6 +1969,10 @@ msgstr "Lv{level}"
 #: src/components/skills/SkillRow.tsx
 msgid "Lv<0/>"
 msgstr "Lv<0/>"
+
+#: src/components/community/chat/SenderName.tsx
+msgid "Lv<0>{level}</0>"
+msgstr "Lv<0>{level}</0>"
 
 #: src/scenes/Options.tsx
 msgid "Main menu"

@@ -25,16 +25,14 @@ import {
 	sendPm,
 } from '../../../online/privateMessages';
 import Socket from '../../../online/socket';
-import {
-	menuFor,
-	type MenuTarget,
-} from '../state';
+import type { MenuTarget } from '../state';
 import ChatText from './ChatText';
 import { mapLink } from './links';
 import {
 	MENTION_COLOR,
 	mentionsMe,
 } from './mentions';
+import SenderName from './SenderName';
 import {
 	chatTabs,
 	pmContact,
@@ -155,13 +153,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 					<div key={line.id} className="chat__line">
 						<span className="chat__from" style={{ color: line.color }}>
 							{`${time} `}
-							<span
-								className={sender ? 'chat__name' : undefined}
-								onClick={sender && (e => {
-									e.stopPropagation();
-									void menuFor.set({ ...sender });
-								})}
-							>{line.name}</span>:
+							<SenderName sender={sender} name={line.name} color={line.color} />:
 						</span>
 						<ChatText text={line.text} link={line.link} senderId={line.fromId} />
 					</div>

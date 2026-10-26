@@ -216,6 +216,14 @@ msgstr "{upgrades}/{max} améliorations"
 msgid "{version} (copy)"
 msgstr "{version} (copie)"
 
+#: src/components/community/chat/SenderName.tsx
+msgid "⇄ Mutual friends"
+msgstr ""
+
+#: src/components/community/chat/SenderName.tsx
+msgid "+ Add friend"
+msgstr ""
+
 #: src/components/character/PrestigeRow.tsx
 msgid "+{bonus} Lv · +{slots} gear slot · x{multiplier} XP"
 msgstr "+{bonus} Lv · +{slots} tier · x{multiplier} XP"
@@ -233,6 +241,10 @@ msgstr "+{prestige} Lv"
 #: src/editor/EditorSummary.tsx
 msgid "<0>{rice}</0> rice, <1>{longNotes}</1> LN"
 msgstr "<0>{rice}</0> rice, <1>{longNotes}</1> LN"
+
+#: src/components/community/chat/SenderName.tsx
+msgid "✓ Friend"
+msgstr ""
 
 #: src/components/mods/ModSelect.tsx
 msgid "1. Reset All Mods"
@@ -1962,6 +1974,10 @@ msgstr "Lv{level}"
 #: src/components/skills/SkillRow.tsx
 msgid "Lv<0/>"
 msgstr "Lv<0/>"
+
+#: src/components/community/chat/SenderName.tsx
+msgid "Lv<0>{level}</0>"
+msgstr ""
 
 #: src/scenes/Options.tsx
 msgid "Main menu"
@@ -4284,4 +4300,3 @@ msgstr "Dézoomer"
 #: src/editor/EditorShortcuts.tsx
 msgid "Zoom over the columns, change the beat snap elsewhere"
 msgstr "Zoomer au-dessus des colonnes, changer le snap ailleurs"
-
