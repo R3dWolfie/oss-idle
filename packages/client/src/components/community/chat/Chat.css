@@ -380,18 +380,20 @@
 		transform: translateY(4px);
 	}
 }
-.chat__react-card.is-all {
-	width: 290px;
-}
 .chat__react-grid {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 2px;
 }
 .chat__react-card.is-all .chat__react-grid {
+	display: grid;
+	grid-template-columns: repeat(8, 32px);
 	max-height: 180px;
+	overflow-x: hidden;
 	overflow-y: auto;
-	align-content: flex-start;
+	scrollbar-gutter: stable;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255, 102, 171, 0.5) transparent;
 }
 /* the full list's search, on top */
 .chat__react-search {
