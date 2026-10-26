@@ -7,9 +7,11 @@ import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url';
 
 import {
 	LEGACY_SAVE_DB,
+	openSave,
 	readSave,
 	SAVE_DB,
-	writeSave,
+	SAVE_KEY,
+	SAVE_STORE,
 } from '@oss-idle/shared/save';
 
 import { migrate } from './migrations';
@@ -279,8 +281,18 @@ export const table = <C extends Columns>(
 // blob after every write and restored on boot. None of this needs touching
 // when tables are added - new schemas register themselves via table().
 
-// into the save's slot not written last (shared/save.ts): a power cut mid-write leaves the other
-const idbSave = (bytes: Uint8Array): Promise<void> => writeSave(SAVE_DB, bytes);
+// resolves on commit, not on the put's success: a reload in between drops it.
+// strict: the blob is on disk before the commit points at it, so a power cut
+// keeps the previous save instead of leaving an unreadable one
+async function idbSave(bytes: Uint8Array): Promise<void> {
+	const tx = (await openSave(SAVE_DB, true))
+		.transaction(SAVE_STORE, 'readwrite', { durability: 'strict' });
+	tx.objectStore(SAVE_STORE).put(bytes, SAVE_KEY);
+	await new Promise<void>((resolve, reject) => {
+		tx.oncomplete = () => resolve();
+		tx.onerror = tx.onabort = () => reject(tx.error);
+	});
+}
 
 // saves run one after another, so an older snapshot never lands last
 let saving: Promise<void> = Promise.resolve();

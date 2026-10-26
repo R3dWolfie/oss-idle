@@ -1,1 +1,0 @@
-fix [Client] A power cut while the game saves no longer loses the local save (maps, skins, add-ons and playlists gone from the game until it was reset): the save is written to two slots in turn and read from the newest whole one, by @R3dWolfie
