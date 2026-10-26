@@ -344,6 +344,7 @@
 .chat__replybar {
 	position: absolute;
 	left: 12px;
+	transition: left 0.08s ease-out;
 	bottom: calc(100% + 2px);
 	z-index: var(--z-chat-emoji);
 	display: flex;

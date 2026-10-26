@@ -172,7 +172,13 @@ export default function ChatTabContents({ channel, inputRef } : {
 
 		{channel !== LOGS_CHANNEL && channel !== ANNOUNCE_CHANNEL && (
 			<form className="chat__compose" onSubmit={submit}>
-				<ReplyBar target={reply.target} color={reply.color} onCancel={reply.cancel} />
+				<ReplyBar
+					target={reply.target}
+					color={reply.color}
+					onCancel={reply.cancel}
+					inputRef={inputRef}
+					draft={draft}
+				/>
 				<MentionSuggestions mention={names} inputRef={inputRef} draft={draft} />
 				{emoji.query && emoji.suggestions.length > 0 && (
 					<div className="chat__emoji">

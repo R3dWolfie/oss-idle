@@ -8,9 +8,11 @@ import type useNameComplete from './useNameComplete';
 
 let measure: CanvasRenderingContext2D | undefined;
 
-/** Where the `@` sits in the input, in px from the compose row's left: the text before it measured in the
- *  input's own font, less what the input scrolled. Kept inside the row. */
-const atLeft = (input: HTMLInputElement | undefined, before: string): number | undefined => {
+/** Where the text after `before` sits in the input, in px from the compose row's left: `before` measured
+ *  in the input's own font, less what the input scrolled. Kept inside the row, `room` wide. */
+export const atLeft = (
+	input: HTMLInputElement | undefined, before: string, room = 248,
+): number | undefined => {
 	const row = input?.offsetParent ?? undefined;
 	if (!input || !row) return undefined;
 	measure ??= document.createElement('canvas').getContext('2d') ?? undefined;
@@ -20,8 +22,8 @@ const atLeft = (input: HTMLInputElement | undefined, before: string): number | u
 	measure.letterSpacing = style.letterSpacing;
 	const x = input.offsetLeft + input.clientLeft + parseFloat(style.paddingLeft)
 		+ measure.measureText(before).width - input.scrollLeft;
-	// the list's own width (240px at least, as the emoji one) stays on the row
-	return Math.max(0, Math.min(x, row.clientWidth - 248));
+	// what shows there (the list: 240px at least, as the emoji one) stays on the row
+	return Math.max(0, Math.min(x, row.clientWidth - room));
 };
 
 /** The `@` list, above the `@` it completes: online players (and the channel's speakers) to mention. */
