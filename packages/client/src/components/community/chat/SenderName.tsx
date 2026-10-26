@@ -75,7 +75,7 @@ const FriendRow = ({ userId }: { userId: number }) => {
 };
 
 /** A small card for an online player, in their chat colour: who, how good, what they're doing. */
-const NameCard = ({ p, color }: { p: PresenceEntry, color?: string }) => {
+export const NameCard = ({ p, color }: { p: PresenceEntry, color?: string }) => {
 	const { i18n } = useLingui();
 	const tier = rankTier(p.rank, p.rankPercent);
 	const pp = Math.round(p.pp).toLocaleString(i18n.locale);

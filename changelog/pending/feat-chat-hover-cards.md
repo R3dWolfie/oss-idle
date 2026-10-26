@@ -1,0 +1,1 @@
+add [Chat] Resting the pointer on a name in chat shows a small card: rank, pp, accuracy, level, what they are playing, and whether they are your friend (or mutual), with a button to add them, by @R3dWolfie
