@@ -34,26 +34,30 @@ export default function NameCardFriends({ userId }: { userId: number }) {
 			setAdding(false);
 		}
 	};
+	const mutualLabel = t`Mutual friends`, friendLabel = t`Friend`, addLabel = t`Add friend`;
 	return (
 		<div className="name-card__buttons">
 			{mutual && (
-				<span className="name-card__button name-card__button--on" title={t`Mutual friends`}>
+				<span role="img" className="name-card__button name-card__button--on" aria-label={mutualLabel}>
 					<FontAwesomeIcon icon={faUserGroup} />
+					<span className="name-card__tip" aria-hidden>{mutualLabel}</span>
 				</span>
 			)}
 			{friend ? (
-				<span className="name-card__button name-card__button--on" title={t`Friend`}>
+				<span role="img" className="name-card__button name-card__button--on" aria-label={friendLabel}>
 					<FontAwesomeIcon icon={faHeart} />
+					<span className="name-card__tip" aria-hidden>{friendLabel}</span>
 				</span>
 			) : (
 				<button
 					type="button"
 					className="name-card__button"
-					title={t`Add friend`}
+					aria-label={addLabel}
 					disabled={adding}
 					onClick={() => void add()}
 				>
 					<FontAwesomeIcon icon={faUserPlus} />
+					<span className="name-card__tip" aria-hidden>{addLabel}</span>
 				</button>
 			)}
 		</div>
