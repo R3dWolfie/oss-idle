@@ -4252,6 +4252,10 @@ msgstr "Your account is restricted, so you can't play. Write to {email} if you t
 msgid "Your add-ons"
 msgstr "Your add-ons"
 
+#: src/components/options/MentionPings.tsx
+msgid "Your browser blocks notifications from oss!idle: allow them in its site settings."
+msgstr "Your browser blocks notifications from oss!idle: allow them in its site settings."
+
 #: src/scenes/Editor.tsx
 msgid "Your changes since the last save will be lost."
 msgstr "Your changes since the last save will be lost."

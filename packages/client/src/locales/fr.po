@@ -4257,6 +4257,10 @@ msgstr "Ton compte a été restreint, tu ne peux donc plus jouer. Contacte {emai
 msgid "Your add-ons"
 msgstr "Tes add-ons"
 
+#: src/components/options/MentionPings.tsx
+msgid "Your browser blocks notifications from oss!idle: allow them in its site settings."
+msgstr ""
+
 #: src/scenes/Editor.tsx
 msgid "Your changes since the last save will be lost."
 msgstr "Tes modifications depuis la dernière sauvegarde seront perdues."
