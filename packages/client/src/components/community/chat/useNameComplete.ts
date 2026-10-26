@@ -4,9 +4,11 @@ import {
 	useRef,
 	useState,
 } from 'react';
+
 import useSynced from '@oss-idle/shared/hooks/useSynced';
-import Socket from '../../../online/socket';
+
 import Entities from '../../../entity/entities';
+import Socket from '../../../online/socket';
 import {
 	MENTION_SUGGESTIONS,
 	mentionQuery,

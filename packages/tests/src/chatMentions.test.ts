@@ -1,12 +1,13 @@
 import {
 	describe,
-	it,
 	expect,
+	it,
 } from 'vitest';
+
 import {
-	namesStarting,
 	mentionPattern,
 	mentionQuery,
+	namesStarting,
 } from '@oss-idle/client/components/community/chat/mentionQuery';
 
 describe('mentionQuery', () => {

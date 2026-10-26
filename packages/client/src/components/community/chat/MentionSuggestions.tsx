@@ -1,7 +1,9 @@
-import type { RefObject } from 'react';
 import { ph } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import type { RefObject } from 'react';
+
 import { GUEST_AVATAR_URL } from '@oss-idle/shared/osu/profile';
+
 import type useNameComplete from './useNameComplete';
 
 let measure: CanvasRenderingContext2D | null | undefined;

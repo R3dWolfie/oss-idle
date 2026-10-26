@@ -30,18 +30,18 @@ import {
 	type MenuTarget,
 } from '../state';
 import ChatText from './ChatText';
-import useNameComplete from './useNameComplete';
-import MentionSuggestions from './MentionSuggestions';
 import { mapLink } from './links';
 import {
 	MENTION_COLOR,
 	mentionsMe,
 } from './mentions';
+import MentionSuggestions from './MentionSuggestions';
 import {
 	chatTabs,
 	pmContact,
 } from './state';
 import useEmojiSuggest from './useEmojiSuggest';
+import useNameComplete from './useNameComplete';
 
 /** A line as the log renders it; no `name` = a system line, coloured whole. */
 type LogLine = {
