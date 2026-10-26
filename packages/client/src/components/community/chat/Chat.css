@@ -266,10 +266,9 @@
 	position: relative;
 	display: inline-flex;
 	align-self: flex-start;
-	align-items: center;
+	align-items: flex-start;
 	flex: none;
 	gap: 4px;
-	height: 1.45em;
 	opacity: 0;
 }
 .chat__line:hover .chat__line-actions,
@@ -280,7 +279,7 @@
 	display: grid;
 	place-items: center;
 	width: 40px;
-	height: 100%;
+	height: 26px;
 	padding: 0;
 	border: none;
 	border-radius: 6px;
@@ -302,8 +301,8 @@
 	flex-wrap: wrap;
 	gap: 4px;
 	margin-left: 8px;
-	/* the chip's middle on the text's (between its x-height and its capitals) */
-	vertical-align: -0.1em;
+	/* top of the line, as the ↩ and ☺ */
+	vertical-align: top;
 }
 /* a reaction, in the game's own look: a flat dark chip with a pink count; yours a solid pink pill */
 .chat__reaction {
@@ -356,7 +355,7 @@
 }
 /* the ☺'s card of emoji, like the @ and emoji lists */
 .chat__react {
-	position: relative;
+	display: flex;
 }
 .chat__react-card {
 	position: fixed;
