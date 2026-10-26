@@ -9,6 +9,7 @@ import { SETTINGS } from '../db/settings';
 import {
 	isOptionsOpen,
 	isStandalone,
+	isWebOpen,
 	message,
 	openPage,
 } from '../globals';
@@ -72,6 +73,7 @@ export default class Controls {
 	public static decreaseScrollSpeed = new KeyListener();
 	
 	public static openOptions = new KeyListener();
+	public static web = new KeyListener();
 	public static chat = new KeyListener();
 	public static community = new KeyListener();
 
@@ -172,6 +174,15 @@ export default class Controls {
 						e.preventDefault();
 						e.stopPropagation();
 						await this.openOptions.trigger(press, release);
+						break;
+					}
+					// Shift+O: the in-game browser, outside a play or the editor. A capital O typed
+					// in a box stays text (a printable key may have just moved focus into one)
+					if (this.mode_Shift.get() && !this.mode_Control.get() && !this.mode_Alt.get()
+						&& !inTextBox(e.target) && !inTextBox(document.activeElement)
+						&& SceneManager.current.get() !== SCENE.GAME && SceneManager.current.get() !== SCENE.EDITOR) {
+						e.preventDefault();
+						await this.web.trigger(press, release);
 					}
 					break;
 				case 'f8':
@@ -240,6 +251,10 @@ export default class Controls {
 
 		this.openOptions.onPress(async () => {
 			isOptionsOpen.set(!isOptionsOpen.get());
+		});
+
+		this.web.onPress(async () => {
+			await isWebOpen.set(!isWebOpen.get());
 		});
 	}
 
