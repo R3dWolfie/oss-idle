@@ -1,17 +1,18 @@
+import { t } from '@lingui/core/macro';
+
 import {
 	ANNOUNCE_CHANNEL,
 	type ChatLine,
 } from '@oss-idle/shared/community/wire';
 import Log, { POPUP_TYPE } from '@oss-idle/shared/helpers/log';
 
-import { t } from '@lingui/core/macro';
+import { playPing } from '../../../audio/ping';
+import { Setting } from '../../../db/settings';
 import Entities from '../../../entity/entities';
 import { isCommunityOpen } from '../../../globals';
 import Auth from '../../../online/auth';
 import { blocked } from '../../../online/blocks';
 import Socket from '../../../online/socket';
-import { Setting } from '../../../db/settings';
-import { playPing } from '../../../audio/ping';
 import { showChat } from '../state';
 import { plainText } from './links';
 import {

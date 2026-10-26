@@ -1,12 +1,14 @@
 import { Trans } from '@lingui/react/macro';
+
 import useSynced from '@oss-idle/shared/hooks/useSynced';
-import Checkbox from './controls/Checkbox';
+
 import Auth from '../../online/auth';
 import {
 	askNotifyPermission,
 	mentionNotify,
 	mentionSound,
 } from '../community/chat/mentions';
+import Checkbox from './controls/Checkbox';
 
 /** How a mention reaches you: a ping, and a desktop notification while the game is behind. */
 export default function MentionPings() {

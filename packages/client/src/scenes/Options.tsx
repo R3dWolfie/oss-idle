@@ -18,7 +18,6 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 import AutopilotDelay from '../components/options/AutopilotDelay';
 import AutopilotMode from '../components/options/AutopilotMode';
-import MentionPings from '../components/options/MentionPings';
 import BackgroundDim from '../components/options/BackgroundDim';
 import BrowseAddons from '../components/options/BrowseAddons';
 import BrowseSkins from '../components/options/BrowseSkins';
@@ -37,6 +36,7 @@ import LinkDiscord from '../components/options/LinkDiscord';
 import ManageAddons from '../components/options/ManageAddons';
 import ManageSkins from '../components/options/ManageSkins';
 import MasterVolume from '../components/options/MasterVolume';
+import MentionPings from '../components/options/MentionPings';
 import MoveInstall from '../components/options/MoveInstall';
 import MusicVolume from '../components/options/MusicVolume';
 import OpenLibraryFolders from '../components/options/OpenLibraryFolders';
