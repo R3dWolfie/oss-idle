@@ -26,7 +26,6 @@ import type {
 	JudgementCounts,
 	ScoreDTO,
 } from '@oss-idle/shared/score';
-import type { UserDTO } from '@oss-idle/shared/user';
 
 import type { MedalUnlock } from '../achievements/medalUnlocks';
 import AddonView, {
@@ -70,11 +69,6 @@ import {
 } from '../gameplay/playRate';
 import { openPage } from '../globals';
 import { log } from '../logs';
-import Auth from '../online/auth';
-import {
-	friends,
-	mutuals,
-} from '../online/friends';
 import {
 	closeMedals,
 	showMedals,
@@ -366,13 +360,6 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 	{
 		id: 'chat-name-cards',
 		label: 'Chat - a sender\'s card: not a friend, friend, mutual',
-		setup: () => {
-			void Auth.user.set({
-				id: 1, username: 'You', 
-			} as UserDTO);
-			void friends.set(new Set([3, 4]));
-			void mutuals.set(new Set([4]));
-		},
 		render: () => <div style={{
 			display: 'flex', gap: 12, padding: 24, 
 		}}>
@@ -380,7 +367,9 @@ export const PLAYGROUND_CASES: PlaygroundCase[] = [
 				<div key={id} className="name-card" style={{
 					position: 'static', borderColor: color, 
 				}}>
-					<NameCard color={color} p={{
+					<NameCard color={color} friendship={{
+						friend: id > 2, mutual: id === 4,
+					}} p={{
 						characterId: id, userId: id, name: `Player ${id}`, avatarUrl: '/icon-192.png', country: 'FR',
 						rank: id * 7, rankPercent: id / 100, pp: 9000 - id * 400, accuracy: 0.97, level: 101,
 						playCount: 1000, status, nowPlaying: status === 'playing' ? 'Camellia - GHOST' : undefined,

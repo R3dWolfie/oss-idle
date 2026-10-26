@@ -6,24 +6,17 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
 import Log from '@oss-idle/shared/helpers/log';
-import useSynced from '@oss-idle/shared/hooks/useSynced';
 
-import Auth from '../../../online/auth';
-import {
-	addFriend,
-	friends,
-	mutuals,
-} from '../../../online/friends';
+import { addFriend } from '../../../online/friends';
 
 /** osu!'s user panel buttons: add as a friend, whether they are one and whether they added you back. */
-export default function NameCardFriends({ userId }: { userId: number }) {
+export default function NameCardFriends({ userId, friend, mutual }: {
+	userId: number,
+	friend: boolean,
+	mutual: boolean,
+}) {
 	const { t } = useLingui();
-	const [user] = useSynced(Auth.user);
-	const [friendIds = new Set<number>()] = useSynced(friends);
-	const [mutualIds = new Set<number>()] = useSynced(mutuals);
 	const [adding, setAdding] = useState(false);
-	if (!user || user.id === userId) return null;
-	const friend = friendIds.has(userId), mutual = mutualIds.has(userId);
 	const add = async () => {
 		setAdding(true);
 		try {

@@ -17,11 +17,12 @@ import Marquee from '../../Marquee';
 import NameCardFlag from './NameCardFlag';
 import NameCardFriends from './NameCardFriends';
 
-/** An online player's card, after osu!'s user panel. */
-export default function NameCard({ p, color, bannerUrl }: {
+/** An online player's card, after osu!'s user panel; friend buttons only with `friendship`. */
+export default function NameCard({ p, color, bannerUrl, friendship }: {
 	p: PresenceEntry,
 	color?: string,
 	bannerUrl?: string,
+	friendship?: { friend: boolean, mutual: boolean },
 }) {
 	const { i18n } = useLingui();
 	const tier = rankTier(p.rank, p.rankPercent);
@@ -36,7 +37,7 @@ export default function NameCard({ p, color, bannerUrl }: {
 		<div className="name-card__body">
 			<div className="name-card__top">
 				<b className="name-card__name" style={{ color }}>{p.name}</b>
-				<NameCardFriends userId={p.userId} />
+				{friendship && <NameCardFriends userId={p.userId} {...friendship} />}
 			</div>
 			<div className="name-card__where">
 				<NameCardFlag country={p.country} />

@@ -3,7 +3,6 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { createPortal } from 'react-dom';
 
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 
@@ -15,7 +14,7 @@ import {
 	type MenuTarget,
 	showChat,
 } from '../state';
-import NameCard from './NameCard';
+import NameCardPopup from './NameCardPopup';
 
 const HOVER_MS = 350;
 // time to cross the gap onto the card
@@ -23,7 +22,7 @@ const LEAVE_MS = 200;
 // Chat.css .name-card
 const CARD_W = 360, CARD_H = 112, GAP = 6, EDGE = 8;
 
-/** A chat line's sender: a click opens the player menu, resting on it shows their {@link NameCard} while they're online. */
+/** A chat line's sender: a click opens the player menu, resting on it shows their card while they're online. */
 export default function SenderName({ sender, name, color }: {
 	sender?: MenuTarget,
 	name: string,
@@ -108,21 +107,16 @@ export default function SenderName({ sender, name, color }: {
 				void menuFor.set({ ...sender });
 			}}
 		>{name}</span>
-		{card && at && createPortal(
-			<div
-				ref={cardRef}
-				className="name-card"
-				style={at}
+		{card && at && (
+			<NameCardPopup
+				p={card}
+				color={color}
+				bannerUrl={banner?.id === card.characterId ? banner.url : undefined}
+				at={at}
+				cardRef={cardRef}
 				onMouseEnter={() => window.clearTimeout(timer.current)}
 				onMouseLeave={hide}
-			>
-				<NameCard
-					p={card}
-					color={color}
-					bannerUrl={banner?.id === card.characterId ? banner.url : undefined}
-				/>
-			</div>,
-			document.body,
+			/>
 		)}
 	</>);
 }
