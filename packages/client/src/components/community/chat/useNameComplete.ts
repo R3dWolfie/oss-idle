@@ -77,8 +77,10 @@ export default function useNameComplete(
 		const step = open ? {
 			ArrowDown: 1, ArrowUp: -1,
 		}[e.key] : undefined;
+		// the list may have shrunk under the pick
+		const pick = suggestions[picked] ?? suggestions[0];
 		if (step) setPicked((picked + step + suggestions.length) % suggestions.length);
-		else if (open && (e.key === 'Tab' || e.key === 'Enter')) insert(suggestions[picked]);
+		else if (open && (e.key === 'Tab' || e.key === 'Enter')) insert(pick);
 		else if (open && e.key === 'Escape') setDismissed(draft);
 		else if (e.key === 'Tab') tab();
 		else return false;
