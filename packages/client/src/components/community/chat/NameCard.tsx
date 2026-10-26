@@ -1,4 +1,7 @@
-import { ph } from '@lingui/core/macro';
+import {
+	ph,
+	t,
+} from '@lingui/core/macro';
 import {
 	Trans,
 	useLingui,
@@ -17,9 +20,10 @@ import Marquee from '../../Marquee';
 import NameCardFlag from './NameCardFlag';
 import NameCardFriends from './NameCardFriends';
 
-/** An online player's card, after osu!'s user panel; friend buttons only with `friendship`. */
-export default function NameCard({ p, color, bannerUrl, friendship }: {
+/** A player's card, after osu!'s user panel; friend buttons only with `friendship`. */
+export default function NameCard({ p, offline = false, color, bannerUrl, friendship }: {
 	p: PresenceEntry,
+	offline?: boolean,
 	color?: string,
 	bannerUrl?: string,
 	friendship?: { friend: boolean, mutual: boolean },
@@ -27,7 +31,7 @@ export default function NameCard({ p, color, bannerUrl, friendship }: {
 	const { i18n } = useLingui();
 	const tier = rankTier(p.rank, p.rankPercent);
 	const pp = Math.round(p.pp).toLocaleString(i18n.locale);
-	const playing = p.status === 'playing' && p.nowPlaying;
+	const playing = !offline && p.status === 'playing' && p.nowPlaying;
 	return (<>
 		{bannerUrl && <div className="name-card__bg" style={{ backgroundImage: `url("${bannerUrl}")` }} />}
 		<img className="name-card__avatar" src={p.avatarUrl} alt="" />
@@ -46,9 +50,11 @@ export default function NameCard({ p, color, bannerUrl, friendship }: {
 					>#{p.rank.toLocaleString(i18n.locale)}</span>
 				) : undefined}
 			</div>
-			<div className="name-card__status" data-status={p.status}>
+			<div className="name-card__status" data-status={offline ? 'offline' : p.status}>
 				{playing && <span className="name-card__play">▶</span>}
-				<Marquee className="name-card__marquee">{playing || statusName(p.status)}</Marquee>
+				<Marquee className="name-card__marquee">
+					{playing || (offline ? t`Offline` : statusName(p.status))}
+				</Marquee>
 			</div>
 			<div className="name-card__stats">
 				<span><b>{pp}</b>pp</span>

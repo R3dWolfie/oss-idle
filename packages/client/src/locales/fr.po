@@ -2490,6 +2490,10 @@ msgstr "En cours de lecture"
 msgid "Off"
 msgstr "Off"
 
+#: src/components/community/chat/NameCard.tsx
+msgid "Offline"
+msgstr ""
+
 #: src/editor/builtinActions.ts
 msgid "Offset in ms, like -15"
 msgstr "Décalage en ms, comme -15"

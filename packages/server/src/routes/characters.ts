@@ -82,6 +82,7 @@ import {
 	idParam,
 	valid,
 } from '../validate';
+import { offlineEntry } from '../ws/presence';
 
 const mappedStatus = z.enum(['ranked', 'loved', 'unranked']);
 
@@ -158,6 +159,14 @@ export const charactersRoutes = new Hono()
 				user?.supporterMonths ?? 0,
 			),
 		});
+	})
+
+	// The chat's name card for a player who isn't online.
+	.get('/:id/card', async c => {
+		const row = c.get('character');
+		const user = await getUserById(row.userId);
+		if (!user) throw new HTTPException(404, { message: 'Character not found' });
+		return c.json(await offlineEntry(row, user));
 	})
 
 	// The medals a character holds, newest first, and its progress toward the rest.

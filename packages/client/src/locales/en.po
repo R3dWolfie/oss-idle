@@ -2485,6 +2485,10 @@ msgstr "Now playing"
 msgid "Off"
 msgstr "Off"
 
+#: src/components/community/chat/NameCard.tsx
+msgid "Offline"
+msgstr "Offline"
+
 #: src/editor/builtinActions.ts
 msgid "Offset in ms, like -15"
 msgstr "Offset in ms, like -15"

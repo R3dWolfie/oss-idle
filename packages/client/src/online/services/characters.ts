@@ -1,6 +1,7 @@
 import { InferResponseType } from 'hono/client';
 
 import { unwrap } from '@oss-idle/shared/apiBase';
+import type { PresenceEntry } from '@oss-idle/shared/community/presence';
 import {
 	RULESET_IDS,
 	type RulesetId,
@@ -33,6 +34,12 @@ export const getCharacter = async (
 	endpoint[':id'].$get({
 		param: { id: String(id) }, query: { ruleset },
 	})), ttlOf(id));
+
+const card = MemCache.get<PresenceEntry>('API.getCharacterCard');
+/** An offline player's chat name card. */
+export const getCharacterCard = async (id: number): Promise<PresenceEntry> => card.process(
+	id, () => unwrap(endpoint[':id'].card.$get({ param: { id: String(id) } })), 60_000,
+);
 
 const c2 = MemCache.get<CharacterStatsResponse>('API.getCharacterStats');
 export const flushCharacterStats = (id: number) => flush(c2, id);

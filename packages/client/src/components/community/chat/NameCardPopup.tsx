@@ -13,9 +13,10 @@ import NameCard from './NameCard';
 
 /** A sender's {@link NameCard} over the page, at `at`. */
 export default function NameCardPopup({
-	p, color, bannerUrl, at, cardRef, onMouseEnter, onMouseLeave,
+	p, offline, color, bannerUrl, at, cardRef, onMouseEnter, onMouseLeave,
 }: {
 	p: PresenceEntry,
+	offline: boolean,
 	color?: string,
 	bannerUrl?: string,
 	at: { left: number, top: number },
@@ -37,7 +38,7 @@ export default function NameCardPopup({
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}
 		>
-			<NameCard p={p} color={color} bannerUrl={bannerUrl} friendship={friendship} />
+			<NameCard p={p} offline={offline} color={color} bannerUrl={bannerUrl} friendship={friendship} />
 		</div>,
 		document.body,
 	);

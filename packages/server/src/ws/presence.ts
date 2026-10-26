@@ -86,6 +86,12 @@ const buildEntry = async (params: {
 	};
 };
 
+/** The card of a player who isn't online: what their presence entry would say, without where they are. */
+export const offlineEntry = (character: CharacterRow, user: UserRow): Promise<PresenceEntry> =>
+	buildEntry({
+		character, user, geo: {}, status: STATUS.idle,
+	});
+
 /** MakiseBot's card, always online though no socket holds it: kept out of the
  *  hash, so the sweep never drops it and the online count stays players. Built
  *  once per worker; a failed read is tried again next time. */
