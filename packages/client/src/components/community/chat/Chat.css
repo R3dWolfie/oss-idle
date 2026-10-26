@@ -539,7 +539,7 @@
 /* osu!'s user panel */
 .name-card {
 	position: fixed;
-	z-index: var(--z-over-chat);
+	z-index: var(--z-chat-tooltip);
 	width: 360px;
 	height: 112px;
 	box-sizing: border-box;
