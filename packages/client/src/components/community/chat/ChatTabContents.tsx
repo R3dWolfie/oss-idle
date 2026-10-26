@@ -39,6 +39,7 @@ import ReplyRef from './ReplyRef';
 import Reactions from './Reactions';
 import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
 import ReactPicker from './ReactPicker';
+import ComposeEmoji from './ComposeEmoji';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReply } from '@fortawesome/free-solid-svg-icons/faReply';
 import MentionSuggestions from './MentionSuggestions';
@@ -218,6 +219,7 @@ export default function ChatTabContents({ channel, inputRef } : {
 					}}
 					onKeyDown={complete}
 				/>
+				<ComposeEmoji draft={draft} setDraft={setDraft} inputRef={inputRef} />
 			</form>
 		)}
 	</>);

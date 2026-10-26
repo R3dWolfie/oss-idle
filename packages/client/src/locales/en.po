@@ -315,6 +315,10 @@ msgstr "Accuracy: {accuracy}"
 msgid "Achieved on {date} ({ago})"
 msgstr "Achieved on {date} ({ago})"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Activities"
+msgstr "Activities"
+
 #: src/editor/builtinActions.ts
 msgid "Add a bookmark, or remove the one here"
 msgstr "Add a bookmark, or remove the one here"
@@ -692,6 +696,11 @@ msgstr "Buy {nextGear}?"
 #: src/components/upgrades/UpgradeAction.tsx
 msgid "Buy now"
 msgstr "Buy now"
+
+#. placeholder {0}: preview.owner.name
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "by {0}"
+msgstr "by {0}"
 
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/addons/InstalledAddonRow.tsx
@@ -1330,6 +1339,10 @@ msgstr "Editor skin"
 msgid "Effect"
 msgstr "Effect"
 
+#: src/components/community/chat/ComposeEmoji.tsx
+msgid "Emoji"
+msgstr "Emoji"
+
 #: src/components/community/chat/ChatTabContents.tsx
 msgid "Emoji matching <0>:{query}</0>"
 msgstr "Emoji matching <0>:{query}</0>"
@@ -1413,6 +1426,10 @@ msgstr "Fatigued"
 msgid "Fatigued: you earn less XP. Play easier maps to rest."
 msgstr "Fatigued: you earn less XP. Play easier maps to rest."
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Favourites"
+msgstr "Favourites"
+
 #: src/editor/EditorViewOptions.tsx
 msgid "Field"
 msgstr "Field"
@@ -1477,6 +1494,10 @@ msgstr "Fix the errors the map checks found first"
 msgid "Flip the selection"
 msgstr "Flip the selection"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Food"
+msgstr "Food"
+
 #: src/components/WebBrowser.tsx
 msgid "Forward"
 msgstr "Forward"
@@ -1504,6 +1525,10 @@ msgstr "Free Mods"
 #: src/editor/EditorViewOptions.tsx
 msgid "Frequencies"
 msgstr "Frequencies"
+
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Frequently used"
+msgstr "Frequently used"
 
 #: src/components/community/CommunityHeader.tsx
 msgid "Friends"
@@ -2108,10 +2133,6 @@ msgstr "Mods change how a map plays. A faster rate usually makes the map harder,
 msgid "More"
 msgstr "More"
 
-#: src/components/community/chat/ReactPicker.tsx
-msgid "More emoji"
-msgstr "More emoji"
-
 #: src/components/addons/BrowseAddonsView.tsx
 #: src/components/skins/BrowseSkinsView.tsx
 msgid "Most downloaded"
@@ -2204,6 +2225,10 @@ msgstr "Name"
 msgid "name, author or tag"
 msgstr "name, author or tag"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Nature"
+msgstr "Nature"
+
 #: src/editor/EditorPlacingOptions.tsx
 msgid "Nearest"
 msgstr "Nearest"
@@ -2284,7 +2309,7 @@ msgstr "No add-ons installed. Browse the catalog to find some."
 msgid "No background image"
 msgstr "No background image"
 
-#: src/components/community/chat/ReactPicker.tsx
+#: src/components/community/chat/EmojiPicker.tsx
 msgid "No emoji found"
 msgstr "No emoji found"
 
@@ -2453,6 +2478,10 @@ msgstr "Now"
 msgid "Now playing"
 msgstr "Now playing"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Objects"
+msgstr "Objects"
+
 #: src/editor/EditorCompose.tsx
 msgid "Off"
 msgstr "Off"
@@ -2561,6 +2590,10 @@ msgstr "osu!mania layouts: {keys}"
 msgid "osu|music|theme"
 msgstr "osu|music|theme"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Other"
+msgstr "Other"
+
 #: src/components/skins/SkinContents.tsx
 msgid "Other files"
 msgstr "Other files"
@@ -2645,6 +2678,10 @@ msgstr "Peak"
 #: src/components/upgrades/SkillPerk.tsx
 msgid "Peak until"
 msgstr "Peak until"
+
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "People"
+msgstr "People"
 
 #: src/components/result/scoreCard.ts
 #: src/scenes/Result.tsx
@@ -3101,6 +3138,10 @@ msgstr "Restart the game to apply"
 msgid "Result"
 msgstr "Result"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Results"
+msgstr "Results"
+
 #: src/components/dock/DockRunButton.tsx
 msgid "Resume the queue"
 msgstr "Resume the queue"
@@ -3124,6 +3165,14 @@ msgstr "Rice: {rice} LN: {ln}"
 #: src/editor/EditorShortcuts.tsx
 msgid "Right click"
 msgstr "Right click"
+
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Right-click to star"
+msgstr "Right-click to star"
+
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Right-click to unstar"
+msgstr "Right-click to unstar"
 
 #: src/scenes/Options.tsx
 msgid "right|click|hold|time"
@@ -3199,7 +3248,7 @@ msgstr "Search actions and options"
 msgid "Search by artist, title, mapper, stars>5..."
 msgstr "Search by artist, title, mapper, stars>5..."
 
-#: src/components/community/chat/ReactPicker.tsx
+#: src/components/community/chat/EmojiPicker.tsx
 msgid "Search emoji"
 msgstr "Search emoji"
 
@@ -3598,6 +3647,10 @@ msgstr "Submitting score…"
 msgid "Support the game to access cool features!"
 msgstr "Support the game to access cool features!"
 
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Supporters'"
+msgstr "Supporters'"
+
 #: src/editor/EditorSummary.tsx
 #: src/osu/beatmap/grouping.ts
 msgid "SV"
@@ -3614,6 +3667,10 @@ msgstr "Swap two columns of the selection"
 #: src/components/gameplay/WarmupHint.tsx
 msgid "Sweet spot: your physical skills are at their best."
 msgstr "Sweet spot: your physical skills are at their best."
+
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Symbols"
+msgstr "Symbols"
 
 #: src/components/addons/AddonEditMeta.tsx
 #: src/components/skins/SkinView.tsx
@@ -3859,6 +3916,10 @@ msgstr "Total {xp}xp"
 #: src/scenes/Character.tsx
 msgid "Trade skill levels for XP boosts"
 msgstr "Trade skill levels for XP boosts"
+
+#: src/components/community/chat/EmojiPicker.tsx
+msgid "Travel"
+msgstr "Travel"
 
 #: src/components/songselect/BeatmapInfo.tsx
 msgid "Tries: {tries}"

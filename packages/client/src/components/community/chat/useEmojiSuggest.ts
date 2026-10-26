@@ -16,6 +16,7 @@ import {
 	emojiQuery,
 	matchEmoji,
 } from './emoji';
+import { noteUse } from './emojiPrefs';
 
 // `:sob` at the end of the draft → emoji to pick above the input
 export default function useEmojiSuggest(
@@ -35,6 +36,7 @@ export default function useEmojiSuggest(
 	useEffect(() => setPicked(0), [query]);
 
 	const insert = (pick: Emoji) => {
+		noteUse(pick.id);
 		setDraft(draft.slice(0, draft.length - (query?.length ?? 0) - 1) + `:${pick.name}: `);
 		inputRef.current?.focus();
 	};
