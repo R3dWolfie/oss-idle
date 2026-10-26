@@ -3414,6 +3414,10 @@ msgstr "Afficher les pleines"
 msgid "Show GIFs and pictures in chat"
 msgstr ""
 
+#: src/components/options/ChatMedia.tsx
+msgid "Show GIFs in the ticker"
+msgstr ""
+
 #: src/scenes/Lobby.tsx
 msgid "Show In-Progress"
 msgstr "Afficher celles en cours"

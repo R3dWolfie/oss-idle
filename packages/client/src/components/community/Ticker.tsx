@@ -12,12 +12,20 @@ import { menuIdle } from '../../globals';
 import Socket from '../../online/socket';
 import ChatText from './chat/ChatText';
 import Reactions from './chat/Reactions';
+import ChatMediaView from './chat/ChatMediaView';
+import {
+	showMedia,
+	tickerMedia,
+} from './chat/gifPrefs';
 import { parseReply } from './chat/replies';
 
 /** The latest chat line, shown while the overlay is closed (when enabled). */
 export default function Ticker() {
 	const [lines = []] = useSynced(Socket.chat);
 	const [idle] = useSynced(menuIdle);
+	const [media] = useSynced(showMedia);
+	// GIFs in the ticker: an option (else a small GIF tag)
+	const [inTicker] = useSynced(tickerMedia);
 	const latest = lines[lines.length - 1];
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -61,7 +69,11 @@ export default function Ticker() {
 				>{`${time} ${latest.from.name}:`}</span>
 				<span className="chat__body">
 					{reply && <span className="chat__ticker-reply">↩ {reply.name}</span>}
-					<ChatText text={latest.text} senderId={latest.from.userId} media="label" />
+					<ChatText
+						text={latest.text} senderId={latest.from.userId}
+						media={media && inTicker ? 'hide' : 'label'}
+					/>
+					{inTicker && <ChatMediaView text={reply?.body ?? latest.text} />}
 					<Reactions channel={latest.channel} id={latest.id} reactions={latest.reactions} readOnly />
 				</span>
 			</div>

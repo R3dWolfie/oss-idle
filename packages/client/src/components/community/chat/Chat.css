@@ -717,3 +717,8 @@
 	border-radius: 8px;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
+/* in the ticker (when it shows them): smaller, it's a strip */
+.community-ticker .chat__media img,
+.community-ticker .chat__media video {
+	max-height: 120px;
+}
