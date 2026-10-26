@@ -61,12 +61,10 @@ import Background from './Background';
 import SceneManager, { SCENE } from './SceneManager';
 import useAwayHours from './useAwayHours';
 
-/** stable's goodbye takes about two seconds from the click to black */
 const EXIT_FADE_MS = 2000;
-/** how long the window stays up after the seeya ends, so its tail isn't cut */
+/** the window stays up this long after the seeya ends */
 const SEEYA_TAIL_MS = 600;
 
-/** the menu's classes: its entrance flash, open, and the goodbye under way */
 const menuClass = (flash: boolean, menu: Menu, exiting: boolean) => [
 	'menu',
 	flash ? 'menu--flash' : '',
@@ -200,9 +198,6 @@ export default function MainMenu({ flash = false }: Props) {
 
 	// Exit only works in the desktop app; the browser forbids closing its own tab.
 	const isDesktop = !!desktop();
-	// goodbye like stable's: the buttons go, the skin's seeya plays, the logo winds down while
-	// the music and the screen fade out over EXIT_FADE_MS, and the app quits once the screen is
-	// black and the seeya is done
 	const [exiting, setExiting] = useState(false);
 	const exit = async () => {
 		if (exiting) return;
@@ -213,23 +208,21 @@ export default function MainMenu({ flash = false }: Props) {
 		const seeya = skin.data.menu.seeya;
 		const voice = seeya ? await effects.load(seeya, seeya) : undefined;
 		if (seeya && voice) effects.play(seeya);
-		// everything on the page fades, chat and overlays included (index.css html.exiting)
 		document.documentElement.classList.add('exiting');
 		await Promise.all([
 			sleep(EXIT_FADE_MS),
-			// let the seeya ring out: stable keeps the window up a little after the voice ends
 			voice ? sleep(voice.duration * 1000 + SEEYA_TAIL_MS) : undefined,
 		]);
 		desktop()?.quit();
 	};
-	// back also reaches the panels drawn over the menu: read them as they were when it was pressed
 	const [webOpen] = useSynced(isWebOpen);
 	const [optionsOpen] = useSynced(isOptionsOpen);
 
 	const back = useCallback(() => {
+		if (exiting) return;
 		switch(menu) {
 			case MENU.CLOSED:
-				// back from the closed menu asks to exit, like the Exit option; back again confirms it
+				// back again confirms the exit
 				if (!isDesktop || webOpen || optionsOpen) break;
 				if (exitConfirm) void exit();
 				else setExitConfirm(true);
@@ -242,7 +235,7 @@ export default function MainMenu({ flash = false }: Props) {
 				setMenu(MENU.OPEN);
 				break;
 		}
-	}, [menu, webOpen, optionsOpen, exitConfirm]);
+	}, [menu, webOpen, optionsOpen, exitConfirm, exiting]);
 
 	Controls.back.usePress(back);
 

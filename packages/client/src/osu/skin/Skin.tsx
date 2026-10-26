@@ -101,7 +101,6 @@ export default class Skin {
 		const fallback = await loadDefaultSkin();
 		const own = osu ?? fallback;
 		const background = osu && !preview ? await imageUrl(osu, osu, ['menu-background']) : undefined;
-		// the sound played when the game exits (osu!'s seeya): the skin's, else the default skin's
 		const seeya = preview ? undefined : await soundUrl(own, fallback, 'seeya');
 		return new Skin(own, fallback, {
 			...BUILTIN,

@@ -68,8 +68,7 @@
 	padding: 0;
 }
 
-/* the exit goodbye (MainMenu.tsx): the whole page, overlays and chat included, fades
- * to black over EXIT_FADE_MS before the app quits */
+/* exit (MainMenu.tsx): lasts EXIT_FADE_MS */
 html.exiting body {
 	background: #000;
 }
