@@ -23,6 +23,7 @@ msgid "{d} days ago"
 msgstr "il y a {d} jours"
 
 #: src/display/ago.ts
+#: src/display/length.ts
 msgid "{d}d"
 msgstr "{d}j"
 
@@ -1788,4 +1789,3 @@ msgstr "Switches usés"
 #: src/rulesets/mania/4k/display.ts
 msgid "Yealink Phone Headset"
 msgstr "Casque de télécommunication Yealink"
-
