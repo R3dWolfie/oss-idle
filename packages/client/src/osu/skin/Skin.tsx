@@ -106,7 +106,9 @@ export default class Skin {
 		return new Skin(own, fallback, {
 			...BUILTIN,
 			judgements: judgementStyles(own.idle, fallback.idle),
-			menu: { ...(background ? { background } : {}), ...(seeya ? { seeya } : {}) },
+			menu: {
+				...(background ? { background } : {}), ...(seeya ? { seeya } : {}), 
+			},
 		});
 	}
 

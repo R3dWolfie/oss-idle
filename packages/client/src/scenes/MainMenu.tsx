@@ -16,12 +16,14 @@ import {
 	mapped,
 	ValueIn,
 } from '@oss-idle/shared/helpers/mapped';
+import sleep from '@oss-idle/shared/helpers/sleep';
 import { useParallax } from '@oss-idle/shared/hooks/useParallax';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { DISCORD_URL } from '@oss-idle/shared/links';
 import normalize from '@oss-idle/shared/math/normalize';
 import { VERSION } from '@oss-idle/shared/version';
 
+import { effects } from '../audio/EffectPlayer';
 import {
 	music,
 	PLAYER_MODE,
@@ -57,13 +59,19 @@ import Device from '../responsive/Device';
 import Background from './Background';
 import SceneManager, { SCENE } from './SceneManager';
 import useAwayHours from './useAwayHours';
-import { effects } from '../audio/EffectPlayer';
-import sleep from '@oss-idle/shared/helpers/sleep';
 
 /** stable's goodbye takes about two seconds from the click to black */
 const EXIT_FADE_MS = 2000;
 /** how long the window stays up after the seeya ends, so its tail isn't cut */
 const SEEYA_TAIL_MS = 600;
+
+/** the menu's classes: its entrance flash, open, and the goodbye under way */
+const menuClass = (flash: boolean, menu: Menu, exiting: boolean) => [
+	'menu',
+	flash ? 'menu--flash' : '',
+	menu === MENU.CLOSED ? '' : 'menu--open',
+	exiting ? 'menu--exiting' : '',
+].join(' ');
 
 interface Props {
 	/** play the white-flash "drop" entrance (true when arriving from the intro) */
@@ -348,12 +356,7 @@ export default function MainMenu({ flash = false }: Props) {
 
 	return (
 		<div
-			className={[
-				'menu',
-				flash ? 'menu--flash' : '',
-				menu === MENU.CLOSED ? '' : 'menu--open',
-				exiting ? 'menu--exiting' : '',
-			].join(' ')}
+			className={menuClass(flash, menu, exiting)}
 			data-fresh={!opened}
 			data-idle={idle}
 		>
