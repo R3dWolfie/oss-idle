@@ -302,10 +302,8 @@
 	flex-wrap: wrap;
 	gap: 4px;
 	margin-left: 8px;
-	/* on the text's middle, not its baseline */
-	vertical-align: middle;
-	position: relative;
-	top: -3px;
+	/* the chip's middle on the text's (between its x-height and its capitals) */
+	vertical-align: -0.1em;
 }
 .chat__reaction {
 	display: inline-flex;
