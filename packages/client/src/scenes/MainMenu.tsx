@@ -41,6 +41,7 @@ import { SETTINGS } from '../db/settings';
 import Entities from '../entity/entities';
 import {
 	isOptionsOpen,
+	isWebOpen,
 	menuIdle,
 } from '../globals';
 import Controls from '../input/Controls';
