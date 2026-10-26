@@ -1,3 +1,8 @@
+import { faClock } from '@fortawesome/free-solid-svg-icons/faClock';
+import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
+import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons/faUserAstronaut';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { t } from '@lingui/core/macro';
 import {
 	type RefObject,
 	useLayoutEffect,
@@ -5,16 +10,13 @@ import {
 	useState,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { t } from '@lingui/core/macro';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
-import { faClock } from '@fortawesome/free-solid-svg-icons/faClock';
-import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons/faUserAstronaut';
-import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import {
 	type Emoji,
 	emojiUsable,
 } from '@oss-idle/shared/community/emoji';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import Auth from '../../../online/auth';
 import {
 	emoji,

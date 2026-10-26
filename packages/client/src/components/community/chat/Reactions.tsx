@@ -1,12 +1,14 @@
 import { t } from '@lingui/core/macro';
-import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
-import Socket from '../../../online/socket';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import Auth from '../../../online/auth';
 import {
 	emoji,
 	emojiSrc,
 } from '../../../online/emoji';
+import Socket from '../../../online/socket';
 
 /** Under a line: each emoji people reacted with and how many, yours lit; a click puts yours on or
  *  off. Hovering one names who (the online ones by name). Guests see them and can't click. */

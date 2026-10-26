@@ -4,8 +4,8 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 import { copyText } from '../../clipboard';
 import ContextMenu from '../ContextMenu';
-import { linkFor } from './state';
 import { mediaOf } from './chat/media';
+import { linkFor } from './state';
 
 /** Asks before leaving the game for an address a player posted in chat; a GIF or picture shows itself. */
 export default function LinkMenu() {

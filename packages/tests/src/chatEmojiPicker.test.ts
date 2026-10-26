@@ -1,13 +1,14 @@
 import {
 	describe,
-	it,
 	expect,
+	it,
 } from 'vitest';
+
+import { frequentIds } from '@oss-idle/client/components/community/chat/emojiFrequent';
 import {
 	EMOJI_GROUPS,
 	groupOf,
 } from '@oss-idle/client/components/community/chat/emojiGroups';
-import { frequentIds } from '@oss-idle/client/components/community/chat/emojiFrequent';
 
 describe('emoji groups', () => {
 	it('puts each name in one section only', () => {

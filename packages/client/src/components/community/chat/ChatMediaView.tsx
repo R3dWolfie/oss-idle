@@ -1,14 +1,16 @@
-import { t } from '@lingui/core/macro';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { t } from '@lingui/core/macro';
+
 import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import { linkFor } from '../state';
-import { mediaIn } from './media';
 import {
 	gifFavorites,
 	showMedia,
 	toggleGif,
 } from './gifPrefs';
+import { mediaIn } from './media';
 
 /** Under a line: the GIFs and pictures it links to, small; a click asks to open the link as any link
  *  does, the ★ keeps one for the picker's GIF tab. Off in the options: nothing (the links stay). */

@@ -1,11 +1,12 @@
 import {
 	describe,
-	it,
 	expect,
+	it,
 } from 'vitest';
+
 import {
-	MAX_REACTION_KINDS,
 	applyReaction,
+	MAX_REACTION_KINDS,
 } from '@oss-idle/shared/community/reactions';
 import {
 	chatLineDTO,

@@ -1,19 +1,19 @@
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 
+import Entities from '../../../entity/entities';
 import {
 	isWebOpen,
 	webUrl,
 } from '../../../globals';
 import { emoji } from '../../../online/emoji';
 import Socket from '../../../online/socket';
-import Entities from '../../../entity/entities';
 import { linkFor } from '../state';
 import ChatEmoji from './ChatEmoji';
 import { splitLinks } from './links';
-import { openChatMap } from './openMap';
-import { mentionPattern } from './mentionQuery';
-import { parseReply } from './replies';
 import { mediaOf } from './media';
+import { mentionPattern } from './mentionQuery';
+import { openChatMap } from './openMap';
+import { parseReply } from './replies';
 
 /** A line's text cut around the emoji its sender may use. */
 type Split = (text: string) => ReturnType<ReturnType<typeof emoji.get>['split']>;

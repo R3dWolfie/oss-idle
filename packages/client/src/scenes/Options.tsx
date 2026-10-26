@@ -18,10 +18,10 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 import AutopilotDelay from '../components/options/AutopilotDelay';
 import AutopilotMode from '../components/options/AutopilotMode';
-import ChatMedia from '../components/options/ChatMedia';
 import BackgroundDim from '../components/options/BackgroundDim';
 import BrowseAddons from '../components/options/BrowseAddons';
 import BrowseSkins from '../components/options/BrowseSkins';
+import ChatMedia from '../components/options/ChatMedia';
 import CursorSize from '../components/options/CursorSize';
 import DeleteAllBeatmaps from '../components/options/DeleteAllBeatmaps';
 import DownloadAllBundled from '../components/options/DownloadAllBundled';

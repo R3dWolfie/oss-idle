@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 
 import { makiseBotReply } from '@oss-idle/shared/community/makiseBot';
+import { applyReaction } from '@oss-idle/shared/community/reactions';
 import {
 	ANNOUNCE_CHANNEL,
 	type ChatLine,
@@ -11,7 +12,6 @@ import {
 	MAX_CHAT_LENGTH,
 	TEAM_CHANNEL,
 } from '@oss-idle/shared/community/wire';
-import { applyReaction } from '@oss-idle/shared/community/reactions';
 import {
 	type Group,
 	GROUP_BADGE,
@@ -21,13 +21,13 @@ import { LOBBY_CHANNEL } from '@oss-idle/shared/multiplayer';
 
 import { db } from '../db/client';
 import { characters } from '../db/schema/character';
+import { emojis } from '../db/schema/emoji';
 import { isRestricted } from '../db/schema/user';
 import { redisKeyPrefix } from '../env';
 import {
 	groupsOf,
 	teamCharacters,
 } from '../groups';
-import { emojis } from '../db/schema/emoji';
 import { pushMedals } from '../medals';
 import { count } from '../metrics';
 import { redis } from '../redis';

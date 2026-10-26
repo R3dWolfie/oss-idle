@@ -1,5 +1,7 @@
 import { t } from '@lingui/core/macro';
+
 import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import {
 	emoji,
 	emojiSrc,

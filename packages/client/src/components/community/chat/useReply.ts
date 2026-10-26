@@ -2,12 +2,14 @@ import {
 	type RefObject,
 	useState,
 } from 'react';
+
 import { MAX_CHAT_LENGTH } from '@oss-idle/shared/community/wire';
+
 import {
-	type Reply,
-	type ReplyTarget,
 	findQuoted,
+	type Reply,
 	replyLine,
+	type ReplyTarget,
 	replyTo,
 } from './replies';
 

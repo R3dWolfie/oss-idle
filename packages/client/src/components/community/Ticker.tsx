@@ -10,13 +10,13 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 import { menuIdle } from '../../globals';
 import Socket from '../../online/socket';
-import ChatText from './chat/ChatText';
-import Reactions from './chat/Reactions';
 import ChatMediaView from './chat/ChatMediaView';
+import ChatText from './chat/ChatText';
 import {
 	showMedia,
 	tickerMedia,
 } from './chat/gifPrefs';
+import Reactions from './chat/Reactions';
 import { parseReply } from './chat/replies';
 
 /** The latest chat line, shown while the overlay is closed (when enabled). */

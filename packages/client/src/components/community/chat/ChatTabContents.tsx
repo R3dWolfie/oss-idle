@@ -1,3 +1,5 @@
+import { faReply } from '@fortawesome/free-solid-svg-icons/faReply';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	ph,
 	t,
@@ -9,6 +11,8 @@ import {
 	useRef,
 	useState,
 } from 'react';
+
+import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
 import { ANNOUNCE_CHANNEL } from '@oss-idle/shared/community/wire';
 import clock from '@oss-idle/shared/display/clock';
 import useSynced from '@oss-idle/shared/hooks/useSynced';
@@ -31,28 +35,24 @@ import {
 	menuFor,
 	type MenuTarget,
 } from '../state';
-import ChatText from './ChatText';
-import useNameComplete from './useNameComplete';
-import useReply from './useReply';
-import ReplyBar from './ReplyBar';
-import ReplyRef from './ReplyRef';
-import LineBody from './LineBody';
-import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
-import ReactPicker from './ReactPicker';
 import ComposeEmoji from './ComposeEmoji';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faReply } from '@fortawesome/free-solid-svg-icons/faReply';
-import MentionSuggestions from './MentionSuggestions';
+import LineBody from './LineBody';
 import { mapLink } from './links';
 import {
 	MENTION_COLOR,
 	mentionsMe,
 } from './mentions';
+import MentionSuggestions from './MentionSuggestions';
+import ReactPicker from './ReactPicker';
+import ReplyBar from './ReplyBar';
+import ReplyRef from './ReplyRef';
 import {
 	chatTabs,
 	pmContact,
 } from './state';
 import useEmojiSuggest from './useEmojiSuggest';
+import useNameComplete from './useNameComplete';
+import useReply from './useReply';
 
 /** A line as the log renders it; no `name` = a system line, coloured whole. */
 type LogLine = {

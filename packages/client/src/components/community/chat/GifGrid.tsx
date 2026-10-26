@@ -1,5 +1,7 @@
 import { t } from '@lingui/core/macro';
+
 import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import { gifFavorites } from './gifPrefs';
 
 /** The picker's GIF tab: the ones you starred in chat, a click hands over its link. */

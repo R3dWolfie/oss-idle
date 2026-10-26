@@ -253,6 +253,11 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 					})],
 					['queue', () => handleQueue(msg, bound(ws), ws)],
 					['mp', () => handleMultiplayer(msg, bound(ws), ws, scores)],
+					['react', async () => {
+						if (msg.type !== 'chat:react') return false;
+						await handleReact((await currentRow()).id, user.id, msg.channel, msg.id, msg.emoji, msg.on);
+						return true;
+					}],
 				];
 				for (const [tag, handle] of features) {
 					try {
@@ -270,9 +275,6 @@ export const registerWs = (app: Hono): Pick<NodeWebSocket, 'injectWebSocket'> =>
 						name: now.name,
 						color: await nameColor(user.id),
 					}, user.id, msg.channel, msg.text);
-				} else if (msg.type === 'chat:react') {
-					const now = await currentRow();
-					await handleReact(now.id, user.id, msg.channel, msg.id, msg.emoji, msg.on);
 				} else if (msg.type === 'pm') {
 					const now = await currentRow();
 					await handlePm({

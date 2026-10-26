@@ -14,7 +14,6 @@ import {
 	playClientMessages,
 	playServerMessages,
 } from '../play.js';
-import { reactionsDTO } from './reactions.js';
 import {
 	queueClientMessages,
 	queueServerMessages,
@@ -23,6 +22,7 @@ import {
 	CLIENT_STATUS,
 	presenceEntryDTO,
 } from './presence.js';
+import { reactionsDTO } from './reactions.js';
 
 /** The default channel every signed-in player joins. */
 export const DEFAULT_CHANNEL = '#oss!idle';

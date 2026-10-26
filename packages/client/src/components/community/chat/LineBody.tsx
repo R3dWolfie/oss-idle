@@ -1,11 +1,12 @@
-import useSynced from '@oss-idle/shared/hooks/useSynced';
 import type { Reactions as LineReactions } from '@oss-idle/shared/community/reactions';
-import ChatText from './ChatText';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+
 import ChatMediaView from './ChatMediaView';
+import ChatText from './ChatText';
+import { showMedia } from './gifPrefs';
+import { onlyMedia } from './media';
 import Reactions from './Reactions';
 import { parseReply } from './replies';
-import { onlyMedia } from './media';
-import { showMedia } from './gifPrefs';
 
 /** What a line says: its text (a GIF's link left out of it, the GIF stands in; a line that's only one
  *  has no text), the GIFs and pictures it links to, and its reactions. */

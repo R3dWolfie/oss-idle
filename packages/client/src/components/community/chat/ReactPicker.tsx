@@ -1,14 +1,16 @@
+import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { t } from '@lingui/core/macro';
 import {
 	useEffect,
 	useRef,
 	useState,
 } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
-import { t } from '@lingui/core/macro';
+
 import useSynced from '@oss-idle/shared/hooks/useSynced';
-import Socket from '../../../online/socket';
+
 import Auth from '../../../online/auth';
+import Socket from '../../../online/socket';
 import EmojiPicker from './EmojiPicker';
 
 /** The ☺ on a line under the pointer: the emoji picker, to react with. */

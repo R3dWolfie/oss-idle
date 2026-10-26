@@ -1,12 +1,13 @@
+import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { t } from '@lingui/core/macro';
 import {
 	type RefObject,
 	useEffect,
 	useRef,
 	useState,
 } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
-import { t } from '@lingui/core/macro';
+
 import EmojiPicker from './EmojiPicker';
 
 /** The ☺ at the end of the chat input: the emoji picker, putting `:name:` (or a starred GIF's link)
