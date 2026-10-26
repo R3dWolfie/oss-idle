@@ -3757,6 +3757,10 @@ msgstr "Time (ms)"
 msgid "Time Zone"
 msgstr "Time Zone"
 
+#: src/components/dock/DockQueue.tsx
+msgid "Times to play it"
+msgstr "Times to play it"
+
 #: src/editor/actions.ts
 #: src/editor/EditorSummary.tsx
 msgid "Timing"

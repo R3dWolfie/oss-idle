@@ -504,6 +504,24 @@ html.is-chat-open .dock:not(.dock--left) {
 .dock__repeat-count {
 	justify-content: center;
 	min-width: 3rem;
+	cursor: text;
+}
+.dock__repeat-count .dock__repeat-played + .dock__repeat-input {
+	margin-left: -0.3rem;
+}
+.dock__repeat-input {
+	padding: 2px 0;
+	border: none;
+	border-bottom: 1px solid transparent;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-align: center;
+}
+.dock__repeat-input:hover,
+.dock__repeat-input:focus {
+	border-bottom-color: var(--osu-pink-light);
+	outline: none;
 }
 
 .dock__empty {

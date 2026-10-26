@@ -3762,6 +3762,10 @@ msgstr "Temps (ms)"
 msgid "Time Zone"
 msgstr "Fuseau horaire"
 
+#: src/components/dock/DockQueue.tsx
+msgid "Times to play it"
+msgstr "Nombre de fois à la jouer"
+
 #: src/editor/actions.ts
 #: src/editor/EditorSummary.tsx
 msgid "Timing"
