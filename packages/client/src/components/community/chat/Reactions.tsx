@@ -4,11 +4,9 @@ import type { Reactions as LineReactions } from '@oss-idle/shared/community/reac
 import useSynced from '@oss-idle/shared/hooks/useSynced';
 
 import Auth from '../../../online/auth';
-import {
-	emoji,
-	emojiSrc,
-} from '../../../online/emoji';
+import { emoji } from '../../../online/emoji';
 import Socket from '../../../online/socket';
+import ReactionChip from './ReactionChip';
 
 /** Under a line: each emoji people reacted with and how many, yours lit; a click puts yours on or
  *  off. Hovering one names who (the online ones by name). Guests see them and can't click. */
@@ -27,20 +25,18 @@ export default function Reactions({ channel, id, reactions }: {
 	return (
 		<span className="chat__reactions">
 			{entries.map(([key, who]) => {
+				// a deleted or replaced emoji has no image left
+				const e = byId.get(key);
+				if (!e) return undefined;
 				const mine = !!user && who.includes(user.id);
 				const known = who.map(u => names.get(u)).filter(Boolean);
 				const others = who.length - known.length;
-				const title = [...known, ...others ? [t`${others} more`] : []].join(', ');
-				const e = byId.get(key);
 				return (
-					<button
-						key={key} type="button" title={title} disabled={!user}
-						className={`chat__reaction ${mine ? 'is-mine' : ''}`}
-						onClick={() => Socket.sendReact(channel, id, Number(key), !mine)}
-					>
-						<img src={emojiSrc(Number(key))} alt={e ? `:${e.name}:` : ''} />
-						<span>{who.length}</span>
-					</button>
+					<ReactionChip
+						key={key} emoji={e} count={who.length} mine={mine} disabled={!user}
+						names={[...known, ...others ? [t`${others} more`] : []].join(', ')}
+						onClick={() => Socket.sendReact(channel, id, e.id, !mine)}
+					/>
 				);
 			})}
 		</span>

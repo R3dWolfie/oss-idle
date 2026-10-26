@@ -137,8 +137,8 @@ export const clientMessage = z.discriminatedUnion('type', [
 	// your reaction on a line, on or off
 	z.object({
 		type: z.literal('chat:react'),
-		channel: z.string(),
-		id: z.string(),
+		channel: z.string().max(64),
+		id: z.string().max(64),
 		emoji: z.number().int().positive(),
 		on: z.boolean(),
 	}),

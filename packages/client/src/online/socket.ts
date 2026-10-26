@@ -290,7 +290,7 @@ export default class Socket {
 				void this.chat.set(this.chat.get().map(l => {
 					if (l.channel !== msg.channel) return l;
 					if (ids.has(l.id)) return {
-						...l, text: '<deleted>',
+						...l, text: '<deleted>', reactions: undefined,
 					};
 					if (l.kind === 'player' && l.replyTo && ids.has(l.replyTo.id)) return {
 						...l, replyTo: {

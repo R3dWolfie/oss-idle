@@ -82,7 +82,7 @@ export default function ReactPicker({ channel, id }: { channel: string, id: stri
 	return (
 		<span className="chat__react">
 			<button
-				ref={button} type="button" className="chat__line-btn" title={t`React`}
+				ref={button} type="button" className="chat__line-btn" aria-label={t`React`}
 				onClick={() => {
 					if (open) return close();
 					const at = button.current?.getBoundingClientRect().top ?? 0;
@@ -105,14 +105,14 @@ export default function ReactPicker({ channel, id }: { channel: string, id: stri
 					)}
 					<span className="chat__react-grid">
 						{shown.map(e => (
-							<button key={e.id} type="button" title={`:${e.name}:`} onClick={() => react(e.id)}>
+							<button key={e.id} type="button" onClick={() => react(e.id)}>
 								<img src={emojiSrc(e.id)} alt={`:${e.name}:`} loading="lazy" />
 							</button>
 						))}
 						{all && !shown.length && <span className="chat__react-none">{t`No emoji found`}</span>}
 						{!all && usable.length > shown.length && (
 							<button
-								type="button" className="chat__react-more" title={t`More emoji`}
+								type="button" className="chat__react-more" aria-label={t`More emoji`}
 								onClick={() => setAll(true)}
 							>
 								<FontAwesomeIcon icon={faEllipsis} />

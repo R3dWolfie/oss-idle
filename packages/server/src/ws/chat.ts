@@ -3,7 +3,10 @@ import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 
 import { makiseBotReply } from '@oss-idle/shared/community/makiseBot';
-import { applyReaction } from '@oss-idle/shared/community/reactions';
+import {
+	applyReaction,
+	type Reactions,
+} from '@oss-idle/shared/community/reactions';
 import {
 	ANNOUNCE_CHANNEL,
 	type ChatLine,
@@ -11,6 +14,7 @@ import {
 	LEGACY_DEFAULT_CHANNEL,
 	MAX_CHAT_LENGTH,
 	REPLY_QUOTE_LENGTH,
+	type ServerMessage,
 	TEAM_CHANNEL,
 } from '@oss-idle/shared/community/wire';
 import {
@@ -256,20 +260,18 @@ const quote = async (channel: string, id: string | undefined) => {
 	};
 };
 
+/** Send to a match's players or the team, or everyone. */
+const fanOut = (msg: ServerMessage, members: number[] | undefined): void => {
+	if (!members) return hub.broadcast(msg);
+	for (const id of members) hub.sendTo(id, msg);
+};
+
 /** Send a line to a match's players, or everyone. */
 const relay = (line: ChatLine, members: number[] | undefined): void => {
 	count('activity', 'chat');
-	if (members) {
-		for (const id of members) {
-			hub.sendTo(id, {
-				type: 'chat', line,
-			});
-		}
-	} else {
-		hub.broadcast({
-			type: 'chat', line,
-		});
-	}
+	fanOut({
+		type: 'chat', line,
+	}, members);
 };
 
 /** What chat moderation remembers about an account, for its deletion. */
@@ -314,6 +316,14 @@ export const adminAnnounce = (channel: string, text: string): void =>
 
 // --- reactions ---
 
+// rewrites a line only while it is still what was read: a delete, a trim or another reaction in between wins
+const SWAP = `
+if redis.call('hget', KEYS[1], ARGV[1]) == ARGV[2] then
+	return redis.call('hset', KEYS[1], ARGV[1], ARGV[3])
+end
+return -1
+`;
+
 /** The emoji someone may react with: the team's, or a supporter's own or shared one. */
 const usableEmoji = async (emojiId: number, userId: number): Promise<boolean> => {
 	const [row] = await db.select({
@@ -323,9 +333,28 @@ const usableEmoji = async (emojiId: number, userId: number): Promise<boolean> =>
 	return !!row && (!row.ownerId || row.shared || row.ownerId === userId);
 };
 
-/** Turn `userId`'s reaction on a stored line on or off, and tell every client the line's reactions. Who
- *  may post there may react; a muted player, a deleted line or a system line takes none. Quietly
- *  ignored otherwise: a reaction has nothing worth an error. */
+/** A stored line's reactions with `userId`'s on or off; undefined when nothing changed or it can't take
+ *  any (gone, deleted, a system line). */
+const swapReaction = async (
+	channel: string, id: string, emojiId: number, userId: number, on: boolean,
+): Promise<Reactions | undefined> => {
+	for (let tries = 0; tries < 5; tries++) {
+		const raw = await redis.hget(logKey(channel), id);
+		const line = raw ? JSON.parse(raw) as ChatLine : undefined;
+		if (!raw || line?.kind !== 'player' || line.text === DELETED_TEXT) return undefined;
+		const reactions = applyReaction(line.reactions, emojiId, userId, on);
+		if (!reactions) return undefined;
+		const set = await redis.eval(SWAP, 1, logKey(channel), id, raw, JSON.stringify({
+			...line, reactions,
+		}));
+		if (set !== -1) return reactions;
+	}
+	return undefined;
+};
+
+/** Turn `userId`'s reaction on a stored line on or off, and tell the channel's readers the line's
+ *  reactions. Who may post there may react; a muted player takes none. Quietly ignored otherwise: a
+ *  reaction has nothing worth an error. */
 export const handleReact = async (
 	characterId: number,
 	userId: number,
@@ -339,16 +368,11 @@ export const handleReact = async (
 	if (members ? !members.includes(characterId) : !CHANNELS.has(channel)) return;
 	if (await isMuted(userId) || await rateLimited(characterId, 'react')) return;
 	if (on && !await usableEmoji(emojiId, userId)) return;
-	const line = await chatLine(channel, id);
-	if (!line || line.kind !== 'player' || line.text === DELETED_TEXT) return;
-	const reactions = applyReaction(line.reactions, emojiId, userId, on);
+	const reactions = await swapReaction(channel, id, emojiId, userId, on);
 	if (!reactions) return;
-	await redis.hset(logKey(channel), id, JSON.stringify({
-		...line, reactions,
-	}));
-	hub.broadcast({
+	fanOut({
 		type: 'chat:react', channel, id, reactions,
-	});
+	}, members);
 };
 
 // --- deletion ---
@@ -362,7 +386,7 @@ export const deleteMessages = async (channel: string, ids: string[]): Promise<st
 	for (const v of raw) {
 		if (!v) continue;
 		const line = {
-			...JSON.parse(v) as ChatLine, text: DELETED_TEXT,
+			...JSON.parse(v) as ChatLine, text: DELETED_TEXT, reactions: undefined,
 		};
 		tx.hset(logKey(channel), line.id, JSON.stringify(line));
 		deleted.push(line.id);
