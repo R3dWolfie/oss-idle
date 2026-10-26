@@ -558,17 +558,13 @@
 }
 .name-card__bg {
 	position: absolute;
-	inset: -24px;
+	inset: 0;
 	z-index: -1;
 	background: center / cover;
-	filter: blur(16px) brightness(0.38) saturate(1.2);
-}
-.name-card__bg--banner {
-	inset: 0;
 	filter: brightness(0.55);
 	animation: name-card-banner-in 0.25s ease-out;
 }
-.name-card:has(.name-card__bg--banner)::after {
+.name-card:has(.name-card__bg)::after {
 	content: "";
 	position: absolute;
 	inset: 0;

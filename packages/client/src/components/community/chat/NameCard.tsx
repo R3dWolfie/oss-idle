@@ -29,10 +29,7 @@ export default function NameCard({ p, color, bannerUrl, friendship }: {
 	const pp = Math.round(p.pp).toLocaleString(i18n.locale);
 	const playing = p.status === 'playing' && p.nowPlaying;
 	return (<>
-		<div
-			className={bannerUrl ? 'name-card__bg name-card__bg--banner' : 'name-card__bg'}
-			style={{ backgroundImage: `url("${bannerUrl ?? p.avatarUrl}")` }}
-		/>
+		{bannerUrl && <div className="name-card__bg" style={{ backgroundImage: `url("${bannerUrl}")` }} />}
 		<img className="name-card__avatar" src={p.avatarUrl} alt="" />
 		<div className="name-card__body">
 			<div className="name-card__top">
