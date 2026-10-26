@@ -1,4 +1,9 @@
 import { t } from '@lingui/core/macro';
+import useSynced from '@oss-idle/shared/hooks/useSynced';
+import {
+	emoji,
+	emojiSrc,
+} from '../../../online/emoji';
 import { parseReply } from './replies';
 import type useReply from './useReply';
 
@@ -9,9 +14,15 @@ export default function ReplyRef({ text, reply }: {
 	text: string,
 	reply: ReturnType<typeof useReply>,
 }) {
+	const [matcher] = useSynced(emoji);
 	const to = parseReply(text);
 	if (!to) return null;
 	const quoted = reply.quoted(to);
+	// their words as the line shows them: emoji drawn, not their :codes:
+	const said = quoted ? parseReply(quoted.text)?.body ?? quoted.text : to.snippet;
+	const shown = matcher.split(said, quoted?.fromId).map((part, i) => (typeof part === 'string'
+		? part
+		: <img key={i} className="chat__emoji-img" src={emojiSrc(part.id)} alt={`:${part.name}:`} />));
 	return (
 		<button
 			type="button" className="chat__reply-ref"
@@ -20,7 +31,7 @@ export default function ReplyRef({ text, reply }: {
 			onClick={() => reply.jump(to)}
 		>
 			<b style={{ color: quoted?.color }}>{to.name}</b>
-			<span>{quoted ? parseReply(quoted.text)?.body ?? quoted.text : to.snippet}</span>
+			<span>{shown}</span>
 		</button>
 	);
 }

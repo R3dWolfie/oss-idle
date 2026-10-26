@@ -5,14 +5,17 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { copyText } from '../../clipboard';
 import ContextMenu from '../ContextMenu';
 import { linkFor } from './state';
+import { mediaOf } from './chat/media';
 
-/** Asks before leaving the game for an address a player posted in chat. */
+/** Asks before leaving the game for an address a player posted in chat; a GIF or picture shows itself. */
 export default function LinkMenu() {
 	const { t } = useLingui();
 	const [url] = useSynced(linkFor);
 	if (!url) return null;
 
 	const close = () => void linkFor.set(undefined);
+	// a GIF or picture shows itself, big, over the buttons
+	const media = mediaOf(url);
 	return (
 		<ContextMenu
 			title={t`Open this link?`}
@@ -43,6 +46,14 @@ export default function LinkMenu() {
 					onClick: close,
 				},
 			]}
-		/>
+		>
+			{media && (
+				<div className="link-menu__media">
+					{media.video
+						? <video src={media.src} autoPlay loop muted playsInline />
+						: <img src={media.src} alt="" />}
+				</div>
+			)}
+		</ContextMenu>
 	);
 }

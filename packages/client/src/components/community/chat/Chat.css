@@ -302,7 +302,10 @@
 	flex-wrap: wrap;
 	gap: 4px;
 	margin-left: 8px;
-	vertical-align: 2px;
+	/* on the text's middle, not its baseline */
+	vertical-align: middle;
+	position: relative;
+	top: -3px;
 }
 .chat__reaction {
 	display: inline-flex;
@@ -698,4 +701,19 @@
 	font-size: 0.75em;
 	font-weight: 700;
 	letter-spacing: 0.05em;
+}
+
+/* "Open this link?" for a GIF or picture: it, big, centred over the buttons */
+.link-menu__media {
+	display: flex;
+	justify-content: center;
+	margin: 0 auto 24px;
+	line-height: 0;
+}
+.link-menu__media img,
+.link-menu__media video {
+	max-width: min(720px, 80vw);
+	max-height: 45vh;
+	border-radius: 8px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
