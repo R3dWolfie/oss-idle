@@ -11,6 +11,8 @@ import useSynced from '@oss-idle/shared/hooks/useSynced';
 import { menuIdle } from '../../globals';
 import Socket from '../../online/socket';
 import ChatText from './chat/ChatText';
+import Reactions from './chat/Reactions';
+import { parseReply } from './chat/replies';
 
 /** The latest chat line, shown while the overlay is closed (when enabled). */
 export default function Ticker() {
@@ -48,6 +50,8 @@ export default function Ticker() {
 		);
 	}
 
+	// a reply says who it answers, small, before what it says
+	const reply = parseReply(latest.text);
 	return (
 		<div ref={ref} className={`community-ticker ${idle ? 'is-idle' : ''}`}>
 			<div className="chat__line">
@@ -55,7 +59,11 @@ export default function Ticker() {
 					className="chat__from"
 					style={{ color: latest.from.color }}
 				>{`${time} ${latest.from.name}:`}</span>
-				<ChatText text={latest.text} senderId={latest.from.userId} />
+				<span className="chat__body">
+					{reply && <span className="chat__ticker-reply">↩ {reply.name}</span>}
+					<ChatText text={latest.text} senderId={latest.from.userId} />
+					<Reactions channel={latest.channel} id={latest.id} reactions={latest.reactions} readOnly />
+				</span>
 			</div>
 		</div>
 	);

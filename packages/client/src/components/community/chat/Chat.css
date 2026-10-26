@@ -590,3 +590,10 @@
 .chat__compose:has(.chat__replybar) .chat__emoji {
 	bottom: calc(100% + 34px);
 }
+
+/* the ticker: who a reply answers, small and dim, before it */
+.chat__ticker-reply {
+	margin-right: 6px;
+	color: rgba(255, 255, 255, 0.45);
+	font-size: 0.8em;
+}

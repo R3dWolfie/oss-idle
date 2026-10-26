@@ -10,10 +10,12 @@ import {
 
 /** Under a line: each emoji people reacted with and how many, yours lit; a click puts yours on or
  *  off. Hovering one names who (the online ones by name). Guests see them and can't click. */
-export default function Reactions({ channel, id, reactions }: {
+export default function Reactions({ channel, id, reactions, readOnly = false }: {
 	channel: string,
 	id: string,
 	reactions?: LineReactions,
+	/** only to look at (the ticker): no clicking */
+	readOnly?: boolean,
 }) {
 	const [user] = useSynced(Auth.user);
 	const [presence = []] = useSynced(Socket.presence);
@@ -32,7 +34,7 @@ export default function Reactions({ channel, id, reactions }: {
 				const e = byId.get(key);
 				return (
 					<button
-						key={key} type="button" title={title} disabled={!user}
+						key={key} type="button" title={title} disabled={!user || readOnly}
 						className={`chat__reaction ${mine ? 'is-mine' : ''}`}
 						onClick={() => Socket.sendReact(channel, id, Number(key), !mine)}
 					>
