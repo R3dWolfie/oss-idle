@@ -1,3 +1,4 @@
+import { ph } from '@lingui/core/macro';
 import {
 	Trans,
 	useLingui,
@@ -54,7 +55,7 @@ export default function NameCard({ p, color, bannerUrl }: {
 			<div className="name-card__stats">
 				<span><b>{pp}</b>pp</span>
 				<span><b>{accuracyText(p.accuracy)}</b></span>
-				<span><Trans>Lv<b>{p.level}</b></Trans></span>
+				<span><Trans>Lv<b>{ph({ level: p.level })}</b></Trans></span>
 			</div>
 		</div>
 	</>);

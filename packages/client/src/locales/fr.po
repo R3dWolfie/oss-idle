@@ -1995,9 +1995,8 @@ msgstr "Lv{level}"
 msgid "Lv<0/>"
 msgstr "Lv<0/>"
 
-#. placeholder {0}: p.level
 #: src/components/community/chat/NameCard.tsx
-msgid "Lv<0>{0}</0>"
+msgid "Lv<0>{level}</0>"
 msgstr ""
 
 #: src/scenes/Options.tsx
